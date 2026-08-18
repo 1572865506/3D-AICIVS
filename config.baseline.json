@@ -1,0 +1,43 @@
+{
+  "system": "3D Container Loading Visualization CAD Engine",
+  "version": "v5.5-baseline",
+  "lockedDate": "2026-08-18",
+  "renderParameters": {
+    "foregroundOpacity": 0.0,
+    "glassRoughness": 0.15,
+    "glassColor": "#b8d7f4",
+    "frameColor": "#2f383d",
+    "frameMetal": 0.5,
+    "frameRough": 0.68,
+    "bump": 0.94,
+    "backColor": "#43474c",
+    "exposure": 0.72,
+    "sunIntensity": 4.0,
+    "ambIntensity": 0.2,
+    "shadowRadius": 1.6,
+    "groundColor": "#e0e7f0",
+    "sunAzimuth": 42,
+    "sunElevation": 52,
+    "sunDistance": 40.0,
+    "showShadow": true,
+    "smartCutaway": true
+  },
+  "dimensions": {
+    "containerType": "ISO 20FT Standard Steel Container",
+    "length": 12.0,
+    "height": 4.8,
+    "width": 4.6,
+    "cornerCasting": 0.22,
+    "cornerPost": 0.12,
+    "rails": 0.12,
+    "doorRodDiameter": 0.05,
+    "lockHardwareColor": "#363b40",
+    "floorMaterial": "Dark Slate Flat PBR Steel Sheet"
+  },
+  "cargoManifest": {
+    "totalBoxes": 84,
+    "totalWeightTons": 18.6,
+    "spaceUtilization": "91.4%",
+    "palletColumns": 8
+  }
+}

@@ -1,0 +1,2745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D 智能货柜装载可视化系统 | 六面全向拓扑自适应透视与全景剖切</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #e0e7f0;
+      color: #0f172a;
+    }
+
+    #webgl-container {
+      width: 100vw;
+      height: 100vh;
+      display: block;
+      cursor: grab;
+    }
+    #webgl-container:active {
+      cursor: grabbing;
+    }
+
+    /* UI Overlay Layer */
+    .ui-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px 24px;
+      z-index: 10;
+    }
+
+    .interactive {
+      pointer-events: auto;
+    }
+
+    /* SaaS Glass Card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      box-shadow: 
+        0 20px 40px -15px rgba(15, 23, 42, 0.08),
+        0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card:hover {
+      box-shadow: 
+        0 24px 48px -12px rgba(15, 23, 42, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.85) inset;
+    }
+
+    /* Top Header */
+    .top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-box {
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .badge-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.28);
+    }
+
+    .title-text h1 {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+
+    .title-text p {
+      font-size: 11px;
+      color: #64748b;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      margin-top: 1px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toggle-studio-btn {
+      background: #0f172a;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.25);
+      transition: all 0.2s ease;
+    }
+    .toggle-studio-btn:hover {
+      background: #1e293b;
+      transform: translateY(-1px);
+    }
+    .toggle-studio-btn.active {
+      background: #2563eb;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-debug-toggle {
+      background: #475569;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .btn-debug-toggle.active {
+      background: #2563eb;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    }
+
+    /* LEFT OPERATION & LAYER TREE PANEL */
+    .left-panel {
+      position: absolute;
+      left: 24px;
+      top: 88px;
+      bottom: 24px;
+      width: 330px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 30;
+      overflow: hidden;
+    }
+
+    .panel-tab-bar {
+      display: flex;
+      background: rgba(241, 245, 249, 0.9);
+      padding: 4px;
+      border-radius: 10px;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .panel-tab-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 7px 4px;
+      border-radius: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .panel-tab-btn.active {
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    .panel-content-wrap {
+      flex: 1 1 0;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-right: 4px;
+    }
+    .panel-content-wrap::-webkit-scrollbar {
+      width: 5px;
+    }
+    .panel-content-wrap::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .panel-content-wrap::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.5);
+      border-radius: 3px;
+    }
+    .panel-content-wrap::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.8);
+    }
+
+    /* Layer Tree System */
+    .layer-group {
+      background: rgba(248, 250, 252, 0.88);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      border-radius: 10px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .layer-group-header {
+      padding: 9px 12px;
+      background: rgba(241, 245, 249, 0.95);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 800;
+      color: #334155;
+      user-select: none;
+    }
+    .layer-group-header:hover {
+      background: #e2e8f0;
+    }
+
+    .group-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .accordion-arrow {
+      font-size: 9px;
+      color: #64748b;
+      transition: transform 0.2s ease;
+    }
+    .accordion-arrow.collapsed {
+      transform: rotate(-90deg);
+    }
+
+    .group-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: #64748b;
+      padding: 2px 4px;
+      display: flex;
+      align-items: center;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    .icon-btn:hover {
+      color: #0f172a;
+      background: rgba(0,0,0,0.08);
+    }
+    .icon-btn.active {
+      color: #2563eb;
+    }
+
+    .layer-item-list {
+      display: flex;
+      flex-direction: column;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .layer-item-list.collapsed {
+      display: none;
+    }
+
+    .layer-item {
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(226, 232, 240, 0.7);
+      font-size: 11px;
+      color: #475569;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .layer-item:hover {
+      background: rgba(237, 242, 249, 0.95);
+      color: #0f172a;
+    }
+    .layer-item.selected {
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-weight: 700;
+      border-left: 3px solid #2563eb;
+    }
+
+    .layer-item-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .type-tag {
+      font-size: 9px;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    /* Object Inspector Subcard */
+    .inspector-card {
+      background: #0f172a;
+      color: #f8fafc;
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 11px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    }
+
+    .inspector-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #60a5fa;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 6px;
+    }
+
+    .inspector-row {
+      display: flex;
+      justify-content: space-between;
+      line-height: 1.4;
+    }
+    .inspector-val {
+      font-family: 'JetBrains Mono', monospace;
+      color: #cbd5e1;
+    }
+
+    .inspector-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .inspector-btn {
+      background: #1e293b;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: white;
+      padding: 6px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .inspector-btn:hover {
+      background: #2563eb;
+      border-color: #2563eb;
+    }
+
+    /* Standard Controls */
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .group-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn-chip {
+      background: rgba(241, 245, 249, 0.88);
+      border: 1px solid rgba(203, 213, 225, 0.7);
+      color: #334155;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-chip:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+      transform: translateY(-1px);
+    }
+    .btn-chip.active {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
+    }
+
+    .action-btn-main {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.28);
+      transition: all 0.2s ease;
+    }
+    .action-btn-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.38);
+    }
+
+    /* RIGHT STUDIO DRAWER */
+    .studio-drawer {
+      position: absolute;
+      right: 24px;
+      top: 88px;
+      bottom: 24px;
+      width: 360px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 50;
+      box-shadow: 0 24px 60px -15px rgba(15, 23, 42, 0.2);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .drawer-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .drawer-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-bar {
+      display: flex;
+      background: rgba(241, 245, 249, 0.9);
+      padding: 4px;
+      border-radius: 10px;
+      margin: 12px 16px 6px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 6px 4px;
+      border-radius: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tab-btn.active {
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .tab-content {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .tab-content.active {
+      display: flex;
+    }
+
+    .param-group {
+      background: rgba(248, 250, 252, 0.7);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .param-group-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #475569;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .param-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .param-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #475569;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .param-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #2563eb;
+      font-weight: 700;
+    }
+
+    .range-input {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 5px;
+      border-radius: 3px;
+      background: #cbd5e1;
+      outline: none;
+      cursor: pointer;
+    }
+    .range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #2563eb;
+      cursor: pointer;
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    }
+
+    .color-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .color-picker {
+      -webkit-appearance: none;
+      border: none;
+      width: 32px;
+      height: 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      background: none;
+    }
+    .color-picker::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    .color-picker::-webkit-color-swatch {
+      border: 1px solid rgba(0,0,0,0.15);
+      border-radius: 6px;
+    }
+
+    .switch-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .switch-toggle {
+      position: relative;
+      width: 38px;
+      height: 20px;
+      background: #cbd5e1;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+    }
+    .switch-toggle::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #ffffff;
+      top: 2px;
+      left: 2px;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .switch-input {
+      display: none;
+    }
+    .switch-input:checked + .switch-toggle {
+      background: #2563eb;
+    }
+    .switch-input:checked + .switch-toggle::after {
+      transform: translateX(18px);
+    }
+
+    .export-btn {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 4px;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
+      transition: all 0.2s ease;
+    }
+    .export-btn:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    /* Bottom Bar */
+    .bottom-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .cargo-legend {
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .color-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 3px;
+    }
+    .dot-blue { background: #3b7ec9; }
+    .dot-wood { background: #d3955b; }
+    .dot-teal { background: #3ea39a; }
+    .dot-orange { background: #ee7246; }
+    .dot-yellow { background: #deaa32; }
+
+    /* Tooltip */
+    .tooltip-card {
+      position: absolute;
+      pointer-events: none;
+      display: none;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(10px);
+      color: #f8fafc;
+      font-size: 12px;
+      z-index: 100;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.12);
+      transform: translate(-50%, -120%);
+    }
+
+    .tooltip-title {
+      font-weight: 700;
+      font-size: 13px;
+      color: #60a5fa;
+      margin-bottom: 5px;
+    }
+
+    .tooltip-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    .tooltip-val {
+      font-family: 'JetBrains Mono', monospace;
+      color: #fff;
+      font-weight: 600;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+  <div id="webgl-container"></div>
+
+  <!-- UI Overlay -->
+  <div class="ui-layer">
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <div class="glass-card header-box interactive">
+          <div class="badge-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+          </div>
+          <div class="title-text">
+            <h1>3D 智能货柜装载可视化系统</h1>
+            <p>ISO 20FT CONTAINER • 6-FACE FULL TOPOLOGICAL CUTAWAY</p>
+          </div>
+        </div>
+
+        <div class="stats-widget interactive">
+          <div class="glass-card stat-pill">
+            <span class="stat-label">空间利用率</span>
+            <span class="stat-value">91.4<span class="stat-unit">%</span></span>
+          </div>
+          <div class="glass-card stat-pill">
+            <span class="stat-label">装载件数</span>
+            <span class="stat-value">84<span class="stat-unit">箱</span></span>
+          </div>
+          <div class="glass-card stat-pill">
+            <span class="stat-label">货物总重</span>
+            <span class="stat-value">18.6<span class="stat-unit">T</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right interactive">
+        <button class="btn-debug-toggle active" id="btn-debug-toggle" onclick="toggleDebugInspector()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          <span>构件图层 (Layers)</span>
+        </button>
+
+        <button class="toggle-studio-btn" id="btn-toggle-studio" onclick="toggleDrawer()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>渲染调优 (Render Studio)</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- LEFT PANEL (WITH TAB: OPERATIONS / LAYER INSPECTOR) -->
+    <aside class="glass-card left-panel interactive" id="left-panel">
+      <div class="panel-tab-bar">
+        <button class="panel-tab-btn active" id="tab-btn-actions" onclick="switchLeftPanelTab('actions')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <span>业务操作 (Actions)</span>
+        </button>
+        <button class="panel-tab-btn" id="tab-btn-layers" onclick="switchLeftPanelTab('layers')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <span>构件图层 (Layers)</span>
+        </button>
+      </div>
+
+      <!-- 1. BUSINESS ACTIONS CONTENT -->
+      <div class="panel-content-wrap" id="panel-actions-content">
+        <div class="control-group">
+          <div class="group-title">视角预设 (Camera Views)</div>
+          <div class="btn-grid">
+            <button class="btn-chip active" id="btn-iso" onclick="switchCamera('iso')">标准等轴</button>
+            <button class="btn-chip" id="btn-front" onclick="switchCamera('front')">箱门正视</button>
+            <button class="btn-chip" id="btn-side" onclick="switchCamera('side')">侧面透视</button>
+            <button class="btn-chip" id="btn-top" onclick="switchCamera('top')">俯视图</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="group-title">
+            <span>面向视线外壳显隐/透明度</span>
+            <span class="param-val" id="val-quick-trans">0% (纯净隐藏)</span>
+          </div>
+          <input type="range" class="range-input" min="0" max="1" step="0.01" value="0.0" oninput="updateForegroundOpacity(this.value)">
+          <p style="font-size: 10px; color: #64748b; margin-top: 2px;">
+            💡 六面全向拓扑透视：无论从顶部、四周还是底部俯仰观察，挡住视线的前景面与相连骨架均动态剖切，背向面保持实体。
+          </p>
+        </div>
+
+        <div class="control-group">
+          <div class="group-title">装载演示 (Cargo Action)</div>
+          <button class="action-btn-main" id="btn-anim-load" onclick="startPackingAnimation()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span id="anim-text">演示装柜过程</span>
+          </button>
+        </div>
+
+        <div class="control-group">
+          <div class="group-title">箱门开关 (Container Door)</div>
+          <div class="btn-grid">
+            <button class="btn-chip" id="btn-door-open" onclick="toggleDoor(true)">打开箱门</button>
+            <button class="btn-chip active" id="btn-door-close" onclick="toggleDoor(false)">关闭箱门</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. LAYER TREE INSPECTOR CONTENT -->
+      <div class="panel-content-wrap" id="panel-layers-content" style="display: none;">
+        <!-- Selected Object Inspector Subcard -->
+        <div class="inspector-card" id="inspector-card" style="display: none;">
+          <div class="inspector-title">
+            <span id="insp-name">选中构件</span>
+            <button class="icon-btn" style="color:#94a3b8;" onclick="deselectObject()">✕</button>
+          </div>
+          <div class="inspector-row"><span>分类层级:</span> <span class="inspector-val" id="insp-category">-</span></div>
+          <div class="inspector-row"><span>物体类型:</span> <span class="inspector-val" id="insp-type">-</span></div>
+          <div class="inspector-row"><span>三维坐标:</span> <span class="inspector-val" id="insp-pos">X:0 Y:0 Z:0</span></div>
+          <div class="inspector-row"><span>外轮廓尺寸:</span> <span class="inspector-val" id="insp-size">-</span></div>
+          
+          <div class="inspector-actions">
+            <button class="inspector-btn" onclick="toggleSelectedWireframe()">🔲 线框模式</button>
+            <button class="inspector-btn" onclick="isolateSelectedObject()">🎯 单独隔离</button>
+          </div>
+        </div>
+
+        <!-- Layer Group: Skeleton Frame -->
+        <div class="layer-group">
+          <div class="layer-group-header" onclick="toggleLayerAccordion('grp-skeleton', 'arr-skeleton')">
+            <div class="group-left">
+              <span class="accordion-arrow" id="arr-skeleton">▼</span>
+              <span>📁 货柜主体骨架 (Frame)</span>
+              <span class="type-tag" id="count-skeleton">20构件</span>
+            </div>
+            <div class="group-actions" onclick="event.stopPropagation()">
+              <button class="icon-btn active" title="显示/隐藏整组" onclick="toggleGroupVisibility('skeleton')">👁️</button>
+            </div>
+          </div>
+          <div class="layer-item-list" id="grp-skeleton"></div>
+        </div>
+
+        <!-- Layer Group: Enclosing Panels -->
+        <div class="layer-group">
+          <div class="layer-group-header" onclick="toggleLayerAccordion('grp-panels', 'arr-panels')">
+            <div class="group-left">
+              <span class="accordion-arrow" id="arr-panels">▼</span>
+              <span>📁 六面壁板与地板 (Panels)</span>
+              <span class="type-tag">6面全向</span>
+            </div>
+            <div class="group-actions" onclick="event.stopPropagation()">
+              <button class="icon-btn active" title="显示/隐藏整组" onclick="toggleGroupVisibility('panels')">👁️</button>
+            </div>
+          </div>
+          <div class="layer-item-list" id="grp-panels"></div>
+        </div>
+
+        <!-- Layer Group: Door Assembly -->
+        <div class="layer-group">
+          <div class="layer-group-header" onclick="toggleLayerAccordion('grp-doors', 'arr-doors')">
+            <div class="group-left">
+              <span class="accordion-arrow" id="arr-doors">▼</span>
+              <span>📁 前端双开箱门 (Doors)</span>
+              <span class="type-tag">双开门组</span>
+            </div>
+            <div class="group-actions" onclick="event.stopPropagation()">
+              <button class="icon-btn active" title="显示/隐藏整组" onclick="toggleGroupVisibility('doors')">👁️</button>
+            </div>
+          </div>
+          <div class="layer-item-list" id="grp-doors"></div>
+        </div>
+
+        <!-- Layer Group: Cargo Stacks -->
+        <div class="layer-group">
+          <div class="layer-group-header" onclick="toggleLayerAccordion('grp-cargo', 'arr-cargo')">
+            <div class="group-left">
+              <span class="accordion-arrow" id="arr-cargo">▼</span>
+              <span>📁 货物与托盘 (Cargo)</span>
+              <span class="type-tag">84件</span>
+            </div>
+            <div class="group-actions" onclick="event.stopPropagation()">
+              <button class="icon-btn active" title="显示/隐藏整组" onclick="toggleGroupVisibility('cargo')">👁️</button>
+            </div>
+          </div>
+          <div class="layer-item-list" id="grp-cargo"></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT STUDIO TUNING DRAWER -->
+    <aside class="glass-card studio-drawer interactive" id="studio-drawer" style="display: none;">
+      <div class="drawer-header">
+        <div class="drawer-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 2a7 7 0 1 0 10 10"/></svg>
+          实时渲染效果调优 (Live Render Studio)
+        </div>
+        <span style="font-size: 11px; color: #64748b; font-family: monospace;">v5.5 FULL-6D</span>
+      </div>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('glass')">外壳/透视</button>
+        <button class="tab-btn" onclick="switchTab('steel')">钢架材质</button>
+        <button class="tab-btn" onclick="switchTab('light')">光照/阴影/角度</button>
+      </div>
+
+      <div class="drawer-body">
+        <!-- 1. GLASS TAB -->
+        <div class="tab-content active" id="tab-glass">
+          <div class="param-group">
+            <div class="param-group-title">
+              <span>全向拓扑自适应 (6-Face Cutaway)</span>
+            </div>
+            <label class="switch-wrap">
+              <span class="param-label">启用全向视线自适应透视(含底板/箱门/六面)</span>
+              <input type="checkbox" class="switch-input" id="input-smartCutaway" checked onchange="updateParam('smartCutaway', this.checked)">
+              <div class="switch-toggle"></div>
+            </label>
+          </div>
+
+          <div class="param-group">
+            <div class="param-group-title">
+              <span>风格快速预设 (Presets)</span>
+            </div>
+            <div class="preset-container">
+              <button class="preset-chip active" onclick="applyPreset('reference')">🎯 效果图最佳预设</button>
+              <button class="preset-chip" onclick="applyPreset('pure')">🚀 纯净无遮挡</button>
+              <button class="preset-chip" onclick="applyPreset('crystal')">💎 晶莹冰蓝</button>
+              <button class="preset-chip" onclick="applyPreset('frost')">🧊 工业半磨砂</button>
+            </div>
+          </div>
+
+          <div class="param-group">
+            <div class="param-group-title">半透外壳与透视参数 (Shell & Translucency)</div>
+            
+            <div class="param-row">
+              <div class="param-label"><span>外壳透明度 (Translucency)</span><span class="param-val" id="val-foregroundOpacity">0.00</span></div>
+              <input type="range" class="range-input" id="input-foregroundOpacity" min="0" max="1" step="0.01" value="0.0" oninput="updateForegroundOpacity(this.value); updateParam('foregroundOpacity', this.value);">
+            </div>
+
+            <div class="param-row">
+              <div class="param-label"><span>表面微粗糙度 (Roughness)</span><span class="param-val" id="val-glassRoughness">0.15</span></div>
+              <input type="range" class="range-input" id="input-glassRoughness" min="0" max="1" step="0.01" value="0.15" oninput="updateParam('glassRoughness', this.value)">
+            </div>
+
+            <div class="color-row">
+              <span class="param-label">透光衰减色彩 (Tint Color)</span>
+              <input type="color" class="color-picker" id="input-glassColor" value="#b8d7f4" onchange="updateParam('glassColor', this.value)">
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. STEEL TAB -->
+        <div class="tab-content" id="tab-steel">
+          <div class="param-group">
+            <div class="param-group-title">集装箱纤细钢骨架 (Slender Steel Frame)</div>
+
+            <div class="color-row">
+              <span class="param-label">钢架漆面主色 (Frame Color)</span>
+              <input type="color" class="color-picker" id="input-frameColor" value="#2f383d" onchange="updateParam('frameColor', this.value)">
+            </div>
+
+            <div class="param-row">
+              <div class="param-label"><span>金属感 (Metalness)</span><span class="param-val" id="val-frameMetal">0.50</span></div>
+              <input type="range" class="range-input" id="input-frameMetal" min="0" max="1" step="0.02" value="0.50" oninput="updateParam('frameMetal', this.value)">
+            </div>
+
+            <div class="param-row">
+              <div class="param-label"><span>粗糙度 (Roughness)</span><span class="param-val" id="val-frameRough">0.68</span></div>
+              <input type="range" class="range-input" id="input-frameRough" min="0" max="1" step="0.02" value="0.68" oninput="updateParam('frameRough', this.value)">
+            </div>
+
+            <div class="param-row">
+              <div class="param-label"><span>钢板拉丝凹凸度 (Bump)</span><span class="param-val" id="val-bump">0.94</span></div>
+              <input type="range" class="range-input" id="input-bump" min="0" max="2.0" step="0.02" value="0.94" oninput="updateParam('bump', this.value)">
+            </div>
+          </div>
+
+          <div class="param-group">
+            <div class="param-group-title">深色对比后壁 (Backdrop Wall)</div>
+            <div class="color-row">
+              <span class="param-label">后壁底色 (Backdrop Color)</span>
+              <input type="color" class="color-picker" id="input-backColor" value="#43474c" onchange="updateParam('backColor', this.value)">
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. LIGHTING TAB -->
+        <div class="tab-content" id="tab-light">
+          <div class="param-group">
+            <div class="param-group-title">地面阴影与投射 (Ground Shadow)</div>
+
+            <label class="switch-wrap">
+              <span class="param-label">显示地面阴影 (Show Ground Shadow)</span>
+              <input type="checkbox" class="switch-input" id="input-showShadow" checked onchange="updateParam('showShadow', this.checked)">
+              <div class="switch-toggle"></div>
+            </label>
+
+            <div class="param-row">
+              <div class="param-label"><span>阴影边缘柔和度 (Shadow Softness)</span><span class="param-val" id="val-shadowRadius">1.60</span></div>
+              <input type="range" class="range-input" id="input-shadowRadius" min="0.2" max="6.0" step="0.1" value="1.6" oninput="updateParam('shadowRadius', this.value)">
+            </div>
+          </div>
+
+          <div class="param-group">
+            <div class="param-group-title">光源空间角度 (Light Source Angle)</div>
+
+            <div class="param-row">
+              <div class="param-label"><span>光源方位角 (Azimuth Angle)</span><span class="param-val" id="val-sunAzimuth">42°</span></div>
+              <input type="range" class="range-input" id="input-sunAzimuth" min="0" max="360" step="1" value="42" oninput="updateParam('sunAzimuth', this.value)">
+            </div>
+
+            <div class="param-row">
+              <div class="param-label"><span>光源高度角 (Elevation Angle)</span><span class="param-val" id="val-sunElevation">52°</span></div>
+              <input type="range" class="range-input" id="input-sunElevation" min="5" max="88" step="1" value="52" oninput="updateParam('sunElevation', this.value)">
+            </div>
+
+            <div class="param-row">
+              <div class="param-label"><span>光源距离 (Distance)</span><span class="param-val" id="val-sunDistance">40.0</span></div>
+              <input type="range" class="range-input" id="input-sunDistance" min="15" max="80" step="1" value="40" oninput="updateParam('sunDistance', this.value)">
+            </div>
+          </div>
+
+          <div class="param-group">
+            <div class="param-group-title">影棚光照强度 (Intensity & Tone)</div>
+
+            <div class="param-row">
+              <div class="param-label"><span>电影色调曝光 (Exposure)</span><span class="param-val" id="val-exposure">0.72</span></div>
+              <input type="range" class="range-input" id="input-exposure" min="0.3" max="2.5" step="0.02" value="0.72" oninput="updateParam('exposure', this.value)">
+            </div>
+
+            <div class="param-row">
+              <div class="param-label"><span>主光源强度 (Sun Light)</span><span class="param-val" id="val-sunIntensity">4.00</span></div>
+              <input type="range" class="range-input" id="input-sunIntensity" min="0" max="8.0" step="0.1" value="4.0" oninput="updateParam('sunIntensity', this.value)">
+            </div>
+
+            <div class="param-row">
+              <div class="param-label"><span>环境漫反射光 (Ambient Light)</span><span class="param-val" id="val-ambIntensity">0.20</span></div>
+              <input type="range" class="range-input" id="input-ambIntensity" min="0" max="2.0" step="0.05" value="0.2" oninput="updateParam('ambIntensity', this.value)">
+            </div>
+
+            <div class="color-row">
+              <span class="param-label">地面背景底色 (Ground Color)</span>
+              <input type="color" class="color-picker" id="input-groundColor" value="#e0e7f0" onchange="updateParam('groundColor', this.value)">
+            </div>
+          </div>
+        </div>
+
+        <button class="export-btn" onclick="copyCurrentConfig()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <span>复制当前调优配置 (JSON)</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Bottom Bar -->
+    <footer class="bottom-bar">
+      <div class="glass-card cargo-legend interactive">
+        <div class="legend-item"><span class="color-dot dot-blue"></span> 电子器件 (28箱)</div>
+        <div class="legend-item"><span class="color-dot dot-wood"></span> 机械备件 (22箱)</div>
+        <div class="legend-item"><span class="color-dot dot-teal"></span> 医疗器械 (14箱)</div>
+        <div class="legend-item"><span class="color-dot dot-orange"></span> 食品生鲜 (10箱)</div>
+        <div class="legend-item"><span class="color-dot dot-yellow"></span> 汽车配件 (10箱)</div>
+      </div>
+
+      <div style="font-size: 11px; color: #64748b; font-family: 'JetBrains Mono', monospace;" class="interactive">
+        <span>六面全向自适应剖切 • 关闭开关时100%实体呈现 • 开启时智能消隐面向视线构件</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 3D Raycast Tooltip -->
+  <div id="box-tooltip" class="tooltip-card">
+    <div class="tooltip-title" id="tt-sku">SKU: PKG-89201</div>
+    <div class="tooltip-row"><span>分类品名:</span> <span class="tooltip-val" id="tt-type">精密电子元器件</span></div>
+    <div class="tooltip-row"><span>规格尺寸:</span> <span class="tooltip-val" id="tt-dim">600×400×450mm</span></div>
+    <div class="tooltip-row"><span>单箱重量:</span> <span class="tooltip-val" id="tt-weight">24.5 kg</span></div>
+    <div class="tooltip-row"><span>堆码状态:</span> <span class="tooltip-val" id="tt-layer">第 3 层 (稳固)</span></div>
+  </div>
+
+  <script>
+    let scene, camera, renderer, controls;
+    let containerGroup, cargoGroup, doorLeftGroup, doorRightGroup;
+    let foregroundCutawayMat, solidBackMat, frameSolidMat, steelFloorMat;
+    let sunLight, ambientLight, groundMesh, contactShadowPlane, steelNormalMap;
+    let boxMeshes = [];
+    let raycaster, mouse;
+    let hoveredBox = null;
+    let isDoorOpen = false;
+    let isPackingAnimating = false;
+
+    // Layer System Registry
+    const sceneLayers = {
+      skeleton: [],
+      panels: [],
+      doors: [],
+      cargo: []
+    };
+    let selectedObject = null;
+    let selectionBoxHelper = null;
+
+    // References for dynamic 6-face topological cutaway
+    let dynamicWalls = [];
+    let dynamicDoorComponents = [];
+    let dynamicSkeletons = [];
+
+    // Active Render Configuration State
+    const renderConfig = {
+      foregroundOpacity: 0.0,
+      glassColor: '#b8d7f4',
+      frameColor: '#2f383d',
+      frameMetal: 0.5,
+      frameRough: 0.68,
+      bump: 0.94,
+      backColor: '#43474c',
+      exposure: 0.72,
+      sunIntensity: 4.0,
+      ambIntensity: 0.2,
+      shadowRadius: 1.6,
+      groundColor: '#e0e7f0',
+      showShadow: true,
+      smartCutaway: true,
+      sunAzimuth: 42,
+      sunElevation: 52,
+      sunDistance: 40
+    };
+
+    // ISO 20ft Container Standard Proportions
+    const L = 12.0;  // Length (X)
+    const H = 4.8;   // Height (Y)
+    const W = 4.6;   // Width (Z)
+
+    const CS = 0.22;       // Corner Casting
+    const POST_W = 0.12;   // Corner Post thickness
+    const RAIL_H = 0.12;   // Top/Bottom Rail height
+    const RAIL_D = 0.12;   // Rail depth
+
+    const COLORS = {
+      boxBlue: 0x3d7ec9,
+      boxKraft: 0xd3965b,
+      boxTeal: 0x40a39a,
+      boxOrange: 0xee7246,
+      boxYellow: 0xdeaa32,
+      floorWood: 0x5c4530,
+      palletWood: 0xa67c4e,
+      hardwareSilver: 0x363b40
+    };
+
+    function createHighEndStudioEnv() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1024;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+
+      const grad = ctx.createLinearGradient(0, 0, 0, 512);
+      grad.addColorStop(0, '#ffffff');
+      grad.addColorStop(0.25, '#ebf3fa');
+      grad.addColorStop(0.65, '#9fb4c9');
+      grad.addColorStop(1, '#475d73');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 1024, 512);
+
+      const softbox1 = ctx.createRadialGradient(300, 120, 10, 300, 120, 200);
+      softbox1.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+      softbox1.addColorStop(0.5, 'rgba(255, 255, 255, 0.4)');
+      softbox1.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
+      ctx.fillStyle = softbox1;
+      ctx.fillRect(100, 0, 400, 240);
+
+      const softbox2 = ctx.createRadialGradient(800, 140, 10, 800, 140, 180);
+      softbox2.addColorStop(0, 'rgba(230, 242, 255, 0.85)');
+      softbox2.addColorStop(0.6, 'rgba(230, 242, 255, 0.25)');
+      softbox2.addColorStop(1, 'rgba(230, 242, 255, 0.0)');
+      ctx.fillStyle = softbox2;
+      ctx.fillRect(620, 0, 360, 260);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.mapping = THREE.EquirectangularReflectionMapping;
+      return texture;
+    }
+
+    function createSteelNormalMap() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 256;
+      canvas.height = 256;
+      const ctx = canvas.getContext('2d');
+      const imgData = ctx.createImageData(256, 256);
+      const data = imgData.data;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const noise = (Math.random() - 0.5) * 8;
+        data[i]     = 128 + noise;
+        data[i + 1] = 128 + noise;
+        data[i + 2] = 255;
+        data[i + 3] = 255;
+      }
+      ctx.putImageData(imgData, 0, 0);
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(4, 4);
+      return tex;
+    }
+
+    function createBoxTexture(baseColorHex, labelText, tapeStyle = 'cross') {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#' + new THREE.Color(baseColorHex).getHexString();
+      ctx.fillRect(0, 0, 512, 512);
+
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.035)';
+      for (let i = 0; i < 3500; i++) ctx.fillRect(Math.random() * 512, Math.random() * 512, 1.5, 1.5);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+      for (let i = 0; i < 3500; i++) ctx.fillRect(Math.random() * 512, Math.random() * 512, 1.5, 1.5);
+
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.18)';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(3, 3, 506, 506);
+
+      ctx.fillStyle = 'rgba(240, 218, 175, 0.76)';
+      if (tapeStyle === 'h' || tapeStyle === 'cross') {
+        ctx.fillRect(0, 234, 512, 44);
+        ctx.strokeStyle = 'rgba(160, 120, 70, 0.3)';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(0, 234, 512, 44);
+      }
+      if (tapeStyle === 'v' || tapeStyle === 'cross') {
+        ctx.fillRect(234, 0, 44, 512);
+        ctx.strokeStyle = 'rgba(160, 120, 70, 0.3)';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(234, 0, 44, 512);
+      }
+
+      ctx.fillStyle = '#ffffff';
+      ctx.shadowColor = 'rgba(0,0,0,0.18)';
+      ctx.shadowBlur = 5;
+      ctx.fillRect(55, 305, 150, 120);
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(55, 305, 150, 18);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 9px monospace';
+      ctx.fillText('EXPRESS LOGISTICS', 65, 318);
+
+      ctx.fillStyle = '#0f172a';
+      for (let bx = 70; bx < 190; bx += Math.random() * 6 + 4) {
+        ctx.fillRect(bx, 332, Math.random() > 0.4 ? 2.5 : 1.5, 42);
+      }
+
+      ctx.font = '8px monospace';
+      ctx.fillStyle = '#475569';
+      ctx.fillText('9928-4019-338', 75, 385);
+
+      ctx.font = 'bold 10px sans-serif';
+      ctx.fillStyle = '#1e293b';
+      ctx.fillText(labelText || 'FRAGILE', 70, 404);
+      ctx.font = '8px sans-serif';
+      ctx.fillStyle = '#64748b';
+      ctx.fillText('UP • HANDLE WITH CARE', 70, 416);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      return texture;
+    }
+
+    function createSmoothCorrugatedGeometry(width, height, numWaves, waveDepth = 0.04) {
+      const segW = numWaves * 12;
+      const segH = 2;
+      const geo = new THREE.PlaneGeometry(width, height, segW, segH);
+      const pos = geo.attributes.position;
+      const pitch = width / numWaves;
+
+      for (let i = 0; i < pos.count; i++) {
+        const u = (pos.getX(i) + width / 2) % pitch;
+        const norm = u / pitch;
+        let zDisp = 0;
+        if (norm < 0.30) {
+          zDisp = 0;
+        } else if (norm < 0.50) {
+          const t = (norm - 0.30) / 0.20;
+          zDisp = (0.5 - 0.5 * Math.cos(t * Math.PI)) * waveDepth;
+        } else if (norm < 0.80) {
+          zDisp = waveDepth;
+        } else {
+          const t = (norm - 0.80) / 0.20;
+          zDisp = (0.5 + 0.5 * Math.cos(t * Math.PI)) * waveDepth;
+        }
+        pos.setZ(i, zDisp - waveDepth / 2);
+      }
+      geo.computeVertexNormals();
+      return geo;
+    }
+
+    function init() {
+      const container = document.getElementById('webgl-container');
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // 1. Scene
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(renderConfig.groundColor);
+
+      const envTexture = createHighEndStudioEnv();
+      scene.environment = envTexture;
+
+      // 2. Camera
+      const aspect = width / height;
+      const frustumSize = 13.5;
+      camera = new THREE.OrthographicCamera(
+        -frustumSize * aspect / 2,
+        frustumSize * aspect / 2,
+        frustumSize / 2,
+        -frustumSize / 2,
+        0.1,
+        1000
+      );
+      camera.position.set(-20, 20 * Math.SQRT2, 20);
+      camera.lookAt(0, 1.8, 0);
+
+      // 3. Renderer
+      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = renderConfig.exposure;
+      container.appendChild(renderer.domElement);
+
+      // 4. OrbitControls
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.06;
+      controls.target.set(0, 1.8, 0);
+      controls.update();
+
+      // 5. Selection Bounding Box Helper
+      selectionBoxHelper = new THREE.BoxHelper(new THREE.Mesh(), 0x2563eb);
+      selectionBoxHelper.material.linewidth = 2;
+      selectionBoxHelper.visible = false;
+      scene.add(selectionBoxHelper);
+
+      // 6. Lighting & Environment
+      setupLighting();
+      setupEnvironment();
+
+      // 7. Assemble Slender CAD Container & Cargo
+      buildSlenderContainer();
+      buildCargoBoxes();
+
+      // 8. Build Interactive Layer Tree UI
+      populateLayerTreeUI();
+
+      // 9. Events
+      raycaster = new THREE.Raycaster();
+      mouse = new THREE.Vector2();
+
+      window.addEventListener('resize', onWindowResize);
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('click', onMouseClick);
+
+      animate();
+    }
+
+    function setupLighting() {
+      ambientLight = new THREE.AmbientLight(0xffffff, renderConfig.ambIntensity);
+      scene.add(ambientLight);
+
+      sunLight = new THREE.DirectionalLight(0xffffff, renderConfig.sunIntensity);
+      updateSunLightPosition();
+      sunLight.castShadow = renderConfig.showShadow;
+      sunLight.shadow.mapSize.width = 2048;
+      sunLight.shadow.mapSize.height = 2048;
+      sunLight.shadow.camera.near = 1;
+      sunLight.shadow.camera.far = 120;
+      const d = 16;
+      sunLight.shadow.camera.left = -d;
+      sunLight.shadow.camera.right = d;
+      sunLight.shadow.camera.top = d;
+      sunLight.shadow.camera.bottom = -d;
+      sunLight.shadow.bias = -0.0003;
+      sunLight.shadow.radius = renderConfig.shadowRadius;
+      scene.add(sunLight);
+
+      const fillLight = new THREE.DirectionalLight(0xbcd9f8, 0.9);
+      fillLight.position.set(-20, 18, -18);
+      scene.add(fillLight);
+
+      const hemiLight = new THREE.HemisphereLight(0xffffff, 0xd2e0ee, 0.65);
+      scene.add(hemiLight);
+    }
+
+    function updateSunLightPosition() {
+      if (!sunLight) return;
+      const radAzimuth = (renderConfig.sunAzimuth * Math.PI) / 180;
+      const radElevation = (renderConfig.sunElevation * Math.PI) / 180;
+      const dist = renderConfig.sunDistance;
+      const y = dist * Math.sin(radElevation);
+      const r = dist * Math.cos(radElevation);
+      const x = r * Math.sin(radAzimuth);
+      const z = r * Math.cos(radAzimuth);
+      sunLight.position.set(x, y, z);
+    }
+
+    function setupEnvironment() {
+      const floorGeo = new THREE.PlaneGeometry(160, 160);
+      const groundMat = new THREE.MeshStandardMaterial({
+        color: renderConfig.groundColor,
+        roughness: 0.9,
+        metalness: 0.05
+      });
+      groundMesh = new THREE.Mesh(floorGeo, groundMat);
+      groundMesh.rotation.x = -Math.PI / 2;
+      groundMesh.position.y = 0;
+      groundMesh.receiveShadow = renderConfig.showShadow;
+      scene.add(groundMesh);
+
+      const grid = new THREE.GridHelper(100, 50, 0xc4d3e4, 0xd2e0ee);
+      grid.position.y = 0.01;
+      scene.add(grid);
+
+      const shadowCanvas = document.createElement('canvas');
+      shadowCanvas.width = 512;
+      shadowCanvas.height = 256;
+      const sCtx = shadowCanvas.getContext('2d');
+      const sGrad = sCtx.createRadialGradient(256, 128, 40, 256, 128, 240);
+      sGrad.addColorStop(0, 'rgba(30, 45, 65, 0.45)');
+      sGrad.addColorStop(0.5, 'rgba(30, 45, 65, 0.18)');
+      sGrad.addColorStop(1, 'rgba(30, 45, 65, 0.0)');
+      sCtx.fillStyle = sGrad;
+      sCtx.fillRect(0, 0, 512, 256);
+      const shadowTex = new THREE.CanvasTexture(shadowCanvas);
+
+      contactShadowPlane = new THREE.Mesh(
+        new THREE.PlaneGeometry(L + 2.0, W + 1.8),
+        new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, opacity: 0.8, depthWrite: false })
+      );
+      contactShadowPlane.rotation.x = -Math.PI / 2;
+      contactShadowPlane.position.set(0, 0.015, 0);
+      contactShadowPlane.visible = renderConfig.showShadow;
+      scene.add(contactShadowPlane);
+    }
+
+    function registerLayerItem(category, name, type, mesh) {
+      mesh.userData.name = name;
+      mesh.userData.category = category;
+      mesh.userData.layerType = type;
+      sceneLayers[category].push(mesh);
+    }
+
+    function registerDynamicSkeleton(mesh, adjacentFaces) {
+      mesh.userData.adjacentFaces = adjacentFaces;
+      dynamicSkeletons.push(mesh);
+    }
+
+    // --- Container Construction with 6-Face Topological Cutaway Support ---
+    function buildSlenderContainer() {
+      containerGroup = new THREE.Group();
+      scene.add(containerGroup);
+
+      const halfL = L / 2;
+      const halfH = H / 2;
+      const halfW = W / 2;
+      const elevationY = halfH + 0.08;
+      containerGroup.position.set(0, elevationY, 0);
+
+      steelNormalMap = createSteelNormalMap();
+
+      // 1. Solid Frame Material
+      frameSolidMat = new THREE.MeshStandardMaterial({
+        color: new THREE.Color(renderConfig.frameColor),
+        metalness: renderConfig.frameMetal,
+        roughness: renderConfig.frameRough,
+        normalMap: steelNormalMap,
+        normalScale: new THREE.Vector2(renderConfig.bump, renderConfig.bump),
+        side: THREE.DoubleSide
+      });
+
+      // 2. Pure Glare-Free Cutaway Material (Double-Sided)
+      foregroundCutawayMat = new THREE.MeshBasicMaterial({
+        color: new THREE.Color(renderConfig.glassColor),
+        transparent: true,
+        opacity: renderConfig.foregroundOpacity,
+        depthWrite: false,
+        side: THREE.DoubleSide
+      });
+
+      // 3. Wall Solid Contrast Backdrop Material (Double-Sided)
+      solidBackMat = new THREE.MeshStandardMaterial({
+        color: new THREE.Color(renderConfig.backColor),
+        roughness: 0.45,
+        metalness: 0.5,
+        normalMap: steelNormalMap,
+        normalScale: new THREE.Vector2(0.1, 0.1),
+        side: THREE.DoubleSide
+      });
+
+      // 4. Floor Solid Steel Material
+      steelFloorMat = new THREE.MeshStandardMaterial({
+        color: 0x2b343b,
+        metalness: 0.52,
+        roughness: 0.42,
+        normalMap: steelNormalMap,
+        normalScale: new THREE.Vector2(0.04, 0.04),
+        side: THREE.DoubleSide
+      });
+
+      const hardwareMat = new THREE.MeshStandardMaterial({
+        color: COLORS.hardwareSilver,
+        metalness: 0.65,
+        roughness: 0.35,
+        side: THREE.DoubleSide
+      });
+
+      // --- A. 8 Corner Castings with 3 Adjacent Topological Faces ---
+      const cs = CS;
+      const cornerConfigs = [
+        { name: '后左下角件 (Rear-BL)', pos: [-halfL + cs/2, -halfH + cs/2, -halfW + cs/2], faces: ['back', 'door', 'floor'] },
+        { name: '后右下角件 (Rear-BR)', pos: [ halfL - cs/2, -halfH + cs/2, -halfW + cs/2], faces: ['back', 'rear', 'floor'] },
+        { name: '前左下角件 (Front-BL)', pos: [-halfL + cs/2, -halfH + cs/2,  halfW - cs/2], faces: ['front', 'door', 'floor'] },
+        { name: '前右下角件 (Front-BR)', pos: [ halfL - cs/2, -halfH + cs/2,  halfW - cs/2], faces: ['front', 'rear', 'floor'] },
+        { name: '后左上角件 (Rear-TL)', pos: [-halfL + cs/2,  halfH - cs/2, -halfW + cs/2], faces: ['back', 'door', 'roof'] },
+        { name: '后右上角件 (Rear-TR)', pos: [ halfL - cs/2,  halfH - cs/2, -halfW + cs/2], faces: ['back', 'rear', 'roof'] },
+        { name: '前左上角件 (Front-TL)', pos: [-halfL + cs/2,  halfH - cs/2,  halfW - cs/2], faces: ['front', 'door', 'roof'] },
+        { name: '前右上角件 (Front-TR)', pos: [ halfL - cs/2,  halfH - cs/2,  halfW - cs/2], faces: ['front', 'rear', 'roof'] }
+      ];
+
+      const slotMat = new THREE.MeshBasicMaterial({ color: 0x11161b, side: THREE.DoubleSide });
+      cornerConfigs.forEach((item) => {
+        const cornerGroup = new THREE.Group();
+        cornerGroup.position.set(...item.pos);
+
+        const block = new THREE.Mesh(new THREE.BoxGeometry(cs, cs, cs), frameSolidMat);
+        cornerGroup.add(block);
+
+        const topHole = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.02, 16), slotMat);
+        topHole.scale.set(1.4, 1, 0.9);
+        topHole.position.set(0, item.pos[1] > 0 ? cs/2 + 0.001 : -cs/2 - 0.001, 0);
+        cornerGroup.add(topHole);
+
+        const frontHole = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.08, 0.02), slotMat);
+        frontHole.position.set(item.pos[0] > 0 ? cs/2 + 0.001 : -cs/2 - 0.001, 0, 0);
+        frontHole.rotation.y = Math.PI / 2;
+        cornerGroup.add(frontHole);
+
+        const sideHole = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, 0.02), slotMat);
+        sideHole.position.set(0, 0, item.pos[2] > 0 ? cs/2 + 0.001 : -cs/2 - 0.001);
+        cornerGroup.add(sideHole);
+
+        registerLayerItem('skeleton', item.name, 'ISO角件', block);
+        registerDynamicSkeleton(block, item.faces);
+        registerDynamicSkeleton(topHole, item.faces);
+        registerDynamicSkeleton(frontHole, item.faces);
+        registerDynamicSkeleton(sideHole, item.faces);
+
+        containerGroup.add(cornerGroup);
+      });
+
+      // --- B. 4 Corner Posts with 2 Adjacent Topological Faces ---
+      const postH = H - cs * 2;
+      const postX = halfL - cs / 2;
+      const postZ = halfW - cs / 2;
+      const postConfigs = [
+        { name: '后左立柱 (Door-Back Post)', pos: [-postX, 0, -postZ], faces: ['door', 'back'] },
+        { name: '后右立柱 (Rear-Back Post)', pos: [ postX, 0, -postZ], faces: ['rear', 'back'] },
+        { name: '前左立柱 (Door-Front Post)', pos: [-postX, 0,  postZ], faces: ['door', 'front'] },
+        { name: '前右立柱 (Rear-Front Post)', pos: [ postX, 0,  postZ], faces: ['rear', 'front'] }
+      ];
+      postConfigs.forEach(p => {
+        const post = new THREE.Mesh(new THREE.BoxGeometry(POST_W, postH, POST_W), frameSolidMat);
+        post.position.set(...p.pos);
+        registerLayerItem('skeleton', p.name, '立柱钢梁', post);
+        registerDynamicSkeleton(post, p.faces);
+        containerGroup.add(post);
+      });
+
+      // --- C. 8 Edge Rails with 2 Adjacent Topological Faces ---
+      const railLX = L - cs * 2;
+      const railWZ = W - cs * 2;
+
+      // Bottom Rails
+      const bY = -halfH + RAIL_H / 2;
+      const bSide1 = new THREE.Mesh(new THREE.BoxGeometry(railLX, RAIL_H, RAIL_D), frameSolidMat);
+      bSide1.position.set(0, bY, -postZ);
+      registerLayerItem('skeleton', '后侧底纵梁 (Back Bottom Rail)', '下纵梁', bSide1);
+      registerDynamicSkeleton(bSide1, ['back', 'floor']);
+      containerGroup.add(bSide1);
+
+      const bSide2 = new THREE.Mesh(new THREE.BoxGeometry(railLX, RAIL_H, RAIL_D), frameSolidMat);
+      bSide2.position.set(0, bY, postZ);
+      registerLayerItem('skeleton', '前侧底纵梁 (Front Bottom Rail)', '下纵梁', bSide2);
+      registerDynamicSkeleton(bSide2, ['front', 'floor']);
+      containerGroup.add(bSide2);
+
+      const bEndRear = new THREE.Mesh(new THREE.BoxGeometry(RAIL_D, RAIL_H, railWZ), frameSolidMat);
+      bEndRear.position.set(postX, bY, 0);
+      registerLayerItem('skeleton', '后端底横梁 (Rear Bottom Sill)', '底端梁', bEndRear);
+      registerDynamicSkeleton(bEndRear, ['rear', 'floor']);
+      containerGroup.add(bEndRear);
+
+      const bEndFront = new THREE.Mesh(new THREE.BoxGeometry(RAIL_D, RAIL_H, railWZ), frameSolidMat);
+      bEndFront.position.set(-postX, bY, 0);
+      registerLayerItem('skeleton', '前端门槛横梁 (Front Door Sill)', '门槛梁', bEndFront);
+      registerDynamicSkeleton(bEndFront, ['door', 'floor']);
+      containerGroup.add(bEndFront);
+
+      // Top Rails
+      const tY = halfH - RAIL_H / 2;
+      const tSide1 = new THREE.Mesh(new THREE.BoxGeometry(railLX, RAIL_H, RAIL_D), frameSolidMat);
+      tSide1.position.set(0, tY, -postZ);
+      registerLayerItem('skeleton', '后侧顶纵梁 (Back Top Rail)', '上纵梁', tSide1);
+      registerDynamicSkeleton(tSide1, ['back', 'roof']);
+      containerGroup.add(tSide1);
+
+      const tSide2 = new THREE.Mesh(new THREE.BoxGeometry(railLX, RAIL_H, RAIL_D), frameSolidMat);
+      tSide2.position.set(0, tY, postZ);
+      registerLayerItem('skeleton', '前侧顶纵梁 (Front Top Rail)', '上纵梁', tSide2);
+      registerDynamicSkeleton(tSide2, ['front', 'roof']);
+      containerGroup.add(tSide2);
+
+      const tEndRear = new THREE.Mesh(new THREE.BoxGeometry(RAIL_D, RAIL_H, railWZ), frameSolidMat);
+      tEndRear.position.set(postX, tY, 0);
+      registerLayerItem('skeleton', '后端顶横梁 (Rear Top Header)', '顶端梁', tEndRear);
+      registerDynamicSkeleton(tEndRear, ['rear', 'roof']);
+      containerGroup.add(tEndRear);
+
+      const tEndFront = new THREE.Mesh(new THREE.BoxGeometry(RAIL_D, RAIL_H, railWZ), frameSolidMat);
+      tEndFront.position.set(-postX, tY, 0);
+      registerLayerItem('skeleton', '前端门头横梁 (Front Door Header)', '门头梁', tEndFront);
+      registerDynamicSkeleton(tEndFront, ['door', 'roof']);
+      containerGroup.add(tEndFront);
+
+      // --- D. Flat Steel Floor Plate (-Y Face, Fully Dynamic Cutaway Supported) ---
+      const innerL = L - RAIL_D * 2 - 0.02;
+      const innerW = W - RAIL_D * 2 - 0.02;
+      const floorMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(innerL, 0.04, innerW),
+        steelFloorMat
+      );
+      floorMesh.position.set(0, -halfH + RAIL_H - 0.02, 0);
+      floorMesh.receiveShadow = true;
+      floorMesh.userData = { faceKey: 'floor', normal: new THREE.Vector3(0, -1, 0), defaultMat: steelFloorMat };
+      dynamicWalls.push(floorMesh);
+      registerLayerItem('panels', '底面平整钢板 (-Y Floor Plate)', '承重地板', floorMesh);
+      containerGroup.add(floorMesh);
+
+      // --- E. 5 Enclosing Panels ---
+      const panelSpanH = H - RAIL_H * 2 + 0.02;
+      const panelSpanL = L - POST_W * 2 + 0.02;
+      const panelSpanW = W - POST_W * 2 + 0.02;
+      const panelCenterY = 0;
+
+      // 1. Top Roof Panel (+Y)
+      const roofGeo = createSmoothCorrugatedGeometry(panelSpanL, panelSpanW, 32, 0.04);
+      const roofM = new THREE.Mesh(roofGeo, foregroundCutawayMat);
+      roofM.rotation.x = -Math.PI / 2;
+      roofM.position.set(0, halfH - RAIL_H / 2, 0);
+      roofM.castShadow = true;
+      roofM.userData = { faceKey: 'roof', normal: new THREE.Vector3(0, 1, 0), defaultMat: solidBackMat };
+      dynamicWalls.push(roofM);
+      registerLayerItem('panels', '顶部瓦楞天窗板 (+Y Roof)', '波浪顶板', roofM);
+      containerGroup.add(roofM);
+
+      // 2. Front Long Side (+Z)
+      const sideGeo = createSmoothCorrugatedGeometry(panelSpanL, panelSpanH, 32, 0.04);
+      const frontSideM = new THREE.Mesh(sideGeo, foregroundCutawayMat);
+      frontSideM.position.set(0, panelCenterY, postZ);
+      frontSideM.castShadow = true;
+      frontSideM.userData = { faceKey: 'front', normal: new THREE.Vector3(0, 0, 1), defaultMat: solidBackMat };
+      dynamicWalls.push(frontSideM);
+      registerLayerItem('panels', '前侧长边波浪板 (+Z Front Wall)', '侧壁板', frontSideM);
+      containerGroup.add(frontSideM);
+
+      // 3. Far Back Long Side (-Z)
+      const backSideM = new THREE.Mesh(sideGeo, solidBackMat);
+      backSideM.position.set(0, panelCenterY, -postZ);
+      backSideM.castShadow = true;
+      backSideM.receiveShadow = true;
+      backSideM.userData = { faceKey: 'back', normal: new THREE.Vector3(0, 0, -1), defaultMat: solidBackMat };
+      dynamicWalls.push(backSideM);
+      registerLayerItem('panels', '后侧长边波浪板 (-Z Back Wall)', '侧壁板', backSideM);
+      containerGroup.add(backSideM);
+
+      // 4. Far Rear End Wall (+X)
+      const endGeo = createSmoothCorrugatedGeometry(panelSpanW, panelSpanH, 14, 0.04);
+      const rearEndM = new THREE.Mesh(endGeo, solidBackMat);
+      rearEndM.rotation.y = -Math.PI / 2;
+      rearEndM.position.set(postX, panelCenterY, 0);
+      rearEndM.castShadow = true;
+      rearEndM.receiveShadow = true;
+      rearEndM.userData = { faceKey: 'rear', normal: new THREE.Vector3(1, 0, 0), defaultMat: solidBackMat };
+      dynamicWalls.push(rearEndM);
+      registerLayerItem('panels', '右端封闭端墙板 (+X End Wall)', '端墙板', rearEndM);
+      containerGroup.add(rearEndM);
+
+      // 5. Front Double Doors (-X)
+      buildFrontDoors(postX, postZ, panelSpanH, panelSpanW, hardwareMat);
+    }
+
+    // 5. Front Double Doors (-X) - Heavy Duty Corrugated Industrial Doors
+    function buildFrontDoors(postX, postZ, doorH, totalDoorW, hardwareMat) {
+      const doorLeafW = (totalDoorW - 0.02) / 2;
+      const borderThick = 0.04;
+      const borderBarW = 0.05;
+
+      const hingeMat = new THREE.MeshStandardMaterial({
+        color: 0x333e48,
+        metalness: 0.7,
+        roughness: 0.35,
+        side: THREE.DoubleSide
+      });
+
+      // --- Left Door Leaf Assembly ---
+      doorLeftGroup = new THREE.Group();
+      doorLeftGroup.position.set(-postX, 0, -postZ);
+
+      // A. Deep 3D Vertical Corrugated Door Panel
+      const doorCorrugGeo = createSmoothCorrugatedGeometry(doorLeafW - borderBarW * 2, doorH - borderBarW * 2, 7, 0.045);
+      const leafMeshL = new THREE.Mesh(doorCorrugGeo, solidBackMat);
+      leafMeshL.rotation.y = Math.PI / 2;
+      leafMeshL.position.set(0, 0, doorLeafW / 2);
+      leafMeshL.castShadow = true;
+      leafMeshL.userData.defaultMat = solidBackMat;
+      doorLeftGroup.add(leafMeshL);
+      dynamicDoorComponents.push(leafMeshL);
+      registerLayerItem('doors', '左侧波浪箱门门板 (Left Corrugated Door)', '波浪门板', leafMeshL);
+
+      // 4 Edge Outer Border Frame Bars
+      const frameGroupL = new THREE.Group();
+      frameGroupL.position.set(0, 0, doorLeafW / 2);
+
+      const barTop = new THREE.Mesh(new THREE.BoxGeometry(borderThick, borderBarW, doorLeafW), frameSolidMat);
+      barTop.position.set(0, doorH / 2 - borderBarW / 2, 0);
+      barTop.userData.defaultMat = frameSolidMat;
+      frameGroupL.add(barTop);
+
+      const barBottom = new THREE.Mesh(new THREE.BoxGeometry(borderThick, borderBarW, doorLeafW), frameSolidMat);
+      barBottom.position.set(0, -doorH / 2 + borderBarW / 2, 0);
+      barBottom.userData.defaultMat = frameSolidMat;
+      frameGroupL.add(barBottom);
+
+      const barOuter = new THREE.Mesh(new THREE.BoxGeometry(borderThick, doorH, borderBarW), frameSolidMat);
+      barOuter.position.set(0, 0, -doorLeafW / 2 + borderBarW / 2);
+      barOuter.userData.defaultMat = frameSolidMat;
+      frameGroupL.add(barOuter);
+
+      const barInner = new THREE.Mesh(new THREE.BoxGeometry(borderThick, doorH, borderBarW), frameSolidMat);
+      barInner.position.set(0, 0, doorLeafW / 2 - borderBarW / 2);
+      barInner.userData.defaultMat = frameSolidMat;
+      frameGroupL.add(barInner);
+
+      doorLeftGroup.add(frameGroupL);
+      dynamicDoorComponents.push(barTop, barBottom, barOuter, barInner);
+
+      // Heavy Hinges
+      for (let hy of [-doorH * 0.38, -doorH * 0.13, doorH * 0.13, doorH * 0.38]) {
+        const hingeBlock = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.09, 0.04), hingeMat);
+        hingeBlock.position.set(-0.03, hy, 0.02);
+        hingeBlock.userData.defaultMat = hingeMat;
+        doorLeftGroup.add(hingeBlock);
+        dynamicDoorComponents.push(hingeBlock);
+
+        const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.11, 16), hardwareMat);
+        pin.position.set(-0.04, hy, 0);
+        pin.userData.defaultMat = hardwareMat;
+        doorLeftGroup.add(pin);
+        dynamicDoorComponents.push(pin);
+      }
+
+      // 2 Substantial Heavy Lock Rods on Left Door
+      for (let rz of [doorLeafW * 0.28, doorLeafW * 0.74]) {
+        addHeavyDoorRod(doorLeftGroup, rz, doorH, hardwareMat, '左门重型锁杆');
+      }
+
+      containerGroup.add(doorLeftGroup);
+
+      // --- Right Door Leaf Assembly ---
+      doorRightGroup = new THREE.Group();
+      doorRightGroup.position.set(-postX, 0, postZ);
+
+      // B. Deep 3D Vertical Corrugated Door Panel
+      const leafMeshR = new THREE.Mesh(doorCorrugGeo, solidBackMat);
+      leafMeshR.rotation.y = Math.PI / 2;
+      leafMeshR.position.set(0, 0, -doorLeafW / 2);
+      leafMeshR.castShadow = true;
+      leafMeshR.userData.defaultMat = solidBackMat;
+      doorRightGroup.add(leafMeshR);
+      dynamicDoorComponents.push(leafMeshR);
+      registerLayerItem('doors', '右侧波浪箱门门板 (Right Corrugated Door)', '波浪门板', leafMeshR);
+
+      // 4 Edge Outer Border Frame Bars
+      const frameGroupR = new THREE.Group();
+      frameGroupR.position.set(0, 0, -doorLeafW / 2);
+
+      const rBarTop = new THREE.Mesh(new THREE.BoxGeometry(borderThick, borderBarW, doorLeafW), frameSolidMat);
+      rBarTop.position.set(0, doorH / 2 - borderBarW / 2, 0);
+      rBarTop.userData.defaultMat = frameSolidMat;
+      frameGroupR.add(rBarTop);
+
+      const rBarBottom = new THREE.Mesh(new THREE.BoxGeometry(borderThick, borderBarW, doorLeafW), frameSolidMat);
+      rBarBottom.position.set(0, -doorH / 2 + borderBarW / 2, 0);
+      rBarBottom.userData.defaultMat = frameSolidMat;
+      frameGroupR.add(rBarBottom);
+
+      const rBarOuter = new THREE.Mesh(new THREE.BoxGeometry(borderThick, doorH, borderBarW), frameSolidMat);
+      rBarOuter.position.set(0, 0, doorLeafW / 2 - borderBarW / 2);
+      rBarOuter.userData.defaultMat = frameSolidMat;
+      frameGroupR.add(rBarOuter);
+
+      const rBarInner = new THREE.Mesh(new THREE.BoxGeometry(borderThick, doorH, borderBarW), frameSolidMat);
+      rBarInner.position.set(0, 0, -doorLeafW / 2 + borderBarW / 2);
+      rBarInner.userData.defaultMat = frameSolidMat;
+      frameGroupR.add(rBarInner);
+
+      doorRightGroup.add(frameGroupR);
+      dynamicDoorComponents.push(rBarTop, rBarBottom, rBarOuter, rBarInner);
+
+      // Heavy Hinges
+      for (let hy of [-doorH * 0.38, -doorH * 0.13, doorH * 0.13, doorH * 0.38]) {
+        const hingeBlock = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.09, 0.04), hingeMat);
+        hingeBlock.position.set(-0.03, hy, -0.02);
+        hingeBlock.userData.defaultMat = hingeMat;
+        doorRightGroup.add(hingeBlock);
+        dynamicDoorComponents.push(hingeBlock);
+
+        const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.11, 16), hardwareMat);
+        pin.position.set(-0.04, hy, 0);
+        pin.userData.defaultMat = hardwareMat;
+        doorRightGroup.add(pin);
+        dynamicDoorComponents.push(pin);
+      }
+
+      // 2 Substantial Heavy Lock Rods on Right Door
+      for (let rz of [-doorLeafW * 0.28, -doorLeafW * 0.74]) {
+        addHeavyDoorRod(doorRightGroup, rz, doorH, hardwareMat, '右门重型锁杆');
+      }
+
+      containerGroup.add(doorRightGroup);
+    }
+
+    // Heavy Duty Industrial Lock Rod & Cam Mechanism
+    function addHeavyDoorRod(parentGroup, zPos, height, hardwareMat, label) {
+      const rodRadius = 0.025;
+      const effectiveRodH = height - 0.08;
+      const rod = new THREE.Mesh(new THREE.CylinderGeometry(rodRadius, rodRadius, effectiveRodH, 20), hardwareMat);
+      rod.position.set(-0.045, 0, zPos);
+      rod.castShadow = true;
+      rod.userData.defaultMat = hardwareMat;
+      parentGroup.add(rod);
+      dynamicDoorComponents.push(rod);
+      registerLayerItem('doors', label, '镀铬重型锁杆', rod);
+
+      // Top & Bottom Cam Locks
+      const camY = height / 2 - 0.04;
+      for (let y of [-camY, camY]) {
+        const camHead = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.06, 0.055), hardwareMat);
+        camHead.position.set(-0.045, y, zPos);
+        camHead.userData.defaultMat = hardwareMat;
+        parentGroup.add(camHead);
+        dynamicDoorComponents.push(camHead);
+
+        const lug = new THREE.Mesh(new THREE.BoxGeometry(0.065, 0.04, 0.07), hardwareMat);
+        lug.position.set(-0.03, y, zPos);
+        lug.userData.defaultMat = hardwareMat;
+        parentGroup.add(lug);
+        dynamicDoorComponents.push(lug);
+      }
+
+      // Middle Bushings
+      for (let y of [-height * 0.25, height * 0.25]) {
+        const bracket = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.06, 0.06), hardwareMat);
+        bracket.position.set(-0.025, y, zPos);
+        bracket.userData.defaultMat = hardwareMat;
+        parentGroup.add(bracket);
+        dynamicDoorComponents.push(bracket);
+      }
+
+      // Lock Handle Assembly
+      const handleGroup = new THREE.Group();
+      handleGroup.position.set(-0.052, -0.18, zPos);
+
+      const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.055, 16), hardwareMat);
+      hub.rotation.z = Math.PI / 2;
+      hub.userData.defaultMat = hardwareMat;
+      handleGroup.add(hub);
+
+      const lever = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.32, 0.032), hardwareMat);
+      lever.position.set(-0.018, -0.14, 0);
+      lever.rotation.z = 0.06;
+      lever.userData.defaultMat = hardwareMat;
+      handleGroup.add(lever);
+
+      const catchPlate = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.05, 0.035), hardwareMat);
+      catchPlate.position.set(0.018, -0.22, 0);
+      catchPlate.userData.defaultMat = hardwareMat;
+      handleGroup.add(catchPlate);
+
+      parentGroup.add(handleGroup);
+      dynamicDoorComponents.push(hub);
+      dynamicDoorComponents.push(lever);
+      dynamicDoorComponents.push(catchPlate);
+    }
+
+    function buildCargoBoxes() {
+      cargoGroup = new THREE.Group();
+      containerGroup.add(cargoGroup);
+
+      const bottomY = -H / 2 + RAIL_H + 0.02;
+
+      const CARGO_TYPES = [
+        { name: '精密电子元器件', color: COLORS.boxBlue, tag: 'ELEC-99' },
+        { name: '重型机械标准备件', color: COLORS.boxKraft, tag: 'MECH-42' },
+        { name: '医疗无菌器械箱', color: COLORS.boxTeal, tag: 'MED-771' },
+        { name: '恒温生鲜冷链箱', color: COLORS.boxOrange, tag: 'COLD-08' },
+        { name: '汽车动力系统组件', color: COLORS.boxYellow, tag: 'AUTO-15' }
+      ];
+
+      const columns = [
+        {
+          colName: '第1列 (靠门端)',
+          x: -4.6,
+          layers: [
+            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[0] },
+            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[0] },
+            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[0], yOff: 1.3 },
+            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[0], yOff: 1.3 },
+            { w: 1.25, h: 1.15, d: 1.85, z: -0.98, type: CARGO_TYPES[0], yOff: 2.6 },
+            { w: 1.25, h: 1.15, d: 1.85, z:  0.98, type: CARGO_TYPES[0], yOff: 2.6 }
+          ]
+        },
+        {
+          colName: '第2列',
+          x: -3.25,
+          layers: [
+            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[0] },
+            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[1] },
+            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[0], yOff: 1.3 },
+            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[1], yOff: 1.3 },
+            { w: 1.25, h: 1.15, d: 1.85, z:  0.98, type: CARGO_TYPES[1], yOff: 2.6 }
+          ]
+        },
+        {
+          colName: '第3列',
+          x: -1.9,
+          layers: [
+            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[1] },
+            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[1] },
+            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[2], yOff: 1.3 },
+            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[1], yOff: 1.3 },
+            { w: 1.25, h: 1.15, d: 1.85, z: -0.98, type: CARGO_TYPES[2], yOff: 2.6 },
+            { w: 1.25, h: 1.15, d: 1.85, z:  0.98, type: CARGO_TYPES[2], yOff: 2.6 }
+          ]
+        },
+        {
+          colName: '第4列 (中部)',
+          x: -0.55,
+          layers: [
+            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[4] },
+            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[4] },
+            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[2], yOff: 1.3 },
+            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[2], yOff: 1.3 },
+            { w: 1.25, h: 1.15, d: 1.85, z: -0.98, type: CARGO_TYPES[3], yOff: 2.6 },
+            { w: 1.25, h: 1.15, d: 1.85, z:  0.98, type: CARGO_TYPES[3], yOff: 2.6 }
+          ]
+        },
+        {
+          colName: '第5列',
+          x: 0.8,
+          layers: [
+            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[4] },
+            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[4] },
+            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[3], yOff: 1.3 },
+            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[3], yOff: 1.3 },
+            { w: 1.25, h: 1.15, d: 1.85, z: -0.98, type: CARGO_TYPES[3], yOff: 2.6 },
+            { w: 1.25, h: 1.15, d: 1.85, z:  0.98, type: CARGO_TYPES[2], yOff: 2.6 }
+          ]
+        },
+        {
+          colName: '第6列',
+          x: 2.15,
+          layers: [
+            { w: 1.25, h: 0.82, d: 1.85, z: -0.98, type: CARGO_TYPES[4] },
+            { w: 1.25, h: 0.82, d: 1.85, z:  0.98, type: CARGO_TYPES[4] },
+            { w: 1.25, h: 0.82, d: 1.85, z: -0.98, type: CARGO_TYPES[4], yOff: 0.87 },
+            { w: 1.25, h: 0.82, d: 1.85, z:  0.98, type: CARGO_TYPES[4], yOff: 0.87 },
+            { w: 1.25, h: 0.82, d: 1.85, z: -0.98, type: CARGO_TYPES[4], yOff: 1.74 },
+            { w: 1.25, h: 0.82, d: 1.85, z:  0.98, type: CARGO_TYPES[4], yOff: 1.74 },
+            { w: 1.25, h: 1.10, d: 1.85, z: -0.98, type: CARGO_TYPES[3], yOff: 2.6 },
+            { w: 1.25, h: 1.10, d: 1.85, z:  0.98, type: CARGO_TYPES[4], yOff: 2.6 }
+          ]
+        },
+        {
+          colName: '第7列',
+          x: 3.5,
+          layers: [
+            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[0] },
+            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[0] },
+            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[0], yOff: 1.3 },
+            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[4], yOff: 1.3 },
+            { w: 1.25, h: 1.15, d: 1.85, z: -0.98, type: CARGO_TYPES[4], yOff: 2.6 },
+            { w: 1.25, h: 1.15, d: 1.85, z:  0.98, type: CARGO_TYPES[2], yOff: 2.6 }
+          ]
+        },
+        {
+          colName: '第8列 (盲端)',
+          x: 4.75,
+          layers: [
+            { w: 0.95, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[1] },
+            { w: 0.95, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[1] },
+            { w: 0.95, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[1], yOff: 1.3 },
+            { w: 0.95, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[2], yOff: 1.3 },
+            { w: 0.95, h: 1.15, d: 1.85, z: -0.98, type: CARGO_TYPES[2], yOff: 2.6 },
+            { w: 0.95, h: 1.15, d: 1.85, z:  0.98, type: CARGO_TYPES[2], yOff: 2.6 }
+          ]
+        }
+      ];
+
+      const palletMat = new THREE.MeshStandardMaterial({ color: COLORS.palletWood, roughness: 0.88, metalness: 0.05, side: THREE.DoubleSide });
+      columns.forEach(col => {
+        const palletGroup = new THREE.Group();
+        palletGroup.position.set(col.x, bottomY + 0.06, 0);
+
+        for (let sz of [-1.6, 0, 1.6]) {
+          const skid = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.08, 0.14), palletMat);
+          skid.position.set(0, -0.02, sz);
+          palletGroup.add(skid);
+        }
+
+        for (let sx of [-0.48, -0.24, 0, 0.24, 0.48]) {
+          const slat = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.03, 3.85), palletMat);
+          slat.position.set(sx, 0.035, 0);
+          slat.castShadow = true;
+          slat.receiveShadow = true;
+          palletGroup.add(slat);
+        }
+
+        cargoGroup.add(palletGroup);
+      });
+
+      let boxIdx = 0;
+      columns.forEach(col => {
+        col.layers.forEach((item) => {
+          boxIdx++;
+          const yOffset = item.yOff || 0;
+          const boxY = bottomY + 0.12 + item.h / 2 + yOffset;
+
+          const boxGeo = new THREE.BoxGeometry(item.w - 0.04, item.h - 0.04, item.d - 0.04);
+          const texture = createBoxTexture(
+            item.type.color,
+            `${item.type.tag}-${100 + boxIdx}`,
+            boxIdx % 2 === 0 ? 'cross' : 'h'
+          );
+
+          const boxMat = new THREE.MeshStandardMaterial({
+            color: item.type.color,
+            map: texture,
+            roughness: 0.48,
+            metalness: 0.05
+          });
+
+          const boxMesh = new THREE.Mesh(boxGeo, boxMat);
+          boxMesh.position.set(col.x, boxY, item.z);
+          boxMesh.castShadow = true;
+          boxMesh.receiveShadow = true;
+
+          const skuCode = `PKG-2026-${String(boxIdx).padStart(4, '0')}`;
+          boxMesh.userData = {
+            sku: skuCode,
+            type: item.type.name,
+            weight: (18.5 + (boxIdx * 3.7) % 24).toFixed(1) + ' kg',
+            dimensions: `${Math.round(item.w * 400)} × ${Math.round(item.d * 400)} × ${Math.round(item.h * 400)} mm`,
+            layer: `第 ${Math.floor(yOffset / 1.3) + 1} 层 (稳固)`,
+            originY: boxY,
+            isCargoBox: true
+          };
+
+          registerLayerItem('cargo', `${col.colName} - 箱#${boxIdx} (${item.type.tag})`, '纸箱货物', boxMesh);
+          cargoGroup.add(boxMesh);
+          boxMeshes.push(boxMesh);
+        });
+      });
+    }
+
+    // --- POPULATE LAYER TREE UI ---
+    function populateLayerTreeUI() {
+      for (const [catKey, list] of Object.entries(sceneLayers)) {
+        const container = document.getElementById('grp-' + catKey);
+        if (!container) continue;
+        container.innerHTML = '';
+
+        list.forEach((mesh, idx) => {
+          const itemEl = document.createElement('div');
+          itemEl.className = 'layer-item';
+          itemEl.id = `layer-node-${catKey}-${idx}`;
+          itemEl.innerHTML = `
+            <div class="layer-item-left">
+              <span>${mesh.userData.name}</span>
+            </div>
+            <div class="group-actions" onclick="event.stopPropagation()">
+              <button class="icon-btn ${mesh.visible ? 'active' : ''}" id="vis-btn-${catKey}-${idx}" title="显示/隐藏" onclick="toggleItemVisibility('${catKey}', ${idx})">👁️</button>
+            </div>
+          `;
+          itemEl.onclick = () => selectObject(mesh, itemEl);
+          container.appendChild(itemEl);
+        });
+      }
+    }
+
+    // --- SELECTION & INSPECTOR SYSTEM ---
+    window.selectObject = function(mesh, itemEl) {
+      if (selectedObject && selectedObject.material && selectedObject.material.emissive) {
+        selectedObject.material.emissive.setHex(selectedObject.userData.prevEmissive || 0x000000);
+      }
+
+      document.querySelectorAll('.layer-item').forEach(el => el.classList.remove('selected'));
+      if (itemEl) itemEl.classList.add('selected');
+
+      selectedObject = mesh;
+      if (mesh && mesh.material && mesh.material.emissive) {
+        mesh.userData.prevEmissive = mesh.material.emissive.getHex();
+        mesh.material.emissive.setHex(0x3b82f6);
+      }
+
+      if (mesh) {
+        selectionBoxHelper.setFromObject(mesh);
+        selectionBoxHelper.visible = true;
+      } else {
+        selectionBoxHelper.visible = false;
+      }
+
+      const inspCard = document.getElementById('inspector-card');
+      if (mesh) {
+        inspCard.style.display = 'flex';
+        document.getElementById('insp-name').textContent = mesh.userData.name || '未命名构件';
+        document.getElementById('insp-category').textContent = mesh.userData.category || 'Container';
+        document.getElementById('insp-type').textContent = mesh.userData.layerType || 'Mesh';
+        
+        const pos = mesh.position;
+        document.getElementById('insp-pos').textContent = `X:${pos.x.toFixed(2)} Y:${pos.y.toFixed(2)} Z:${pos.z.toFixed(2)}`;
+
+        const box = new THREE.Box3().setFromObject(mesh);
+        const size = new THREE.Vector3();
+        box.getSize(size);
+        document.getElementById('insp-size').textContent = `${(size.x * 1000).toFixed(0)} × ${(size.y * 1000).toFixed(0)} × ${(size.z * 1000).toFixed(0)} mm`;
+      } else {
+        inspCard.style.display = 'none';
+      }
+    };
+
+    window.deselectObject = function() {
+      selectObject(null, null);
+    };
+
+    window.toggleSelectedWireframe = function() {
+      if (!selectedObject || !selectedObject.material) return;
+      selectedObject.material.wireframe = !selectedObject.material.wireframe;
+    };
+
+    window.isolateSelectedObject = function() {
+      if (!selectedObject) return;
+      const isCurrentlyIsolated = selectedObject.userData.isIsolated;
+      for (const list of Object.values(sceneLayers)) {
+        list.forEach(m => {
+          m.visible = isCurrentlyIsolated ? true : (m === selectedObject);
+        });
+      }
+      selectedObject.userData.isIsolated = !isCurrentlyIsolated;
+    };
+
+    window.toggleItemVisibility = function(catKey, idx) {
+      const mesh = sceneLayers[catKey][idx];
+      if (!mesh) return;
+      mesh.visible = !mesh.visible;
+      const btn = document.getElementById(`vis-btn-${catKey}-${idx}`);
+      if (btn) btn.classList.toggle('active', mesh.visible);
+    };
+
+    window.toggleGroupVisibility = function(catKey) {
+      const list = sceneLayers[catKey];
+      if (!list || list.length === 0) return;
+      const willShow = !list[0].visible;
+      list.forEach((mesh, idx) => {
+        mesh.visible = willShow;
+        const btn = document.getElementById(`vis-btn-${catKey}-${idx}`);
+        if (btn) btn.classList.toggle('active', willShow);
+      });
+    };
+
+    window.toggleLayerAccordion = function(id, arrowId) {
+      const el = document.getElementById(id);
+      const arr = document.getElementById(arrowId);
+      if (!el) return;
+      const isCollapsed = el.classList.toggle('collapsed');
+      if (arr) arr.classList.toggle('collapsed', isCollapsed);
+    };
+
+    window.switchLeftPanelTab = function(tabName) {
+      document.querySelectorAll('.panel-tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-btn-' + tabName).classList.add('active');
+
+      document.getElementById('panel-layers-content').style.display = tabName === 'layers' ? 'flex' : 'none';
+      document.getElementById('panel-actions-content').style.display = tabName === 'actions' ? 'flex' : 'none';
+    };
+
+    window.toggleDebugInspector = function() {
+      const leftPanel = document.getElementById('left-panel');
+      const btn = document.getElementById('btn-debug-toggle');
+      const isHidden = leftPanel.style.display === 'none';
+      leftPanel.style.display = isHidden ? 'flex' : 'none';
+      btn.classList.toggle('active', isHidden);
+    };
+
+    // --- QUICK SHELL OPACITY SLIDER ---
+    window.updateForegroundOpacity = function(val) {
+      const numVal = parseFloat(val);
+      renderConfig.foregroundOpacity = numVal;
+      
+      const label = document.getElementById('val-quick-trans');
+      if (label) {
+        if (numVal === 0) {
+          label.textContent = '0% (纯净隐藏)';
+        } else {
+          label.textContent = Math.round(numVal * 100) + '% 半透明';
+        }
+      }
+
+      if (foregroundCutawayMat) {
+        foregroundCutawayMat.opacity = numVal * 0.45;
+        foregroundCutawayMat.visible = numVal > 0.005;
+      }
+    };
+
+    // --- ADVANCED 6-FACE FULL TOPOLOGICAL ADAPTIVE CUTAWAY ENGINE ---
+    const _camDir = new THREE.Vector3();
+    function updateAdaptiveCutaway() {
+      if (!camera || dynamicWalls.length === 0) return;
+
+      // Case A: If Smart Cutaway is DISABLED -> Force 100% Solid & Visible everywhere!
+      if (!renderConfig.smartCutaway) {
+        dynamicWalls.forEach(wall => {
+          if (wall.material !== wall.userData.defaultMat) wall.material = wall.userData.defaultMat;
+          wall.visible = true;
+        });
+
+        dynamicDoorComponents.forEach(comp => {
+          if (comp.isMesh) {
+            if (comp.material !== comp.userData.defaultMat) comp.material = comp.userData.defaultMat;
+            comp.visible = true;
+          }
+        });
+
+        dynamicSkeletons.forEach(skelMesh => {
+          if (skelMesh.material !== frameSolidMat) skelMesh.material = frameSolidMat;
+          skelMesh.visible = true;
+        });
+        return;
+      }
+
+      // Case B: Smart Cutaway is ENABLED -> Calculate dynamic dot products across all 6 directions
+      camera.getWorldPosition(_camDir);
+      _camDir.y -= (H / 2 + 0.08);
+      _camDir.normalize();
+
+      const faceStates = {
+        floor: false,
+        roof: false,
+        front: false,
+        back: false,
+        rear: false,
+        door: false
+      };
+
+      // 1. Dynamic Enclosing Walls (Roof +Y, Floor -Y, Front +Z, Back -Z, Rear +X)
+      dynamicWalls.forEach(wall => {
+        const dot = _camDir.dot(wall.userData.normal);
+        const isCutaway = dot > 0.02;
+        faceStates[wall.userData.faceKey] = isCutaway;
+
+        if (isCutaway) {
+          if (wall.material !== foregroundCutawayMat) wall.material = foregroundCutawayMat;
+          wall.visible = renderConfig.foregroundOpacity > 0.005;
+        } else {
+          const defaultMat = wall.userData.defaultMat || solidBackMat;
+          if (wall.material !== defaultMat) wall.material = defaultMat;
+          wall.visible = true;
+        }
+      });
+
+      // 2. Dynamic Front Door Assembly (-X Face)
+      const doorDot = _camDir.dot(new THREE.Vector3(-1, 0, 0));
+      const isDoorCutaway = !isDoorOpen && doorDot > 0.02;
+      faceStates['door'] = isDoorCutaway;
+
+      dynamicDoorComponents.forEach(comp => {
+        if (comp.isMesh) {
+          if (isDoorCutaway) {
+            if (comp.material !== foregroundCutawayMat) comp.material = foregroundCutawayMat;
+            comp.visible = renderConfig.foregroundOpacity > 0.005;
+          } else {
+            const defMat = comp.userData.defaultMat || frameSolidMat;
+            if (comp.material !== defMat) comp.material = defMat;
+            comp.visible = true;
+          }
+        }
+      });
+
+      // 3. Strict Topological Adjacency Evaluation for Skeleton Rails, Posts & Castings
+      dynamicSkeletons.forEach(skelMesh => {
+        const adj = skelMesh.userData.adjacentFaces;
+        if (!adj || adj.length === 0) return;
+
+        let allAdjacentCutaway = true;
+        for (const faceKey of adj) {
+          if (!faceStates[faceKey]) {
+            allAdjacentCutaway = false;
+            break;
+          }
+        }
+
+        if (allAdjacentCutaway) {
+          if (skelMesh.material !== foregroundCutawayMat) skelMesh.material = foregroundCutawayMat;
+          skelMesh.visible = renderConfig.foregroundOpacity > 0.005;
+        } else {
+          if (skelMesh.material !== frameSolidMat) skelMesh.material = frameSolidMat;
+          skelMesh.visible = true;
+        }
+      });
+    }
+
+    // --- REALTIME PARAMETER LIVE UPDATE SYSTEM ---
+    window.updateParam = function(key, value) {
+      if (key === 'showShadow' || key === 'smartCutaway') {
+        renderConfig[key] = Boolean(value);
+      } else {
+        renderConfig[key] = isNaN(value) ? value : parseFloat(value);
+      }
+
+      const valLabel = document.getElementById('val-' + key);
+      if (valLabel) {
+        if (key === 'sunAzimuth' || key === 'sunElevation') {
+          valLabel.textContent = Math.round(value) + '°';
+        } else {
+          valLabel.textContent = typeof value === 'number' || !isNaN(value) ? parseFloat(value).toFixed(2) : value;
+        }
+      }
+
+      // 1. Cutaway Foreground Shell
+      if (key === 'foregroundOpacity') {
+        updateForegroundOpacity(renderConfig.foregroundOpacity);
+      }
+      if (key === 'glassColor' && foregroundCutawayMat) {
+        foregroundCutawayMat.color.set(renderConfig.glassColor);
+      }
+
+      // 2. Steel Frame
+      if (key === 'frameColor' && frameSolidMat) {
+        frameSolidMat.color.set(renderConfig.frameColor);
+      }
+      if (key === 'frameMetal' && frameSolidMat) {
+        frameSolidMat.metalness = renderConfig.frameMetal;
+      }
+      if (key === 'frameRough' && frameSolidMat) {
+        frameSolidMat.roughness = renderConfig.frameRough;
+      }
+      if (key === 'bump' && frameSolidMat) {
+        frameSolidMat.normalScale.set(renderConfig.bump, renderConfig.bump);
+      }
+
+      // 3. Solid Back Wall
+      if (key === 'backColor' && solidBackMat) {
+        solidBackMat.color.set(renderConfig.backColor);
+      }
+
+      // 4. Lighting, Shadows & Angles
+      if (key === 'exposure') renderer.toneMappingExposure = renderConfig.exposure;
+      if (key === 'sunIntensity') sunLight.intensity = renderConfig.sunIntensity;
+      if (key === 'ambIntensity') ambientLight.intensity = renderConfig.ambIntensity;
+      if (key === 'shadowRadius') sunLight.shadow.radius = renderConfig.shadowRadius;
+      
+      if (key === 'sunAzimuth' || key === 'sunElevation' || key === 'sunDistance') {
+        updateSunLightPosition();
+      }
+
+      if (key === 'showShadow') {
+        sunLight.castShadow = renderConfig.showShadow;
+        if (groundMesh) groundMesh.receiveShadow = renderConfig.showShadow;
+        if (contactShadowPlane) contactShadowPlane.visible = renderConfig.showShadow;
+      }
+
+      if (key === 'groundColor') {
+        scene.background.set(renderConfig.groundColor);
+        if (groundMesh) groundMesh.material.color.set(renderConfig.groundColor);
+      }
+    };
+
+    // --- Presets ---
+    window.applyPreset = function(name) {
+      document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+      event.target.classList.add('active');
+
+      if (name === 'reference') {
+        updateParam('foregroundOpacity', 0.0);
+        updateParam('glassRoughness', 0.15);
+        updateParam('glassColor', '#b8d7f4');
+        updateParam('frameColor', '#2f383d');
+        updateParam('frameMetal', 0.5);
+        updateParam('frameRough', 0.68);
+        updateParam('bump', 0.94);
+        updateParam('backColor', '#43474c');
+        updateParam('exposure', 0.72);
+        updateParam('sunIntensity', 4.0);
+        updateParam('ambIntensity', 0.2);
+        updateParam('shadowRadius', 1.6);
+        updateParam('groundColor', '#e0e7f0');
+        updateParam('sunAzimuth', 42);
+        updateParam('sunElevation', 52);
+        updateParam('showShadow', true);
+        updateParam('smartCutaway', true);
+      } else if (name === 'pure') {
+        updateParam('foregroundOpacity', 0.0);
+        updateParam('exposure', 0.75);
+      } else if (name === 'crystal') {
+        updateParam('foregroundOpacity', 0.35);
+        updateParam('glassColor', '#c5e2fd');
+        updateParam('exposure', 0.85);
+      } else if (name === 'frost') {
+        updateParam('foregroundOpacity', 0.65);
+        updateParam('glassRoughness', 0.45);
+        updateParam('glassColor', '#9ec6e8');
+      }
+    };
+
+    window.switchTab = function(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('tab-' + tabName).classList.add('active');
+    };
+
+    window.toggleDrawer = function() {
+      const drawer = document.getElementById('studio-drawer');
+      const btn = document.getElementById('btn-toggle-studio');
+      const isHidden = drawer.style.display === 'none';
+      drawer.style.display = isHidden ? 'flex' : 'none';
+      btn.classList.toggle('active', isHidden);
+    };
+
+    window.copyCurrentConfig = function() {
+      const json = JSON.stringify(renderConfig, null, 2);
+      navigator.clipboard.writeText(json).then(() => {
+        alert('当前渲染与光影配置已成功复制到剪贴板！\n\n' + json);
+      });
+    };
+
+    // --- Camera View Transitions ---
+    window.switchCamera = function(type) {
+      document.querySelectorAll('.btn-chip').forEach(b => {
+        if (b.id && b.id.startsWith('btn-')) b.classList.remove('active');
+      });
+      const activeBtn = document.getElementById('btn-' + type);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const targetPos = new THREE.Vector3();
+      const targetLook = new THREE.Vector3(0, 1.8, 0);
+
+      switch(type) {
+        case 'iso':
+          targetPos.set(-20, 20 * Math.SQRT2, 20);
+          break;
+        case 'front':
+          targetPos.set(-30, 1.8, 0);
+          break;
+        case 'side':
+          targetPos.set(0, 1.8, 30);
+          break;
+        case 'top':
+          targetPos.set(0, 35, 0.01);
+          break;
+      }
+
+      animateCameraTo(targetPos, targetLook);
+    };
+
+    function animateCameraTo(targetPos, targetLook) {
+      const startPos = camera.position.clone();
+      const startLook = controls.target.clone();
+      const duration = 600;
+      const startTime = performance.now();
+
+      function update(time) {
+        const elapsed = time - startTime;
+        const p = Math.min(elapsed / duration, 1);
+        const ease = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+
+        camera.position.lerpVectors(startPos, targetPos, ease);
+        controls.target.lerpVectors(startLook, targetLook, ease);
+        controls.update();
+
+        if (p < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+
+    window.toggleDoor = function(open) {
+      isDoorOpen = open;
+      document.getElementById('btn-door-open').classList.toggle('active', open);
+      document.getElementById('btn-door-close').classList.toggle('active', !open);
+
+      const targetAngleL = open ? -Math.PI * 0.72 : 0;
+      const targetAngleR = open ?  Math.PI * 0.72 : 0;
+      const startL = doorLeftGroup.rotation.y;
+      const startR = doorRightGroup.rotation.y;
+      const duration = 700;
+      const startTime = performance.now();
+
+      function update(time) {
+        const elapsed = time - startTime;
+        const p = Math.min(elapsed / duration, 1);
+        const ease = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
+
+        doorLeftGroup.rotation.y = startL + (targetAngleL - startL) * ease;
+        doorRightGroup.rotation.y = startR + (targetAngleR - startR) * ease;
+
+        if (p < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    };
+
+    window.startPackingAnimation = function() {
+      if (isPackingAnimating) return;
+      isPackingAnimating = true;
+
+      const animBtn = document.getElementById('btn-anim-load');
+      const animText = document.getElementById('anim-text');
+      animBtn.style.opacity = '0.7';
+      animText.textContent = '装载演示中...';
+
+      boxMeshes.forEach((box, i) => {
+        const originY = box.userData.originY;
+        box.position.y = originY + 12 + (i % 6) * 1.5;
+        box.scale.set(0.01, 0.01, 0.01);
+
+        setTimeout(() => {
+          const startTime = performance.now();
+          const duration = 400;
+
+          function drop(time) {
+            const elapsed = time - startTime;
+            const p = Math.min(elapsed / duration, 1);
+            const ease = 1 - Math.pow(1 - p, 3);
+
+            box.position.y = (originY + 12) * (1 - ease) + originY * ease;
+            box.scale.setScalar(ease);
+
+            if (p < 1) {
+              requestAnimationFrame(drop);
+            } else if (i === boxMeshes.length - 1) {
+              isPackingAnimating = false;
+              animBtn.style.opacity = '1';
+              animText.textContent = '重新演示装柜';
+            }
+          }
+          requestAnimationFrame(drop);
+        }, i * 30);
+      });
+    };
+
+    // --- Tooltip & Raycast ---
+    const tooltip = document.getElementById('box-tooltip');
+    const ttSku = document.getElementById('tt-sku');
+    const ttType = document.getElementById('tt-type');
+    const ttDim = document.getElementById('tt-dim');
+    const ttWeight = document.getElementById('tt-weight');
+    const ttLayer = document.getElementById('tt-layer');
+
+    function onMouseMove(event) {
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+      tooltip.style.left = event.clientX + 'px';
+      tooltip.style.top = event.clientY + 'px';
+    }
+
+    function checkRaycast() {
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(boxMeshes);
+
+      if (intersects.length > 0) {
+        const hit = intersects[0].object;
+        if (hoveredBox !== hit) {
+          if (hoveredBox && hoveredBox !== selectedObject) hoveredBox.material.emissive.setHex(0x000000);
+          hoveredBox = hit;
+          if (hoveredBox !== selectedObject) hoveredBox.material.emissive.setHex(0x223355);
+
+          const d = hit.userData;
+          ttSku.textContent = `SKU: ${d.sku}`;
+          ttType.textContent = d.type;
+          ttDim.textContent = d.dimensions;
+          ttWeight.textContent = d.weight;
+          ttLayer.textContent = d.layer;
+          tooltip.style.display = 'block';
+        }
+      } else {
+        if (hoveredBox && hoveredBox !== selectedObject) {
+          hoveredBox.material.emissive.setHex(0x000000);
+          hoveredBox = null;
+          tooltip.style.display = 'none';
+        }
+      }
+    }
+
+    function onMouseClick(event) {
+      raycaster.setFromCamera(mouse, camera);
+      const allObjects = [];
+      for (const list of Object.values(sceneLayers)) allObjects.push(...list);
+
+      const intersects = raycaster.intersectObjects(allObjects);
+      if (intersects.length > 0) {
+        const hit = intersects[0].object;
+        selectObject(hit, null);
+
+        for (const [catKey, list] of Object.entries(sceneLayers)) {
+          const idx = list.indexOf(hit);
+          if (idx !== -1) {
+            const itemEl = document.getElementById(`layer-node-${catKey}-${idx}`);
+            if (itemEl) {
+              itemEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              itemEl.classList.add('selected');
+            }
+            break;
+          }
+        }
+      } else {
+        deselectObject();
+      }
+    }
+
+    function onWindowResize() {
+      const aspect = window.innerWidth / window.innerHeight;
+      const frustumSize = 13.5;
+      camera.left = -frustumSize * aspect / 2;
+      camera.right = frustumSize * aspect / 2;
+      camera.top = frustumSize / 2;
+      camera.bottom = -frustumSize / 2;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      if (selectionBoxHelper && selectedObject && selectionBoxHelper.visible) {
+        selectionBoxHelper.update();
+      }
+      updateAdaptiveCutaway();
+      checkRaycast();
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
