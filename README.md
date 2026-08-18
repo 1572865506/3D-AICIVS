@@ -34,7 +34,7 @@
 
 ```json
 {
-  "foregroundOpacity": 0.0,
+  "foregroundOpacity": 0.01,
   "glassRoughness": 0.15,
   "glassColor": "#b8d7f4",
   "frameColor": "#2f383d",
