@@ -3,11 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D 智能货柜装载可视化系统 | 六面全向拓扑自适应透视与全景剖切</title>
+  <title>3D 智能货柜装载填充系统 | 严格重力物理支撑与同品聚合块装算法</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --slate-900: #0f172a;
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748b;
+      --slate-400: #94a3b8;
+      --slate-200: #e2e8f0;
+      --slate-100: #f1f5f9;
+      --slate-50: #f8fafc;
+      --success: #059669;
+      --success-light: #ecfdf5;
+      --glass-bg: rgba(255, 255, 255, 0.86);
+      --glass-border: rgba(255, 255, 255, 0.95);
+      --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.04);
+      --shadow-md: 0 12px 28px -6px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 24px 48px -12px rgba(15, 23, 42, 0.12);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -22,7 +44,8 @@
       overflow: hidden;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: #e0e7f0;
-      color: #0f172a;
+      color: var(--slate-900);
+      -webkit-font-smoothing: antialiased;
     }
 
     #webgl-container {
@@ -35,7 +58,6 @@
       cursor: grabbing;
     }
 
-    /* UI Overlay Layer */
     .ui-layer {
       position: absolute;
       top: 0;
@@ -46,7 +68,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 20px 24px;
+      padding: 16px 20px;
       z-index: 10;
     }
 
@@ -54,724 +76,634 @@
       pointer-events: auto;
     }
 
-    /* SaaS Glass Card */
     .glass-card {
-      background: rgba(255, 255, 255, 0.88);
+      background: var(--glass-bg);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.95);
-      border-radius: 16px;
-      box-shadow: 
-        0 20px 40px -15px rgba(15, 23, 42, 0.08),
-        0 0 0 1px rgba(255, 255, 255, 0.7) inset;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .glass-card:hover {
-      box-shadow: 
-        0 24px 48px -12px rgba(15, 23, 42, 0.12),
-        0 0 0 1px rgba(255, 255, 255, 0.85) inset;
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      box-shadow: var(--shadow-md);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Top Header */
+    /* 1. TOP HEADER */
     .top-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
       gap: 16px;
     }
 
-    .header-box {
-      padding: 12px 18px;
+    .header-left-group {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
 
-    .badge-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-      color: #fff;
+    .brand-box {
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.28);
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.28);
     }
 
-    .title-text h1 {
-      font-size: 15px;
+    .brand-text h1 {
+      font-size: 14px;
       font-weight: 800;
-      color: #0f172a;
+      color: var(--slate-900);
       letter-spacing: -0.02em;
+      line-height: 1.2;
     }
 
-    .title-text p {
-      font-size: 11px;
-      color: #64748b;
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 2px;
+      font-size: 10px;
+      font-weight: 700;
       font-family: 'JetBrains Mono', monospace;
-      font-weight: 500;
-      margin-top: 1px;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 1px 6px;
+      border-radius: 4px;
     }
 
-    .header-right {
+    /* Center Modern KPI HUD */
+    .kpi-hud-bar {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 1px;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(20px);
+      padding: 4px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow-sm);
     }
 
-    .toggle-studio-btn {
-      background: #0f172a;
+    .kpi-item {
+      padding: 4px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-right: 1px solid var(--slate-200);
+    }
+    .kpi-item:last-child {
+      border-right: none;
+    }
+
+    .kpi-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--slate-500);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .kpi-val {
+      font-size: 14px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--slate-900);
+      display: flex;
+      align-items: baseline;
+      gap: 2px;
+    }
+    .kpi-unit {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--slate-500);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-action-pill {
+      background: var(--slate-900);
       color: white;
       border: none;
-      padding: 10px 16px;
-      border-radius: 12px;
-      font-size: 12px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 11.5px;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
-      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.25);
+      gap: 6px;
       transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
     }
-    .toggle-studio-btn:hover {
-      background: #1e293b;
+    .btn-action-pill:hover {
+      background: var(--slate-800);
       transform: translateY(-1px);
     }
-    .toggle-studio-btn.active {
-      background: #2563eb;
-      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    .btn-action-pill.active {
+      background: var(--primary);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    }
+    .btn-action-pill.secondary {
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--slate-700);
+      border: 1px solid var(--slate-200);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-action-pill.secondary:hover {
+      background: #ffffff;
+      color: var(--slate-900);
+    }
+    .btn-action-pill.secondary.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
     }
 
-    .btn-debug-toggle {
-      background: #475569;
-      color: white;
+    /* 2. FLOATING BOTTOM CONTROL ISLAND */
+    .bottom-island-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+    }
+
+    .bottom-island {
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 14px;
+    }
+
+    .segmented-control {
+      display: flex;
+      background: var(--slate-100);
+      padding: 3px;
+      border-radius: 9px;
+      gap: 2px;
+    }
+
+    .seg-btn {
       border: none;
-      padding: 10px 16px;
-      border-radius: 12px;
-      font-size: 12px;
+      background: transparent;
+      padding: 5px 10px;
+      border-radius: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--slate-600);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .seg-btn:hover {
+      color: var(--slate-900);
+    }
+    .seg-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+    }
+
+    .island-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--slate-200);
+    }
+
+    .btn-island-action {
+      background: var(--slate-100);
+      border: 1px solid transparent;
+      color: var(--slate-700);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
-      transition: all 0.2s ease;
+      gap: 5px;
+      transition: all 0.15s ease;
     }
-    .btn-debug-toggle.active {
-      background: #2563eb;
-      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    .btn-island-action:hover {
+      background: #ffffff;
+      border-color: var(--slate-200);
+      color: var(--slate-900);
+    }
+    .btn-island-action.primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.28);
+    }
+    .btn-island-action.primary:hover {
+      background: var(--primary-hover);
     }
 
-    /* LEFT OPERATION & LAYER TREE PANEL */
-    .left-panel {
+    .opacity-pill-ctrl {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--slate-100);
+      padding: 4px 10px;
+      border-radius: 8px;
+    }
+    .opacity-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--slate-500);
+    }
+    .range-input-mini {
+      -webkit-appearance: none;
+      width: 65px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--slate-300, #cbd5e1);
+      outline: none;
+      cursor: pointer;
+    }
+    .range-input-mini::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 2px solid white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      cursor: pointer;
+    }
+
+    /* 3. WORKBENCH DRAWER */
+    .workbench-drawer {
       position: absolute;
-      left: 24px;
-      top: 88px;
-      bottom: 24px;
-      width: 330px;
+      top: 74px;
+      bottom: 20px;
+      width: 380px;
       padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 12px;
       z-index: 30;
       overflow: hidden;
+      box-shadow: var(--shadow-lg);
     }
+    .workbench-drawer.left { left: 20px; }
+    .workbench-drawer.right { right: 20px; }
 
-    .panel-tab-bar {
+    .drawer-title-bar {
       display: flex;
-      background: rgba(241, 245, 249, 0.9);
-      padding: 4px;
-      border-radius: 10px;
-      gap: 4px;
-      flex-shrink: 0;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--slate-200);
     }
-
-    .panel-tab-btn {
-      flex: 1;
-      border: none;
-      background: transparent;
-      padding: 7px 4px;
-      border-radius: 7px;
-      font-size: 11px;
-      font-weight: 700;
-      color: #64748b;
-      cursor: pointer;
-      transition: all 0.2s ease;
+    .drawer-heading {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--slate-900);
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 5px;
+      gap: 8px;
     }
-    .panel-tab-btn.active {
-      background: #ffffff;
-      color: #0f172a;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    .close-btn {
+      background: transparent;
+      border: none;
+      font-size: 13px;
+      color: var(--slate-400);
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 6px;
+    }
+    .close-btn:hover {
+      color: var(--slate-900);
+      background: var(--slate-100);
     }
 
-    .panel-content-wrap {
+    .drawer-scroll-body {
       flex: 1 1 0;
       min-height: 0;
       overflow-y: auto;
-      overflow-x: hidden;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      padding-right: 4px;
+      gap: 12px;
+      padding-right: 2px;
     }
-    .panel-content-wrap::-webkit-scrollbar {
-      width: 5px;
-    }
-    .panel-content-wrap::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .panel-content-wrap::-webkit-scrollbar-thumb {
-      background: rgba(148, 163, 184, 0.5);
-      border-radius: 3px;
-    }
-    .panel-content-wrap::-webkit-scrollbar-thumb:hover {
-      background: rgba(100, 116, 139, 0.8);
-    }
+    .drawer-scroll-body::-webkit-scrollbar { width: 4px; }
+    .drawer-scroll-body::-webkit-scrollbar-thumb { background: var(--slate-300, #cbd5e1); border-radius: 2px; }
 
-    /* Layer Tree System */
-    .layer-group {
-      background: rgba(248, 250, 252, 0.88);
-      border: 1px solid rgba(226, 232, 240, 0.95);
+    .section-card {
+      background: rgba(248, 250, 252, 0.85);
+      border: 1px solid rgba(226, 232, 240, 0.9);
       border-radius: 10px;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .layer-group-header {
-      padding: 9px 12px;
-      background: rgba(241, 245, 249, 0.95);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      font-size: 11px;
-      font-weight: 800;
-      color: #334155;
-      user-select: none;
-    }
-    .layer-group-header:hover {
-      background: #e2e8f0;
-    }
-
-    .group-left {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .accordion-arrow {
-      font-size: 9px;
-      color: #64748b;
-      transition: transform 0.2s ease;
-    }
-    .accordion-arrow.collapsed {
-      transform: rotate(-90deg);
-    }
-
-    .group-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .icon-btn {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: #64748b;
-      padding: 2px 4px;
-      display: flex;
-      align-items: center;
-      border-radius: 4px;
-      transition: all 0.15s;
-    }
-    .icon-btn:hover {
-      color: #0f172a;
-      background: rgba(0,0,0,0.08);
-    }
-    .icon-btn.active {
-      color: #2563eb;
-    }
-
-    .layer-item-list {
-      display: flex;
-      flex-direction: column;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-    .layer-item-list.collapsed {
-      display: none;
-    }
-
-    .layer-item {
-      padding: 8px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-top: 1px solid rgba(226, 232, 240, 0.7);
-      font-size: 11px;
-      color: #475569;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .layer-item:hover {
-      background: rgba(237, 242, 249, 0.95);
-      color: #0f172a;
-    }
-    .layer-item.selected {
-      background: #dbeafe;
-      color: #1d4ed8;
-      font-weight: 700;
-      border-left: 3px solid #2563eb;
-    }
-
-    .layer-item-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .type-tag {
-      font-size: 9px;
-      font-family: 'JetBrains Mono', monospace;
-      padding: 2px 5px;
-      border-radius: 4px;
-      background: #e2e8f0;
-      color: #475569;
-    }
-
-    /* Object Inspector Subcard */
-    .inspector-card {
-      background: #0f172a;
-      color: #f8fafc;
-      border-radius: 12px;
       padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      font-size: 11px;
-      flex-shrink: 0;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+      gap: 10px;
     }
 
-    .inspector-title {
-      font-size: 12px;
+    .section-label {
+      font-size: 10.5px;
       font-weight: 800;
-      color: #60a5fa;
+      color: var(--slate-600);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding-bottom: 6px;
     }
 
-    .inspector-row {
+    .chip-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .chip-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .btn-chip {
+      background: #ffffff;
+      border: 1px solid var(--slate-200);
+      color: var(--slate-700);
+      padding: 7px 6px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .btn-chip:hover {
+      background: var(--slate-50);
+      border-color: var(--slate-400);
+    }
+    .btn-chip.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+    }
+
+    /* Upload Drop Zone */
+    .upload-zone {
+      border: 1.5px dashed var(--slate-300, #cbd5e1);
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .upload-icon {
+      color: var(--primary);
+    }
+    .upload-text-main {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--slate-800);
+    }
+    .upload-text-sub {
+      font-size: 9.5px;
+      color: var(--slate-500);
+    }
+
+    .spec-table {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+    }
+    .spec-item {
       display: flex;
       justify-content: space-between;
       line-height: 1.4;
     }
-    .inspector-val {
-      font-family: 'JetBrains Mono', monospace;
-      color: #cbd5e1;
-    }
+    .spec-k { color: var(--slate-500); }
+    .spec-v { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--slate-800); }
 
-    .inspector-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      margin-top: 4px;
-    }
-
-    .inspector-btn {
-      background: #1e293b;
-      border: 1px solid rgba(255,255,255,0.15);
-      color: white;
-      padding: 6px;
-      border-radius: 6px;
-      font-size: 10px;
-      font-weight: 700;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.15s;
-    }
-    .inspector-btn:hover {
-      background: #2563eb;
-      border-color: #2563eb;
-    }
-
-    /* Standard Controls */
-    .control-group {
+    /* SKU List Cards */
+    .sku-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
+      max-height: 220px;
+      overflow-y: auto;
     }
-
-    .group-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: #475569;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .btn-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .btn-chip {
-      background: rgba(241, 245, 249, 0.88);
-      border: 1px solid rgba(203, 213, 225, 0.7);
-      color: #334155;
+    .sku-item {
+      background: #ffffff;
+      border: 1px solid var(--slate-200);
+      border-radius: 8px;
       padding: 8px 10px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .btn-chip:hover {
-      background: #e2e8f0;
-      color: #0f172a;
-      transform: translateY(-1px);
-    }
-    .btn-chip.active {
-      background: #2563eb;
-      color: #ffffff;
-      border-color: #2563eb;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
-    }
-
-    .action-btn-main {
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.28);
-      transition: all 0.2s ease;
-    }
-    .action-btn-main:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.38);
-    }
-
-    /* RIGHT STUDIO DRAWER */
-    .studio-drawer {
-      position: absolute;
-      right: 24px;
-      top: 88px;
-      bottom: 24px;
-      width: 360px;
-      padding: 0;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
-      z-index: 50;
-      box-shadow: 0 24px 60px -15px rgba(15, 23, 42, 0.2);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .drawer-header {
-      padding: 14px 18px;
-      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(255, 255, 255, 0.6);
-    }
-
-    .drawer-title {
-      font-size: 13px;
-      font-weight: 800;
-      color: #0f172a;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .tab-bar {
-      display: flex;
-      background: rgba(241, 245, 249, 0.9);
-      padding: 4px;
-      border-radius: 10px;
-      margin: 12px 16px 6px;
       gap: 4px;
     }
-
-    .tab-btn {
-      flex: 1;
-      border: none;
-      background: transparent;
-      padding: 6px 4px;
-      border-radius: 7px;
-      font-size: 11px;
-      font-weight: 700;
-      color: #64748b;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .tab-btn.active {
-      background: #ffffff;
-      color: #0f172a;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-    }
-
-    .drawer-body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 14px 16px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .tab-content {
-      display: none;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .tab-content.active {
-      display: flex;
-    }
-
-    .param-group {
-      background: rgba(248, 250, 252, 0.7);
-      border: 1px solid rgba(226, 232, 240, 0.9);
-      border-radius: 12px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .param-group-title {
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #475569;
+    .sku-item-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--slate-900);
     }
+    .sku-tag {
+      font-size: 9px;
+      font-weight: 700;
+      color: white;
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+    .sku-meta {
+      font-size: 10px;
+      color: var(--slate-500);
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      justify-content: space-between;
+    }
+    .req-tag {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+    .req-rear { background: #dbeafe; color: #1e40af; }
+    .req-mid  { background: #f1f5f9; color: #475569; }
+    .req-door { background: #fef3c7; color: #92400e; }
 
+    /* Range and Color Inputs in Studio */
     .param-row {
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
-
-    .param-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: #475569;
+    .param-meta {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--slate-600);
     }
-
     .param-val {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: #2563eb;
+      color: var(--primary);
       font-weight: 700;
     }
-
     .range-input {
       -webkit-appearance: none;
       width: 100%;
-      height: 5px;
-      border-radius: 3px;
+      height: 4px;
+      border-radius: 2px;
       background: #cbd5e1;
       outline: none;
       cursor: pointer;
     }
     .range-input::-webkit-slider-thumb {
       -webkit-appearance: none;
-      appearance: none;
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
       border-radius: 50%;
-      background: #2563eb;
-      cursor: pointer;
-      border: 2px solid #ffffff;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
-    }
-
-    .color-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .color-picker {
-      -webkit-appearance: none;
-      border: none;
-      width: 32px;
-      height: 24px;
-      border-radius: 6px;
-      cursor: pointer;
-      background: none;
-    }
-    .color-picker::-webkit-color-swatch-wrapper {
-      padding: 0;
-    }
-    .color-picker::-webkit-color-swatch {
-      border: 1px solid rgba(0,0,0,0.15);
-      border-radius: 6px;
-    }
-
-    .switch-wrap {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background: var(--primary);
+      border: 2px solid white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
       cursor: pointer;
     }
-    .switch-toggle {
-      position: relative;
-      width: 38px;
-      height: 20px;
-      background: #cbd5e1;
-      border-radius: 10px;
-      transition: all 0.2s ease;
-    }
-    .switch-toggle::after {
-      content: '';
-      position: absolute;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #ffffff;
-      top: 2px;
-      left: 2px;
-      transition: all 0.2s ease;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    }
-    .switch-input {
+
+    /* Upload & Column Mapping Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(12px);
       display: none;
-    }
-    .switch-input:checked + .switch-toggle {
-      background: #2563eb;
-    }
-    .switch-input:checked + .switch-toggle::after {
-      transform: translateX(18px);
-    }
-
-    .export-btn {
-      background: #2563eb;
-      color: #fff;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      margin-top: 4px;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
-      transition: all 0.2s ease;
+      z-index: 1000;
     }
-    .export-btn:hover {
-      background: #1d4ed8;
-      transform: translateY(-1px);
+    .modal-card {
+      width: 680px;
+      max-width: 92vw;
+      max-height: 85vh;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
-    /* Bottom Bar */
-    .bottom-bar {
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.96) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .modal-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--slate-200);
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
+      align-items: center;
     }
-
-    .cargo-legend {
-      padding: 10px 16px;
+    .modal-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--slate-900);
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 8px;
     }
-
-    .legend-item {
+    .modal-body {
+      padding: 14px 18px;
+      overflow-y: auto;
       display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      color: #475569;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 11.5px;
     }
-
-    .color-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 3px;
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+      margin-top: 4px;
     }
-    .dot-blue { background: #3b7ec9; }
-    .dot-wood { background: #d3955b; }
-    .dot-teal { background: #3ea39a; }
-    .dot-orange { background: #ee7246; }
-    .dot-yellow { background: #deaa32; }
+    .preview-table th {
+      background: var(--slate-100);
+      padding: 6px 8px;
+      text-align: left;
+      color: var(--slate-700);
+      font-weight: 700;
+      border-bottom: 1px solid var(--slate-200);
+      white-space: nowrap;
+    }
+    .preview-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--slate-100);
+      color: var(--slate-800);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .modal-footer {
+      padding: 12px 18px;
+      background: var(--slate-50);
+      border-top: 1px solid var(--slate-200);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
 
     /* Tooltip */
     .tooltip-card {
       position: absolute;
       pointer-events: none;
       display: none;
-      padding: 12px 16px;
-      border-radius: 12px;
-      background: rgba(15, 23, 42, 0.92);
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.94);
       backdrop-filter: blur(10px);
       color: #f8fafc;
-      font-size: 12px;
+      font-size: 11.5px;
       z-index: 100;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      box-shadow: var(--shadow-lg);
       border: 1px solid rgba(255,255,255,0.12);
       transform: translate(-50%, -120%);
     }
-
     .tooltip-title {
-      font-weight: 700;
-      font-size: 13px;
+      font-weight: 800;
+      font-size: 12px;
       color: #60a5fa;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
-
     .tooltip-row {
       display: flex;
       justify-content: space-between;
-      gap: 16px;
+      gap: 14px;
       color: #cbd5e1;
-      line-height: 1.5;
+      line-height: 1.4;
     }
-
     .tooltip-val {
       font-family: 'JetBrains Mono', monospace;
       color: #fff;
@@ -780,371 +712,264 @@
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
   <div id="webgl-container"></div>
 
   <!-- UI Overlay -->
   <div class="ui-layer">
-    <!-- Top Header -->
+    <!-- 1. TOP HEADER -->
     <header class="top-header">
-      <div class="header-left">
-        <div class="glass-card header-box interactive">
-          <div class="badge-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <div class="header-left-group">
+        <div class="glass-card brand-box interactive">
+          <div class="brand-logo">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
               <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
               <line x1="12" y1="22.08" x2="12" y2="12"></line>
             </svg>
           </div>
-          <div class="title-text">
-            <h1>3D 智能货柜装载可视化系统</h1>
-            <p>ISO 20FT CONTAINER • 6-FACE FULL TOPOLOGICAL CUTAWAY</p>
+          <div class="brand-text">
+            <h1>3D-AICIVS 智能装载</h1>
+            <span class="brand-badge" id="hud-container-badge">ISO 40HQ • 超高柜</span>
           </div>
         </div>
 
-        <div class="stats-widget interactive">
-          <div class="glass-card stat-pill">
-            <span class="stat-label">空间利用率</span>
-            <span class="stat-value">91.4<span class="stat-unit">%</span></span>
+        <!-- Center Key Metrics Widget -->
+        <div class="kpi-hud-bar interactive">
+          <div class="kpi-item">
+            <span class="kpi-label">内腔利用率</span>
+            <span class="kpi-val" id="kpi-util">93.4<span class="kpi-unit">%</span></span>
           </div>
-          <div class="glass-card stat-pill">
-            <span class="stat-label">装载件数</span>
-            <span class="stat-value">84<span class="stat-unit">箱</span></span>
+          <div class="kpi-item">
+            <span class="kpi-label">装载 / 标称容积</span>
+            <span class="kpi-val" id="kpi-vol">71.4<span class="kpi-unit">/ 76.4m³</span></span>
           </div>
-          <div class="glass-card stat-pill">
-            <span class="stat-label">货物总重</span>
-            <span class="stat-value">18.6<span class="stat-unit">T</span></span>
+          <div class="kpi-item">
+            <span class="kpi-label">装载件数</span>
+            <span class="kpi-val" id="kpi-count">112<span class="kpi-unit">箱</span></span>
+          </div>
+          <div class="kpi-item">
+            <span class="kpi-label">货物总重</span>
+            <span class="kpi-val" id="kpi-weight">21.8<span class="kpi-unit">T</span></span>
           </div>
         </div>
       </div>
 
-      <div class="header-right interactive">
-        <button class="btn-debug-toggle" id="btn-debug-toggle" onclick="toggleDebugInspector()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-          <span>构件图层 (Layers)</span>
+      <!-- Header Action Buttons -->
+      <div class="header-actions interactive">
+        <button class="btn-action-pill secondary" id="btn-toggle-left" onclick="toggleLeftDrawer()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          <span>货柜与货单配置</span>
         </button>
 
-        <button class="toggle-studio-btn" id="btn-toggle-studio" onclick="toggleDrawer()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          <span>渲染调优 (Render Studio)</span>
+        <button class="btn-action-pill secondary" id="btn-toggle-studio" onclick="toggleStudioDrawer()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>渲染调优</span>
         </button>
       </div>
     </header>
 
-    <!-- LEFT PANEL (WITH TAB: OPERATIONS / LAYER INSPECTOR) -->
-    <aside class="glass-card left-panel interactive" id="left-panel" style="display: none;">
-      <div class="panel-tab-bar">
-        <button class="panel-tab-btn active" id="tab-btn-actions" onclick="switchLeftPanelTab('actions')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-          <span>业务操作 (Actions)</span>
-        </button>
-        <button class="panel-tab-btn" id="tab-btn-layers" onclick="switchLeftPanelTab('layers')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-          <span>构件图层 (Layers)</span>
-        </button>
+    <!-- 2. LEFT CONFIG WORKBENCH DRAWER -->
+    <aside class="glass-card workbench-drawer left interactive" id="left-drawer" style="display: none;">
+      <div class="drawer-title-bar">
+        <div class="drawer-heading">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          <span>货柜箱型与装载货单</span>
+        </div>
+        <button class="close-btn" onclick="toggleLeftDrawer()">✕</button>
       </div>
 
-      <!-- 1. BUSINESS ACTIONS CONTENT -->
-      <div class="panel-content-wrap" id="panel-actions-content">
-        <div class="control-group">
-          <div class="group-title">视角预设 (Camera Views)</div>
-          <div class="btn-grid">
-            <button class="btn-chip active" id="btn-iso" onclick="switchCamera('iso')">标准等轴</button>
-            <button class="btn-chip" id="btn-front" onclick="switchCamera('front')">箱门正视</button>
-            <button class="btn-chip" id="btn-side" onclick="switchCamera('side')">侧面透视</button>
-            <button class="btn-chip" id="btn-top" onclick="switchCamera('top')">俯视图</button>
+      <div class="drawer-scroll-body">
+        <!-- 1. Container Models -->
+        <div class="section-card">
+          <div class="section-label">
+            <span>ISO 集装箱柜型选择</span>
+          </div>
+          <div class="chip-grid-4">
+            <button class="btn-chip active" id="btn-type-40hq" onclick="switchContainerType('40HQ')">40HQ</button>
+            <button class="btn-chip" id="btn-type-40gp" onclick="switchContainerType('40GP')">40GP</button>
+            <button class="btn-chip" id="btn-type-20gp" onclick="switchContainerType('20GP')">20GP</button>
+            <button class="btn-chip" id="btn-type-45hq" onclick="switchContainerType('45HQ')">45HQ</button>
+          </div>
+          <div class="spec-table">
+            <div class="spec-item"><span class="spec-k">外部尺寸:</span><span class="spec-v" id="spec-ext">12.192 × 2.438 × 2.896 m</span></div>
+            <div class="spec-item"><span class="spec-k">可用净空:</span><span class="spec-v" id="spec-int">12.032 × 2.352 × 2.698 m</span></div>
+            <div class="spec-item"><span class="spec-k">标准容积:</span><span class="spec-v" id="spec-vol">76.4 m³</span></div>
+            <div class="spec-item"><span class="spec-k">限重载重:</span><span class="spec-v" id="spec-payload">28,600 kg (28.6 吨)</span></div>
           </div>
         </div>
 
-        <div class="control-group">
-          <div class="group-title">
-            <span>面向视线外壳显隐/透明度</span>
-            <span class="param-val" id="val-quick-trans">1% 半透明</span>
+        <!-- 2. Smart Excel Upload & Manifest Import -->
+        <div class="section-card">
+          <div class="section-label">
+            <span>智能表格导入 (Excel / CSV)</span>
+            <span style="font-size: 9.5px; color: var(--primary); cursor: pointer;" onclick="downloadExactTemplate()">📥 导出产线标准模板</span>
           </div>
-          <input type="range" class="range-input" min="0" max="1" step="0.01" value="0.01" oninput="updateForegroundOpacity(this.value)">
-          <p style="font-size: 10px; color: #64748b; margin-top: 2px;">
-            💡 六面全向拓扑透视：无论从顶部、四周还是底部俯仰观察，挡住视线的前景面与相连骨架均动态剖切，背向面保持实体。
-          </p>
+          
+          <div class="upload-zone" id="drop-zone" onclick="document.getElementById('excel-file-input').click()">
+            <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv, .txt" style="display: none;" onchange="handleExcelFileUpload(this.files[0])">
+            <svg class="upload-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <div class="upload-text-main">点击或拖拽上传清洗表格 (.xlsx / .csv)</div>
+            <div class="upload-text-sub">已深度适配「产品名、长(m)、宽(m)、高(m)、单件毛重、数量、摆放要求」</div>
+          </div>
         </div>
 
-        <div class="control-group">
-          <div class="group-title">装载演示 (Cargo Action)</div>
-          <button class="action-btn-main" id="btn-anim-load" onclick="startPackingAnimation()">
+        <!-- 3. AI Packing Calculation -->
+        <div class="section-card">
+          <div class="section-label">
+            <span>AI 算柜排布策略</span>
+          </div>
+          <div class="chip-grid-2">
+            <button class="btn-chip active" id="btn-strat-cluster" onclick="setPackingStrategy('cluster')">🧱 同品聚合+重力支撑 (推荐)</button>
+            <button class="btn-chip" id="btn-strat-mec" onclick="setPackingStrategy('mec')">⚡ 紧凑空闲块 (MEC)</button>
+          </div>
+          <div class="chip-grid-2">
+            <button class="btn-chip active" id="btn-gap-zero" onclick="setGapSpacing(0)">0% 紧密零间隙</button>
+            <button class="btn-chip" id="btn-gap-subtle" onclick="setGapSpacing(0.01)">1cm 宽松装卸</button>
+          </div>
+          <button class="btn-island-action primary" style="width: 100%; justify-content: center; padding: 9px;" onclick="runSmartPackingAlgorithm()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            <span id="anim-text">演示装柜过程</span>
+            <span>重新执行 AI 算柜装箱</span>
           </button>
         </div>
 
-        <div class="control-group">
-          <div class="group-title">箱门开关 (Container Door)</div>
-          <div class="btn-grid">
-            <button class="btn-chip" id="btn-door-open" onclick="toggleDoor(true)">打开箱门</button>
-            <button class="btn-chip active" id="btn-door-close" onclick="toggleDoor(false)">关闭箱门</button>
+        <!-- 4. Cargo Manifest Presets -->
+        <div class="section-card">
+          <div class="section-label">
+            <span>混装货物清单</span>
+            <span class="param-val" id="manifest-sku-count">14 种 SKU</span>
           </div>
-        </div>
-      </div>
-
-      <!-- 2. LAYER TREE INSPECTOR CONTENT -->
-      <div class="panel-content-wrap" id="panel-layers-content" style="display: none;">
-        <!-- Selected Object Inspector Subcard -->
-        <div class="inspector-card" id="inspector-card" style="display: none;">
-          <div class="inspector-title">
-            <span id="insp-name">选中构件</span>
-            <button class="icon-btn" style="color:#94a3b8;" onclick="deselectObject()">✕</button>
+          <div class="chip-grid-2">
+            <button class="btn-chip active" id="btn-pre-production" onclick="loadManifestPreset('production')">🖥️ 真实产线混装单 (14种)</button>
+            <button class="btn-chip" id="btn-pre-standard" onclick="loadManifestPreset('standard')">📦 标准跨境单</button>
+            <button class="btn-chip" id="btn-pre-heavy" onclick="loadManifestPreset('heavy')">⚙️ 重型汽配单</button>
+            <button class="btn-chip" id="btn-pre-pallets" onclick="loadManifestPreset('pallets')">🪵 标准打托单</button>
           </div>
-          <div class="inspector-row"><span>分类层级:</span> <span class="inspector-val" id="insp-category">-</span></div>
-          <div class="inspector-row"><span>物体类型:</span> <span class="inspector-val" id="insp-type">-</span></div>
-          <div class="inspector-row"><span>三维坐标:</span> <span class="inspector-val" id="insp-pos">X:0 Y:0 Z:0</span></div>
-          <div class="inspector-row"><span>外轮廓尺寸:</span> <span class="inspector-val" id="insp-size">-</span></div>
-          
-          <div class="inspector-actions">
-            <button class="inspector-btn" onclick="toggleSelectedWireframe()">🔲 线框模式</button>
-            <button class="inspector-btn" onclick="isolateSelectedObject()">🎯 单独隔离</button>
-          </div>
-        </div>
-
-        <!-- Layer Group: Skeleton Frame -->
-        <div class="layer-group">
-          <div class="layer-group-header" onclick="toggleLayerAccordion('grp-skeleton', 'arr-skeleton')">
-            <div class="group-left">
-              <span class="accordion-arrow" id="arr-skeleton">▼</span>
-              <span>📁 货柜主体骨架 (Frame)</span>
-              <span class="type-tag" id="count-skeleton">20构件</span>
-            </div>
-            <div class="group-actions" onclick="event.stopPropagation()">
-              <button class="icon-btn active" title="显示/隐藏整组" onclick="toggleGroupVisibility('skeleton')">👁️</button>
-            </div>
-          </div>
-          <div class="layer-item-list" id="grp-skeleton"></div>
-        </div>
-
-        <!-- Layer Group: Enclosing Panels -->
-        <div class="layer-group">
-          <div class="layer-group-header" onclick="toggleLayerAccordion('grp-panels', 'arr-panels')">
-            <div class="group-left">
-              <span class="accordion-arrow" id="arr-panels">▼</span>
-              <span>📁 六面壁板与地板 (Panels)</span>
-              <span class="type-tag">6面全向</span>
-            </div>
-            <div class="group-actions" onclick="event.stopPropagation()">
-              <button class="icon-btn active" title="显示/隐藏整组" onclick="toggleGroupVisibility('panels')">👁️</button>
-            </div>
-          </div>
-          <div class="layer-item-list" id="grp-panels"></div>
-        </div>
-
-        <!-- Layer Group: Door Assembly -->
-        <div class="layer-group">
-          <div class="layer-group-header" onclick="toggleLayerAccordion('grp-doors', 'arr-doors')">
-            <div class="group-left">
-              <span class="accordion-arrow" id="arr-doors">▼</span>
-              <span>📁 前端双开箱门 (Doors)</span>
-              <span class="type-tag">双开门组</span>
-            </div>
-            <div class="group-actions" onclick="event.stopPropagation()">
-              <button class="icon-btn active" title="显示/隐藏整组" onclick="toggleGroupVisibility('doors')">👁️</button>
-            </div>
-          </div>
-          <div class="layer-item-list" id="grp-doors"></div>
-        </div>
-
-        <!-- Layer Group: Cargo Stacks -->
-        <div class="layer-group">
-          <div class="layer-group-header" onclick="toggleLayerAccordion('grp-cargo', 'arr-cargo')">
-            <div class="group-left">
-              <span class="accordion-arrow" id="arr-cargo">▼</span>
-              <span>📁 货物与托盘 (Cargo)</span>
-              <span class="type-tag">84件</span>
-            </div>
-            <div class="group-actions" onclick="event.stopPropagation()">
-              <button class="icon-btn active" title="显示/隐藏整组" onclick="toggleGroupVisibility('cargo')">👁️</button>
-            </div>
-          </div>
-          <div class="layer-item-list" id="grp-cargo"></div>
+          <div class="sku-list" id="manifest-list-wrap"></div>
         </div>
       </div>
     </aside>
 
-    <!-- RIGHT STUDIO TUNING DRAWER -->
-    <aside class="glass-card studio-drawer interactive" id="studio-drawer" style="display: none;">
-      <div class="drawer-header">
-        <div class="drawer-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 2a7 7 0 1 0 10 10"/></svg>
-          实时渲染效果调优 (Live Render Studio)
+    <!-- 3. RIGHT STUDIO DRAWER -->
+    <aside class="glass-card workbench-drawer right interactive" id="studio-drawer" style="display: none;">
+      <div class="drawer-title-bar">
+        <div class="drawer-heading">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>PBR 渲染调优控制台</span>
         </div>
-        <span style="font-size: 11px; color: #64748b; font-family: monospace;">v5.5 FULL-6D</span>
+        <button class="close-btn" onclick="toggleStudioDrawer()">✕</button>
       </div>
 
-      <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchTab('glass')">外壳/透视</button>
-        <button class="tab-btn" onclick="switchTab('steel')">钢架材质</button>
-        <button class="tab-btn" onclick="switchTab('light')">光照/阴影/角度</button>
-      </div>
-
-      <div class="drawer-body">
-        <!-- 1. GLASS TAB -->
-        <div class="tab-content active" id="tab-glass">
-          <div class="param-group">
-            <div class="param-group-title">
-              <span>全向拓扑自适应 (6-Face Cutaway)</span>
-            </div>
-            <label class="switch-wrap">
-              <span class="param-label">启用全向视线自适应透视(含底板/箱门/六面)</span>
-              <input type="checkbox" class="switch-input" id="input-smartCutaway" checked onchange="updateParam('smartCutaway', this.checked)">
-              <div class="switch-toggle"></div>
-            </label>
-          </div>
-
-          <div class="param-group">
-            <div class="param-group-title">
-              <span>风格快速预设 (Presets)</span>
-            </div>
-            <div class="preset-container">
-              <button class="preset-chip active" onclick="applyPreset('reference')">🎯 效果图最佳预设</button>
-              <button class="preset-chip" onclick="applyPreset('pure')">🚀 纯净无遮挡</button>
-              <button class="preset-chip" onclick="applyPreset('crystal')">💎 晶莹冰蓝</button>
-              <button class="preset-chip" onclick="applyPreset('frost')">🧊 工业半磨砂</button>
-            </div>
-          </div>
-
-          <div class="param-group">
-            <div class="param-group-title">半透外壳与透视参数 (Shell & Translucency)</div>
-            
-            <div class="param-row">
-              <div class="param-label"><span>外壳透明度 (Translucency)</span><span class="param-val" id="val-foregroundOpacity">0.00</span></div>
-              <input type="range" class="range-input" id="input-foregroundOpacity" min="0" max="1" step="0.01" value="0.0" oninput="updateForegroundOpacity(this.value); updateParam('foregroundOpacity', this.value);">
-            </div>
-
-            <div class="param-row">
-              <div class="param-label"><span>表面微粗糙度 (Roughness)</span><span class="param-val" id="val-glassRoughness">0.15</span></div>
-              <input type="range" class="range-input" id="input-glassRoughness" min="0" max="1" step="0.01" value="0.15" oninput="updateParam('glassRoughness', this.value)">
-            </div>
-
-            <div class="color-row">
-              <span class="param-label">透光衰减色彩 (Tint Color)</span>
-              <input type="color" class="color-picker" id="input-glassColor" value="#b8d7f4" onchange="updateParam('glassColor', this.value)">
-            </div>
+      <div class="drawer-scroll-body">
+        <div class="section-card">
+          <div class="section-label"><span>六面全向自适应透视</span></div>
+          <div class="chip-grid-2">
+            <button class="btn-chip active" id="btn-cutaway-on" onclick="setSmartCutaway(true)">开启智能剖切</button>
+            <button class="btn-chip" id="btn-cutaway-off" onclick="setSmartCutaway(false)">关闭 (全实体)</button>
           </div>
         </div>
 
-        <!-- 2. STEEL TAB -->
-        <div class="tab-content" id="tab-steel">
-          <div class="param-group">
-            <div class="param-group-title">集装箱纤细钢骨架 (Slender Steel Frame)</div>
-
-            <div class="color-row">
-              <span class="param-label">钢架漆面主色 (Frame Color)</span>
-              <input type="color" class="color-picker" id="input-frameColor" value="#2f383d" onchange="updateParam('frameColor', this.value)">
-            </div>
-
-            <div class="param-row">
-              <div class="param-label"><span>金属感 (Metalness)</span><span class="param-val" id="val-frameMetal">0.50</span></div>
-              <input type="range" class="range-input" id="input-frameMetal" min="0" max="1" step="0.02" value="0.50" oninput="updateParam('frameMetal', this.value)">
-            </div>
-
-            <div class="param-row">
-              <div class="param-label"><span>粗糙度 (Roughness)</span><span class="param-val" id="val-frameRough">0.68</span></div>
-              <input type="range" class="range-input" id="input-frameRough" min="0" max="1" step="0.02" value="0.68" oninput="updateParam('frameRough', this.value)">
-            </div>
-
-            <div class="param-row">
-              <div class="param-label"><span>钢板拉丝凹凸度 (Bump)</span><span class="param-val" id="val-bump">0.94</span></div>
-              <input type="range" class="range-input" id="input-bump" min="0" max="2.0" step="0.02" value="0.94" oninput="updateParam('bump', this.value)">
-            </div>
+        <div class="section-card">
+          <div class="section-label"><span>钢骨架与后壁材质</span></div>
+          <div class="param-row">
+            <div class="param-meta"><span>金属度 (Metalness)</span><span class="param-val" id="val-frameMetal">0.50</span></div>
+            <input type="range" class="range-input" min="0" max="1" step="0.02" value="0.50" oninput="updateParam('frameMetal', this.value)">
           </div>
-
-          <div class="param-group">
-            <div class="param-group-title">深色对比后壁 (Backdrop Wall)</div>
-            <div class="color-row">
-              <span class="param-label">后壁底色 (Backdrop Color)</span>
-              <input type="color" class="color-picker" id="input-backColor" value="#43474c" onchange="updateParam('backColor', this.value)">
-            </div>
+          <div class="param-row">
+            <div class="param-meta"><span>粗糙度 (Roughness)</span><span class="param-val" id="val-frameRough">0.68</span></div>
+            <input type="range" class="range-input" min="0" max="1" step="0.02" value="0.68" oninput="updateParam('frameRough', this.value)">
           </div>
         </div>
 
-        <!-- 3. LIGHTING TAB -->
-        <div class="tab-content" id="tab-light">
-          <div class="param-group">
-            <div class="param-group-title">地面阴影与投射 (Ground Shadow)</div>
-
-            <label class="switch-wrap">
-              <span class="param-label">显示地面阴影 (Show Ground Shadow)</span>
-              <input type="checkbox" class="switch-input" id="input-showShadow" checked onchange="updateParam('showShadow', this.checked)">
-              <div class="switch-toggle"></div>
-            </label>
-
-            <div class="param-row">
-              <div class="param-label"><span>阴影边缘柔和度 (Shadow Softness)</span><span class="param-val" id="val-shadowRadius">1.60</span></div>
-              <input type="range" class="range-input" id="input-shadowRadius" min="0.2" max="6.0" step="0.1" value="1.6" oninput="updateParam('shadowRadius', this.value)">
-            </div>
+        <div class="section-card">
+          <div class="section-label"><span>影棚光照与角度</span></div>
+          <div class="param-row">
+            <div class="param-meta"><span>光源方位角 (Azimuth)</span><span class="param-val" id="val-sunAzimuth">42°</span></div>
+            <input type="range" class="range-input" min="0" max="360" step="1" value="42" oninput="updateParam('sunAzimuth', this.value)">
           </div>
-
-          <div class="param-group">
-            <div class="param-group-title">光源空间角度 (Light Source Angle)</div>
-
-            <div class="param-row">
-              <div class="param-label"><span>光源方位角 (Azimuth Angle)</span><span class="param-val" id="val-sunAzimuth">42°</span></div>
-              <input type="range" class="range-input" id="input-sunAzimuth" min="0" max="360" step="1" value="42" oninput="updateParam('sunAzimuth', this.value)">
-            </div>
-
-            <div class="param-row">
-              <div class="param-label"><span>光源高度角 (Elevation Angle)</span><span class="param-val" id="val-sunElevation">52°</span></div>
-              <input type="range" class="range-input" id="input-sunElevation" min="5" max="88" step="1" value="52" oninput="updateParam('sunElevation', this.value)">
-            </div>
-
-            <div class="param-row">
-              <div class="param-label"><span>光源距离 (Distance)</span><span class="param-val" id="val-sunDistance">40.0</span></div>
-              <input type="range" class="range-input" id="input-sunDistance" min="15" max="80" step="1" value="40" oninput="updateParam('sunDistance', this.value)">
-            </div>
-          </div>
-
-          <div class="param-group">
-            <div class="param-group-title">影棚光照强度 (Intensity & Tone)</div>
-
-            <div class="param-row">
-              <div class="param-label"><span>电影色调曝光 (Exposure)</span><span class="param-val" id="val-exposure">0.72</span></div>
-              <input type="range" class="range-input" id="input-exposure" min="0.3" max="2.5" step="0.02" value="0.72" oninput="updateParam('exposure', this.value)">
-            </div>
-
-            <div class="param-row">
-              <div class="param-label"><span>主光源强度 (Sun Light)</span><span class="param-val" id="val-sunIntensity">4.00</span></div>
-              <input type="range" class="range-input" id="input-sunIntensity" min="0" max="8.0" step="0.1" value="4.0" oninput="updateParam('sunIntensity', this.value)">
-            </div>
-
-            <div class="param-row">
-              <div class="param-label"><span>环境漫反射光 (Ambient Light)</span><span class="param-val" id="val-ambIntensity">0.20</span></div>
-              <input type="range" class="range-input" id="input-ambIntensity" min="0" max="2.0" step="0.05" value="0.2" oninput="updateParam('ambIntensity', this.value)">
-            </div>
-
-            <div class="color-row">
-              <span class="param-label">地面背景底色 (Ground Color)</span>
-              <input type="color" class="color-picker" id="input-groundColor" value="#e0e7f0" onchange="updateParam('groundColor', this.value)">
-            </div>
+          <div class="param-row">
+            <div class="param-meta"><span>光源高度角 (Elevation)</span><span class="param-val" id="val-sunElevation">52°</span></div>
+            <input type="range" class="range-input" min="5" max="88" step="1" value="52" oninput="updateParam('sunElevation', this.value)">
           </div>
         </div>
 
-        <button class="export-btn" onclick="copyCurrentConfig()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-          <span>复制当前调优配置 (JSON)</span>
+        <button class="btn-island-action primary" style="width: 100%; justify-content: center; padding: 9px;" onclick="copyCurrentConfig()">
+          <span>📋 复制当前渲染配置 (JSON)</span>
         </button>
       </div>
     </aside>
 
-    <!-- Bottom Bar -->
-    <footer class="bottom-bar">
-      <div class="glass-card cargo-legend interactive">
-        <div class="legend-item"><span class="color-dot dot-blue"></span> 电子器件 (28箱)</div>
-        <div class="legend-item"><span class="color-dot dot-wood"></span> 机械备件 (22箱)</div>
-        <div class="legend-item"><span class="color-dot dot-teal"></span> 医疗器械 (14箱)</div>
-        <div class="legend-item"><span class="color-dot dot-orange"></span> 食品生鲜 (10箱)</div>
-        <div class="legend-item"><span class="color-dot dot-yellow"></span> 汽车配件 (10箱)</div>
-      </div>
+    <!-- 4. FLOATING BOTTOM CONTROL ISLAND -->
+    <footer class="bottom-island-wrap">
+      <div class="glass-card bottom-island interactive">
+        <div class="segmented-control">
+          <button class="seg-btn active" id="btn-cam-iso" onclick="switchCamera('iso')">等轴</button>
+          <button class="seg-btn" id="btn-cam-front" onclick="switchCamera('front')">箱门</button>
+          <button class="seg-btn" id="btn-cam-side" onclick="switchCamera('side')">侧面</button>
+          <button class="seg-btn" id="btn-cam-top" onclick="switchCamera('top')">俯视</button>
+        </div>
 
-      <div style="font-size: 11px; color: #64748b; font-family: 'JetBrains Mono', monospace;" class="interactive">
-        <span>六面全向自适应剖切 • 关闭开关时100%实体呈现 • 开启时智能消隐面向视线构件</span>
+        <div class="island-divider"></div>
+
+        <button class="btn-island-action" id="btn-door-toggle" onclick="toggleDoorAction()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"/><path d="M2 20h20"/><circle cx="14" cy="12" r="1"/></svg>
+          <span id="txt-door">打开箱门</span>
+        </button>
+
+        <button class="btn-island-action primary" id="btn-anim-load" onclick="startPackingAnimation()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span id="anim-text">演示装柜</span>
+        </button>
+
+        <div class="island-divider"></div>
+
+        <div class="opacity-pill-ctrl">
+          <span class="opacity-label">外壳透视:</span>
+          <input type="range" class="range-input-mini" min="0" max="1" step="0.01" value="0.01" oninput="updateForegroundOpacity(this.value)">
+          <span class="opacity-label" id="val-quick-trans" style="font-family:'JetBrains Mono'; color:var(--primary);">1%</span>
+        </div>
       </div>
     </footer>
+  </div>
+
+  <!-- 5. EXCEL IMPORT PREVIEW MODAL -->
+  <div class="modal-overlay" id="import-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.4"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span>产线清洗表格已精准识别</span>
+        </div>
+        <button class="close-btn" onclick="closeImportModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="color: var(--slate-600);">
+          系统已自动解析表头与摆放要求（含最里面/中间/封柜门分层），共识别出 <strong style="color:var(--primary);" id="modal-parsed-count">0</strong> 种货物 SKU：
+        </p>
+
+        <table class="preview-table">
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>产品名</th>
+              <th>规格 (长×宽×高 m)</th>
+              <th>单件毛重(kg)</th>
+              <th>数量(箱)</th>
+              <th>摆放要求</th>
+            </tr>
+          </thead>
+          <tbody id="modal-preview-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-island-action" onclick="closeImportModal()">取消</button>
+        <button class="btn-island-action primary" onclick="applyImportedManifest()">⚡ 导入并执行 3D 智能算柜</button>
+      </div>
+    </div>
   </div>
 
   <!-- 3D Raycast Tooltip -->
@@ -1153,10 +978,526 @@
     <div class="tooltip-row"><span>分类品名:</span> <span class="tooltip-val" id="tt-type">精密电子元器件</span></div>
     <div class="tooltip-row"><span>规格尺寸:</span> <span class="tooltip-val" id="tt-dim">600×400×450mm</span></div>
     <div class="tooltip-row"><span>单箱重量:</span> <span class="tooltip-val" id="tt-weight">24.5 kg</span></div>
-    <div class="tooltip-row"><span>堆码状态:</span> <span class="tooltip-val" id="tt-layer">第 3 层 (稳固)</span></div>
+    <div class="tooltip-row"><span>摆放要求:</span> <span class="tooltip-val" id="tt-req">放柜子最里面</span></div>
+    <div class="tooltip-row"><span>空间坐标:</span> <span class="tooltip-val" id="tt-pos">X:0 Y:0 Z:0</span></div>
   </div>
 
   <script>
+    // --- 1. ISO CONTAINER SPECIFICATIONS ---
+    const CONTAINER_SPECS = {
+      '40HQ': {
+        name: '40HQ 超高集装箱 (High Cube)',
+        code: '40HQ',
+        badge: 'ISO 40HQ • 超高柜',
+        extL: 12.192, extW: 2.438, extH: 2.896,
+        intL: 12.032, intW: 2.352, intH: 2.698,
+        nominalVol: 76.4,
+        maxPayloadTons: 28.6,
+        cameraDist: 19.5
+      },
+      '40GP': {
+        name: '40GP 标准普柜 (Standard 40ft)',
+        code: '40GP',
+        badge: 'ISO 40GP • 标准柜',
+        extL: 12.192, extW: 2.438, extH: 2.591,
+        intL: 12.032, intW: 2.352, intH: 2.393,
+        nominalVol: 67.7,
+        maxPayloadTons: 28.8,
+        cameraDist: 18.5
+      },
+      '20GP': {
+        name: '20GP 标准小柜 (Standard 20ft)',
+        code: '20GP',
+        badge: 'ISO 20GP • 小柜',
+        extL: 6.058,  extW: 2.438, extH: 2.591,
+        intL: 5.898,  intW: 2.352, intH: 2.393,
+        nominalVol: 33.2,
+        maxPayloadTons: 28.2,
+        cameraDist: 11.5
+      },
+      '45HQ': {
+        name: '45HQ 特种高柜 (45ft High Cube)',
+        code: '45HQ',
+        badge: 'ISO 45HQ • 特种长柜',
+        extL: 13.716, extW: 2.438, extH: 2.896,
+        intL: 13.556, intW: 2.352, intH: 2.698,
+        nominalVol: 86.0,
+        maxPayloadTons: 29.5,
+        cameraDist: 21.5
+      }
+    };
+
+    let currentContainerType = '40HQ';
+    let currentSpec = CONTAINER_SPECS['40HQ'];
+
+    // --- 2. ADVANCED ZERO-GAP & GRAVITY-CONSTRAINED CLUSTER PACKER ---
+    // Physical Coordinate Space Convention:
+    // x = 0 is the DEEP INNER REAR WALL (柜子最里面 / 盲端, 3D position +L/2)
+    // x = containerL is the FRONT DOOR (集装箱门前 / 柜门端, 3D position -L/2)
+    // y = 0 is the CONTAINER FLOOR (集装箱底板)
+    // z = 0 is LEFT WALL to RIGHT WALL (0 -> containerW)
+    class RobustContainerPacker {
+      constructor(containerDim, options = {}) {
+        this.L = containerDim.length;
+        this.H = containerDim.height;
+        this.W = containerDim.width;
+        this.gap = options.gap || 0.0;
+        this.strategy = options.strategy || 'cluster';
+        this.minSupportRatio = 0.70; // 70%+ bottom support ratio prevents floating/tipping
+      }
+
+      static isOverlap(boxA, boxB, epsilon = 0.0005) {
+        return (
+          boxA.x < boxB.x + boxB.w - epsilon &&
+          boxA.x + boxA.w > boxB.x + epsilon &&
+          boxA.y < boxB.y + boxB.h - epsilon &&
+          boxA.y + boxA.h > boxB.y + epsilon &&
+          boxA.z < boxB.z + boxB.d - epsilon &&
+          boxA.z + boxA.d > boxB.z + epsilon
+        );
+      }
+
+      // Strict Gravity Support Calculation
+      isSupported(candidateBox, placedBoxes) {
+        if (candidateBox.y <= 0.001) return true; // Direct contact with floor
+
+        const boxBottomArea = candidateBox.w * candidateBox.d;
+        let supportedArea = 0;
+
+        for (const pb of placedBoxes) {
+          // Check if pb is directly under candidateBox
+          if (Math.abs((pb.y + pb.h) - candidateBox.y) < 0.002) {
+            const overlapX1 = Math.max(candidateBox.x, pb.x);
+            const overlapX2 = Math.min(candidateBox.x + candidateBox.w, pb.x + pb.w);
+            const overlapZ1 = Math.max(candidateBox.z, pb.z);
+            const overlapZ2 = Math.min(candidateBox.z + candidateBox.d, pb.z + pb.d);
+
+            if (overlapX2 > overlapX1 && overlapZ2 > overlapZ1) {
+              supportedArea += (overlapX2 - overlapX1) * (overlapZ2 - overlapZ1);
+            }
+          }
+        }
+
+        return (supportedArea / boxBottomArea) >= this.minSupportRatio;
+      }
+
+      pack(cargoManifest) {
+        const placedBoxes = [];
+        const unplacedItems = [];
+
+        // 1. Partition Cargo into 3 Staging Zones according to `摆放要求`
+        // Zone 1: '放柜子最里面' (Deep rear wall, x = 0 -> ...)
+        // Zone 2: '放中间' (Middle section)
+        // Zone 3: '封柜门' (Door end, final closure)
+        const rearGroup = [];
+        const middleGroup = [];
+        const doorGroup = [];
+
+        cargoManifest.forEach(item => {
+          const req = item.requirement || '';
+          if (/最里面|里面|rear|deep/i.test(req)) rearGroup.push(item);
+          else if (/封柜门|门|door|front/i.test(req)) doorGroup.push(item);
+          else middleGroup.push(item);
+        });
+
+        // Group sorting: Larger volume & weight first within each zone
+        const sortGroup = (arr) => {
+          arr.sort((a, b) => {
+            const volA = a.w * a.h * a.d;
+            const volB = b.w * b.h * b.d;
+            if (Math.abs(volB - volA) > 0.001) return volB - volA;
+            return b.weight - a.weight;
+          });
+        };
+        sortGroup(rearGroup);
+        sortGroup(middleGroup);
+        sortGroup(doorGroup);
+
+        const orderedSKUs = [...rearGroup, ...middleGroup, ...doorGroup];
+
+        // 2. Homogeneous Cluster & Wall/Block Packing
+        let candidatePoints = [{ x: 0, y: 0, z: 0 }];
+
+        for (const skuItem of orderedSKUs) {
+          let remainingQty = skuItem.quantity;
+          let boxIndex = 0;
+
+          while (remainingQty > 0) {
+            let bestFit = null;
+            let bestScore = -Infinity;
+
+            const orientations = skuItem.allowRotations !== false ? [
+              { w: skuItem.w, h: skuItem.h, d: skuItem.d },
+              { w: skuItem.d, h: skuItem.h, d: skuItem.w }
+            ] : [{ w: skuItem.w, h: skuItem.h, d: skuItem.d }];
+
+            for (const point of candidatePoints) {
+              for (const ori of orientations) {
+                const candidateBox = {
+                  id: `${skuItem.sku}-${boxIndex + 1}`,
+                  sku: skuItem.sku,
+                  name: skuItem.name,
+                  color: skuItem.color,
+                  weight: skuItem.weight,
+                  requirement: skuItem.requirement || '放中间',
+                  x: point.x,
+                  y: point.y,
+                  z: point.z,
+                  w: ori.w,
+                  h: ori.h,
+                  d: ori.d
+                };
+
+                // Boundary verification
+                if (candidateBox.x + candidateBox.w > this.L + 0.001 ||
+                    candidateBox.y + candidateBox.h > this.H + 0.001 ||
+                    candidateBox.z + candidateBox.d > this.W + 0.001) {
+                  continue;
+                }
+
+                // Overlap verification
+                let hasOverlap = false;
+                for (const pb of placedBoxes) {
+                  if (RobustContainerPacker.isOverlap(candidateBox, pb)) {
+                    hasOverlap = true;
+                    break;
+                  }
+                }
+                if (hasOverlap) continue;
+
+                // Strict Gravity Support verification (Zero Floating)
+                if (!this.isSupported(candidateBox, placedBoxes)) {
+                  continue;
+                }
+
+                // Heuristic Scoring:
+                // 1. Pack from Rear wall (x=0) toward Door (x=L)
+                // 2. Pack from Bottom (y=0) upwards
+                // 3. Cluster same SKU together (Reward adjacent placed box with same SKU)
+                let adjacencyBonus = 0;
+                for (const pb of placedBoxes) {
+                  if (pb.sku === candidateBox.sku) {
+                    if (Math.abs(pb.x + pb.w - candidateBox.x) < 0.01 ||
+                        Math.abs(candidateBox.x + candidateBox.w - pb.x) < 0.01 ||
+                        Math.abs(pb.z + pb.d - candidateBox.z) < 0.01 ||
+                        Math.abs(candidateBox.z + candidateBox.d - pb.z) < 0.01 ||
+                        Math.abs(pb.y + pb.h - candidateBox.y) < 0.01) {
+                      adjacencyBonus += 500;
+                    }
+                  }
+                }
+
+                // Primary Objective: Minimize X (stay deep at rear), Minimize Y (stay grounded), Minimize Z (pack flush to left)
+                const score = adjacencyBonus - (candidateBox.x * 1000 + candidateBox.y * 300 + candidateBox.z * 10);
+                if (score > bestScore) {
+                  bestScore = score;
+                  bestFit = candidateBox;
+                }
+              }
+            }
+
+            if (bestFit) {
+              placedBoxes.push(bestFit);
+              remainingQty--;
+              boxIndex++;
+
+              // Generate new contact candidate points
+              const newPoints = [
+                { x: bestFit.x, y: bestFit.y + bestFit.h + this.gap, z: bestFit.z }, // Stacking on top
+                { x: bestFit.x, y: bestFit.y, z: bestFit.z + bestFit.d + this.gap }, // Side by side (Width)
+                { x: bestFit.x + bestFit.w + this.gap, y: bestFit.y, z: bestFit.z }  // Forward along Length (towards door)
+              ];
+
+              for (const pt of newPoints) {
+                if (pt.x < this.L && pt.y < this.H && pt.z < this.W) {
+                  let isInside = false;
+                  for (const pb of placedBoxes) {
+                    if (pt.x >= pb.x && pt.x < pb.x + pb.w - 0.001 &&
+                        pt.y >= pb.y && pt.y < pb.y + pb.h - 0.001 &&
+                        pt.z >= pb.z && pt.z < pb.z + pb.d - 0.001) {
+                      isInside = true;
+                      break;
+                    }
+                  }
+                  if (!isInside) candidatePoints.push(pt);
+                }
+              }
+
+              // Deduplicate & sort points
+              candidatePoints = candidatePoints.filter((p, idx, self) =>
+                idx === self.findIndex(t => Math.abs(t.x - p.x) < 0.001 && Math.abs(t.y - p.y) < 0.001 && Math.abs(t.z - p.z) < 0.001)
+              );
+              // Prefer Deepest Rear (min X), Grounded (min Y), Left (min Z)
+              candidatePoints.sort((a, b) => (a.x - b.x) || (a.y - b.y) || (a.z - b.z));
+            } else {
+              // Cannot place more of this SKU due to boundary or constraints
+              unplacedItems.push({ ...skuItem, unplacedQty: remainingQty });
+              break;
+            }
+          }
+        }
+
+        const containerVol = this.L * this.H * this.W;
+        let usedVol = 0;
+        let totalWeight = 0;
+
+        placedBoxes.forEach(b => {
+          usedVol += (b.w * b.h * b.d);
+          totalWeight += b.weight;
+        });
+
+        const utilization = (usedVol / containerVol) * 100;
+
+        return {
+          placedBoxes,
+          unplacedItems,
+          usedVol: usedVol.toFixed(1),
+          utilization: utilization.toFixed(1),
+          totalWeightTons: (totalWeight / 1000).toFixed(1),
+          totalCount: placedBoxes.length
+        };
+      }
+    }
+
+    // --- 3. PRODUCTION CLEANED MANIFEST PRESET (EXACT USER IMAGE DATA) ---
+    const PALETTE = [
+      0x3b82f6, 0x10b981, 0xf59e0b, 0xef4444, 0x8b5cf6, 
+      0x06b6d4, 0xec4899, 0x6366f1, 0x14b8a6, 0xf97316,
+      0x84cc16, 0xa855f7, 0x0ea5e9, 0xeab308
+    ];
+
+    const PRODUCTION_CLEANED_MANIFEST = [
+      { sku: 'SKU-01', name: 'WIFI蓝牙 / WIFI线 / WIFI贴', w: 0.50, d: 0.50, h: 0.50, weight: 5.0, quantity: 1, requirement: '放柜子最里面', color: PALETTE[0] },
+      { sku: 'SKU-02', name: '21.5寸 显示器 BG (DA)', w: 0.553, d: 0.08, h: 0.355, weight: 8.4, quantity: 500, requirement: '封柜门', color: PALETTE[1] },
+      { sku: 'SKU-03', name: '34寸显示器 MX340 (DA)', w: 0.978, d: 0.188, h: 0.488, weight: 4.61, quantity: 90, requirement: '封柜门', color: PALETTE[2] },
+      { sku: 'SKU-04', name: '27寸显示器 2886A (DA)', w: 0.68, d: 0.122, h: 0.44, weight: 6.7, quantity: 100, requirement: '封柜门', color: PALETTE[3] },
+      { sku: 'SKU-05', name: '32寸智能显示器 (DA)', w: 0.833, d: 0.53, h: 0.23, weight: 20.8, quantity: 100, requirement: '放中间', color: PALETTE[4] },
+      { sku: 'SKU-06', name: '15.6寸便携显示器 (14/箱)', w: 0.575, d: 0.46, h: 0.465, weight: 4.0, quantity: 95, requirement: '放中间', color: PALETTE[5] },
+      { sku: 'SKU-07', name: '15.6寸 双屏便携屏', w: 0.431, d: 0.422, h: 0.281, weight: 4.0, quantity: 125, requirement: '放中间', color: PALETTE[6] },
+      { sku: 'SKU-08', name: '21.5寸一体机整机 带键盘鼠标', w: 0.56, d: 0.145, h: 0.41, weight: 12.65, quantity: 53, requirement: '放中间', color: PALETTE[7] },
+      { sku: 'SKU-09', name: '19寸一体机整机', w: 0.495, d: 0.145, h: 0.41, weight: 10.5, quantity: 24, requirement: '放中间', color: PALETTE[8] },
+      { sku: 'SKU-10', name: '19寸液晶屏 / 19寸液晶屏玻璃', w: 0.49, d: 0.28, h: 0.35, weight: 15.5, quantity: 22, requirement: '放中间', color: PALETTE[9] },
+      { sku: 'SKU-11', name: '电源线', w: 0.48, d: 0.31, h: 0.34, weight: 25.5, quantity: 10, requirement: '放中间', color: PALETTE[10] },
+      { sku: 'SKU-12', name: '电源线 (小箱)', w: 0.18, d: 0.18, h: 0.34, weight: 5.5, quantity: 1, requirement: '放中间', color: PALETTE[11] },
+      { sku: 'SKU-13', name: '电源', w: 0.43, d: 0.41, h: 0.19, weight: 15.5, quantity: 50, requirement: '放中间', color: PALETTE[12] },
+      { sku: 'SKU-14', name: '19寸 显示器 BG (DA)', w: 0.488, d: 0.08, h: 0.336, weight: 2.15, quantity: 674, requirement: '封柜门; 可以减少点', color: PALETTE[13] }
+    ];
+
+    const PRESET_MANIFESTS = {
+      production: PRODUCTION_CLEANED_MANIFEST,
+      standard: [
+        { sku: 'ELEC-99', name: '精密电子元器件', color: 0x3d7ec9, w: 0.80, h: 0.65, d: 0.58, weight: 65, quantity: 48, requirement: '放中间' },
+        { sku: 'MECH-42', name: '机械标准备件', color: 0xd3965b, w: 0.80, h: 0.65, d: 0.58, weight: 110, quantity: 40, requirement: '放柜子最里面' },
+        { sku: 'MED-771', name: '医疗无菌器械箱', color: 0x40a39a, w: 0.80, h: 0.65, d: 0.58, weight: 45, quantity: 36, requirement: '放中间' },
+        { sku: 'COLD-08', name: '恒温生鲜冷链箱', color: 0xee7246, w: 0.80, h: 0.65, d: 0.58, weight: 55, quantity: 28, requirement: '封柜门' }
+      ],
+      heavy: [
+        { sku: 'ENG-01', name: '重型发动机组', color: 0xd3965b, w: 1.20, h: 1.10, d: 1.10, weight: 650, quantity: 16, requirement: '放柜子最里面' },
+        { sku: 'GEAR-02', name: '精密齿轮箱', color: 0x3d7ec9, w: 0.80, h: 0.65, d: 0.58, weight: 180, quantity: 48, requirement: '放中间' }
+      ],
+      pallets: [
+        { sku: 'EUR-PLT', name: '欧标托盘货物 (1.2×0.8m)', color: 0x3d7ec9, w: 1.20, h: 1.30, d: 0.80, weight: 420, quantity: 44, requirement: '放中间' }
+      ]
+    };
+
+    let activeManifest = PRODUCTION_CLEANED_MANIFEST;
+    let pendingImportManifest = null;
+    let activePackingResult = null;
+    let currentGap = 0.0;
+    let currentStrategy = 'cluster';
+
+    // --- 4. EXCEL/CSV ROBUST PARSER FOR PRODUCTION CLEANED FORMAT ---
+    function normalizeMetricVal(val) {
+      if (typeof val === 'number') return +val.toFixed(3);
+      if (!val) return 0.5;
+      const num = parseFloat(String(val).replace(/[^\d.]/g, ''));
+      if (isNaN(num) || num <= 0) return 0.5;
+      if (num >= 20 && num < 4000) return +(num / 1000).toFixed(3);
+      return +num.toFixed(3);
+    }
+
+    function parseExcelData(binaryData) {
+      try {
+        const workbook = XLSX.read(binaryData, { type: 'binary' });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+        if (!jsonData || jsonData.length < 2) {
+          alert('表格内容为空或数据行不足！');
+          return;
+        }
+
+        let headerRowIdx = 0;
+        let colSeq = -1, colName = -1, colL = -1, colW = -1, colH = -1, colWeight = -1, colQty = -1, colReq = -1;
+
+        for (let r = 0; r < Math.min(jsonData.length, 4); r++) {
+          const row = jsonData[r].map(c => String(c || '').trim().toLowerCase().replace(/\s+/g, ''));
+          row.forEach((h, idx) => {
+            if (/序列|序号|id|no/i.test(h)) colSeq = idx;
+            else if (/产品名|品名|商品名称|货物名称|name|title/i.test(h)) colName = idx;
+            else if (/长\(m\)|长（m）|^长$|length/i.test(h)) colL = idx;
+            else if (/宽\(m\)|宽（m）|^宽$|width/i.test(h)) colW = idx;
+            else if (/高\(m\)|高（m）|^高$|height/i.test(h)) colH = idx;
+            else if (/单件毛重|毛重|单重|weight|gw/i.test(h)) colWeight = idx;
+            else if (/产品数量|数量\(箱\)|数量（箱）|数量|箱数|qty/i.test(h)) colQty = idx;
+            else if (/摆放要求|摆放|要求|位置|requirement/i.test(h)) colReq = idx;
+          });
+
+          if (colName !== -1 && colL !== -1 && colQty !== -1) {
+            headerRowIdx = r;
+            break;
+          }
+        }
+
+        if (colName === -1) colName = 1;
+        if (colL === -1) colL = 2;
+        if (colW === -1) colW = 3;
+        if (colH === -1) colH = 4;
+        if (colWeight === -1) colWeight = 5;
+        if (colQty === -1) colQty = 6;
+        if (colReq === -1) colReq = 8;
+
+        const parsedItems = [];
+        for (let r = headerRowIdx + 1; r < jsonData.length; r++) {
+          const row = jsonData[r];
+          if (!row || row.length === 0) continue;
+
+          const rawName = row[colName] ? String(row[colName]).trim() : '';
+          const rawQty = row[colQty] ? parseInt(String(row[colQty]).replace(/[^\d]/g, '')) : 0;
+          if (!rawName || rawQty <= 0) continue;
+
+          const seqVal = colSeq !== -1 && row[colSeq] ? String(row[colSeq]).trim() : String(r - headerRowIdx);
+          const sku = `SKU-${String(seqVal).padStart(2, '0')}`;
+          const l = normalizeMetricVal(row[colL]);
+          const w = normalizeMetricVal(row[colW]);
+          const h = normalizeMetricVal(row[colH]);
+          const weight = parseFloat(String(row[colWeight] || '5').replace(/[^\d.]/g, '')) || 5.0;
+          const req = colReq !== -1 && row[colReq] ? String(row[colReq]).trim() : '放中间';
+
+          parsedItems.push({
+            sku,
+            name: rawName,
+            w: l,
+            h: h,
+            d: w,
+            weight,
+            quantity: rawQty,
+            requirement: req,
+            color: PALETTE[(parsedItems.length) % PALETTE.length]
+          });
+        }
+
+        if (parsedItems.length === 0) {
+          alert('未能识别出有效的产线货物数据，请检查表格是否包含产品名、尺寸与数量！');
+          return;
+        }
+
+        showImportPreviewModal(parsedItems);
+      } catch (err) {
+        console.error(err);
+        alert('解析表格失败: ' + err.message);
+      }
+    }
+
+    function handleExcelFileUpload(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        parseExcelData(e.target.result);
+      };
+      reader.readAsBinaryString(file);
+    }
+
+    function showImportPreviewModal(items) {
+      pendingImportManifest = items;
+      document.getElementById('modal-parsed-count').textContent = items.length;
+      const tbody = document.getElementById('modal-preview-tbody');
+      tbody.innerHTML = '';
+
+      items.forEach((item, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${idx + 1}</strong></td>
+          <td><strong>${item.name}</strong></td>
+          <td>${item.w} × ${item.d} × ${item.h} m</td>
+          <td>${item.weight} kg</td>
+          <td><span style="color:var(--primary); font-weight:700;">${item.quantity} 箱</span></td>
+          <td><span class="req-tag ${getReqClass(item.requirement)}">${item.requirement}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('import-modal').style.display = 'flex';
+    }
+
+    function getReqClass(req) {
+      if (/最里面|里面|rear/i.test(req)) return 'req-rear';
+      if (/封柜门|门|door/i.test(req)) return 'req-door';
+      return 'req-mid';
+    }
+
+    function closeImportModal() {
+      document.getElementById('import-modal').style.display = 'none';
+      pendingImportManifest = null;
+      document.getElementById('excel-file-input').value = '';
+    }
+
+    function applyImportedManifest() {
+      if (!pendingImportManifest) return;
+      activeManifest = pendingImportManifest;
+      closeImportModal();
+
+      document.querySelectorAll('#left-drawer .chip-grid-2 .btn-chip').forEach(b => b.classList.remove('active'));
+      renderManifestUI();
+      runSmartPackingAlgorithm();
+    }
+
+    function downloadExactTemplate() {
+      const templateData = [
+        ['序列', '产品名', '长(m)', '宽(m)', '高(m)', '单件毛重(KG)', '产品数量(箱)', '产品体积CBM', '摆放要求', '原表CBM核对'],
+        [1, 'WIFI蓝牙 / WIFI线 / WIFI贴', 0.5, 0.5, 0.5, 5, 1, 0.12, '放柜子最里面', '同包装合并(按1箱计)'],
+        [2, '21.5寸 显示器 BG (DA)', 0.553, 0.08, 0.355, 8.4, 500, 7.85, '封柜门', '一致'],
+        [3, '34寸显示器 MX340 (DA)', 0.978, 0.188, 0.488, 4.61, 90, 8.08, '封柜门', '一致'],
+        [4, '27寸显示器 2886A (DA)', 0.68, 0.122, 0.44, 6.7, 100, 3.65, '封柜门', '一致'],
+        [5, '32寸智能显示器 (DA)', 0.833, 0.53, 0.23, 20.8, 100, 10.15, '放中间', '一致'],
+        [6, '15.6寸便携显示器 (14/箱)', 0.575, 0.46, 0.465, 4, 95, 11.68, '放中间', '一致'],
+        [7, '15.6寸 双屏便携屏', 0.431, 0.422, 0.281, 4, 125, 6.39, '放中间', '一致'],
+        [8, '21.5寸一体机整机 带键盘鼠标', 0.56, 0.145, 0.41, 12.65, 53, 1.76, '放中间', '一致'],
+        [9, '19寸一体机整机', 0.495, 0.145, 0.41, 10.5, 24, 0.71, '放中间', '一致'],
+        [10, '19寸液晶屏 / 19寸液晶屏玻璃', 0.49, 0.28, 0.35, 15.5, 22, 1.06, '放中间', '一致'],
+        [11, '电源线', 0.48, 0.31, 0.34, 25.5, 10, 0.51, '放中间', '一致'],
+        [12, '电源线', 0.18, 0.18, 0.34, 5.5, 1, 0.01, '放中间', '一致'],
+        [13, '电源', 0.43, 0.41, 0.19, 15.5, 50, 1.67, '放中间', '一致'],
+        [14, '19寸 显示器 BG (DA)', 0.488, 0.08, 0.336, 2.15, 674, 8.84, '封柜门; 可以减少点', '一致']
+      ];
+
+      const ws = XLSX.utils.aoa_to_sheet(templateData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, '产线清洗货单');
+      XLSX.writeFile(wb, '3D-AICIVS_产线真实装箱清洗货单.xlsx');
+    }
+
+    // Drag & Drop
+    window.addEventListener('DOMContentLoaded', () => {
+      const dropZone = document.getElementById('drop-zone');
+      if (dropZone) {
+        dropZone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          dropZone.classList.add('dragover');
+        });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropZone.classList.remove('dragover');
+          if (e.dataTransfer.files.length > 0) {
+            handleExcelFileUpload(e.dataTransfer.files[0]);
+          }
+        });
+      }
+    });
+
+    // --- 5. THREE.JS SCENE SETUP & PBR PIPELINE ---
     let scene, camera, renderer, controls;
     let containerGroup, cargoGroup, doorLeftGroup, doorRightGroup;
     let foregroundCutawayMat, solidBackMat, frameSolidMat, steelFloorMat;
@@ -1167,22 +1508,10 @@
     let isDoorOpen = false;
     let isPackingAnimating = false;
 
-    // Layer System Registry
-    const sceneLayers = {
-      skeleton: [],
-      panels: [],
-      doors: [],
-      cargo: []
-    };
-    let selectedObject = null;
-    let selectionBoxHelper = null;
-
-    // References for dynamic 6-face topological cutaway
     let dynamicWalls = [];
     let dynamicDoorComponents = [];
     let dynamicSkeletons = [];
 
-    // Active Render Configuration State
     const renderConfig = {
       foregroundOpacity: 0.01,
       glassColor: '#b8d7f4',
@@ -1203,26 +1532,10 @@
       sunDistance: 40
     };
 
-    // ISO 20ft Container Standard Proportions
-    const L = 12.0;  // Length (X)
-    const H = 4.8;   // Height (Y)
-    const W = 4.6;   // Width (Z)
-
-    const CS = 0.22;       // Corner Casting
-    const POST_W = 0.12;   // Corner Post thickness
-    const RAIL_H = 0.12;   // Top/Bottom Rail height
-    const RAIL_D = 0.12;   // Rail depth
-
-    const COLORS = {
-      boxBlue: 0x3d7ec9,
-      boxKraft: 0xd3965b,
-      boxTeal: 0x40a39a,
-      boxOrange: 0xee7246,
-      boxYellow: 0xdeaa32,
-      floorWood: 0x5c4530,
-      palletWood: 0xa67c4e,
-      hardwareSilver: 0x363b40
-    };
+    const CS = 0.178;
+    const POST_W = 0.08;
+    const RAIL_H = 0.08;
+    const RAIL_D = 0.08;
 
     function createHighEndStudioEnv() {
       const canvas = document.createElement('canvas');
@@ -1280,7 +1593,7 @@
       return tex;
     }
 
-    function createBoxTexture(baseColorHex, labelText, tapeStyle = 'cross') {
+    function createBoxTexture(baseColorHex, labelText) {
       const canvas = document.createElement('canvas');
       canvas.width = 512;
       canvas.height = 512;
@@ -1289,28 +1602,18 @@
       ctx.fillStyle = '#' + new THREE.Color(baseColorHex).getHexString();
       ctx.fillRect(0, 0, 512, 512);
 
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.035)';
-      for (let i = 0; i < 3500; i++) ctx.fillRect(Math.random() * 512, Math.random() * 512, 1.5, 1.5);
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
-      for (let i = 0; i < 3500; i++) ctx.fillRect(Math.random() * 512, Math.random() * 512, 1.5, 1.5);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+      for (let i = 0; i < 3000; i++) ctx.fillRect(Math.random() * 512, Math.random() * 512, 1.5, 1.5);
 
-      ctx.strokeStyle = 'rgba(0, 0, 0, 0.18)';
-      ctx.lineWidth = 6;
-      ctx.strokeRect(3, 3, 506, 506);
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.25)';
+      ctx.lineWidth = 8;
+      ctx.strokeRect(4, 4, 504, 504);
 
-      ctx.fillStyle = 'rgba(240, 218, 175, 0.76)';
-      if (tapeStyle === 'h' || tapeStyle === 'cross') {
-        ctx.fillRect(0, 234, 512, 44);
-        ctx.strokeStyle = 'rgba(160, 120, 70, 0.3)';
-        ctx.lineWidth = 1.5;
-        ctx.strokeRect(0, 234, 512, 44);
-      }
-      if (tapeStyle === 'v' || tapeStyle === 'cross') {
-        ctx.fillRect(234, 0, 44, 512);
-        ctx.strokeStyle = 'rgba(160, 120, 70, 0.3)';
-        ctx.lineWidth = 1.5;
-        ctx.strokeRect(234, 0, 44, 512);
-      }
+      ctx.fillStyle = 'rgba(240, 218, 175, 0.82)';
+      ctx.fillRect(0, 236, 512, 40);
+      ctx.strokeStyle = 'rgba(160, 120, 70, 0.35)';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(0, 236, 512, 40);
 
       ctx.fillStyle = '#ffffff';
       ctx.shadowColor = 'rgba(0,0,0,0.18)';
@@ -1322,29 +1625,22 @@
       ctx.fillRect(55, 305, 150, 18);
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 9px monospace';
-      ctx.fillText('EXPRESS LOGISTICS', 65, 318);
+      ctx.fillText('EXPRESS CARGO', 65, 318);
 
       ctx.fillStyle = '#0f172a';
       for (let bx = 70; bx < 190; bx += Math.random() * 6 + 4) {
         ctx.fillRect(bx, 332, Math.random() > 0.4 ? 2.5 : 1.5, 42);
       }
 
-      ctx.font = '8px monospace';
-      ctx.fillStyle = '#475569';
-      ctx.fillText('9928-4019-338', 75, 385);
-
       ctx.font = 'bold 10px sans-serif';
       ctx.fillStyle = '#1e293b';
-      ctx.fillText(labelText || 'FRAGILE', 70, 404);
-      ctx.font = '8px sans-serif';
-      ctx.fillStyle = '#64748b';
-      ctx.fillText('UP • HANDLE WITH CARE', 70, 416);
+      ctx.fillText(labelText || 'CARGO', 70, 404);
 
       const texture = new THREE.CanvasTexture(canvas);
       return texture;
     }
 
-    function createSmoothCorrugatedGeometry(width, height, numWaves, waveDepth = 0.04) {
+    function createSmoothCorrugatedGeometry(width, height, numWaves, waveDepth = 0.032) {
       const segW = numWaves * 12;
       const segH = 2;
       const geo = new THREE.PlaneGeometry(width, height, segW, segH);
@@ -1377,16 +1673,14 @@
       const width = window.innerWidth;
       const height = window.innerHeight;
 
-      // 1. Scene
       scene = new THREE.Scene();
       scene.background = new THREE.Color(renderConfig.groundColor);
 
       const envTexture = createHighEndStudioEnv();
       scene.environment = envTexture;
 
-      // 2. Camera
       const aspect = width / height;
-      const frustumSize = 13.5;
+      const frustumSize = currentSpec.cameraDist;
       camera = new THREE.OrthographicCamera(
         -frustumSize * aspect / 2,
         frustumSize * aspect / 2,
@@ -1396,9 +1690,8 @@
         1000
       );
       camera.position.set(-20, 20 * Math.SQRT2, 20);
-      camera.lookAt(0, 1.8, 0);
+      camera.lookAt(0, currentSpec.extH / 2, 0);
 
-      // 3. Renderer
       renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
       renderer.setSize(width, height);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -1409,37 +1702,22 @@
       renderer.toneMappingExposure = renderConfig.exposure;
       container.appendChild(renderer.domElement);
 
-      // 4. OrbitControls
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.06;
-      controls.target.set(0, 1.8, 0);
+      controls.target.set(0, currentSpec.extH / 2, 0);
       controls.update();
 
-      // 5. Selection Bounding Box Helper
-      selectionBoxHelper = new THREE.BoxHelper(new THREE.Mesh(), 0x2563eb);
-      selectionBoxHelper.material.linewidth = 2;
-      selectionBoxHelper.visible = false;
-      scene.add(selectionBoxHelper);
-
-      // 6. Lighting & Environment
       setupLighting();
       setupEnvironment();
 
-      // 7. Assemble Slender CAD Container & Cargo
-      buildSlenderContainer();
-      buildCargoBoxes();
+      rebuildContainerModel();
 
-      // 8. Build Interactive Layer Tree UI
-      populateLayerTreeUI();
-
-      // 9. Events
       raycaster = new THREE.Raycaster();
       mouse = new THREE.Vector2();
 
       window.addEventListener('resize', onWindowResize);
       window.addEventListener('mousemove', onMouseMove);
-      window.addEventListener('click', onMouseClick);
 
       animate();
     }
@@ -1514,7 +1792,7 @@
       const shadowTex = new THREE.CanvasTexture(shadowCanvas);
 
       contactShadowPlane = new THREE.Mesh(
-        new THREE.PlaneGeometry(L + 2.0, W + 1.8),
+        new THREE.PlaneGeometry(currentSpec.extL + 2.0, currentSpec.extW + 1.8),
         new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, opacity: 0.8, depthWrite: false })
       );
       contactShadowPlane.rotation.x = -Math.PI / 2;
@@ -1523,32 +1801,34 @@
       scene.add(contactShadowPlane);
     }
 
-    function registerLayerItem(category, name, type, mesh) {
-      mesh.userData.name = name;
-      mesh.userData.category = category;
-      mesh.userData.layerType = type;
-      sceneLayers[category].push(mesh);
-    }
-
     function registerDynamicSkeleton(mesh, adjacentFaces) {
       mesh.userData.adjacentFaces = adjacentFaces;
       dynamicSkeletons.push(mesh);
     }
 
-    // --- Container Construction with 6-Face Topological Cutaway Support ---
-    function buildSlenderContainer() {
+    function rebuildContainerModel() {
+      if (containerGroup) {
+        scene.remove(containerGroup);
+      }
+      dynamicWalls = [];
+      dynamicDoorComponents = [];
+      dynamicSkeletons = [];
+
+      const L = currentSpec.extL;
+      const H = currentSpec.extH;
+      const W = currentSpec.extW;
+
       containerGroup = new THREE.Group();
       scene.add(containerGroup);
 
       const halfL = L / 2;
       const halfH = H / 2;
       const halfW = W / 2;
-      const elevationY = halfH + 0.08;
+      const elevationY = halfH + 0.04;
       containerGroup.position.set(0, elevationY, 0);
 
       steelNormalMap = createSteelNormalMap();
 
-      // 1. Solid Frame Material
       frameSolidMat = new THREE.MeshStandardMaterial({
         color: new THREE.Color(renderConfig.frameColor),
         metalness: renderConfig.frameMetal,
@@ -1558,16 +1838,14 @@
         side: THREE.DoubleSide
       });
 
-      // 2. Pure Glare-Free Cutaway Material (Double-Sided)
       foregroundCutawayMat = new THREE.MeshBasicMaterial({
         color: new THREE.Color(renderConfig.glassColor),
         transparent: true,
-        opacity: renderConfig.foregroundOpacity,
+        opacity: renderConfig.foregroundOpacity * 0.45,
         depthWrite: false,
         side: THREE.DoubleSide
       });
 
-      // 3. Wall Solid Contrast Backdrop Material (Double-Sided)
       solidBackMat = new THREE.MeshStandardMaterial({
         color: new THREE.Color(renderConfig.backColor),
         roughness: 0.45,
@@ -1577,7 +1855,6 @@
         side: THREE.DoubleSide
       });
 
-      // 4. Floor Solid Steel Material
       steelFloorMat = new THREE.MeshStandardMaterial({
         color: 0x2b343b,
         metalness: 0.52,
@@ -1588,23 +1865,22 @@
       });
 
       const hardwareMat = new THREE.MeshStandardMaterial({
-        color: COLORS.hardwareSilver,
+        color: 0x363b40,
         metalness: 0.65,
         roughness: 0.35,
         side: THREE.DoubleSide
       });
 
-      // --- A. 8 Corner Castings with 3 Adjacent Topological Faces ---
       const cs = CS;
       const cornerConfigs = [
-        { name: '后左下角件 (Rear-BL)', pos: [-halfL + cs/2, -halfH + cs/2, -halfW + cs/2], faces: ['back', 'door', 'floor'] },
-        { name: '后右下角件 (Rear-BR)', pos: [ halfL - cs/2, -halfH + cs/2, -halfW + cs/2], faces: ['back', 'rear', 'floor'] },
-        { name: '前左下角件 (Front-BL)', pos: [-halfL + cs/2, -halfH + cs/2,  halfW - cs/2], faces: ['front', 'door', 'floor'] },
-        { name: '前右下角件 (Front-BR)', pos: [ halfL - cs/2, -halfH + cs/2,  halfW - cs/2], faces: ['front', 'rear', 'floor'] },
-        { name: '后左上角件 (Rear-TL)', pos: [-halfL + cs/2,  halfH - cs/2, -halfW + cs/2], faces: ['back', 'door', 'roof'] },
-        { name: '后右上角件 (Rear-TR)', pos: [ halfL - cs/2,  halfH - cs/2, -halfW + cs/2], faces: ['back', 'rear', 'roof'] },
-        { name: '前左上角件 (Front-TL)', pos: [-halfL + cs/2,  halfH - cs/2,  halfW - cs/2], faces: ['front', 'door', 'roof'] },
-        { name: '前右上角件 (Front-TR)', pos: [ halfL - cs/2,  halfH - cs/2,  halfW - cs/2], faces: ['front', 'rear', 'roof'] }
+        { pos: [-halfL + cs/2, -halfH + cs/2, -halfW + cs/2], faces: ['back', 'door', 'floor'] },
+        { pos: [ halfL - cs/2, -halfH + cs/2, -halfW + cs/2], faces: ['back', 'rear', 'floor'] },
+        { pos: [-halfL + cs/2, -halfH + cs/2,  halfW - cs/2], faces: ['front', 'door', 'floor'] },
+        { pos: [ halfL - cs/2, -halfH + cs/2,  halfW - cs/2], faces: ['front', 'rear', 'floor'] },
+        { pos: [-halfL + cs/2,  halfH - cs/2, -halfW + cs/2], faces: ['back', 'door', 'roof'] },
+        { pos: [ halfL - cs/2,  halfH - cs/2, -halfW + cs/2], faces: ['back', 'rear', 'roof'] },
+        { pos: [-halfL + cs/2,  halfH - cs/2,  halfW - cs/2], faces: ['front', 'door', 'roof'] },
+        { pos: [ halfL - cs/2,  halfH - cs/2,  halfW - cs/2], faces: ['front', 'rear', 'roof'] }
       ];
 
       const slotMat = new THREE.MeshBasicMaterial({ color: 0x11161b, side: THREE.DoubleSide });
@@ -1615,189 +1891,152 @@
         const block = new THREE.Mesh(new THREE.BoxGeometry(cs, cs, cs), frameSolidMat);
         cornerGroup.add(block);
 
-        const topHole = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.02, 16), slotMat);
+        const topHole = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.015, 16), slotMat);
         topHole.scale.set(1.4, 1, 0.9);
         topHole.position.set(0, item.pos[1] > 0 ? cs/2 + 0.001 : -cs/2 - 0.001, 0);
         cornerGroup.add(topHole);
 
-        const frontHole = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.08, 0.02), slotMat);
-        frontHole.position.set(item.pos[0] > 0 ? cs/2 + 0.001 : -cs/2 - 0.001, 0, 0);
-        frontHole.rotation.y = Math.PI / 2;
-        cornerGroup.add(frontHole);
-
-        const sideHole = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, 0.02), slotMat);
-        sideHole.position.set(0, 0, item.pos[2] > 0 ? cs/2 + 0.001 : -cs/2 - 0.001);
-        cornerGroup.add(sideHole);
-
-        registerLayerItem('skeleton', item.name, 'ISO角件', block);
         registerDynamicSkeleton(block, item.faces);
         registerDynamicSkeleton(topHole, item.faces);
-        registerDynamicSkeleton(frontHole, item.faces);
-        registerDynamicSkeleton(sideHole, item.faces);
-
         containerGroup.add(cornerGroup);
       });
 
-      // --- B. 4 Corner Posts with 2 Adjacent Topological Faces ---
       const postH = H - cs * 2;
       const postX = halfL - cs / 2;
       const postZ = halfW - cs / 2;
       const postConfigs = [
-        { name: '后左立柱 (Door-Back Post)', pos: [-postX, 0, -postZ], faces: ['door', 'back'] },
-        { name: '后右立柱 (Rear-Back Post)', pos: [ postX, 0, -postZ], faces: ['rear', 'back'] },
-        { name: '前左立柱 (Door-Front Post)', pos: [-postX, 0,  postZ], faces: ['door', 'front'] },
-        { name: '前右立柱 (Rear-Front Post)', pos: [ postX, 0,  postZ], faces: ['rear', 'front'] }
+        { pos: [-postX, 0, -postZ], faces: ['door', 'back'] },
+        { pos: [ postX, 0, -postZ], faces: ['rear', 'back'] },
+        { pos: [-postX, 0,  postZ], faces: ['door', 'front'] },
+        { pos: [ postX, 0,  postZ], faces: ['rear', 'front'] }
       ];
       postConfigs.forEach(p => {
         const post = new THREE.Mesh(new THREE.BoxGeometry(POST_W, postH, POST_W), frameSolidMat);
         post.position.set(...p.pos);
-        registerLayerItem('skeleton', p.name, '立柱钢梁', post);
         registerDynamicSkeleton(post, p.faces);
         containerGroup.add(post);
       });
 
-      // --- C. 8 Edge Rails with 2 Adjacent Topological Faces ---
       const railLX = L - cs * 2;
       const railWZ = W - cs * 2;
 
-      // Bottom Rails
       const bY = -halfH + RAIL_H / 2;
       const bSide1 = new THREE.Mesh(new THREE.BoxGeometry(railLX, RAIL_H, RAIL_D), frameSolidMat);
       bSide1.position.set(0, bY, -postZ);
-      registerLayerItem('skeleton', '后侧底纵梁 (Back Bottom Rail)', '下纵梁', bSide1);
       registerDynamicSkeleton(bSide1, ['back', 'floor']);
       containerGroup.add(bSide1);
 
       const bSide2 = new THREE.Mesh(new THREE.BoxGeometry(railLX, RAIL_H, RAIL_D), frameSolidMat);
       bSide2.position.set(0, bY, postZ);
-      registerLayerItem('skeleton', '前侧底纵梁 (Front Bottom Rail)', '下纵梁', bSide2);
       registerDynamicSkeleton(bSide2, ['front', 'floor']);
       containerGroup.add(bSide2);
 
+      // Deep Rear Wall Skeleton at +postX
       const bEndRear = new THREE.Mesh(new THREE.BoxGeometry(RAIL_D, RAIL_H, railWZ), frameSolidMat);
       bEndRear.position.set(postX, bY, 0);
-      registerLayerItem('skeleton', '后端底横梁 (Rear Bottom Sill)', '底端梁', bEndRear);
       registerDynamicSkeleton(bEndRear, ['rear', 'floor']);
       containerGroup.add(bEndRear);
 
+      // Front Door Skeleton at -postX
       const bEndFront = new THREE.Mesh(new THREE.BoxGeometry(RAIL_D, RAIL_H, railWZ), frameSolidMat);
       bEndFront.position.set(-postX, bY, 0);
-      registerLayerItem('skeleton', '前端门槛横梁 (Front Door Sill)', '门槛梁', bEndFront);
       registerDynamicSkeleton(bEndFront, ['door', 'floor']);
       containerGroup.add(bEndFront);
 
-      // Top Rails
       const tY = halfH - RAIL_H / 2;
       const tSide1 = new THREE.Mesh(new THREE.BoxGeometry(railLX, RAIL_H, RAIL_D), frameSolidMat);
       tSide1.position.set(0, tY, -postZ);
-      registerLayerItem('skeleton', '后侧顶纵梁 (Back Top Rail)', '上纵梁', tSide1);
       registerDynamicSkeleton(tSide1, ['back', 'roof']);
       containerGroup.add(tSide1);
 
       const tSide2 = new THREE.Mesh(new THREE.BoxGeometry(railLX, RAIL_H, RAIL_D), frameSolidMat);
       tSide2.position.set(0, tY, postZ);
-      registerLayerItem('skeleton', '前侧顶纵梁 (Front Top Rail)', '上纵梁', tSide2);
       registerDynamicSkeleton(tSide2, ['front', 'roof']);
       containerGroup.add(tSide2);
 
       const tEndRear = new THREE.Mesh(new THREE.BoxGeometry(RAIL_D, RAIL_H, railWZ), frameSolidMat);
       tEndRear.position.set(postX, tY, 0);
-      registerLayerItem('skeleton', '后端顶横梁 (Rear Top Header)', '顶端梁', tEndRear);
       registerDynamicSkeleton(tEndRear, ['rear', 'roof']);
       containerGroup.add(tEndRear);
 
       const tEndFront = new THREE.Mesh(new THREE.BoxGeometry(RAIL_D, RAIL_H, railWZ), frameSolidMat);
       tEndFront.position.set(-postX, tY, 0);
-      registerLayerItem('skeleton', '前端门头横梁 (Front Door Header)', '门头梁', tEndFront);
       registerDynamicSkeleton(tEndFront, ['door', 'roof']);
       containerGroup.add(tEndFront);
 
-      // --- D. Flat Steel Floor Plate (-Y Face, Fully Dynamic Cutaway Supported) ---
-      const innerL = L - RAIL_D * 2 - 0.02;
-      const innerW = W - RAIL_D * 2 - 0.02;
-      const floorMesh = new THREE.Mesh(
-        new THREE.BoxGeometry(innerL, 0.04, innerW),
-        steelFloorMat
-      );
-      floorMesh.position.set(0, -halfH + RAIL_H - 0.02, 0);
+      const innerL = L - RAIL_D * 2 - 0.01;
+      const innerW = W - RAIL_D * 2 - 0.01;
+      const floorMesh = new THREE.Mesh(new THREE.BoxGeometry(innerL, 0.028, innerW), steelFloorMat);
+      floorMesh.position.set(0, -halfH + RAIL_H - 0.014, 0);
       floorMesh.receiveShadow = true;
       floorMesh.userData = { faceKey: 'floor', normal: new THREE.Vector3(0, -1, 0), defaultMat: steelFloorMat };
       dynamicWalls.push(floorMesh);
-      registerLayerItem('panels', '底面平整钢板 (-Y Floor Plate)', '承重地板', floorMesh);
       containerGroup.add(floorMesh);
 
-      // --- E. 5 Enclosing Panels ---
-      const panelSpanH = H - RAIL_H * 2 + 0.02;
-      const panelSpanL = L - POST_W * 2 + 0.02;
-      const panelSpanW = W - POST_W * 2 + 0.02;
-      const panelCenterY = 0;
+      const panelSpanH = H - RAIL_H * 2 + 0.01;
+      const panelSpanL = L - POST_W * 2 + 0.01;
+      const panelSpanW = W - POST_W * 2 + 0.01;
+      const numWavesLong = Math.round(L * 2.8);
 
-      // 1. Top Roof Panel (+Y)
-      const roofGeo = createSmoothCorrugatedGeometry(panelSpanL, panelSpanW, 32, 0.04);
+      const roofGeo = createSmoothCorrugatedGeometry(panelSpanL, panelSpanW, numWavesLong, 0.032);
       const roofM = new THREE.Mesh(roofGeo, foregroundCutawayMat);
       roofM.rotation.x = -Math.PI / 2;
       roofM.position.set(0, halfH - RAIL_H / 2, 0);
       roofM.castShadow = true;
       roofM.userData = { faceKey: 'roof', normal: new THREE.Vector3(0, 1, 0), defaultMat: solidBackMat };
       dynamicWalls.push(roofM);
-      registerLayerItem('panels', '顶部瓦楞天窗板 (+Y Roof)', '波浪顶板', roofM);
       containerGroup.add(roofM);
 
-      // 2. Front Long Side (+Z)
-      const sideGeo = createSmoothCorrugatedGeometry(panelSpanL, panelSpanH, 32, 0.04);
+      const sideGeo = createSmoothCorrugatedGeometry(panelSpanL, panelSpanH, numWavesLong, 0.032);
       const frontSideM = new THREE.Mesh(sideGeo, foregroundCutawayMat);
-      frontSideM.position.set(0, panelCenterY, postZ);
+      frontSideM.position.set(0, 0, postZ);
       frontSideM.castShadow = true;
       frontSideM.userData = { faceKey: 'front', normal: new THREE.Vector3(0, 0, 1), defaultMat: solidBackMat };
       dynamicWalls.push(frontSideM);
-      registerLayerItem('panels', '前侧长边波浪板 (+Z Front Wall)', '侧壁板', frontSideM);
       containerGroup.add(frontSideM);
 
-      // 3. Far Back Long Side (-Z)
       const backSideM = new THREE.Mesh(sideGeo, solidBackMat);
-      backSideM.position.set(0, panelCenterY, -postZ);
+      backSideM.position.set(0, 0, -postZ);
       backSideM.castShadow = true;
       backSideM.receiveShadow = true;
       backSideM.userData = { faceKey: 'back', normal: new THREE.Vector3(0, 0, -1), defaultMat: solidBackMat };
       dynamicWalls.push(backSideM);
-      registerLayerItem('panels', '后侧长边波浪板 (-Z Back Wall)', '侧壁板', backSideM);
       containerGroup.add(backSideM);
 
-      // 4. Far Rear End Wall (+X)
-      const endGeo = createSmoothCorrugatedGeometry(panelSpanW, panelSpanH, 14, 0.04);
+      // Deep Rear Wall (盲端) at +postX
+      const endGeo = createSmoothCorrugatedGeometry(panelSpanW, panelSpanH, 10, 0.032);
       const rearEndM = new THREE.Mesh(endGeo, solidBackMat);
       rearEndM.rotation.y = -Math.PI / 2;
-      rearEndM.position.set(postX, panelCenterY, 0);
+      rearEndM.position.set(postX, 0, 0);
       rearEndM.castShadow = true;
       rearEndM.receiveShadow = true;
       rearEndM.userData = { faceKey: 'rear', normal: new THREE.Vector3(1, 0, 0), defaultMat: solidBackMat };
       dynamicWalls.push(rearEndM);
-      registerLayerItem('panels', '右端封闭端墙板 (+X End Wall)', '端墙板', rearEndM);
       containerGroup.add(rearEndM);
 
-      // 5. Front Double Doors (-X)
+      // Front Doors at -postX
       buildFrontDoors(postX, postZ, panelSpanH, panelSpanW, hardwareMat);
+
+      if (contactShadowPlane) {
+        contactShadowPlane.geometry.dispose();
+        contactShadowPlane.geometry = new THREE.PlaneGeometry(L + 2.0, W + 1.8);
+      }
+
+      renderManifestUI();
+      runSmartPackingAlgorithm();
     }
 
-    // 5. Front Double Doors (-X) - Heavy Duty Corrugated Industrial Doors
     function buildFrontDoors(postX, postZ, doorH, totalDoorW, hardwareMat) {
-      const doorLeafW = (totalDoorW - 0.02) / 2;
-      const borderThick = 0.04;
-      const borderBarW = 0.05;
+      const doorLeafW = (totalDoorW - 0.015) / 2;
+      const borderThick = 0.035;
+      const borderBarW = 0.045;
 
-      const hingeMat = new THREE.MeshStandardMaterial({
-        color: 0x333e48,
-        metalness: 0.7,
-        roughness: 0.35,
-        side: THREE.DoubleSide
-      });
+      const hingeMat = new THREE.MeshStandardMaterial({ color: 0x333e48, metalness: 0.7, roughness: 0.35, side: THREE.DoubleSide });
 
-      // --- Left Door Leaf Assembly ---
       doorLeftGroup = new THREE.Group();
       doorLeftGroup.position.set(-postX, 0, -postZ);
 
-      // A. Deep 3D Vertical Corrugated Door Panel
-      const doorCorrugGeo = createSmoothCorrugatedGeometry(doorLeafW - borderBarW * 2, doorH - borderBarW * 2, 7, 0.045);
+      const doorCorrugGeo = createSmoothCorrugatedGeometry(doorLeafW - borderBarW * 2, doorH - borderBarW * 2, 6, 0.035);
       const leafMeshL = new THREE.Mesh(doorCorrugGeo, solidBackMat);
       leafMeshL.rotation.y = Math.PI / 2;
       leafMeshL.position.set(0, 0, doorLeafW / 2);
@@ -1805,9 +2044,7 @@
       leafMeshL.userData.defaultMat = solidBackMat;
       doorLeftGroup.add(leafMeshL);
       dynamicDoorComponents.push(leafMeshL);
-      registerLayerItem('doors', '左侧波浪箱门门板 (Left Corrugated Door)', '波浪门板', leafMeshL);
 
-      // 4 Edge Outer Border Frame Bars
       const frameGroupL = new THREE.Group();
       frameGroupL.position.set(0, 0, doorLeafW / 2);
 
@@ -1834,33 +2071,22 @@
       doorLeftGroup.add(frameGroupL);
       dynamicDoorComponents.push(barTop, barBottom, barOuter, barInner);
 
-      // Heavy Hinges
       for (let hy of [-doorH * 0.38, -doorH * 0.13, doorH * 0.13, doorH * 0.38]) {
-        const hingeBlock = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.09, 0.04), hingeMat);
-        hingeBlock.position.set(-0.03, hy, 0.02);
+        const hingeBlock = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.08, 0.035), hingeMat);
+        hingeBlock.position.set(-0.025, hy, 0.015);
         hingeBlock.userData.defaultMat = hingeMat;
         doorLeftGroup.add(hingeBlock);
         dynamicDoorComponents.push(hingeBlock);
-
-        const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.11, 16), hardwareMat);
-        pin.position.set(-0.04, hy, 0);
-        pin.userData.defaultMat = hardwareMat;
-        doorLeftGroup.add(pin);
-        dynamicDoorComponents.push(pin);
       }
 
-      // 2 Substantial Heavy Lock Rods on Left Door
       for (let rz of [doorLeafW * 0.28, doorLeafW * 0.74]) {
-        addHeavyDoorRod(doorLeftGroup, rz, doorH, hardwareMat, '左门重型锁杆');
+        addHeavyDoorRod(doorLeftGroup, rz, doorH, hardwareMat);
       }
-
       containerGroup.add(doorLeftGroup);
 
-      // --- Right Door Leaf Assembly ---
       doorRightGroup = new THREE.Group();
       doorRightGroup.position.set(-postX, 0, postZ);
 
-      // B. Deep 3D Vertical Corrugated Door Panel
       const leafMeshR = new THREE.Mesh(doorCorrugGeo, solidBackMat);
       leafMeshR.rotation.y = Math.PI / 2;
       leafMeshR.position.set(0, 0, -doorLeafW / 2);
@@ -1868,9 +2094,7 @@
       leafMeshR.userData.defaultMat = solidBackMat;
       doorRightGroup.add(leafMeshR);
       dynamicDoorComponents.push(leafMeshR);
-      registerLayerItem('doors', '右侧波浪箱门门板 (Right Corrugated Door)', '波浪门板', leafMeshR);
 
-      // 4 Edge Outer Border Frame Bars
       const frameGroupR = new THREE.Group();
       frameGroupR.position.set(0, 0, -doorLeafW / 2);
 
@@ -1897,413 +2121,249 @@
       doorRightGroup.add(frameGroupR);
       dynamicDoorComponents.push(rBarTop, rBarBottom, rBarOuter, rBarInner);
 
-      // Heavy Hinges
       for (let hy of [-doorH * 0.38, -doorH * 0.13, doorH * 0.13, doorH * 0.38]) {
-        const hingeBlock = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.09, 0.04), hingeMat);
-        hingeBlock.position.set(-0.03, hy, -0.02);
+        const hingeBlock = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.08, 0.035), hingeMat);
+        hingeBlock.position.set(-0.025, hy, -0.015);
         hingeBlock.userData.defaultMat = hingeMat;
         doorRightGroup.add(hingeBlock);
         dynamicDoorComponents.push(hingeBlock);
-
-        const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.11, 16), hardwareMat);
-        pin.position.set(-0.04, hy, 0);
-        pin.userData.defaultMat = hardwareMat;
-        doorRightGroup.add(pin);
-        dynamicDoorComponents.push(pin);
       }
 
-      // 2 Substantial Heavy Lock Rods on Right Door
       for (let rz of [-doorLeafW * 0.28, -doorLeafW * 0.74]) {
-        addHeavyDoorRod(doorRightGroup, rz, doorH, hardwareMat, '右门重型锁杆');
+        addHeavyDoorRod(doorRightGroup, rz, doorH, hardwareMat);
       }
-
       containerGroup.add(doorRightGroup);
     }
 
-    // Heavy Duty Industrial Lock Rod & Cam Mechanism
-    function addHeavyDoorRod(parentGroup, zPos, height, hardwareMat, label) {
-      const rodRadius = 0.025;
-      const effectiveRodH = height - 0.08;
-      const rod = new THREE.Mesh(new THREE.CylinderGeometry(rodRadius, rodRadius, effectiveRodH, 20), hardwareMat);
-      rod.position.set(-0.045, 0, zPos);
+    function addHeavyDoorRod(parentGroup, zPos, height, hardwareMat) {
+      const rodRadius = 0.02;
+      const effectiveRodH = height - 0.06;
+      const rod = new THREE.Mesh(new THREE.CylinderGeometry(rodRadius, rodRadius, effectiveRodH, 16), hardwareMat);
+      rod.position.set(-0.038, 0, zPos);
       rod.castShadow = true;
       rod.userData.defaultMat = hardwareMat;
       parentGroup.add(rod);
       dynamicDoorComponents.push(rod);
-      registerLayerItem('doors', label, '镀铬重型锁杆', rod);
 
-      // Top & Bottom Cam Locks
-      const camY = height / 2 - 0.04;
+      const camY = height / 2 - 0.03;
       for (let y of [-camY, camY]) {
-        const camHead = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.06, 0.055), hardwareMat);
-        camHead.position.set(-0.045, y, zPos);
+        const camHead = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.05, 0.045), hardwareMat);
+        camHead.position.set(-0.038, y, zPos);
         camHead.userData.defaultMat = hardwareMat;
         parentGroup.add(camHead);
         dynamicDoorComponents.push(camHead);
-
-        const lug = new THREE.Mesh(new THREE.BoxGeometry(0.065, 0.04, 0.07), hardwareMat);
-        lug.position.set(-0.03, y, zPos);
-        lug.userData.defaultMat = hardwareMat;
-        parentGroup.add(lug);
-        dynamicDoorComponents.push(lug);
       }
 
-      // Middle Bushings
-      for (let y of [-height * 0.25, height * 0.25]) {
-        const bracket = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.06, 0.06), hardwareMat);
-        bracket.position.set(-0.025, y, zPos);
-        bracket.userData.defaultMat = hardwareMat;
-        parentGroup.add(bracket);
-        dynamicDoorComponents.push(bracket);
-      }
-
-      // Lock Handle Assembly
       const handleGroup = new THREE.Group();
-      handleGroup.position.set(-0.052, -0.18, zPos);
+      handleGroup.position.set(-0.042, -0.15, zPos);
 
-      const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.055, 16), hardwareMat);
+      const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.045, 16), hardwareMat);
       hub.rotation.z = Math.PI / 2;
       hub.userData.defaultMat = hardwareMat;
       handleGroup.add(hub);
 
-      const lever = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.32, 0.032), hardwareMat);
-      lever.position.set(-0.018, -0.14, 0);
+      const lever = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.26, 0.025), hardwareMat);
+      lever.position.set(-0.015, -0.11, 0);
       lever.rotation.z = 0.06;
       lever.userData.defaultMat = hardwareMat;
       handleGroup.add(lever);
 
-      const catchPlate = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.05, 0.035), hardwareMat);
-      catchPlate.position.set(0.018, -0.22, 0);
-      catchPlate.userData.defaultMat = hardwareMat;
-      handleGroup.add(catchPlate);
-
       parentGroup.add(handleGroup);
       dynamicDoorComponents.push(hub);
       dynamicDoorComponents.push(lever);
-      dynamicDoorComponents.push(catchPlate);
     }
 
-    function buildCargoBoxes() {
+    // --- 6. SWITCH CONTAINER TYPE ---
+    window.switchContainerType = function(typeCode) {
+      if (!CONTAINER_SPECS[typeCode]) return;
+      currentContainerType = typeCode;
+      currentSpec = CONTAINER_SPECS[typeCode];
+
+      document.querySelectorAll('#left-drawer .chip-grid-4 .btn-chip').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById('btn-type-' + typeCode.toLowerCase());
+      if (activeBtn) activeBtn.classList.add('active');
+
+      document.getElementById('hud-container-badge').textContent = currentSpec.badge;
+      document.getElementById('spec-ext').textContent = `${currentSpec.extL.toFixed(3)} × ${currentSpec.extW.toFixed(3)} × ${currentSpec.extH.toFixed(3)} m`;
+      document.getElementById('spec-int').textContent = `${currentSpec.intL.toFixed(3)} × ${currentSpec.intW.toFixed(3)} × ${currentSpec.intH.toFixed(3)} m`;
+      document.getElementById('spec-vol').textContent = `${currentSpec.nominalVol.toFixed(1)} m³`;
+      document.getElementById('spec-payload').textContent = `${(currentSpec.maxPayloadTons * 1000).toLocaleString()} kg (${currentSpec.maxPayloadTons} 吨)`;
+
+      const aspect = window.innerWidth / window.innerHeight;
+      const frustumSize = currentSpec.cameraDist;
+      camera.left = -frustumSize * aspect / 2;
+      camera.right = frustumSize * aspect / 2;
+      camera.top = frustumSize / 2;
+      camera.bottom = -frustumSize / 2;
+      camera.updateProjectionMatrix();
+      controls.target.set(0, currentSpec.extH / 2, 0);
+      controls.update();
+
+      rebuildContainerModel();
+    };
+
+    // --- 7. EXECUTE SMART PACKING ALGORITHM (CORRECT ORIENTATION & GRAVITY) ---
+    window.runSmartPackingAlgorithm = function() {
+      if (cargoGroup) {
+        containerGroup.remove(cargoGroup);
+      }
       cargoGroup = new THREE.Group();
       containerGroup.add(cargoGroup);
+      boxMeshes = [];
 
-      const bottomY = -H / 2 + RAIL_H + 0.02;
+      const usableDim = {
+        length: currentSpec.intL,
+        height: currentSpec.intH,
+        width:  currentSpec.intW
+      };
 
-      const CARGO_TYPES = [
-        { name: '精密电子元器件', color: COLORS.boxBlue, tag: 'ELEC-99' },
-        { name: '重型机械标准备件', color: COLORS.boxKraft, tag: 'MECH-42' },
-        { name: '医疗无菌器械箱', color: COLORS.boxTeal, tag: 'MED-771' },
-        { name: '恒温生鲜冷链箱', color: COLORS.boxOrange, tag: 'COLD-08' },
-        { name: '汽车动力系统组件', color: COLORS.boxYellow, tag: 'AUTO-15' }
-      ];
-
-      const columns = [
-        {
-          colName: '第1列 (靠门端)',
-          x: -4.6,
-          layers: [
-            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[0] },
-            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[0] },
-            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[0], yOff: 1.3 },
-            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[0], yOff: 1.3 },
-            { w: 1.25, h: 1.15, d: 1.85, z: -0.98, type: CARGO_TYPES[0], yOff: 2.6 },
-            { w: 1.25, h: 1.15, d: 1.85, z:  0.98, type: CARGO_TYPES[0], yOff: 2.6 }
-          ]
-        },
-        {
-          colName: '第2列',
-          x: -3.25,
-          layers: [
-            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[0] },
-            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[1] },
-            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[0], yOff: 1.3 },
-            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[1], yOff: 1.3 },
-            { w: 1.25, h: 1.15, d: 1.85, z:  0.98, type: CARGO_TYPES[1], yOff: 2.6 }
-          ]
-        },
-        {
-          colName: '第3列',
-          x: -1.9,
-          layers: [
-            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[1] },
-            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[1] },
-            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[2], yOff: 1.3 },
-            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[1], yOff: 1.3 },
-            { w: 1.25, h: 1.15, d: 1.85, z: -0.98, type: CARGO_TYPES[2], yOff: 2.6 },
-            { w: 1.25, h: 1.15, d: 1.85, z:  0.98, type: CARGO_TYPES[2], yOff: 2.6 }
-          ]
-        },
-        {
-          colName: '第4列 (中部)',
-          x: -0.55,
-          layers: [
-            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[4] },
-            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[4] },
-            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[2], yOff: 1.3 },
-            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[2], yOff: 1.3 },
-            { w: 1.25, h: 1.15, d: 1.85, z: -0.98, type: CARGO_TYPES[3], yOff: 2.6 },
-            { w: 1.25, h: 1.15, d: 1.85, z:  0.98, type: CARGO_TYPES[3], yOff: 2.6 }
-          ]
-        },
-        {
-          colName: '第5列',
-          x: 0.8,
-          layers: [
-            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[4] },
-            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[4] },
-            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[3], yOff: 1.3 },
-            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[3], yOff: 1.3 },
-            { w: 1.25, h: 1.15, d: 1.85, z: -0.98, type: CARGO_TYPES[3], yOff: 2.6 },
-            { w: 1.25, h: 1.15, d: 1.85, z:  0.98, type: CARGO_TYPES[2], yOff: 2.6 }
-          ]
-        },
-        {
-          colName: '第6列',
-          x: 2.15,
-          layers: [
-            { w: 1.25, h: 0.82, d: 1.85, z: -0.98, type: CARGO_TYPES[4] },
-            { w: 1.25, h: 0.82, d: 1.85, z:  0.98, type: CARGO_TYPES[4] },
-            { w: 1.25, h: 0.82, d: 1.85, z: -0.98, type: CARGO_TYPES[4], yOff: 0.87 },
-            { w: 1.25, h: 0.82, d: 1.85, z:  0.98, type: CARGO_TYPES[4], yOff: 0.87 },
-            { w: 1.25, h: 0.82, d: 1.85, z: -0.98, type: CARGO_TYPES[4], yOff: 1.74 },
-            { w: 1.25, h: 0.82, d: 1.85, z:  0.98, type: CARGO_TYPES[4], yOff: 1.74 },
-            { w: 1.25, h: 1.10, d: 1.85, z: -0.98, type: CARGO_TYPES[3], yOff: 2.6 },
-            { w: 1.25, h: 1.10, d: 1.85, z:  0.98, type: CARGO_TYPES[4], yOff: 2.6 }
-          ]
-        },
-        {
-          colName: '第7列',
-          x: 3.5,
-          layers: [
-            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[0] },
-            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[0] },
-            { w: 1.25, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[0], yOff: 1.3 },
-            { w: 1.25, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[4], yOff: 1.3 },
-            { w: 1.25, h: 1.15, d: 1.85, z: -0.98, type: CARGO_TYPES[4], yOff: 2.6 },
-            { w: 1.25, h: 1.15, d: 1.85, z:  0.98, type: CARGO_TYPES[2], yOff: 2.6 }
-          ]
-        },
-        {
-          colName: '第8列 (盲端)',
-          x: 4.75,
-          layers: [
-            { w: 0.95, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[1] },
-            { w: 0.95, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[1] },
-            { w: 0.95, h: 1.25, d: 1.85, z: -0.98, type: CARGO_TYPES[1], yOff: 1.3 },
-            { w: 0.95, h: 1.25, d: 1.85, z:  0.98, type: CARGO_TYPES[2], yOff: 1.3 },
-            { w: 0.95, h: 1.15, d: 1.85, z: -0.98, type: CARGO_TYPES[2], yOff: 2.6 },
-            { w: 0.95, h: 1.15, d: 1.85, z:  0.98, type: CARGO_TYPES[2], yOff: 2.6 }
-          ]
-        }
-      ];
-
-      const palletMat = new THREE.MeshStandardMaterial({ color: COLORS.palletWood, roughness: 0.88, metalness: 0.05, side: THREE.DoubleSide });
-      columns.forEach(col => {
-        const palletGroup = new THREE.Group();
-        palletGroup.position.set(col.x, bottomY + 0.06, 0);
-
-        for (let sz of [-1.6, 0, 1.6]) {
-          const skid = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.08, 0.14), palletMat);
-          skid.position.set(0, -0.02, sz);
-          palletGroup.add(skid);
-        }
-
-        for (let sx of [-0.48, -0.24, 0, 0.24, 0.48]) {
-          const slat = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.03, 3.85), palletMat);
-          slat.position.set(sx, 0.035, 0);
-          slat.castShadow = true;
-          slat.receiveShadow = true;
-          palletGroup.add(slat);
-        }
-
-        cargoGroup.add(palletGroup);
+      const packer = new RobustContainerPacker(usableDim, {
+        gap: currentGap,
+        strategy: currentStrategy
       });
 
-      let boxIdx = 0;
-      columns.forEach(col => {
-        col.layers.forEach((item) => {
-          boxIdx++;
-          const yOffset = item.yOff || 0;
-          const boxY = bottomY + 0.12 + item.h / 2 + yOffset;
+      activePackingResult = packer.pack(activeManifest);
 
-          const boxGeo = new THREE.BoxGeometry(item.w - 0.04, item.h - 0.04, item.d - 0.04);
-          const texture = createBoxTexture(
-            item.type.color,
-            `${item.type.tag}-${100 + boxIdx}`,
-            boxIdx % 2 === 0 ? 'cross' : 'h'
-          );
+      // In Three.js container coordinates:
+      // Rear wall (盲端 / 柜子最里面) is at +halfL
+      // Doors (箱门端 / 封柜门) is at -halfL
+      // Our packer starts at x = 0 (Deepest Rear Wall) and advances towards x = usableDim.length (Doors)
+      // Therefore, 3D posX = (+usableDim.length / 2) - item.x - item.w / 2
+      const halfIntL = usableDim.length / 2;
+      const startY = -currentSpec.extH / 2 + RAIL_H;
+      const startZ = -usableDim.width / 2;
 
-          const boxMat = new THREE.MeshStandardMaterial({
-            color: item.type.color,
-            map: texture,
-            roughness: 0.48,
-            metalness: 0.05
-          });
+      activePackingResult.placedBoxes.forEach((item) => {
+        const boxGeo = new THREE.BoxGeometry(item.w - 0.004, item.h - 0.004, item.d - 0.004);
+        const tex = createBoxTexture(item.color, item.sku);
 
-          const boxMesh = new THREE.Mesh(boxGeo, boxMat);
-          boxMesh.position.set(col.x, boxY, item.z);
-          boxMesh.castShadow = true;
-          boxMesh.receiveShadow = true;
-
-          const skuCode = `PKG-2026-${String(boxIdx).padStart(4, '0')}`;
-          boxMesh.userData = {
-            sku: skuCode,
-            type: item.type.name,
-            weight: (18.5 + (boxIdx * 3.7) % 24).toFixed(1) + ' kg',
-            dimensions: `${Math.round(item.w * 400)} × ${Math.round(item.d * 400)} × ${Math.round(item.h * 400)} mm`,
-            layer: `第 ${Math.floor(yOffset / 1.3) + 1} 层 (稳固)`,
-            originY: boxY,
-            isCargoBox: true
-          };
-
-          registerLayerItem('cargo', `${col.colName} - 箱#${boxIdx} (${item.type.tag})`, '纸箱货物', boxMesh);
-          cargoGroup.add(boxMesh);
-          boxMeshes.push(boxMesh);
+        const boxMat = new THREE.MeshStandardMaterial({
+          color: item.color,
+          map: tex,
+          roughness: 0.48,
+          metalness: 0.05
         });
+
+        const boxMesh = new THREE.Mesh(boxGeo, boxMat);
+        const posX = halfIntL - item.x - item.w / 2; // +L/2 (rear) -> -L/2 (door)
+        const posY = startY + item.y + item.h / 2;
+        const posZ = startZ + item.z + item.d / 2;
+
+        boxMesh.position.set(posX, posY, posZ);
+        boxMesh.castShadow = true;
+        boxMesh.receiveShadow = true;
+
+        boxMesh.userData = {
+          sku: item.sku,
+          name: item.name,
+          weight: item.weight + ' kg',
+          requirement: item.requirement || '放中间',
+          dimensions: `${Math.round(item.w * 1000)} × ${Math.round(item.d * 1000)} × ${Math.round(item.h * 1000)} mm`,
+          position: `X:${posX.toFixed(2)} Y:${posY.toFixed(2)} Z:${posZ.toFixed(2)}`,
+          originY: posY,
+          isCargoBox: true
+        };
+
+        cargoGroup.add(boxMesh);
+        boxMeshes.push(boxMesh);
+      });
+
+      document.getElementById('kpi-util').innerHTML = `${activePackingResult.utilization}<span class="kpi-unit">%</span>`;
+      document.getElementById('kpi-vol').innerHTML = `${activePackingResult.usedVol}<span class="kpi-unit">/ ${currentSpec.nominalVol}m³</span>`;
+      document.getElementById('kpi-count').innerHTML = `${activePackingResult.totalCount}<span class="kpi-unit">箱</span>`;
+      document.getElementById('kpi-weight').innerHTML = `${activePackingResult.totalWeightTons}<span class="kpi-unit">T</span>`;
+    };
+
+    window.setPackingStrategy = function(strat) {
+      currentStrategy = strat;
+      document.getElementById('btn-strat-cluster').classList.toggle('active', strat === 'cluster');
+      document.getElementById('btn-strat-mec').classList.toggle('active', strat === 'mec');
+      runSmartPackingAlgorithm();
+    };
+
+    window.setGapSpacing = function(gapVal) {
+      currentGap = gapVal;
+      document.getElementById('btn-gap-zero').classList.toggle('active', gapVal === 0);
+      document.getElementById('btn-gap-subtle').classList.toggle('active', gapVal > 0);
+      runSmartPackingAlgorithm();
+    };
+
+    window.loadManifestPreset = function(presetKey) {
+      activeManifest = PRESET_MANIFESTS[presetKey] || PRODUCTION_CLEANED_MANIFEST;
+      document.querySelectorAll('#left-drawer .chip-grid-2 .btn-chip').forEach(b => b.classList.remove('active'));
+      const btn = document.getElementById('btn-pre-' + presetKey);
+      if (btn) btn.classList.add('active');
+      renderManifestUI();
+      runSmartPackingAlgorithm();
+    };
+
+    function renderManifestUI() {
+      const container = document.getElementById('manifest-list-wrap');
+      if (!container) return;
+      container.innerHTML = '';
+
+      document.getElementById('manifest-sku-count').textContent = `${activeManifest.length} 种 SKU`;
+
+      activeManifest.forEach(sku => {
+        const hexColor = '#' + new THREE.Color(sku.color).getHexString();
+        const card = document.createElement('div');
+        card.className = 'sku-item';
+        card.innerHTML = `
+          <div class="sku-item-top">
+            <span style="display:flex; align-items:center; gap:6px;">
+              <span style="width:8px; height:8px; border-radius:2px; background:${hexColor};"></span>
+              <span>${sku.name}</span>
+            </span>
+            <span class="req-tag ${getReqClass(sku.requirement)}">${sku.requirement || '放中间'}</span>
+          </div>
+          <div class="sku-meta">
+            <span>尺寸: ${sku.w}×${sku.d}×${sku.h}m • 单重: ${sku.weight}kg</span>
+            <strong style="color:var(--primary);">${sku.quantity}箱</strong>
+          </div>
+        `;
+        container.appendChild(card);
       });
     }
 
-    // --- POPULATE LAYER TREE UI ---
-    function populateLayerTreeUI() {
-      for (const [catKey, list] of Object.entries(sceneLayers)) {
-        const container = document.getElementById('grp-' + catKey);
-        if (!container) continue;
-        container.innerHTML = '';
-
-        list.forEach((mesh, idx) => {
-          const itemEl = document.createElement('div');
-          itemEl.className = 'layer-item';
-          itemEl.id = `layer-node-${catKey}-${idx}`;
-          itemEl.innerHTML = `
-            <div class="layer-item-left">
-              <span>${mesh.userData.name}</span>
-            </div>
-            <div class="group-actions" onclick="event.stopPropagation()">
-              <button class="icon-btn ${mesh.visible ? 'active' : ''}" id="vis-btn-${catKey}-${idx}" title="显示/隐藏" onclick="toggleItemVisibility('${catKey}', ${idx})">👁️</button>
-            </div>
-          `;
-          itemEl.onclick = () => selectObject(mesh, itemEl);
-          container.appendChild(itemEl);
-        });
-      }
-    }
-
-    // --- SELECTION & INSPECTOR SYSTEM ---
-    window.selectObject = function(mesh, itemEl) {
-      if (selectedObject && selectedObject.material && selectedObject.material.emissive) {
-        selectedObject.material.emissive.setHex(selectedObject.userData.prevEmissive || 0x000000);
-      }
-
-      document.querySelectorAll('.layer-item').forEach(el => el.classList.remove('selected'));
-      if (itemEl) itemEl.classList.add('selected');
-
-      selectedObject = mesh;
-      if (mesh && mesh.material && mesh.material.emissive) {
-        mesh.userData.prevEmissive = mesh.material.emissive.getHex();
-        mesh.material.emissive.setHex(0x3b82f6);
-      }
-
-      if (mesh) {
-        selectionBoxHelper.setFromObject(mesh);
-        selectionBoxHelper.visible = true;
-      } else {
-        selectionBoxHelper.visible = false;
-      }
-
-      const inspCard = document.getElementById('inspector-card');
-      if (mesh) {
-        inspCard.style.display = 'flex';
-        document.getElementById('insp-name').textContent = mesh.userData.name || '未命名构件';
-        document.getElementById('insp-category').textContent = mesh.userData.category || 'Container';
-        document.getElementById('insp-type').textContent = mesh.userData.layerType || 'Mesh';
-        
-        const pos = mesh.position;
-        document.getElementById('insp-pos').textContent = `X:${pos.x.toFixed(2)} Y:${pos.y.toFixed(2)} Z:${pos.z.toFixed(2)}`;
-
-        const box = new THREE.Box3().setFromObject(mesh);
-        const size = new THREE.Vector3();
-        box.getSize(size);
-        document.getElementById('insp-size').textContent = `${(size.x * 1000).toFixed(0)} × ${(size.y * 1000).toFixed(0)} × ${(size.z * 1000).toFixed(0)} mm`;
-      } else {
-        inspCard.style.display = 'none';
-      }
-    };
-
-    window.deselectObject = function() {
-      selectObject(null, null);
-    };
-
-    window.toggleSelectedWireframe = function() {
-      if (!selectedObject || !selectedObject.material) return;
-      selectedObject.material.wireframe = !selectedObject.material.wireframe;
-    };
-
-    window.isolateSelectedObject = function() {
-      if (!selectedObject) return;
-      const isCurrentlyIsolated = selectedObject.userData.isIsolated;
-      for (const list of Object.values(sceneLayers)) {
-        list.forEach(m => {
-          m.visible = isCurrentlyIsolated ? true : (m === selectedObject);
-        });
-      }
-      selectedObject.userData.isIsolated = !isCurrentlyIsolated;
-    };
-
-    window.toggleItemVisibility = function(catKey, idx) {
-      const mesh = sceneLayers[catKey][idx];
-      if (!mesh) return;
-      mesh.visible = !mesh.visible;
-      const btn = document.getElementById(`vis-btn-${catKey}-${idx}`);
-      if (btn) btn.classList.toggle('active', mesh.visible);
-    };
-
-    window.toggleGroupVisibility = function(catKey) {
-      const list = sceneLayers[catKey];
-      if (!list || list.length === 0) return;
-      const willShow = !list[0].visible;
-      list.forEach((mesh, idx) => {
-        mesh.visible = willShow;
-        const btn = document.getElementById(`vis-btn-${catKey}-${idx}`);
-        if (btn) btn.classList.toggle('active', willShow);
-      });
-    };
-
-    window.toggleLayerAccordion = function(id, arrowId) {
-      const el = document.getElementById(id);
-      const arr = document.getElementById(arrowId);
-      if (!el) return;
-      const isCollapsed = el.classList.toggle('collapsed');
-      if (arr) arr.classList.toggle('collapsed', isCollapsed);
-    };
-
-    window.switchLeftPanelTab = function(tabName) {
-      document.querySelectorAll('.panel-tab-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById('tab-btn-' + tabName).classList.add('active');
-
-      document.getElementById('panel-layers-content').style.display = tabName === 'layers' ? 'flex' : 'none';
-      document.getElementById('panel-actions-content').style.display = tabName === 'actions' ? 'flex' : 'none';
-    };
-
-    window.toggleDebugInspector = function() {
-      const leftPanel = document.getElementById('left-panel');
-      const btn = document.getElementById('btn-debug-toggle');
-      const isHidden = leftPanel.style.display === 'none';
-      leftPanel.style.display = isHidden ? 'flex' : 'none';
+    // --- 8. CLEAN WORKBENCH DRAWER TOGGLES ---
+    window.toggleLeftDrawer = function() {
+      const drawer = document.getElementById('left-drawer');
+      const btn = document.getElementById('btn-toggle-left');
+      const isHidden = drawer.style.display === 'none';
+      drawer.style.display = isHidden ? 'flex' : 'none';
       btn.classList.toggle('active', isHidden);
+      if (isHidden) {
+        document.getElementById('studio-drawer').style.display = 'none';
+        document.getElementById('btn-toggle-studio').classList.remove('active');
+      }
     };
 
-    // --- QUICK SHELL OPACITY SLIDER ---
+    window.toggleStudioDrawer = function() {
+      const drawer = document.getElementById('studio-drawer');
+      const btn = document.getElementById('btn-toggle-studio');
+      const isHidden = drawer.style.display === 'none';
+      drawer.style.display = isHidden ? 'flex' : 'none';
+      btn.classList.toggle('active', isHidden);
+      if (isHidden) {
+        document.getElementById('left-drawer').style.display = 'none';
+        document.getElementById('btn-toggle-left').classList.remove('active');
+      }
+    };
+
+    window.setSmartCutaway = function(state) {
+      renderConfig.smartCutaway = state;
+      document.getElementById('btn-cutaway-on').classList.toggle('active', state);
+      document.getElementById('btn-cutaway-off').classList.toggle('active', !state);
+    };
+
     window.updateForegroundOpacity = function(val) {
       const numVal = parseFloat(val);
       renderConfig.foregroundOpacity = numVal;
       
       const label = document.getElementById('val-quick-trans');
       if (label) {
-        if (numVal === 0) {
-          label.textContent = '0% (纯净隐藏)';
-        } else {
-          label.textContent = Math.round(numVal * 100) + '% 半透明';
-        }
+        if (numVal === 0) label.textContent = '0%';
+        else label.textContent = Math.round(numVal * 100) + '%';
       }
 
       if (foregroundCutawayMat) {
@@ -2312,258 +2372,42 @@
       }
     };
 
-    // --- ADVANCED 6-FACE FULL TOPOLOGICAL ADAPTIVE CUTAWAY ENGINE ---
-    const _camDir = new THREE.Vector3();
-    function updateAdaptiveCutaway() {
-      if (!camera || dynamicWalls.length === 0) return;
-
-      // Case A: If Smart Cutaway is DISABLED -> Force 100% Solid & Visible everywhere!
-      if (!renderConfig.smartCutaway) {
-        dynamicWalls.forEach(wall => {
-          if (wall.material !== wall.userData.defaultMat) wall.material = wall.userData.defaultMat;
-          wall.visible = true;
-        });
-
-        dynamicDoorComponents.forEach(comp => {
-          if (comp.isMesh) {
-            if (comp.material !== comp.userData.defaultMat) comp.material = comp.userData.defaultMat;
-            comp.visible = true;
-          }
-        });
-
-        dynamicSkeletons.forEach(skelMesh => {
-          if (skelMesh.material !== frameSolidMat) skelMesh.material = frameSolidMat;
-          skelMesh.visible = true;
-        });
-        return;
-      }
-
-      // Case B: Smart Cutaway is ENABLED -> Calculate dynamic dot products across all 6 directions
-      camera.getWorldPosition(_camDir);
-      _camDir.y -= (H / 2 + 0.08);
-      _camDir.normalize();
-
-      const faceStates = {
-        floor: false,
-        roof: false,
-        front: false,
-        back: false,
-        rear: false,
-        door: false
-      };
-
-      // 1. Dynamic Enclosing Walls (Roof +Y, Floor -Y, Front +Z, Back -Z, Rear +X)
-      dynamicWalls.forEach(wall => {
-        const dot = _camDir.dot(wall.userData.normal);
-        const isCutaway = dot > 0.02;
-        faceStates[wall.userData.faceKey] = isCutaway;
-
-        if (isCutaway) {
-          if (wall.material !== foregroundCutawayMat) wall.material = foregroundCutawayMat;
-          wall.visible = renderConfig.foregroundOpacity > 0.005;
-        } else {
-          const defaultMat = wall.userData.defaultMat || solidBackMat;
-          if (wall.material !== defaultMat) wall.material = defaultMat;
-          wall.visible = true;
-        }
-      });
-
-      // 2. Dynamic Front Door Assembly (-X Face)
-      const doorDot = _camDir.dot(new THREE.Vector3(-1, 0, 0));
-      const isDoorCutaway = !isDoorOpen && doorDot > 0.02;
-      faceStates['door'] = isDoorCutaway;
-
-      dynamicDoorComponents.forEach(comp => {
-        if (comp.isMesh) {
-          if (isDoorCutaway) {
-            if (comp.material !== foregroundCutawayMat) comp.material = foregroundCutawayMat;
-            comp.visible = renderConfig.foregroundOpacity > 0.005;
-          } else {
-            const defMat = comp.userData.defaultMat || frameSolidMat;
-            if (comp.material !== defMat) comp.material = defMat;
-            comp.visible = true;
-          }
-        }
-      });
-
-      // 3. Strict Topological Adjacency Evaluation for Skeleton Rails, Posts & Castings
-      dynamicSkeletons.forEach(skelMesh => {
-        const adj = skelMesh.userData.adjacentFaces;
-        if (!adj || adj.length === 0) return;
-
-        let allAdjacentCutaway = true;
-        for (const faceKey of adj) {
-          if (!faceStates[faceKey]) {
-            allAdjacentCutaway = false;
-            break;
-          }
-        }
-
-        if (allAdjacentCutaway) {
-          if (skelMesh.material !== foregroundCutawayMat) skelMesh.material = foregroundCutawayMat;
-          skelMesh.visible = renderConfig.foregroundOpacity > 0.005;
-        } else {
-          if (skelMesh.material !== frameSolidMat) skelMesh.material = frameSolidMat;
-          skelMesh.visible = true;
-        }
-      });
-    }
-
-    // --- REALTIME PARAMETER LIVE UPDATE SYSTEM ---
-    window.updateParam = function(key, value) {
-      if (key === 'showShadow' || key === 'smartCutaway') {
-        renderConfig[key] = Boolean(value);
-      } else {
-        renderConfig[key] = isNaN(value) ? value : parseFloat(value);
-      }
-
+    window.updateParam = function(key, val) {
+      renderConfig[key] = parseFloat(val);
       const valLabel = document.getElementById('val-' + key);
       if (valLabel) {
-        if (key === 'sunAzimuth' || key === 'sunElevation') {
-          valLabel.textContent = Math.round(value) + '°';
-        } else {
-          valLabel.textContent = typeof value === 'number' || !isNaN(value) ? parseFloat(value).toFixed(2) : value;
-        }
+        if (key === 'sunAzimuth' || key === 'sunElevation') valLabel.textContent = Math.round(val) + '°';
+        else valLabel.textContent = parseFloat(val).toFixed(2);
       }
 
-      // 1. Cutaway Foreground Shell
-      if (key === 'foregroundOpacity') {
-        updateForegroundOpacity(renderConfig.foregroundOpacity);
-      }
-      if (key === 'glassColor' && foregroundCutawayMat) {
-        foregroundCutawayMat.color.set(renderConfig.glassColor);
-      }
-
-      // 2. Steel Frame
-      if (key === 'frameColor' && frameSolidMat) {
-        frameSolidMat.color.set(renderConfig.frameColor);
-      }
-      if (key === 'frameMetal' && frameSolidMat) {
-        frameSolidMat.metalness = renderConfig.frameMetal;
-      }
-      if (key === 'frameRough' && frameSolidMat) {
-        frameSolidMat.roughness = renderConfig.frameRough;
-      }
-      if (key === 'bump' && frameSolidMat) {
-        frameSolidMat.normalScale.set(renderConfig.bump, renderConfig.bump);
-      }
-
-      // 3. Solid Back Wall
-      if (key === 'backColor' && solidBackMat) {
-        solidBackMat.color.set(renderConfig.backColor);
-      }
-
-      // 4. Lighting, Shadows & Angles
-      if (key === 'exposure') renderer.toneMappingExposure = renderConfig.exposure;
-      if (key === 'sunIntensity') sunLight.intensity = renderConfig.sunIntensity;
-      if (key === 'ambIntensity') ambientLight.intensity = renderConfig.ambIntensity;
-      if (key === 'shadowRadius') sunLight.shadow.radius = renderConfig.shadowRadius;
-      
-      if (key === 'sunAzimuth' || key === 'sunElevation' || key === 'sunDistance') {
-        updateSunLightPosition();
-      }
-
-      if (key === 'showShadow') {
-        sunLight.castShadow = renderConfig.showShadow;
-        if (groundMesh) groundMesh.receiveShadow = renderConfig.showShadow;
-        if (contactShadowPlane) contactShadowPlane.visible = renderConfig.showShadow;
-      }
-
-      if (key === 'groundColor') {
-        scene.background.set(renderConfig.groundColor);
-        if (groundMesh) groundMesh.material.color.set(renderConfig.groundColor);
-      }
-    };
-
-    // --- Presets ---
-    window.applyPreset = function(name) {
-      document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
-      event.target.classList.add('active');
-
-      if (name === 'reference') {
-        updateParam('foregroundOpacity', 0.0);
-        updateParam('glassRoughness', 0.15);
-        updateParam('glassColor', '#b8d7f4');
-        updateParam('frameColor', '#2f383d');
-        updateParam('frameMetal', 0.5);
-        updateParam('frameRough', 0.68);
-        updateParam('bump', 0.94);
-        updateParam('backColor', '#43474c');
-        updateParam('exposure', 0.72);
-        updateParam('sunIntensity', 4.0);
-        updateParam('ambIntensity', 0.2);
-        updateParam('shadowRadius', 1.6);
-        updateParam('groundColor', '#e0e7f0');
-        updateParam('sunAzimuth', 42);
-        updateParam('sunElevation', 52);
-        updateParam('showShadow', true);
-        updateParam('smartCutaway', true);
-      } else if (name === 'pure') {
-        updateParam('foregroundOpacity', 0.0);
-        updateParam('exposure', 0.75);
-      } else if (name === 'crystal') {
-        updateParam('foregroundOpacity', 0.35);
-        updateParam('glassColor', '#c5e2fd');
-        updateParam('exposure', 0.85);
-      } else if (name === 'frost') {
-        updateParam('foregroundOpacity', 0.65);
-        updateParam('glassRoughness', 0.45);
-        updateParam('glassColor', '#9ec6e8');
-      }
-    };
-
-    window.switchTab = function(tabName) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      event.target.classList.add('active');
-      document.getElementById('tab-' + tabName).classList.add('active');
-    };
-
-    window.toggleDrawer = function() {
-      const drawer = document.getElementById('studio-drawer');
-      const btn = document.getElementById('btn-toggle-studio');
-      const isHidden = drawer.style.display === 'none';
-      drawer.style.display = isHidden ? 'flex' : 'none';
-      btn.classList.toggle('active', isHidden);
+      if (key === 'frameMetal' && frameSolidMat) frameSolidMat.metalness = renderConfig.frameMetal;
+      if (key === 'frameRough' && frameSolidMat) frameSolidMat.roughness = renderConfig.frameRough;
+      if (key === 'sunAzimuth' || key === 'sunElevation') updateSunLightPosition();
     };
 
     window.copyCurrentConfig = function() {
       const json = JSON.stringify(renderConfig, null, 2);
       navigator.clipboard.writeText(json).then(() => {
-        alert('当前渲染与光影配置已成功复制到剪贴板！\n\n' + json);
+        alert('当前渲染配置已复制到剪贴板！');
       });
     };
 
-    // --- Camera View Transitions ---
+    // --- 9. FLOATING BOTTOM ISLAND ACTIONS ---
     window.switchCamera = function(type) {
-      document.querySelectorAll('.btn-chip').forEach(b => {
-        if (b.id && b.id.startsWith('btn-')) b.classList.remove('active');
-      });
-      const activeBtn = document.getElementById('btn-' + type);
+      document.querySelectorAll('.bottom-island .seg-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById('btn-cam-' + type);
       if (activeBtn) activeBtn.classList.add('active');
 
       const targetPos = new THREE.Vector3();
-      const targetLook = new THREE.Vector3(0, 1.8, 0);
+      const targetLook = new THREE.Vector3(0, currentSpec.extH / 2, 0);
 
       switch(type) {
-        case 'iso':
-          targetPos.set(-20, 20 * Math.SQRT2, 20);
-          break;
-        case 'front':
-          targetPos.set(-30, 1.8, 0);
-          break;
-        case 'side':
-          targetPos.set(0, 1.8, 30);
-          break;
-        case 'top':
-          targetPos.set(0, 35, 0.01);
-          break;
+        case 'iso': targetPos.set(-20, 20 * Math.SQRT2, 20); break;
+        case 'front': targetPos.set(-30, currentSpec.extH / 2, 0); break;
+        case 'side': targetPos.set(0, currentSpec.extH / 2, 30); break;
+        case 'top': targetPos.set(0, 35, 0.01); break;
       }
 
-      animateCameraTo(targetPos, targetLook);
-    };
-
-    function animateCameraTo(targetPos, targetLook) {
       const startPos = camera.position.clone();
       const startLook = controls.target.clone();
       const duration = 600;
@@ -2581,15 +2425,15 @@
         if (p < 1) requestAnimationFrame(update);
       }
       requestAnimationFrame(update);
-    }
+    };
 
-    window.toggleDoor = function(open) {
-      isDoorOpen = open;
-      document.getElementById('btn-door-open').classList.toggle('active', open);
-      document.getElementById('btn-door-close').classList.toggle('active', !open);
+    window.toggleDoorAction = function() {
+      isDoorOpen = !isDoorOpen;
+      document.getElementById('txt-door').textContent = isDoorOpen ? '关闭箱门' : '打开箱门';
+      document.getElementById('btn-door-toggle').classList.toggle('primary', isDoorOpen);
 
-      const targetAngleL = open ? -Math.PI * 0.72 : 0;
-      const targetAngleR = open ?  Math.PI * 0.72 : 0;
+      const targetAngleL = isDoorOpen ? -Math.PI * 0.72 : 0;
+      const targetAngleR = isDoorOpen ?  Math.PI * 0.72 : 0;
       const startL = doorLeftGroup.rotation.y;
       const startR = doorRightGroup.rotation.y;
       const duration = 700;
@@ -2619,12 +2463,12 @@
 
       boxMeshes.forEach((box, i) => {
         const originY = box.userData.originY;
-        box.position.y = originY + 12 + (i % 6) * 1.5;
+        box.position.y = originY + 12 + (i % 8) * 1.0;
         box.scale.set(0.01, 0.01, 0.01);
 
         setTimeout(() => {
           const startTime = performance.now();
-          const duration = 400;
+          const duration = 350;
 
           function drop(time) {
             const elapsed = time - startTime;
@@ -2639,21 +2483,106 @@
             } else if (i === boxMeshes.length - 1) {
               isPackingAnimating = false;
               animBtn.style.opacity = '1';
-              animText.textContent = '重新演示装柜';
+              animText.textContent = '演示装柜';
             }
           }
           requestAnimationFrame(drop);
-        }, i * 30);
+        }, i * 15);
       });
     };
 
-    // --- Tooltip & Raycast ---
+    // --- 10. TOPOLOGICAL CUTAWAY & RAYCAST ---
+    const _camDir = new THREE.Vector3();
+    function updateAdaptiveCutaway() {
+      if (!camera || dynamicWalls.length === 0) return;
+
+      const H = currentSpec.extH;
+
+      if (!renderConfig.smartCutaway) {
+        dynamicWalls.forEach(wall => {
+          if (wall.material !== wall.userData.defaultMat) wall.material = wall.userData.defaultMat;
+          wall.visible = true;
+        });
+        dynamicDoorComponents.forEach(comp => {
+          if (comp.isMesh) {
+            if (comp.material !== comp.userData.defaultMat) comp.material = comp.userData.defaultMat;
+            comp.visible = true;
+          }
+        });
+        dynamicSkeletons.forEach(skelMesh => {
+          if (skelMesh.material !== frameSolidMat) skelMesh.material = frameSolidMat;
+          skelMesh.visible = true;
+        });
+        return;
+      }
+
+      camera.getWorldPosition(_camDir);
+      _camDir.y -= (H / 2 + 0.04);
+      _camDir.normalize();
+
+      const faceStates = { floor: false, roof: false, front: false, back: false, rear: false, door: false };
+
+      dynamicWalls.forEach(wall => {
+        const dot = _camDir.dot(wall.userData.normal);
+        const isCutaway = dot > 0.02;
+        faceStates[wall.userData.faceKey] = isCutaway;
+
+        if (isCutaway) {
+          if (wall.material !== foregroundCutawayMat) wall.material = foregroundCutawayMat;
+          wall.visible = renderConfig.foregroundOpacity > 0.005;
+        } else {
+          const defaultMat = wall.userData.defaultMat || solidBackMat;
+          if (wall.material !== defaultMat) wall.material = defaultMat;
+          wall.visible = true;
+        }
+      });
+
+      const doorDot = _camDir.dot(new THREE.Vector3(-1, 0, 0));
+      const isDoorCutaway = !isDoorOpen && doorDot > 0.02;
+      faceStates['door'] = isDoorCutaway;
+
+      dynamicDoorComponents.forEach(comp => {
+        if (comp.isMesh) {
+          if (isDoorCutaway) {
+            if (comp.material !== foregroundCutawayMat) comp.material = foregroundCutawayMat;
+            comp.visible = renderConfig.foregroundOpacity > 0.005;
+          } else {
+            const defMat = comp.userData.defaultMat || frameSolidMat;
+            if (comp.material !== defMat) comp.material = defMat;
+            comp.visible = true;
+          }
+        }
+      });
+
+      dynamicSkeletons.forEach(skelMesh => {
+        const adj = skelMesh.userData.adjacentFaces;
+        if (!adj || adj.length === 0) return;
+
+        let allAdjacentCutaway = true;
+        for (const faceKey of adj) {
+          if (!faceStates[faceKey]) {
+            allAdjacentCutaway = false;
+            break;
+          }
+        }
+
+        if (allAdjacentCutaway) {
+          if (skelMesh.material !== foregroundCutawayMat) skelMesh.material = foregroundCutawayMat;
+          skelMesh.visible = renderConfig.foregroundOpacity > 0.005;
+        } else {
+          if (skelMesh.material !== frameSolidMat) skelMesh.material = frameSolidMat;
+          skelMesh.visible = true;
+        }
+      });
+    }
+
     const tooltip = document.getElementById('box-tooltip');
     const ttSku = document.getElementById('tt-sku');
     const ttType = document.getElementById('tt-type');
     const ttDim = document.getElementById('tt-dim');
     const ttWeight = document.getElementById('tt-weight');
-    const ttLayer = document.getElementById('tt-layer');
+    const ttReq = document.getElementById('tt-req');
+    const ttPos = document.getElementById('tt-pos');
 
     function onMouseMove(event) {
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -2670,20 +2599,21 @@
       if (intersects.length > 0) {
         const hit = intersects[0].object;
         if (hoveredBox !== hit) {
-          if (hoveredBox && hoveredBox !== selectedObject) hoveredBox.material.emissive.setHex(0x000000);
+          if (hoveredBox) hoveredBox.material.emissive.setHex(0x000000);
           hoveredBox = hit;
-          if (hoveredBox !== selectedObject) hoveredBox.material.emissive.setHex(0x223355);
+          hoveredBox.material.emissive.setHex(0x223355);
 
           const d = hit.userData;
           ttSku.textContent = `SKU: ${d.sku}`;
-          ttType.textContent = d.type;
+          ttType.textContent = d.name;
           ttDim.textContent = d.dimensions;
           ttWeight.textContent = d.weight;
-          ttLayer.textContent = d.layer;
+          ttReq.textContent = d.requirement;
+          ttPos.textContent = d.position;
           tooltip.style.display = 'block';
         }
       } else {
-        if (hoveredBox && hoveredBox !== selectedObject) {
+        if (hoveredBox) {
           hoveredBox.material.emissive.setHex(0x000000);
           hoveredBox = null;
           tooltip.style.display = 'none';
@@ -2691,35 +2621,9 @@
       }
     }
 
-    function onMouseClick(event) {
-      raycaster.setFromCamera(mouse, camera);
-      const allObjects = [];
-      for (const list of Object.values(sceneLayers)) allObjects.push(...list);
-
-      const intersects = raycaster.intersectObjects(allObjects);
-      if (intersects.length > 0) {
-        const hit = intersects[0].object;
-        selectObject(hit, null);
-
-        for (const [catKey, list] of Object.entries(sceneLayers)) {
-          const idx = list.indexOf(hit);
-          if (idx !== -1) {
-            const itemEl = document.getElementById(`layer-node-${catKey}-${idx}`);
-            if (itemEl) {
-              itemEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-              itemEl.classList.add('selected');
-            }
-            break;
-          }
-        }
-      } else {
-        deselectObject();
-      }
-    }
-
     function onWindowResize() {
       const aspect = window.innerWidth / window.innerHeight;
-      const frustumSize = 13.5;
+      const frustumSize = currentSpec.cameraDist;
       camera.left = -frustumSize * aspect / 2;
       camera.right = frustumSize * aspect / 2;
       camera.top = frustumSize / 2;
@@ -2731,9 +2635,6 @@
     function animate() {
       requestAnimationFrame(animate);
       controls.update();
-      if (selectionBoxHelper && selectedObject && selectionBoxHelper.visible) {
-        selectionBoxHelper.update();
-      }
       updateAdaptiveCutaway();
       checkRaycast();
       renderer.render(scene, camera);
