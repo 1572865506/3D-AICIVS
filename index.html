@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D 智能货柜装载填充系统 | 严格重力物理支撑与同品聚合块装算法</title>
+  <title>3D 智能货柜装载填充系统 | 零穿模精密结构、全功能专业调优控制台与纯净边缘锚点坞</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,22 +12,25 @@
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
       --primary-light: #eff6ff;
+      --primary-glow: rgba(37, 99, 235, 0.28);
       --slate-900: #0f172a;
       --slate-800: #1e293b;
       --slate-700: #334155;
       --slate-600: #475569;
       --slate-500: #64748b;
       --slate-400: #94a3b8;
+      --slate-300: #cbd5e1;
       --slate-200: #e2e8f0;
       --slate-100: #f1f5f9;
       --slate-50: #f8fafc;
       --success: #059669;
       --success-light: #ecfdf5;
       --glass-bg: rgba(255, 255, 255, 0.86);
-      --glass-border: rgba(255, 255, 255, 0.95);
+      --glass-border: rgba(255, 255, 255, 0.96);
+      --glass-dark: rgba(15, 23, 42, 0.82);
       --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.04);
-      --shadow-md: 0 12px 28px -6px rgba(15, 23, 42, 0.08);
-      --shadow-lg: 0 24px 48px -12px rgba(15, 23, 42, 0.12);
+      --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 20px 40px -10px rgba(15, 23, 42, 0.16);
     }
 
     * {
@@ -43,7 +46,7 @@
       height: 100%;
       overflow: hidden;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #e0e7f0;
+      background-color: #dce5ef;
       color: var(--slate-900);
       -webkit-font-smoothing: antialiased;
     }
@@ -78,12 +81,12 @@
 
     .glass-card {
       background: var(--glass-bg);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
       border: 1px solid var(--glass-border);
       border-radius: 14px;
       box-shadow: var(--shadow-md);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     /* 1. TOP HEADER */
@@ -101,26 +104,26 @@
     }
 
     .brand-box {
-      padding: 8px 14px;
+      padding: 7px 14px;
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
     .brand-logo {
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       border-radius: 9px;
       background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.28);
+      box-shadow: 0 4px 12px var(--primary-glow);
     }
 
     .brand-text h1 {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 800;
       color: var(--slate-900);
       letter-spacing: -0.02em;
@@ -132,13 +135,14 @@
       align-items: center;
       gap: 4px;
       margin-top: 2px;
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 700;
       font-family: 'JetBrains Mono', monospace;
       color: var(--primary);
       background: var(--primary-light);
       padding: 1px 6px;
       border-radius: 4px;
+      border: 1px solid rgba(37, 99, 235, 0.15);
     }
 
     /* Center Modern KPI HUD */
@@ -146,16 +150,16 @@
       display: flex;
       align-items: center;
       gap: 1px;
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(20px);
-      padding: 4px 8px;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(24px);
+      padding: 3px 6px;
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.95);
       box-shadow: var(--shadow-sm);
     }
 
     .kpi-item {
-      padding: 4px 14px;
+      padding: 4px 12px;
       display: flex;
       flex-direction: column;
       gap: 0;
@@ -166,15 +170,15 @@
     }
 
     .kpi-label {
-      font-size: 9.5px;
-      font-weight: 700;
-      color: var(--slate-500);
+      font-size: 9px;
+      font-weight: 800;
+      color: var(--slate-400);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
     }
 
     .kpi-val {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 800;
       font-family: 'JetBrains Mono', monospace;
       color: var(--slate-900);
@@ -183,9 +187,35 @@
       gap: 2px;
     }
     .kpi-unit {
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 600;
       color: var(--slate-500);
+    }
+
+    .cache-status-badge {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #059669;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      padding: 3px 8px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 1px 3px rgba(5, 150, 105, 0.1);
+      transition: all 0.2s ease;
+    }
+    .cache-pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      animation: pulseGlow 1.8s infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+      50% { transform: scale(1.15); opacity: 0.85; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0); }
     }
 
     .header-actions {
@@ -206,7 +236,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
     }
     .btn-action-pill:hover {
@@ -215,7 +245,7 @@
     }
     .btn-action-pill.active {
       background: var(--primary);
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+      box-shadow: 0 4px 14px var(--primary-glow);
     }
     .btn-action-pill.secondary {
       background: rgba(255, 255, 255, 0.88);
@@ -233,21 +263,165 @@
       border-color: var(--primary);
     }
 
-    /* 2. FLOATING BOTTOM CONTROL ISLAND */
-    .bottom-island-wrap {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 14px;
+    /* 2. FLOATING BOTTOM CONTROL DOCK & EDGE-ALIGNED TRANSPARENT ANCHOR DOCK */
+    .bottom-floating-dock {
+      position: absolute;
+      bottom: 16px;
+      left: 0;
       width: 100%;
+      height: auto;
+      pointer-events: none;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 20px;
+      z-index: 20;
     }
 
+    /* Operation Island is strictly centered on the page horizontally */
     .bottom-island {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
       padding: 6px 10px;
       display: flex;
       align-items: center;
       gap: 8px;
       border-radius: 14px;
+      pointer-events: auto;
+      flex-shrink: 0;
+      z-index: 25;
+    }
+
+    /* Edge-Aligned Transparent SKU Anchor Dock spanning from right of center island to right screen edge */
+    .sku-anchor-panel {
+      position: absolute;
+      right: 20px;
+      left: calc(50% + 290px);
+      bottom: 0;
+      pointer-events: auto;
+      max-height: 94px; /* Max 3 rows */
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(203, 213, 225, 0.6) transparent;
+      background: transparent; /* No container background */
+      border: none;             /* No container border */
+      box-shadow: none;         /* No container shadow */
+      backdrop-filter: none;
+      padding-right: 4px;
+      z-index: 20;
+    }
+
+    @media (max-width: 1200px) {
+      .sku-anchor-panel {
+        left: auto;
+        right: 16px;
+        max-width: 320px;
+      }
+    }
+    .sku-anchor-panel::-webkit-scrollbar { width: 4px; }
+    .sku-anchor-panel::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.5); border-radius: 2px; }
+
+    .anchor-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      padding-bottom: 2px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .anchor-label {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: var(--slate-600);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    }
+
+    .anchor-btn-reset {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--slate-700);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .anchor-btn-reset:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 2px 6px var(--primary-glow);
+    }
+
+    .anchor-chips-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 6px;
+      align-items: center;
+    }
+
+    .anchor-chip {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: 7px;
+      padding: 3.5px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--slate-800);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 5px rgba(15, 23, 42, 0.05);
+    }
+    .anchor-chip:hover {
+      background: #ffffff;
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px var(--primary-glow);
+    }
+    .anchor-chip.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 3px 10px var(--primary-glow);
+    }
+    .anchor-chip.active .anchor-dot {
+      border-color: #ffffff;
+      box-shadow: 0 0 4px #ffffff;
+    }
+    .anchor-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      flex-shrink: 0;
+    }
+    .anchor-count-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      opacity: 0.85;
+      font-weight: 600;
     }
 
     .segmented-control {
@@ -306,7 +480,7 @@
     .btn-island-action.primary {
       background: var(--primary);
       color: white;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.28);
+      box-shadow: 0 2px 8px var(--primary-glow);
     }
     .btn-island-action.primary:hover {
       background: var(--primary-hover);
@@ -330,7 +504,7 @@
       width: 65px;
       height: 4px;
       border-radius: 2px;
-      background: var(--slate-300, #cbd5e1);
+      background: var(--slate-300);
       outline: none;
       cursor: pointer;
     }
@@ -350,7 +524,7 @@
       position: absolute;
       top: 74px;
       bottom: 20px;
-      width: 380px;
+      width: 400px;
       padding: 16px;
       display: flex;
       flex-direction: column;
@@ -401,7 +575,7 @@
       padding-right: 2px;
     }
     .drawer-scroll-body::-webkit-scrollbar { width: 4px; }
-    .drawer-scroll-body::-webkit-scrollbar-thumb { background: var(--slate-300, #cbd5e1); border-radius: 2px; }
+    .drawer-scroll-body::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 2px; }
 
     .section-card {
       background: rgba(248, 250, 252, 0.85);
@@ -457,12 +631,35 @@
       background: var(--primary);
       color: #ffffff;
       border-color: var(--primary);
-      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+      box-shadow: 0 2px 6px var(--primary-glow);
+    }
+
+    /* Color Swatch Buttons in Studio */
+    .color-swatch-grid {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .color-swatch-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      border: 2px solid white;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .color-swatch-btn:hover {
+      transform: scale(1.1);
+    }
+    .color-swatch-btn.active {
+      outline: 2px solid var(--primary);
+      transform: scale(1.08);
     }
 
     /* Upload Drop Zone */
     .upload-zone {
-      border: 1.5px dashed var(--slate-300, #cbd5e1);
+      border: 1.5px dashed var(--slate-300);
       background: #ffffff;
       border-radius: 10px;
       padding: 14px 12px;
@@ -505,23 +702,112 @@
     .spec-k { color: var(--slate-500); }
     .spec-v { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--slate-800); }
 
-    /* SKU List Cards */
+    /* HIGH-END MANIFEST TOOLBAR & SEGMENTED ISOLATION SWITCH */
+    .manifest-toolbar-card {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #ffffff;
+      border: 1px solid var(--slate-200);
+      padding: 8px 10px;
+      border-radius: 9px;
+    }
+
+    .manifest-tools-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10.5px;
+    }
+
+    .tool-action-btn {
+      background: var(--slate-100);
+      border: 1px solid var(--slate-200);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--slate-700);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tool-action-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Segmented Pill Group for Display Mode */
+    .seg-pill-group {
+      display: flex;
+      background: var(--slate-100);
+      padding: 2.5px;
+      border-radius: 7px;
+      gap: 2px;
+    }
+    .seg-pill {
+      border: none;
+      background: transparent;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--slate-600);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .seg-pill:hover {
+      color: var(--slate-900);
+    }
+    .seg-pill.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    /* SKU List Cards & Custom Checkboxes */
     .sku-list {
       display: flex;
       flex-direction: column;
       gap: 6px;
-      max-height: 220px;
+      max-height: 250px;
       overflow-y: auto;
+      padding-right: 2px;
     }
+    .sku-list::-webkit-scrollbar { width: 4px; }
+    .sku-list::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 2px; }
+
     .sku-item {
       background: #ffffff;
-      border: 1px solid var(--slate-200);
-      border-radius: 8px;
+      border: 1.5px solid var(--slate-200);
+      border-radius: 9px;
       padding: 8px 10px;
       display: flex;
       flex-direction: column;
       gap: 4px;
+      cursor: pointer;
+      transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
     }
+    .sku-item:hover {
+      border-color: var(--primary);
+      background: #fafcff;
+      transform: translateX(2px);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    }
+    .sku-item.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      box-shadow: 0 2px 10px var(--primary-glow);
+    }
+    .sku-item.highlighted {
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35);
+    }
+
     .sku-item-top {
       display: flex;
       justify-content: space-between;
@@ -530,12 +816,45 @@
       font-weight: 700;
       color: var(--slate-900);
     }
-    .sku-tag {
-      font-size: 9px;
-      font-weight: 700;
-      color: white;
-      padding: 1px 5px;
-      border-radius: 3px;
+    .sku-left-col {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      overflow: hidden;
+    }
+    
+    .sku-checkbox-custom {
+      width: 15px;
+      height: 15px;
+      border-radius: 4px;
+      border: 1.5px solid var(--slate-300);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .sku-checkbox-custom svg {
+      display: none;
+    }
+    .sku-item.selected .sku-checkbox-custom {
+      background: var(--primary);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+    .sku-item.selected .sku-checkbox-custom svg {
+      display: block;
+    }
+
+    .sku-name-txt {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 190px;
+      font-size: 11px;
+      color: var(--slate-900);
     }
     .sku-meta {
       font-size: 10px;
@@ -543,16 +862,18 @@
       font-family: 'JetBrains Mono', monospace;
       display: flex;
       justify-content: space-between;
+      padding-left: 22px;
     }
     .req-tag {
       font-size: 9px;
       font-weight: 700;
-      padding: 1px 4px;
-      border-radius: 3px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      white-space: nowrap;
     }
-    .req-rear { background: #dbeafe; color: #1e40af; }
-    .req-mid  { background: #f1f5f9; color: #475569; }
-    .req-door { background: #fef3c7; color: #92400e; }
+    .req-rear { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+    .req-mid  { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+    .req-door { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
 
     /* Range and Color Inputs in Studio */
     .param-row {
@@ -577,7 +898,7 @@
       width: 100%;
       height: 4px;
       border-radius: 2px;
-      background: #cbd5e1;
+      background: var(--slate-300);
       outline: none;
       cursor: pointer;
     }
@@ -592,7 +913,7 @@
       cursor: pointer;
     }
 
-    /* Upload & Column Mapping Modal */
+    /* Luxury Upload & Preview Modal */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -600,14 +921,14 @@
       width: 100%;
       height: 100%;
       background: rgba(15, 23, 42, 0.45);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 1000;
     }
     .modal-card {
-      width: 680px;
+      width: 700px;
       max-width: 92vw;
       max-height: 85vh;
       background: #ffffff;
@@ -616,10 +937,10 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: modalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
     @keyframes modalPop {
-      from { opacity: 0; transform: scale(0.96) translateY(10px); }
+      from { opacity: 0; transform: scale(0.96) translateY(12px); }
       to { opacity: 1; transform: scale(1) translateY(0); }
     }
     .modal-header {
@@ -653,7 +974,7 @@
     }
     .preview-table th {
       background: var(--slate-100);
-      padding: 6px 8px;
+      padding: 7px 10px;
       text-align: left;
       color: var(--slate-700);
       font-weight: 700;
@@ -661,7 +982,7 @@
       white-space: nowrap;
     }
     .preview-table td {
-      padding: 6px 8px;
+      padding: 7px 10px;
       border-bottom: 1px solid var(--slate-100);
       color: var(--slate-800);
       font-family: 'JetBrains Mono', monospace;
@@ -675,39 +996,62 @@
       gap: 10px;
     }
 
-    /* Tooltip */
+    /* Luxury 3D Tooltip */
     .tooltip-card {
       position: absolute;
       pointer-events: none;
       display: none;
       padding: 10px 14px;
-      border-radius: 10px;
-      background: rgba(15, 23, 42, 0.94);
-      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      background: var(--glass-dark);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       color: #f8fafc;
-      font-size: 11.5px;
+      font-size: 11px;
       z-index: 100;
       box-shadow: var(--shadow-lg);
-      border: 1px solid rgba(255,255,255,0.12);
-      transform: translate(-50%, -120%);
+      border: 1px solid rgba(255,255,255,0.14);
+      transform: translate(-50%, -125%);
     }
     .tooltip-title {
       font-weight: 800;
       font-size: 12px;
       color: #60a5fa;
       margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .tooltip-row {
       display: flex;
       justify-content: space-between;
       gap: 14px;
       color: #cbd5e1;
-      line-height: 1.4;
+      line-height: 1.45;
     }
     .tooltip-val {
       font-family: 'JetBrains Mono', monospace;
       color: #fff;
       font-weight: 600;
+    }
+    .tooltip-hint {
+      margin-top: 6px;
+      padding-top: 5px;
+      border-top: 1px dashed rgba(255,255,255,0.18);
+      font-size: 9.5px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .kbd-chip {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 4px;
+      padding: 1px 4px;
+      color: #e2e8f0;
+      font-family: monospace;
+      font-size: 9px;
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -754,6 +1098,12 @@
             <span class="kpi-label">货物总重</span>
             <span class="kpi-val" id="kpi-weight">21.8<span class="kpi-unit">T</span></span>
           </div>
+          <div class="kpi-item" style="padding: 4px 10px;">
+            <span class="cache-status-badge" id="hud-cache-badge" title="已从本地空间坐标缓存极速秒开">
+              <span class="cache-pulse-dot" id="cache-dot"></span>
+              <span id="txt-cache-badge">坐标缓存秒开</span>
+            </span>
+          </div>
         </div>
       </div>
 
@@ -766,7 +1116,7 @@
 
         <button class="btn-action-pill secondary" id="btn-toggle-studio" onclick="toggleStudioDrawer()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          <span>渲染调优</span>
+          <span>渲染调优控制台</span>
         </button>
       </div>
     </header>
@@ -812,7 +1162,7 @@
             <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv, .txt" style="display: none;" onchange="handleExcelFileUpload(this.files[0])">
             <svg class="upload-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             <div class="upload-text-main">点击或拖拽上传清洗表格 (.xlsx / .csv)</div>
-            <div class="upload-text-sub">已深度适配「产品名、长(m)、宽(m)、高(m)、单件毛重、数量、摆放要求」</div>
+            <div class="upload-text-sub">深度适配「产品名、长(m)、宽(m)、高(m)、单件毛重、数量、摆放要求」</div>
           </div>
         </div>
 
@@ -829,30 +1179,55 @@
             <button class="btn-chip active" id="btn-gap-zero" onclick="setGapSpacing(0)">0% 紧密零间隙</button>
             <button class="btn-chip" id="btn-gap-subtle" onclick="setGapSpacing(0.01)">1cm 宽松装卸</button>
           </div>
-          <button class="btn-island-action primary" style="width: 100%; justify-content: center; padding: 9px;" onclick="runSmartPackingAlgorithm()">
+          <button class="btn-island-action primary" style="width: 100%; justify-content: center; padding: 9px;" onclick="runSmartPackingAlgorithm(true)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             <span>重新执行 AI 算柜装箱</span>
           </button>
         </div>
 
-        <!-- 4. Cargo Manifest Presets -->
+        <!-- 4. Cargo Manifest Presets with Single/Multi-Select Isolation -->
         <div class="section-card">
           <div class="section-label">
             <span>混装货物清单</span>
             <span class="param-val" id="manifest-sku-count">14 种 SKU</span>
           </div>
+
           <div class="chip-grid-2">
             <button class="btn-chip active" id="btn-pre-production" onclick="loadManifestPreset('production')">🖥️ 真实产线混装单 (14种)</button>
             <button class="btn-chip" id="btn-pre-standard" onclick="loadManifestPreset('standard')">📦 标准跨境单</button>
             <button class="btn-chip" id="btn-pre-heavy" onclick="loadManifestPreset('heavy')">⚙️ 重型汽配单</button>
             <button class="btn-chip" id="btn-pre-pallets" onclick="loadManifestPreset('pallets')">🪵 标准打托单</button>
           </div>
+
+          <!-- Luxury Manifest Toolbar -->
+          <div class="manifest-toolbar-card">
+            <div class="manifest-tools-row">
+              <div style="display:flex; gap:6px;">
+                <button class="tool-action-btn" onclick="selectAllSKUs(true)">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>全选</span>
+                </button>
+                <button class="tool-action-btn" onclick="resetSKUSelection()">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                  <span>全部重置</span>
+                </button>
+              </div>
+              <div style="display:flex; align-items:center; gap:5px;">
+                <span style="font-size:10px; color:var(--slate-500); font-weight:700;">未选模式:</span>
+                <div class="seg-pill-group">
+                  <button class="seg-pill active" id="mode-pill-ghost" onclick="updateUnselectedDisplayMode('ghost')">👻 幽灵</button>
+                  <button class="seg-pill" id="mode-pill-hide" onclick="updateUnselectedDisplayMode('hide')">🚫 隐藏</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="sku-list" id="manifest-list-wrap"></div>
         </div>
       </div>
     </aside>
 
-    <!-- 3. RIGHT STUDIO DRAWER -->
+    <!-- 3. RIGHT STUDIO DRAWER (FULL PROFESSIONAL RENDER TUNING) -->
     <aside class="glass-card workbench-drawer right interactive" id="studio-drawer" style="display: none;">
       <div class="drawer-title-bar">
         <div class="drawer-heading">
@@ -863,16 +1238,33 @@
       </div>
 
       <div class="drawer-scroll-body">
+        <!-- 1. Smart Cutaway & Glass -->
         <div class="section-card">
           <div class="section-label"><span>六面全向自适应透视</span></div>
           <div class="chip-grid-2">
             <button class="btn-chip active" id="btn-cutaway-on" onclick="setSmartCutaway(true)">开启智能剖切</button>
             <button class="btn-chip" id="btn-cutaway-off" onclick="setSmartCutaway(false)">关闭 (全实体)</button>
           </div>
+          <div class="param-row">
+            <div class="param-meta"><span>前景外壳透视度</span><span class="param-val" id="val-foregroundOpacity">1%</span></div>
+            <input type="range" class="range-input" min="0" max="1" step="0.01" value="0.01" oninput="updateForegroundOpacity(this.value)">
+          </div>
         </div>
 
+        <!-- 2. Steel Frame & Coating Materials -->
         <div class="section-card">
-          <div class="section-label"><span>钢骨架与后壁材质</span></div>
+          <div class="section-label"><span>集装箱金属骨架涂装</span></div>
+          <div class="param-row">
+            <div class="param-meta"><span>箱体标准涂装色</span><span class="param-val" id="val-frameColor">工业灰</span></div>
+            <div class="color-swatch-grid">
+              <button class="color-swatch-btn active" style="background:#2f383d;" title="工业灰 (Default Slate)" onclick="setFrameColorPreset('#2f383d', '工业灰')"></button>
+              <button class="color-swatch-btn" style="background:#1e3a8a;" title="马士基海运蓝 (Maersk Blue)" onclick="setFrameColorPreset('#1e3a8a', '海运蓝')"></button>
+              <button class="color-swatch-btn" style="background:#065f46;" title="中远海运绿 (Cosco Green)" onclick="setFrameColorPreset('#065f46', '海运绿')"></button>
+              <button class="color-swatch-btn" style="background:#991b1b;" title="阳明航运红 (Yang Ming Red)" onclick="setFrameColorPreset('#991b1b', '海运红')"></button>
+              <button class="color-swatch-btn" style="background:#d97706;" title="特种工程橙 (Warning Orange)" onclick="setFrameColorPreset('#d97706', '工程橙')"></button>
+              <input type="color" value="#2f383d" style="width:26px; height:26px; padding:0; border:none; border-radius:6px; cursor:pointer;" onchange="setFrameColorPreset(this.value, '自定义')">
+            </div>
+          </div>
           <div class="param-row">
             <div class="param-meta"><span>金属度 (Metalness)</span><span class="param-val" id="val-frameMetal">0.50</span></div>
             <input type="range" class="range-input" min="0" max="1" step="0.02" value="0.50" oninput="updateParam('frameMetal', this.value)">
@@ -881,10 +1273,29 @@
             <div class="param-meta"><span>粗糙度 (Roughness)</span><span class="param-val" id="val-frameRough">0.68</span></div>
             <input type="range" class="range-input" min="0" max="1" step="0.02" value="0.68" oninput="updateParam('frameRough', this.value)">
           </div>
+          <div class="param-row">
+            <div class="param-meta"><span>钢板凹凸法线 (Bump Normal)</span><span class="param-val" id="val-bump">0.94</span></div>
+            <input type="range" class="range-input" min="0" max="2" step="0.05" value="0.94" oninput="updateParam('bump', this.value)">
+          </div>
         </div>
 
+        <!-- 3. Interior Walls -->
         <div class="section-card">
-          <div class="section-label"><span>影棚光照与角度</span></div>
+          <div class="section-label"><span>集装箱内壁与底板</span></div>
+          <div class="param-row">
+            <div class="param-meta"><span>内壁基底色</span><span class="param-val" id="val-backColor">深灰</span></div>
+            <div class="color-swatch-grid">
+              <button class="color-swatch-btn active" style="background:#43474c;" onclick="setBackColorPreset('#43474c')"></button>
+              <button class="color-swatch-btn" style="background:#262a2e;" onclick="setBackColorPreset('#262a2e')"></button>
+              <button class="color-swatch-btn" style="background:#64748b;" onclick="setBackColorPreset('#64748b')"></button>
+              <button class="color-swatch-btn" style="background:#78350f;" title="木纹夹板" onclick="setBackColorPreset('#78350f')"></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Studio Lighting & Shadow -->
+        <div class="section-card">
+          <div class="section-label"><span>影棚高级光照与阴影</span></div>
           <div class="param-row">
             <div class="param-meta"><span>光源方位角 (Azimuth)</span><span class="param-val" id="val-sunAzimuth">42°</span></div>
             <input type="range" class="range-input" min="0" max="360" step="1" value="42" oninput="updateParam('sunAzimuth', this.value)">
@@ -892,6 +1303,18 @@
           <div class="param-row">
             <div class="param-meta"><span>光源高度角 (Elevation)</span><span class="param-val" id="val-sunElevation">52°</span></div>
             <input type="range" class="range-input" min="5" max="88" step="1" value="52" oninput="updateParam('sunElevation', this.value)">
+          </div>
+          <div class="param-row">
+            <div class="param-meta"><span>主光强度 (Sun Intensity)</span><span class="param-val" id="val-sunIntensity">4.0</span></div>
+            <input type="range" class="range-input" min="0.5" max="8.0" step="0.2" value="4.0" oninput="updateParam('sunIntensity', this.value)">
+          </div>
+          <div class="param-row">
+            <div class="param-meta"><span>环境光强度 (Ambient)</span><span class="param-val" id="val-ambIntensity">0.20</span></div>
+            <input type="range" class="range-input" min="0" max="1.0" step="0.05" value="0.20" oninput="updateParam('ambIntensity', this.value)">
+          </div>
+          <div class="param-row">
+            <div class="param-meta"><span>曝光度 (ACES Tone Exposure)</span><span class="param-val" id="val-exposure">0.72</span></div>
+            <input type="range" class="range-input" min="0.3" max="1.5" step="0.02" value="0.72" oninput="updateParam('exposure', this.value)">
           </div>
         </div>
 
@@ -901,8 +1324,9 @@
       </div>
     </aside>
 
-    <!-- 4. FLOATING BOTTOM CONTROL ISLAND -->
-    <footer class="bottom-island-wrap">
+    <!-- 4. FLOATING BOTTOM CONTROL DOCK & EDGE-ALIGNED TRANSPARENT ANCHOR DOCK -->
+    <footer class="bottom-floating-dock">
+      <!-- Main Operation Island (Left/Center) -->
       <div class="glass-card bottom-island interactive">
         <div class="segmented-control">
           <button class="seg-btn active" id="btn-cam-iso" onclick="switchCamera('iso')">等轴</button>
@@ -930,6 +1354,18 @@
           <input type="range" class="range-input-mini" min="0" max="1" step="0.01" value="0.01" oninput="updateForegroundOpacity(this.value)">
           <span class="opacity-label" id="val-quick-trans" style="font-family:'JetBrains Mono'; color:var(--primary);">1%</span>
         </div>
+      </div>
+
+      <!-- Right Anchor Dock (Transparent & Edge-Adaptive) -->
+      <div class="sku-anchor-panel interactive" id="sku-anchor-panel">
+        <div class="anchor-panel-header">
+          <span class="anchor-label">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
+            <span>货物锚点</span>
+          </span>
+          <button class="anchor-btn-reset" onclick="resetSKUSelection()" title="显示全部货物">全部重置</button>
+        </div>
+        <div class="anchor-chips-grid" id="anchor-chips-wrap"></div>
       </div>
     </footer>
   </div>
@@ -974,12 +1410,18 @@
 
   <!-- 3D Raycast Tooltip -->
   <div id="box-tooltip" class="tooltip-card">
-    <div class="tooltip-title" id="tt-sku">SKU: PKG-89201</div>
+    <div class="tooltip-title" id="tt-sku">
+      <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#60a5fa;"></span>
+      <span>SKU: PKG-89201</span>
+    </div>
     <div class="tooltip-row"><span>分类品名:</span> <span class="tooltip-val" id="tt-type">精密电子元器件</span></div>
     <div class="tooltip-row"><span>规格尺寸:</span> <span class="tooltip-val" id="tt-dim">600×400×450mm</span></div>
     <div class="tooltip-row"><span>单箱重量:</span> <span class="tooltip-val" id="tt-weight">24.5 kg</span></div>
     <div class="tooltip-row"><span>摆放要求:</span> <span class="tooltip-val" id="tt-req">放柜子最里面</span></div>
     <div class="tooltip-row"><span>空间坐标:</span> <span class="tooltip-val" id="tt-pos">X:0 Y:0 Z:0</span></div>
+    <div class="tooltip-hint">
+      <span class="kbd-chip">双击</span> 或 <span class="kbd-chip">Alt/Ctrl+点击</span> 锁定聚焦此货物
+    </div>
   </div>
 
   <script>
@@ -1030,12 +1472,7 @@
     let currentContainerType = '40HQ';
     let currentSpec = CONTAINER_SPECS['40HQ'];
 
-    // --- 2. ADVANCED ZERO-GAP & GRAVITY-CONSTRAINED CLUSTER PACKER ---
-    // Physical Coordinate Space Convention:
-    // x = 0 is the DEEP INNER REAR WALL (柜子最里面 / 盲端, 3D position +L/2)
-    // x = containerL is the FRONT DOOR (集装箱门前 / 柜门端, 3D position -L/2)
-    // y = 0 is the CONTAINER FLOOR (集装箱底板)
-    // z = 0 is LEFT WALL to RIGHT WALL (0 -> containerW)
+    // --- 2. ZERO-GAP & GRAVITY-CONSTRAINED CLUSTER PACKER ---
     class RobustContainerPacker {
       constructor(containerDim, options = {}) {
         this.L = containerDim.length;
@@ -1043,7 +1480,7 @@
         this.W = containerDim.width;
         this.gap = options.gap || 0.0;
         this.strategy = options.strategy || 'cluster';
-        this.minSupportRatio = 0.70; // 70%+ bottom support ratio prevents floating/tipping
+        this.minSupportRatio = 0.70;
       }
 
       static isOverlap(boxA, boxB, epsilon = 0.0005) {
@@ -1057,15 +1494,13 @@
         );
       }
 
-      // Strict Gravity Support Calculation
       isSupported(candidateBox, placedBoxes) {
-        if (candidateBox.y <= 0.001) return true; // Direct contact with floor
+        if (candidateBox.y <= 0.001) return true;
 
         const boxBottomArea = candidateBox.w * candidateBox.d;
         let supportedArea = 0;
 
         for (const pb of placedBoxes) {
-          // Check if pb is directly under candidateBox
           if (Math.abs((pb.y + pb.h) - candidateBox.y) < 0.002) {
             const overlapX1 = Math.max(candidateBox.x, pb.x);
             const overlapX2 = Math.min(candidateBox.x + candidateBox.w, pb.x + pb.w);
@@ -1085,10 +1520,6 @@
         const placedBoxes = [];
         const unplacedItems = [];
 
-        // 1. Partition Cargo into 3 Staging Zones according to `摆放要求`
-        // Zone 1: '放柜子最里面' (Deep rear wall, x = 0 -> ...)
-        // Zone 2: '放中间' (Middle section)
-        // Zone 3: '封柜门' (Door end, final closure)
         const rearGroup = [];
         const middleGroup = [];
         const doorGroup = [];
@@ -1100,7 +1531,6 @@
           else middleGroup.push(item);
         });
 
-        // Group sorting: Larger volume & weight first within each zone
         const sortGroup = (arr) => {
           arr.sort((a, b) => {
             const volA = a.w * a.h * a.d;
@@ -1114,8 +1544,6 @@
         sortGroup(doorGroup);
 
         const orderedSKUs = [...rearGroup, ...middleGroup, ...doorGroup];
-
-        // 2. Homogeneous Cluster & Wall/Block Packing
         let candidatePoints = [{ x: 0, y: 0, z: 0 }];
 
         for (const skuItem of orderedSKUs) {
@@ -1148,14 +1576,12 @@
                   d: ori.d
                 };
 
-                // Boundary verification
                 if (candidateBox.x + candidateBox.w > this.L + 0.001 ||
                     candidateBox.y + candidateBox.h > this.H + 0.001 ||
                     candidateBox.z + candidateBox.d > this.W + 0.001) {
                   continue;
                 }
 
-                // Overlap verification
                 let hasOverlap = false;
                 for (const pb of placedBoxes) {
                   if (RobustContainerPacker.isOverlap(candidateBox, pb)) {
@@ -1165,15 +1591,10 @@
                 }
                 if (hasOverlap) continue;
 
-                // Strict Gravity Support verification (Zero Floating)
                 if (!this.isSupported(candidateBox, placedBoxes)) {
                   continue;
                 }
 
-                // Heuristic Scoring:
-                // 1. Pack from Rear wall (x=0) toward Door (x=L)
-                // 2. Pack from Bottom (y=0) upwards
-                // 3. Cluster same SKU together (Reward adjacent placed box with same SKU)
                 let adjacencyBonus = 0;
                 for (const pb of placedBoxes) {
                   if (pb.sku === candidateBox.sku) {
@@ -1187,7 +1608,6 @@
                   }
                 }
 
-                // Primary Objective: Minimize X (stay deep at rear), Minimize Y (stay grounded), Minimize Z (pack flush to left)
                 const score = adjacencyBonus - (candidateBox.x * 1000 + candidateBox.y * 300 + candidateBox.z * 10);
                 if (score > bestScore) {
                   bestScore = score;
@@ -1201,11 +1621,10 @@
               remainingQty--;
               boxIndex++;
 
-              // Generate new contact candidate points
               const newPoints = [
-                { x: bestFit.x, y: bestFit.y + bestFit.h + this.gap, z: bestFit.z }, // Stacking on top
-                { x: bestFit.x, y: bestFit.y, z: bestFit.z + bestFit.d + this.gap }, // Side by side (Width)
-                { x: bestFit.x + bestFit.w + this.gap, y: bestFit.y, z: bestFit.z }  // Forward along Length (towards door)
+                { x: bestFit.x, y: bestFit.y + bestFit.h + this.gap, z: bestFit.z },
+                { x: bestFit.x, y: bestFit.y, z: bestFit.z + bestFit.d + this.gap },
+                { x: bestFit.x + bestFit.w + this.gap, y: bestFit.y, z: bestFit.z }
               ];
 
               for (const pt of newPoints) {
@@ -1223,14 +1642,11 @@
                 }
               }
 
-              // Deduplicate & sort points
               candidatePoints = candidatePoints.filter((p, idx, self) =>
                 idx === self.findIndex(t => Math.abs(t.x - p.x) < 0.001 && Math.abs(t.y - p.y) < 0.001 && Math.abs(t.z - p.z) < 0.001)
               );
-              // Prefer Deepest Rear (min X), Grounded (min Y), Left (min Z)
               candidatePoints.sort((a, b) => (a.x - b.x) || (a.y - b.y) || (a.z - b.z));
             } else {
-              // Cannot place more of this SKU due to boundary or constraints
               unplacedItems.push({ ...skuItem, unplacedQty: remainingQty });
               break;
             }
@@ -1259,7 +1675,7 @@
       }
     }
 
-    // --- 3. PRODUCTION CLEANED MANIFEST PRESET (EXACT USER IMAGE DATA) ---
+    // --- 3. PRODUCTION CLEANED MANIFEST PRESET ---
     const PALETTE = [
       0x3b82f6, 0x10b981, 0xf59e0b, 0xef4444, 0x8b5cf6, 
       0x06b6d4, 0xec4899, 0x6366f1, 0x14b8a6, 0xf97316,
@@ -1306,7 +1722,91 @@
     let currentGap = 0.0;
     let currentStrategy = 'cluster';
 
-    // --- 4. EXCEL/CSV ROBUST PARSER FOR PRODUCTION CLEANED FORMAT ---
+    // --- CLIENT-SIDE SPATIAL COORDINATE CACHE ENGINE ---
+    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V4_';
+    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V4';
+
+    function generatePackingCacheKey(specCode, strategy, gap, manifest) {
+      const summary = manifest.map(m => `${m.sku}_${m.quantity}_${m.w}x${m.d}x${m.h}_${m.weight}_${m.requirement||''}`).join('|');
+      let hash = 0;
+      for (let i = 0; i < summary.length; i++) {
+        const char = summary.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash |= 0;
+      }
+      return `${CACHE_PREFIX}${specCode}_${strategy}_${gap}_${Math.abs(hash)}`;
+    }
+
+    function getStoredPackingResult(cacheKey) {
+      try {
+        const raw = localStorage.getItem(cacheKey);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.placedBoxes) && parsed.placedBoxes.length > 0) {
+          return parsed;
+        }
+      } catch (e) {
+        console.warn('Failed to read packing cache:', e);
+      }
+      return null;
+    }
+
+    function savePackingResultToStorage(cacheKey, result) {
+      try {
+        const cacheData = {
+          placedBoxes: result.placedBoxes,
+          unplacedItems: result.unplacedItems,
+          usedVol: result.usedVol,
+          utilization: result.utilization,
+          totalWeightTons: result.totalWeightTons,
+          totalCount: result.totalCount,
+          timestamp: Date.now()
+        };
+        localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+      } catch (e) {
+        console.warn('Failed to write packing cache to localStorage:', e);
+      }
+    }
+
+    function saveAppState() {
+      try {
+        localStorage.setItem(APP_STATE_KEY, JSON.stringify({
+          containerType: currentContainerType,
+          strategy: currentStrategy,
+          gap: currentGap,
+          activeManifest: activeManifest,
+          unselectedDisplayMode: unselectedDisplayMode
+        }));
+      } catch (e) {}
+    }
+
+    function restoreAppState() {
+      try {
+        const raw = localStorage.getItem(APP_STATE_KEY);
+        if (raw) {
+          const state = JSON.parse(raw);
+          if (state.containerType && CONTAINER_SPECS[state.containerType]) {
+            currentContainerType = state.containerType;
+            currentSpec = CONTAINER_SPECS[state.containerType];
+          }
+          if (state.strategy) currentStrategy = state.strategy;
+          if (typeof state.gap === 'number') currentGap = state.gap;
+          if (Array.isArray(state.activeManifest) && state.activeManifest.length > 0) {
+            activeManifest = state.activeManifest;
+          }
+          if (state.unselectedDisplayMode) {
+            unselectedDisplayMode = state.unselectedDisplayMode;
+          }
+        }
+      } catch (e) {}
+    }
+
+    // --- INTERACTIVE SELECTION & ISOLATION STATE ---
+    let selectedSKUs = new Set();
+    let hoveredSKU = null;
+    let unselectedDisplayMode = 'ghost';
+
+    // --- 4. EXCEL/CSV ROBUST PARSER ---
     function normalizeMetricVal(val) {
       if (typeof val === 'number') return +val.toFixed(3);
       if (!val) return 0.5;
@@ -1449,8 +1949,11 @@
       closeImportModal();
 
       document.querySelectorAll('#left-drawer .chip-grid-2 .btn-chip').forEach(b => b.classList.remove('active'));
+      selectedSKUs.clear();
+      saveAppState();
       renderManifestUI();
-      runSmartPackingAlgorithm();
+      renderAnchorRibbon();
+      runSmartPackingAlgorithm(false);
     }
 
     function downloadExactTemplate() {
@@ -1467,7 +1970,7 @@
         [9, '19寸一体机整机', 0.495, 0.145, 0.41, 10.5, 24, 0.71, '放中间', '一致'],
         [10, '19寸液晶屏 / 19寸液晶屏玻璃', 0.49, 0.28, 0.35, 15.5, 22, 1.06, '放中间', '一致'],
         [11, '电源线', 0.48, 0.31, 0.34, 25.5, 10, 0.51, '放中间', '一致'],
-        [12, '电源线', 0.18, 0.18, 0.34, 5.5, 1, 0.01, '放中间', '一致'],
+        [12, '电源线 (小箱)', 0.18, 0.18, 0.34, 5.5, 1, 0.01, '放中间', '一致'],
         [13, '电源', 0.43, 0.41, 0.19, 15.5, 50, 1.67, '放中间', '一致'],
         [14, '19寸 显示器 BG (DA)', 0.488, 0.08, 0.336, 2.15, 674, 8.84, '封柜门; 可以减少点', '一致']
       ];
@@ -1478,7 +1981,6 @@
       XLSX.writeFile(wb, '3D-AICIVS_产线真实装箱清洗货单.xlsx');
     }
 
-    // Drag & Drop
     window.addEventListener('DOMContentLoaded', () => {
       const dropZone = document.getElementById('drop-zone');
       if (dropZone) {
@@ -1497,7 +1999,7 @@
       }
     });
 
-    // --- 5. THREE.JS SCENE SETUP & PBR PIPELINE ---
+    // --- 5. THREE.JS SCENE SETUP & OPTIMIZED PBR PIPELINE ---
     let scene, camera, renderer, controls;
     let containerGroup, cargoGroup, doorLeftGroup, doorRightGroup;
     let foregroundCutawayMat, solidBackMat, frameSolidMat, steelFloorMat;
@@ -1507,6 +2009,14 @@
     let hoveredBox = null;
     let isDoorOpen = false;
     let isPackingAnimating = false;
+
+    // Performance state flags (dirty checking to eliminate per-frame overhead)
+    let isCameraDirty = true;
+    let isRaycastDirty = false;
+    let isOrbiting = false;
+
+    // SKU Material Registry for Shared Material Batches
+    const skuMaterialRegistry = new Map();
 
     let dynamicWalls = [];
     let dynamicDoorComponents = [];
@@ -1524,7 +2034,7 @@
       sunIntensity: 4.0,
       ambIntensity: 0.2,
       shadowRadius: 1.6,
-      groundColor: '#e0e7f0',
+      groundColor: '#dce5ef',
       showShadow: true,
       smartCutaway: true,
       sunAzimuth: 42,
@@ -1532,10 +2042,10 @@
       sunDistance: 40
     };
 
-    const CS = 0.178;
-    const POST_W = 0.08;
-    const RAIL_H = 0.08;
-    const RAIL_D = 0.08;
+    const CS = 0.16;
+    const POST_W = 0.09;
+    const RAIL_H = 0.09;
+    const RAIL_D = 0.11;
 
     function createHighEndStudioEnv() {
       const canvas = document.createElement('canvas');
@@ -1545,9 +2055,9 @@
 
       const grad = ctx.createLinearGradient(0, 0, 0, 512);
       grad.addColorStop(0, '#ffffff');
-      grad.addColorStop(0.25, '#ebf3fa');
-      grad.addColorStop(0.65, '#9fb4c9');
-      grad.addColorStop(1, '#475d73');
+      grad.addColorStop(0.25, '#eef5fc');
+      grad.addColorStop(0.65, '#9bb2c8');
+      grad.addColorStop(1, '#445b71');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 1024, 512);
 
@@ -1593,54 +2103,178 @@
       return tex;
     }
 
-    function createBoxTexture(baseColorHex, labelText) {
-      const canvas = document.createElement('canvas');
-      canvas.width = 512;
-      canvas.height = 512;
-      const ctx = canvas.getContext('2d');
+    // --- HIGH-FIDELITY MULTI-FACE CARGO TEXTURE GENERATOR ---
+    const textureCanvasCache = new Map();
 
-      ctx.fillStyle = '#' + new THREE.Color(baseColorHex).getHexString();
-      ctx.fillRect(0, 0, 512, 512);
-
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
-      for (let i = 0; i < 3000; i++) ctx.fillRect(Math.random() * 512, Math.random() * 512, 1.5, 1.5);
-
-      ctx.strokeStyle = 'rgba(0, 0, 0, 0.25)';
-      ctx.lineWidth = 8;
-      ctx.strokeRect(4, 4, 504, 504);
-
-      ctx.fillStyle = 'rgba(240, 218, 175, 0.82)';
-      ctx.fillRect(0, 236, 512, 40);
-      ctx.strokeStyle = 'rgba(160, 120, 70, 0.35)';
-      ctx.lineWidth = 1.5;
-      ctx.strokeRect(0, 236, 512, 40);
-
-      ctx.fillStyle = '#ffffff';
-      ctx.shadowColor = 'rgba(0,0,0,0.18)';
-      ctx.shadowBlur = 5;
-      ctx.fillRect(55, 305, 150, 120);
-      ctx.shadowBlur = 0;
-
-      ctx.fillStyle = '#1e293b';
-      ctx.fillRect(55, 305, 150, 18);
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 9px monospace';
-      ctx.fillText('EXPRESS CARGO', 65, 318);
-
-      ctx.fillStyle = '#0f172a';
-      for (let bx = 70; bx < 190; bx += Math.random() * 6 + 4) {
-        ctx.fillRect(bx, 332, Math.random() > 0.4 ? 2.5 : 1.5, 42);
+    function getOrCreateFaceTextures(baseColorHex, labelText, skuCode) {
+      const cacheId = `${baseColorHex}_${skuCode}`;
+      if (textureCanvasCache.has(cacheId)) {
+        return textureCanvasCache.get(cacheId);
       }
 
-      ctx.font = 'bold 10px sans-serif';
-      ctx.fillStyle = '#1e293b';
-      ctx.fillText(labelText || 'CARGO', 70, 404);
+      function createBaseCardboardCanvas() {
+        const c = document.createElement('canvas');
+        c.width = 512;
+        c.height = 512;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#' + new THREE.Color(baseColorHex).getHexString();
+        ctx.fillRect(0, 0, 512, 512);
 
-      const texture = new THREE.CanvasTexture(canvas);
-      return texture;
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.035)';
+        for (let i = 0; i < 2400; i++) {
+          ctx.fillRect(Math.random() * 512, Math.random() * 512, 1.5, 1.5);
+        }
+
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.20)';
+        ctx.lineWidth = 6;
+        ctx.strokeRect(3, 3, 506, 506);
+        return { c, ctx };
+      }
+
+      // 1. FRONT & BACK FACE (+Z, -Z): Shipping label on left + THIS SIDE UP ARROWS on right
+      const frontBack = createBaseCardboardCanvas();
+      const fbCtx = frontBack.ctx;
+
+      fbCtx.fillStyle = 'rgba(0,0,0,0.06)';
+      fbCtx.fillRect(0, 0, 512, 12);
+      fbCtx.strokeStyle = 'rgba(0,0,0,0.22)';
+      fbCtx.lineWidth = 1.5;
+      fbCtx.beginPath();
+      fbCtx.moveTo(0, 12);
+      fbCtx.lineTo(512, 12);
+      fbCtx.stroke();
+
+      fbCtx.fillStyle = '#ffffff';
+      fbCtx.shadowColor = 'rgba(0,0,0,0.16)';
+      fbCtx.shadowBlur = 4;
+      fbCtx.fillRect(36, 275, 165, 145);
+      fbCtx.shadowBlur = 0;
+
+      fbCtx.fillStyle = '#1e293b';
+      fbCtx.fillRect(36, 275, 165, 20);
+      fbCtx.fillStyle = '#ffffff';
+      fbCtx.font = 'bold 9.5px monospace';
+      fbCtx.fillText('EXPRESS CARGO', 48, 289);
+
+      fbCtx.fillStyle = '#0f172a';
+      for (let bx = 48; bx < 188; bx += Math.random() * 6 + 4) {
+        fbCtx.fillRect(bx, 303, Math.random() > 0.4 ? 2.5 : 1.5, 46);
+      }
+
+      fbCtx.font = 'bold 11px sans-serif';
+      fbCtx.fillStyle = '#1e293b';
+      fbCtx.fillText(labelText || 'CARGO', 48, 385);
+
+      function drawUpwardArrow(ctx, cx, cy, arrowW, arrowH) {
+        ctx.save();
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - arrowH);
+        ctx.lineTo(cx - arrowW, cy - arrowH * 0.25);
+        ctx.lineTo(cx - arrowW * 0.38, cy - arrowH * 0.25);
+        ctx.lineTo(cx - arrowW * 0.38, cy + arrowH * 0.7);
+        ctx.lineTo(cx + arrowW * 0.38, cy + arrowH * 0.7);
+        ctx.lineTo(cx + arrowW * 0.38, cy - arrowH * 0.25);
+        ctx.lineTo(cx + arrowW, cy - arrowH * 0.25);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillRect(cx - arrowW * 1.1, cy + arrowH * 0.92, arrowW * 2.2, 4);
+        ctx.restore();
+      }
+
+      fbCtx.strokeStyle = 'rgba(15, 23, 42, 0.38)';
+      fbCtx.lineWidth = 1.5;
+      fbCtx.strokeRect(325, 275, 145, 145);
+
+      drawUpwardArrow(fbCtx, 368, 345, 16, 44);
+      drawUpwardArrow(fbCtx, 425, 345, 16, 44);
+
+      fbCtx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+      fbCtx.font = 'bold 9px monospace';
+      fbCtx.textAlign = 'center';
+      fbCtx.fillText('THIS SIDE UP', 397, 402);
+      fbCtx.textAlign = 'left';
+
+      // 2. SIDE FACES (+X, -X): Clean handling face with barcode, NO upward arrows
+      const sideFace = createBaseCardboardCanvas();
+      const sCtx = sideFace.ctx;
+
+      sCtx.fillStyle = 'rgba(0,0,0,0.06)';
+      sCtx.fillRect(0, 0, 512, 12);
+      sCtx.strokeStyle = 'rgba(0,0,0,0.22)';
+      sCtx.lineWidth = 1.5;
+      sCtx.beginPath();
+      sCtx.moveTo(0, 12);
+      sCtx.lineTo(512, 12);
+      sCtx.stroke();
+
+      sCtx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+      sCtx.beginPath();
+      sCtx.roundRect(196, 236, 120, 40, 20);
+      sCtx.fill();
+      sCtx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+      sCtx.lineWidth = 2;
+      sCtx.stroke();
+
+      sCtx.fillStyle = 'rgba(15, 23, 42, 0.65)';
+      sCtx.font = 'bold 12px monospace';
+      sCtx.textAlign = 'center';
+      sCtx.fillText(`[ ${skuCode} ]`, 256, 316);
+      sCtx.textAlign = 'left';
+
+      // 3. TOP FACE (+Y): Cardboard Flaps with Center Sealing Tape across the seam
+      const topFace = createBaseCardboardCanvas();
+      const tCtx = topFace.ctx;
+
+      tCtx.strokeStyle = 'rgba(0,0,0,0.28)';
+      tCtx.lineWidth = 2;
+      tCtx.beginPath();
+      tCtx.moveTo(0, 256);
+      tCtx.lineTo(512, 256);
+      tCtx.stroke();
+
+      tCtx.fillStyle = 'rgba(238, 214, 168, 0.94)';
+      tCtx.fillRect(0, 232, 512, 48);
+      tCtx.strokeStyle = 'rgba(165, 125, 70, 0.5)';
+      tCtx.lineWidth = 2;
+      tCtx.strokeRect(0, 232, 512, 48);
+
+      // 4. BOTTOM FACE (-Y): Clean base with recycle / certificate stamp
+      const bottomFace = createBaseCardboardCanvas();
+      const bCtx = bottomFace.ctx;
+
+      bCtx.strokeStyle = 'rgba(0,0,0,0.25)';
+      bCtx.lineWidth = 2;
+      bCtx.beginPath();
+      bCtx.moveTo(0, 256);
+      bCtx.lineTo(512, 256);
+      bCtx.stroke();
+
+      bCtx.strokeStyle = 'rgba(15, 23, 42, 0.25)';
+      bCtx.lineWidth = 2;
+      bCtx.beginPath();
+      bCtx.arc(256, 256, 45, 0, Math.PI * 2);
+      bCtx.stroke();
+      bCtx.fillStyle = 'rgba(15, 23, 42, 0.28)';
+      bCtx.font = 'bold 8px monospace';
+      bCtx.textAlign = 'center';
+      bCtx.fillText('CERTIFIED', 256, 252);
+      bCtx.fillText('STANDARD BOX', 256, 264);
+      bCtx.textAlign = 'left';
+
+      const textures = {
+        frontBackTex: new THREE.CanvasTexture(frontBack.c),
+        sideTex:      new THREE.CanvasTexture(sideFace.c),
+        topTex:       new THREE.CanvasTexture(topFace.c),
+        bottomTex:    new THREE.CanvasTexture(bottomFace.c)
+      };
+
+      textureCanvasCache.set(cacheId, textures);
+      return textures;
     }
 
-    function createSmoothCorrugatedGeometry(width, height, numWaves, waveDepth = 0.032) {
+    function createSmoothCorrugatedGeometry(width, height, numWaves, waveDepth = 0.030) {
       const segW = numWaves * 12;
       const segH = 2;
       const geo = new THREE.PlaneGeometry(width, height, segW, segH);
@@ -1669,6 +2303,8 @@
     }
 
     function init() {
+      restoreAppState();
+
       const container = document.getElementById('webgl-container');
       const width = window.innerWidth;
       const height = window.innerHeight;
@@ -1708,6 +2344,19 @@
       controls.target.set(0, currentSpec.extH / 2, 0);
       controls.update();
 
+      // High-performance dirty-checking listeners for OrbitControls
+      controls.addEventListener('start', () => {
+        isOrbiting = true;
+        document.getElementById('box-tooltip').style.display = 'none';
+      });
+      controls.addEventListener('change', () => {
+        isCameraDirty = true;
+      });
+      controls.addEventListener('end', () => {
+        isOrbiting = false;
+        isRaycastDirty = true;
+      });
+
       setupLighting();
       setupEnvironment();
 
@@ -1718,6 +2367,13 @@
 
       window.addEventListener('resize', onWindowResize);
       window.addEventListener('mousemove', onMouseMove);
+
+      renderer.domElement.addEventListener('dblclick', (e) => handleBoxSelection(e));
+      renderer.domElement.addEventListener('click', (e) => {
+        if (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey) {
+          handleBoxSelection(e);
+        }
+      });
 
       animate();
     }
@@ -1806,6 +2462,7 @@
       dynamicSkeletons.push(mesh);
     }
 
+    // --- ZERO-COLLISION & ZERO-GAP PRECISION CONTAINER MODEL REBUILD ---
     function rebuildContainerModel() {
       if (containerGroup) {
         scene.remove(containerGroup);
@@ -1814,16 +2471,28 @@
       dynamicDoorComponents = [];
       dynamicSkeletons = [];
 
-      const L = currentSpec.extL;
-      const H = currentSpec.extH;
-      const W = currentSpec.extW;
+      // Precision CAD dimensional alignment based strictly on usable internal clearance
+      const intL = currentSpec.intL;
+      const intW = currentSpec.intW;
+      const intH = currentSpec.intH;
+
+      const cs = CS; // 0.16m corner casting block
+
+      // Safe outer clearances ensuring wave crests (±0.0125m) never penetrate cargo volume
+      const postZ = intW / 2 + 0.024; // Side walls centered at z = ±postZ (+11.5mm clearance inside wave crest)
+      const halfW = postZ + cs / 2;
+      const W = halfW * 2;
+
+      const postX = intL / 2 + 0.028; // Rear wall and front doors centered at x = ±postX (+15.5mm clearance)
+      const halfL = postX + cs / 2;
+      const L = halfL * 2;
+
+      const halfH = intH / 2 + RAIL_H / 2 + 0.020; // Roof safely above top cargo (+12mm clearance)
+      const H = halfH * 2;
 
       containerGroup = new THREE.Group();
       scene.add(containerGroup);
 
-      const halfL = L / 2;
-      const halfH = H / 2;
-      const halfW = W / 2;
       const elevationY = halfH + 0.04;
       containerGroup.position.set(0, elevationY, 0);
 
@@ -1871,7 +2540,6 @@
         side: THREE.DoubleSide
       });
 
-      const cs = CS;
       const cornerConfigs = [
         { pos: [-halfL + cs/2, -halfH + cs/2, -halfW + cs/2], faces: ['back', 'door', 'floor'] },
         { pos: [ halfL - cs/2, -halfH + cs/2, -halfW + cs/2], faces: ['back', 'rear', 'floor'] },
@@ -1902,8 +2570,6 @@
       });
 
       const postH = H - cs * 2;
-      const postX = halfL - cs / 2;
-      const postZ = halfW - cs / 2;
       const postConfigs = [
         { pos: [-postX, 0, -postZ], faces: ['door', 'back'] },
         { pos: [ postX, 0, -postZ], faces: ['rear', 'back'] },
@@ -1931,13 +2597,11 @@
       registerDynamicSkeleton(bSide2, ['front', 'floor']);
       containerGroup.add(bSide2);
 
-      // Deep Rear Wall Skeleton at +postX
       const bEndRear = new THREE.Mesh(new THREE.BoxGeometry(RAIL_D, RAIL_H, railWZ), frameSolidMat);
       bEndRear.position.set(postX, bY, 0);
       registerDynamicSkeleton(bEndRear, ['rear', 'floor']);
       containerGroup.add(bEndRear);
 
-      // Front Door Skeleton at -postX
       const bEndFront = new THREE.Mesh(new THREE.BoxGeometry(RAIL_D, RAIL_H, railWZ), frameSolidMat);
       bEndFront.position.set(-postX, bY, 0);
       registerDynamicSkeleton(bEndFront, ['door', 'floor']);
@@ -1964,21 +2628,24 @@
       registerDynamicSkeleton(tEndFront, ['door', 'roof']);
       containerGroup.add(tEndFront);
 
-      const innerL = L - RAIL_D * 2 - 0.01;
-      const innerW = W - RAIL_D * 2 - 0.01;
+      // Floor Top Plane aligned with startY
+      const innerL = intL + 0.02;
+      const innerW = intW + 0.02;
       const floorMesh = new THREE.Mesh(new THREE.BoxGeometry(innerL, 0.028, innerW), steelFloorMat);
-      floorMesh.position.set(0, -halfH + RAIL_H - 0.014, 0);
+      floorMesh.position.set(0, -intH / 2 - 0.014, 0);
       floorMesh.receiveShadow = true;
       floorMesh.userData = { faceKey: 'floor', normal: new THREE.Vector3(0, -1, 0), defaultMat: steelFloorMat };
       dynamicWalls.push(floorMesh);
       containerGroup.add(floorMesh);
 
-      const panelSpanH = H - RAIL_H * 2 + 0.01;
-      const panelSpanL = L - POST_W * 2 + 0.01;
-      const panelSpanW = W - POST_W * 2 + 0.01;
+      // Panel Dimensions firmly nested inside the frames (Zero Gaps / 100% Enclosed)
+      const panelSpanH = H - RAIL_H * 2 + 0.02;
+      const panelSpanL = L - POST_W * 2 + 0.02;
+      const panelSpanW = W - POST_W * 2 + 0.02;
       const numWavesLong = Math.round(L * 2.8);
 
-      const roofGeo = createSmoothCorrugatedGeometry(panelSpanL, panelSpanW, numWavesLong, 0.032);
+      // Roof Panel placed safely above usable cargo height
+      const roofGeo = createSmoothCorrugatedGeometry(panelSpanL, panelSpanW, numWavesLong, 0.025);
       const roofM = new THREE.Mesh(roofGeo, foregroundCutawayMat);
       roofM.rotation.x = -Math.PI / 2;
       roofM.position.set(0, halfH - RAIL_H / 2, 0);
@@ -1987,7 +2654,8 @@
       dynamicWalls.push(roofM);
       containerGroup.add(roofM);
 
-      const sideGeo = createSmoothCorrugatedGeometry(panelSpanL, panelSpanH, numWavesLong, 0.032);
+      // Side corrugated panels centered exactly at ±postZ (Nested perfectly inside rails!)
+      const sideGeo = createSmoothCorrugatedGeometry(panelSpanL, panelSpanH, numWavesLong, 0.025);
       const frontSideM = new THREE.Mesh(sideGeo, foregroundCutawayMat);
       frontSideM.position.set(0, 0, postZ);
       frontSideM.castShadow = true;
@@ -2003,8 +2671,8 @@
       dynamicWalls.push(backSideM);
       containerGroup.add(backSideM);
 
-      // Deep Rear Wall (盲端) at +postX
-      const endGeo = createSmoothCorrugatedGeometry(panelSpanW, panelSpanH, 10, 0.032);
+      // Rear Wall corrugated panel centered at +postX
+      const endGeo = createSmoothCorrugatedGeometry(panelSpanW, panelSpanH, 10, 0.025);
       const rearEndM = new THREE.Mesh(endGeo, solidBackMat);
       rearEndM.rotation.y = -Math.PI / 2;
       rearEndM.position.set(postX, 0, 0);
@@ -2014,29 +2682,51 @@
       dynamicWalls.push(rearEndM);
       containerGroup.add(rearEndM);
 
-      // Front Doors at -postX
-      buildFrontDoors(postX, postZ, panelSpanH, panelSpanW, hardwareMat);
+      // Front Doors precisely matching postX, postZ with ZERO GAP in the center!
+      buildFrontDoors(postX, postZ, panelSpanH, hardwareMat);
 
       if (contactShadowPlane) {
         contactShadowPlane.geometry.dispose();
         contactShadowPlane.geometry = new THREE.PlaneGeometry(L + 2.0, W + 1.8);
       }
 
+      // Sync UI Specs
+      document.getElementById('hud-container-badge').textContent = currentSpec.badge;
+      document.getElementById('spec-ext').textContent = `${currentSpec.extL.toFixed(3)} × ${currentSpec.extW.toFixed(3)} × ${currentSpec.extH.toFixed(3)} m`;
+      document.getElementById('spec-int').textContent = `${currentSpec.intL.toFixed(3)} × ${currentSpec.intW.toFixed(3)} × ${currentSpec.intH.toFixed(3)} m`;
+      document.getElementById('spec-vol').textContent = `${currentSpec.nominalVol.toFixed(1)} m³`;
+      document.getElementById('spec-payload').textContent = `${(currentSpec.maxPayloadTons * 1000).toLocaleString()} kg (${currentSpec.maxPayloadTons} 吨)`;
+
+      document.querySelectorAll('#left-drawer .chip-grid-4 .btn-chip').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById('btn-type-' + currentContainerType.toLowerCase());
+      if (activeBtn) activeBtn.classList.add('active');
+
+      document.getElementById('btn-strat-cluster').classList.toggle('active', currentStrategy === 'cluster');
+      document.getElementById('btn-strat-mec').classList.toggle('active', currentStrategy === 'mec');
+      document.getElementById('btn-gap-zero').classList.toggle('active', currentGap === 0);
+      document.getElementById('btn-gap-subtle').classList.toggle('active', currentGap > 0);
+
+      syncDisplayModeUI();
+
       renderManifestUI();
-      runSmartPackingAlgorithm();
+      renderAnchorRibbon();
+      runSmartPackingAlgorithm(false);
     }
 
-    function buildFrontDoors(postX, postZ, doorH, totalDoorW, hardwareMat) {
-      const doorLeafW = (totalDoorW - 0.015) / 2;
+    function buildFrontDoors(postX, postZ, doorH, hardwareMat) {
+      // Hinge distance is from -postZ to +postZ (Total span = 2 * postZ)
+      // Each door leaf spans from hinge at ±postZ to the center z=0 plus a 3mm rubber seal overlap
+      const doorLeafW = postZ + 0.003;
       const borderThick = 0.035;
       const borderBarW = 0.045;
 
       const hingeMat = new THREE.MeshStandardMaterial({ color: 0x333e48, metalness: 0.7, roughness: 0.35, side: THREE.DoubleSide });
 
+      // Left Door (Hinged at -postZ)
       doorLeftGroup = new THREE.Group();
       doorLeftGroup.position.set(-postX, 0, -postZ);
 
-      const doorCorrugGeo = createSmoothCorrugatedGeometry(doorLeafW - borderBarW * 2, doorH - borderBarW * 2, 6, 0.035);
+      const doorCorrugGeo = createSmoothCorrugatedGeometry(doorLeafW - borderBarW * 2, doorH - borderBarW * 2, 6, 0.028);
       const leafMeshL = new THREE.Mesh(doorCorrugGeo, solidBackMat);
       leafMeshL.rotation.y = Math.PI / 2;
       leafMeshL.position.set(0, 0, doorLeafW / 2);
@@ -2084,6 +2774,7 @@
       }
       containerGroup.add(doorLeftGroup);
 
+      // Right Door (Hinged at +postZ)
       doorRightGroup = new THREE.Group();
       doorRightGroup.position.set(-postX, 0, postZ);
 
@@ -2114,7 +2805,7 @@
       frameGroupR.add(rBarOuter);
 
       const rBarInner = new THREE.Mesh(new THREE.BoxGeometry(borderThick, doorH, borderBarW), frameSolidMat);
-      rBarInner.position.set(0, 0, -doorLeafW / 2 + borderBarW / 2);
+      rBarInner.position.set(0, 0, -doorLeafW / 2 - borderBarW / 2);
       rBarInner.userData.defaultMat = frameSolidMat;
       frameGroupR.add(rBarInner);
 
@@ -2179,15 +2870,7 @@
       currentContainerType = typeCode;
       currentSpec = CONTAINER_SPECS[typeCode];
 
-      document.querySelectorAll('#left-drawer .chip-grid-4 .btn-chip').forEach(b => b.classList.remove('active'));
-      const activeBtn = document.getElementById('btn-type-' + typeCode.toLowerCase());
-      if (activeBtn) activeBtn.classList.add('active');
-
-      document.getElementById('hud-container-badge').textContent = currentSpec.badge;
-      document.getElementById('spec-ext').textContent = `${currentSpec.extL.toFixed(3)} × ${currentSpec.extW.toFixed(3)} × ${currentSpec.extH.toFixed(3)} m`;
-      document.getElementById('spec-int').textContent = `${currentSpec.intL.toFixed(3)} × ${currentSpec.intW.toFixed(3)} × ${currentSpec.intH.toFixed(3)} m`;
-      document.getElementById('spec-vol').textContent = `${currentSpec.nominalVol.toFixed(1)} m³`;
-      document.getElementById('spec-payload').textContent = `${(currentSpec.maxPayloadTons * 1000).toLocaleString()} kg (${currentSpec.maxPayloadTons} 吨)`;
+      saveAppState();
 
       const aspect = window.innerWidth / window.innerHeight;
       const frustumSize = currentSpec.cameraDist;
@@ -2202,8 +2885,8 @@
       rebuildContainerModel();
     };
 
-    // --- 7. EXECUTE SMART PACKING ALGORITHM (CORRECT ORIENTATION & GRAVITY) ---
-    window.runSmartPackingAlgorithm = function() {
+    // --- 7. HIGH-PERFORMANCE SMART PACKING WITH SHARED SKU MATERIALS & CACHE ---
+    window.runSmartPackingAlgorithm = function(forceRecompute = false) {
       if (cargoGroup) {
         containerGroup.remove(cargoGroup);
       }
@@ -2217,50 +2900,97 @@
         width:  currentSpec.intW
       };
 
-      const packer = new RobustContainerPacker(usableDim, {
-        gap: currentGap,
-        strategy: currentStrategy
+      const cacheKey = generatePackingCacheKey(currentSpec.code, currentStrategy, currentGap, activeManifest);
+      let packingResult = null;
+
+      const cacheBadge = document.getElementById('hud-cache-badge');
+      const cacheTxt = document.getElementById('txt-cache-badge');
+      const cacheDot = document.getElementById('cache-dot');
+
+      if (!forceRecompute) {
+        packingResult = getStoredPackingResult(cacheKey);
+      }
+
+      if (packingResult) {
+        activePackingResult = packingResult;
+        if (cacheBadge && cacheTxt && cacheDot) {
+          cacheBadge.style.color = '#059669';
+          cacheBadge.style.background = '#ecfdf5';
+          cacheBadge.style.borderColor = '#a7f3d0';
+          cacheDot.style.background = '#10b981';
+          cacheTxt.textContent = '坐标缓存秒开';
+        }
+      } else {
+        const packer = new RobustContainerPacker(usableDim, {
+          gap: currentGap,
+          strategy: currentStrategy
+        });
+        activePackingResult = packer.pack(activeManifest);
+        savePackingResultToStorage(cacheKey, activePackingResult);
+
+        if (cacheBadge && cacheTxt && cacheDot) {
+          cacheBadge.style.color = '#2563eb';
+          cacheBadge.style.background = '#eff6ff';
+          cacheBadge.style.borderColor = '#bfdbfe';
+          cacheDot.style.background = '#3b82f6';
+          cacheTxt.textContent = '全新计算暂存';
+        }
+      }
+
+      // Pre-build Shared Materials per SKU
+      skuMaterialRegistry.clear();
+      activeManifest.forEach(skuItem => {
+        const texs = getOrCreateFaceTextures(skuItem.color, skuItem.name, skuItem.sku);
+
+        const solidMats = [
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.sideTex,      roughness: 0.48, metalness: 0.05 }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.sideTex,      roughness: 0.48, metalness: 0.05 }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.topTex,       roughness: 0.50, metalness: 0.05 }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.bottomTex,    roughness: 0.52, metalness: 0.05 }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.frontBackTex, roughness: 0.46, metalness: 0.05 }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.frontBackTex, roughness: 0.46, metalness: 0.05 })
+        ];
+
+        const ghostMats = [
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.sideTex,      transparent: true, opacity: 0.10, depthWrite: false }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.sideTex,      transparent: true, opacity: 0.10, depthWrite: false }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.topTex,       transparent: true, opacity: 0.10, depthWrite: false }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.bottomTex,    transparent: true, opacity: 0.10, depthWrite: false }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.frontBackTex, transparent: true, opacity: 0.10, depthWrite: false }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.frontBackTex, transparent: true, opacity: 0.10, depthWrite: false })
+        ];
+
+        skuMaterialRegistry.set(skuItem.sku, { solidMats, ghostMats });
       });
 
-      activePackingResult = packer.pack(activeManifest);
-
-      // In Three.js container coordinates:
-      // Rear wall (盲端 / 柜子最里面) is at +halfL
-      // Doors (箱门端 / 封柜门) is at -halfL
-      // Our packer starts at x = 0 (Deepest Rear Wall) and advances towards x = usableDim.length (Doors)
-      // Therefore, 3D posX = (+usableDim.length / 2) - item.x - item.w / 2
       const halfIntL = usableDim.length / 2;
-      const startY = -currentSpec.extH / 2 + RAIL_H;
+      const startY = -usableDim.height / 2;
       const startZ = -usableDim.width / 2;
 
+      // Batch Create Cargo Meshes using Shared SKU Materials
       activePackingResult.placedBoxes.forEach((item) => {
-        const boxGeo = new THREE.BoxGeometry(item.w - 0.004, item.h - 0.004, item.d - 0.004);
-        const tex = createBoxTexture(item.color, item.sku);
+        const boxGeo = new THREE.BoxGeometry(item.w - 0.003, item.h - 0.003, item.d - 0.003);
+        const skuMats = skuMaterialRegistry.get(item.sku);
 
-        const boxMat = new THREE.MeshStandardMaterial({
-          color: item.color,
-          map: tex,
-          roughness: 0.48,
-          metalness: 0.05
-        });
-
-        const boxMesh = new THREE.Mesh(boxGeo, boxMat);
-        const posX = halfIntL - item.x - item.w / 2; // +L/2 (rear) -> -L/2 (door)
+        const boxMesh = new THREE.Mesh(boxGeo, skuMats.solidMats);
+        const posX = halfIntL - item.x - item.w / 2;
         const posY = startY + item.y + item.h / 2;
         const posZ = startZ + item.z + item.d / 2;
 
         boxMesh.position.set(posX, posY, posZ);
         boxMesh.castShadow = true;
-        boxMesh.receiveShadow = true;
+        boxMesh.receiveShadow = false;
 
         boxMesh.userData = {
           sku: item.sku,
           name: item.name,
+          color: item.color,
           weight: item.weight + ' kg',
           requirement: item.requirement || '放中间',
           dimensions: `${Math.round(item.w * 1000)} × ${Math.round(item.d * 1000)} × ${Math.round(item.h * 1000)} mm`,
           position: `X:${posX.toFixed(2)} Y:${posY.toFixed(2)} Z:${posZ.toFixed(2)}`,
           originY: posY,
+          skuMaterials: skuMats,
           isCargoBox: true
         };
 
@@ -2272,20 +3002,24 @@
       document.getElementById('kpi-vol').innerHTML = `${activePackingResult.usedVol}<span class="kpi-unit">/ ${currentSpec.nominalVol}m³</span>`;
       document.getElementById('kpi-count').innerHTML = `${activePackingResult.totalCount}<span class="kpi-unit">箱</span>`;
       document.getElementById('kpi-weight').innerHTML = `${activePackingResult.totalWeightTons}<span class="kpi-unit">T</span>`;
+
+      updateBoxVisibilityAndMaterials();
     };
 
     window.setPackingStrategy = function(strat) {
       currentStrategy = strat;
+      saveAppState();
       document.getElementById('btn-strat-cluster').classList.toggle('active', strat === 'cluster');
       document.getElementById('btn-strat-mec').classList.toggle('active', strat === 'mec');
-      runSmartPackingAlgorithm();
+      runSmartPackingAlgorithm(false);
     };
 
     window.setGapSpacing = function(gapVal) {
       currentGap = gapVal;
+      saveAppState();
       document.getElementById('btn-gap-zero').classList.toggle('active', gapVal === 0);
       document.getElementById('btn-gap-subtle').classList.toggle('active', gapVal > 0);
-      runSmartPackingAlgorithm();
+      runSmartPackingAlgorithm(false);
     };
 
     window.loadManifestPreset = function(presetKey) {
@@ -2293,9 +3027,58 @@
       document.querySelectorAll('#left-drawer .chip-grid-2 .btn-chip').forEach(b => b.classList.remove('active'));
       const btn = document.getElementById('btn-pre-' + presetKey);
       if (btn) btn.classList.add('active');
+      selectedSKUs.clear();
+      saveAppState();
       renderManifestUI();
-      runSmartPackingAlgorithm();
+      renderAnchorRibbon();
+      runSmartPackingAlgorithm(false);
     };
+
+    // --- 8. ANCHOR RIBBON (MULTI-ROW & EDGE-ALIGNED) & MANIFEST UI ---
+    function renderAnchorRibbon() {
+      const ribbonWrap = document.getElementById('anchor-chips-wrap');
+      if (!ribbonWrap) return;
+      ribbonWrap.innerHTML = '';
+
+      activeManifest.forEach(item => {
+        const hexColor = '#' + new THREE.Color(item.color).getHexString();
+        const chip = document.createElement('button');
+        chip.className = 'anchor-chip';
+        chip.id = `anchor-chip-${item.sku}`;
+        chip.title = `${item.sku}: ${item.name} (${item.quantity}箱)`;
+        chip.innerHTML = `
+          <span class="anchor-dot" style="background:${hexColor};"></span>
+          <span>${item.sku}</span>
+          <span class="anchor-count-badge">(${item.quantity})</span>
+        `;
+
+        chip.addEventListener('mouseenter', () => {
+          highlightSKUInScene(item.sku);
+          highlightCardInList(item.sku, true);
+        });
+        chip.addEventListener('mouseleave', () => {
+          restoreSKUDisplay();
+          highlightCardInList(item.sku, false);
+        });
+
+        chip.addEventListener('click', (e) => {
+          if (e.shiftKey || e.ctrlKey || e.metaKey) {
+            if (selectedSKUs.has(item.sku)) selectedSKUs.delete(item.sku);
+            else selectedSKUs.add(item.sku);
+          } else {
+            if (selectedSKUs.size === 1 && selectedSKUs.has(item.sku)) {
+              selectedSKUs.clear();
+            } else {
+              selectedSKUs.clear();
+              selectedSKUs.add(item.sku);
+            }
+          }
+          syncSelectionStates();
+        });
+
+        ribbonWrap.appendChild(chip);
+      });
+    }
 
     function renderManifestUI() {
       const container = document.getElementById('manifest-list-wrap');
@@ -2308,24 +3091,214 @@
         const hexColor = '#' + new THREE.Color(sku.color).getHexString();
         const card = document.createElement('div');
         card.className = 'sku-item';
+        card.id = `manifest-card-${sku.sku}`;
         card.innerHTML = `
           <div class="sku-item-top">
-            <span style="display:flex; align-items:center; gap:6px;">
-              <span style="width:8px; height:8px; border-radius:2px; background:${hexColor};"></span>
-              <span>${sku.name}</span>
-            </span>
+            <div class="sku-left-col">
+              <div class="sku-checkbox-custom" id="chk-box-${sku.sku}">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.2"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span style="width:8px; height:8px; border-radius:50%; background:${hexColor}; flex-shrink:0;"></span>
+              <span class="sku-name-txt" title="${sku.name}">${sku.name}</span>
+            </div>
             <span class="req-tag ${getReqClass(sku.requirement)}">${sku.requirement || '放中间'}</span>
           </div>
           <div class="sku-meta">
-            <span>尺寸: ${sku.w}×${sku.d}×${sku.h}m • 单重: ${sku.weight}kg</span>
-            <strong style="color:var(--primary);">${sku.quantity}箱</strong>
+            <span>${sku.w}×${sku.d}×${sku.h}m • ${sku.weight}kg</span>
+            <strong style="color:var(--primary); font-size:11px;">${sku.quantity} 箱</strong>
           </div>
         `;
+
+        card.addEventListener('mouseenter', () => {
+          highlightSKUInScene(sku.sku);
+          highlightAnchorChip(sku.sku, true);
+        });
+        card.addEventListener('mouseleave', () => {
+          restoreSKUDisplay();
+          highlightAnchorChip(sku.sku, false);
+        });
+
+        card.addEventListener('click', (e) => {
+          if (e.shiftKey || e.ctrlKey || e.metaKey) {
+            if (selectedSKUs.has(sku.sku)) selectedSKUs.delete(sku.sku);
+            else selectedSKUs.add(sku.sku);
+          } else {
+            if (selectedSKUs.size === 1 && selectedSKUs.has(sku.sku)) {
+              selectedSKUs.clear();
+            } else {
+              selectedSKUs.clear();
+              selectedSKUs.add(sku.sku);
+            }
+          }
+          syncSelectionStates();
+        });
+
         container.appendChild(card);
       });
+
+      renderAnchorRibbon();
     }
 
-    // --- 8. CLEAN WORKBENCH DRAWER TOGGLES ---
+    window.selectAllSKUs = function(selectAll) {
+      if (selectAll) {
+        activeManifest.forEach(s => selectedSKUs.add(s.sku));
+      } else {
+        selectedSKUs.clear();
+      }
+      syncSelectionStates();
+    };
+
+    window.resetSKUSelection = function() {
+      selectedSKUs.clear();
+      hoveredSKU = null;
+      syncSelectionStates();
+    };
+
+    window.updateUnselectedDisplayMode = function(mode) {
+      unselectedDisplayMode = mode;
+      syncDisplayModeUI();
+      saveAppState();
+      updateBoxVisibilityAndMaterials();
+    };
+
+    function syncDisplayModeUI() {
+      const ghostBtn = document.getElementById('mode-pill-ghost');
+      const hideBtn = document.getElementById('mode-pill-hide');
+      if (ghostBtn) ghostBtn.classList.toggle('active', unselectedDisplayMode === 'ghost');
+      if (hideBtn) hideBtn.classList.toggle('active', unselectedDisplayMode === 'hide');
+    }
+
+    function syncSelectionStates() {
+      activeManifest.forEach(s => {
+        const isSel = selectedSKUs.has(s.sku);
+        const card = document.getElementById(`manifest-card-${s.sku}`);
+        if (card) card.classList.toggle('selected', isSel);
+
+        const anchor = document.getElementById(`anchor-chip-${s.sku}`);
+        if (anchor) anchor.classList.toggle('active', isSel);
+      });
+
+      updateBoxVisibilityAndMaterials();
+    }
+
+    function highlightSKUInScene(skuCode) {
+      hoveredSKU = skuCode;
+      updateBoxVisibilityAndMaterials();
+    }
+
+    function restoreSKUDisplay() {
+      hoveredSKU = null;
+      updateBoxVisibilityAndMaterials();
+    }
+
+    function highlightCardInList(skuCode, isHighlighted) {
+      const card = document.getElementById(`manifest-card-${skuCode}`);
+      if (card) card.classList.toggle('highlighted', isHighlighted);
+    }
+
+    function highlightAnchorChip(skuCode, isHighlighted) {
+      const chip = document.getElementById(`anchor-chip-${skuCode}`);
+      if (chip) chip.style.transform = isHighlighted ? 'translateY(-1px)' : '';
+    }
+
+    // --- 9. HIGH-PERFORMANCE BATCH MATERIAL & VISIBILITY ENGINE ---
+    function updateBoxVisibilityAndMaterials() {
+      if (!boxMeshes || boxMeshes.length === 0) return;
+
+      const hasHover = hoveredSKU !== null;
+      const hasFilter = selectedSKUs.size > 0;
+
+      activeManifest.forEach(skuItem => {
+        const skuMats = skuMaterialRegistry.get(skuItem.sku);
+        if (!skuMats) return;
+
+        let isHighlighted = false;
+        if (hasHover) {
+          isHighlighted = (skuItem.sku === hoveredSKU);
+        } else if (hasFilter) {
+          isHighlighted = selectedSKUs.has(skuItem.sku);
+        }
+
+        const emissiveHex = isHighlighted ? 0x1e3a8a : 0x000000;
+        skuMats.solidMats.forEach(m => {
+          if (m.emissive) m.emissive.setHex(emissiveHex);
+        });
+      });
+
+      boxMeshes.forEach(box => {
+        const sku = box.userData.sku;
+        let isVisible = true;
+        let isSolid = true;
+
+        if (hasHover) {
+          if (sku === hoveredSKU) {
+            isSolid = true;
+            isVisible = true;
+          } else {
+            isSolid = false;
+            isVisible = (unselectedDisplayMode === 'ghost');
+          }
+        } else if (hasFilter) {
+          if (selectedSKUs.has(sku)) {
+            isSolid = true;
+            isVisible = true;
+          } else {
+            isSolid = false;
+            isVisible = (unselectedDisplayMode === 'ghost');
+          }
+        } else {
+          isSolid = true;
+          isVisible = true;
+        }
+
+        box.visible = isVisible;
+        if (isVisible) {
+          const targetMats = isSolid ? box.userData.skuMaterials.solidMats : box.userData.skuMaterials.ghostMats;
+          if (box.material !== targetMats) box.material = targetMats;
+        }
+      });
+
+      isRaycastDirty = true;
+    }
+
+    // --- 10. REVERSE LINKAGE: DOUBLE-CLICK / MODIFIER-CLICK 3D VIEWPORT SELECTION ---
+    function handleBoxSelection(event) {
+      raycaster.setFromCamera(mouse, camera);
+      const activeBoxes = boxMeshes.filter(b => b.visible);
+      const intersects = raycaster.intersectObjects(activeBoxes);
+
+      if (intersects.length > 0) {
+        const clickedBox = intersects[0].object;
+        const clickedSKU = clickedBox.userData.sku;
+
+        if (event.shiftKey || event.ctrlKey || event.metaKey) {
+          if (selectedSKUs.has(clickedSKU)) selectedSKUs.delete(clickedSKU);
+          else selectedSKUs.add(clickedSKU);
+        } else {
+          if (selectedSKUs.size === 1 && selectedSKUs.has(clickedSKU)) {
+            selectedSKUs.clear();
+          } else {
+            selectedSKUs.clear();
+            selectedSKUs.add(clickedSKU);
+          }
+        }
+
+        syncSelectionStates();
+
+        const leftDrawer = document.getElementById('left-drawer');
+        if (leftDrawer.style.display === 'none') {
+          toggleLeftDrawer();
+        }
+        const targetCard = document.getElementById(`manifest-card-${clickedSKU}`);
+        if (targetCard) {
+          targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          targetCard.classList.add('highlighted');
+          setTimeout(() => targetCard.classList.remove('highlighted'), 800);
+        }
+      }
+    }
+
+    // --- 11. WORKBENCH DRAWER TOGGLES & STUDIO CONTROLS ---
     window.toggleLeftDrawer = function() {
       const drawer = document.getElementById('left-drawer');
       const btn = document.getElementById('btn-toggle-left');
@@ -2352,6 +3325,7 @@
 
     window.setSmartCutaway = function(state) {
       renderConfig.smartCutaway = state;
+      isCameraDirty = true;
       document.getElementById('btn-cutaway-on').classList.toggle('active', state);
       document.getElementById('btn-cutaway-off').classList.toggle('active', !state);
     };
@@ -2359,11 +3333,17 @@
     window.updateForegroundOpacity = function(val) {
       const numVal = parseFloat(val);
       renderConfig.foregroundOpacity = numVal;
+      isCameraDirty = true;
       
       const label = document.getElementById('val-quick-trans');
       if (label) {
         if (numVal === 0) label.textContent = '0%';
         else label.textContent = Math.round(numVal * 100) + '%';
+      }
+      const labelStudio = document.getElementById('val-foregroundOpacity');
+      if (labelStudio) {
+        if (numVal === 0) labelStudio.textContent = '0%';
+        else labelStudio.textContent = Math.round(numVal * 100) + '%';
       }
 
       if (foregroundCutawayMat) {
@@ -2372,17 +3352,38 @@
       }
     };
 
+    window.setFrameColorPreset = function(colorHex, name) {
+      renderConfig.frameColor = colorHex;
+      if (frameSolidMat) frameSolidMat.color.set(colorHex);
+      const label = document.getElementById('val-frameColor');
+      if (label) label.textContent = name || colorHex;
+      isCameraDirty = true;
+    };
+
+    window.setBackColorPreset = function(colorHex) {
+      renderConfig.backColor = colorHex;
+      if (solidBackMat) solidBackMat.color.set(colorHex);
+      isCameraDirty = true;
+    };
+
     window.updateParam = function(key, val) {
-      renderConfig[key] = parseFloat(val);
+      const numVal = parseFloat(val);
+      renderConfig[key] = numVal;
       const valLabel = document.getElementById('val-' + key);
       if (valLabel) {
-        if (key === 'sunAzimuth' || key === 'sunElevation') valLabel.textContent = Math.round(val) + '°';
-        else valLabel.textContent = parseFloat(val).toFixed(2);
+        if (key === 'sunAzimuth' || key === 'sunElevation') valLabel.textContent = Math.round(numVal) + '°';
+        else valLabel.textContent = numVal.toFixed(2);
       }
 
-      if (key === 'frameMetal' && frameSolidMat) frameSolidMat.metalness = renderConfig.frameMetal;
-      if (key === 'frameRough' && frameSolidMat) frameSolidMat.roughness = renderConfig.frameRough;
+      if (key === 'frameMetal' && frameSolidMat) frameSolidMat.metalness = numVal;
+      if (key === 'frameRough' && frameSolidMat) frameSolidMat.roughness = numVal;
+      if (key === 'bump' && frameSolidMat && frameSolidMat.normalScale) frameSolidMat.normalScale.set(numVal, numVal);
+      if (key === 'sunIntensity' && sunLight) sunLight.intensity = numVal;
+      if (key === 'ambIntensity' && ambientLight) ambientLight.intensity = numVal;
+      if (key === 'exposure' && renderer) renderer.toneMappingExposure = numVal;
       if (key === 'sunAzimuth' || key === 'sunElevation') updateSunLightPosition();
+      
+      isCameraDirty = true;
     };
 
     window.copyCurrentConfig = function() {
@@ -2392,7 +3393,7 @@
       });
     };
 
-    // --- 9. FLOATING BOTTOM ISLAND ACTIONS ---
+    // --- 12. FLOATING BOTTOM ISLAND ACTIONS ---
     window.switchCamera = function(type) {
       document.querySelectorAll('.bottom-island .seg-btn').forEach(b => b.classList.remove('active'));
       const activeBtn = document.getElementById('btn-cam-' + type);
@@ -2421,6 +3422,7 @@
         camera.position.lerpVectors(startPos, targetPos, ease);
         controls.target.lerpVectors(startLook, targetLook, ease);
         controls.update();
+        isCameraDirty = true;
 
         if (p < 1) requestAnimationFrame(update);
       }
@@ -2446,6 +3448,7 @@
 
         doorLeftGroup.rotation.y = startL + (targetAngleL - startL) * ease;
         doorRightGroup.rotation.y = startR + (targetAngleR - startR) * ease;
+        isCameraDirty = true;
 
         if (p < 1) requestAnimationFrame(update);
       }
@@ -2484,6 +3487,7 @@
               isPackingAnimating = false;
               animBtn.style.opacity = '1';
               animText.textContent = '演示装柜';
+              isRaycastDirty = true;
             }
           }
           requestAnimationFrame(drop);
@@ -2491,10 +3495,11 @@
       });
     };
 
-    // --- 10. TOPOLOGICAL CUTAWAY & RAYCAST ---
+    // --- 13. THROTTLED TOPOLOGICAL CUTAWAY & EVENT-DRIVEN RAYCAST HOVER ---
     const _camDir = new THREE.Vector3();
     function updateAdaptiveCutaway() {
-      if (!camera || dynamicWalls.length === 0) return;
+      if (!isCameraDirty || !camera || dynamicWalls.length === 0) return;
+      isCameraDirty = false;
 
       const H = currentSpec.extH;
 
@@ -2590,21 +3595,41 @@
 
       tooltip.style.left = event.clientX + 'px';
       tooltip.style.top = event.clientY + 'px';
+
+      if (!isOrbiting) {
+        isRaycastDirty = true;
+      }
     }
 
     function checkRaycast() {
+      if (!isRaycastDirty || isOrbiting) return;
+      isRaycastDirty = false;
+
       raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(boxMeshes);
+      const activeBoxes = boxMeshes.filter(b => b.visible);
+      const intersects = raycaster.intersectObjects(activeBoxes);
 
       if (intersects.length > 0) {
         const hit = intersects[0].object;
         if (hoveredBox !== hit) {
-          if (hoveredBox) hoveredBox.material.emissive.setHex(0x000000);
+          if (hoveredBox && hoveredBox.userData.skuMaterials) {
+            const isSel = selectedSKUs.has(hoveredBox.userData.sku) || hoveredSKU === hoveredBox.userData.sku;
+            hoveredBox.userData.skuMaterials.solidMats.forEach(m => {
+              if (m.emissive) m.emissive.setHex(isSel ? 0x1e3a8a : 0x000000);
+            });
+          }
           hoveredBox = hit;
-          hoveredBox.material.emissive.setHex(0x223355);
+          if (hoveredBox && hoveredBox.userData.skuMaterials) {
+            hoveredBox.userData.skuMaterials.solidMats.forEach(m => {
+              if (m.emissive) m.emissive.setHex(0x38bdf8);
+            });
+          }
 
           const d = hit.userData;
-          ttSku.textContent = `SKU: ${d.sku}`;
+          ttSku.innerHTML = `
+            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#${new THREE.Color(d.color).getHexString()};"></span>
+            <span>SKU: ${d.sku}</span>
+          `;
           ttType.textContent = d.name;
           ttDim.textContent = d.dimensions;
           ttWeight.textContent = d.weight;
@@ -2614,7 +3639,12 @@
         }
       } else {
         if (hoveredBox) {
-          hoveredBox.material.emissive.setHex(0x000000);
+          if (hoveredBox.userData.skuMaterials) {
+            const isSel = selectedSKUs.has(hoveredBox.userData.sku) || hoveredSKU === hoveredBox.userData.sku;
+            hoveredBox.userData.skuMaterials.solidMats.forEach(m => {
+              if (m.emissive) m.emissive.setHex(isSel ? 0x1e3a8a : 0x000000);
+            });
+          }
           hoveredBox = null;
           tooltip.style.display = 'none';
         }
@@ -2630,6 +3660,8 @@
       camera.bottom = -frustumSize / 2;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
+      isCameraDirty = true;
+      isRaycastDirty = true;
     }
 
     function animate() {
