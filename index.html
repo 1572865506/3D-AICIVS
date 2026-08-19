@@ -297,8 +297,8 @@
     .sku-anchor-panel {
       position: absolute;
       right: 20px;
-      left: calc(50% + 290px);
-      bottom: 0;
+      left: calc(50% + 340px); /* Generous gap away from center controls island */
+      bottom: 4px;
       pointer-events: auto;
       max-height: 94px; /* Max 3 rows */
       overflow-y: auto;
@@ -313,6 +313,42 @@
       backdrop-filter: none;
       padding-right: 4px;
       z-index: 20;
+    }
+
+    /* Micro CoG Toggle Button in Top HUD */
+    .btn-hud-cog-pill {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 999px;
+      padding: 1px 6px;
+      font-size: 9px;
+      font-weight: 700;
+      color: #059669;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      transition: all 0.15s ease;
+      margin-left: 4px;
+    }
+    .btn-hud-cog-pill:hover {
+      background: #d1fae5;
+      transform: scale(1.05);
+    }
+    .btn-hud-cog-pill.off {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      color: #64748b;
+    }
+    .cog-dot-indicator {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #10b981;
+      display: inline-block;
+    }
+    .btn-hud-cog-pill.off .cog-dot-indicator {
+      background: #94a3b8;
     }
 
     @media (max-width: 1200px) {
@@ -875,6 +911,89 @@
     .req-mid  { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
     .req-door { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
 
+    .btn-sku-edit-icon {
+      background: transparent;
+      border: 1px solid var(--slate-200);
+      border-radius: 5px;
+      padding: 2px 5px;
+      color: var(--slate-500);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      margin-left: 4px;
+    }
+    .btn-sku-edit-icon:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: scale(1.08);
+    }
+    .btn-sku-del-icon {
+      background: transparent;
+      border: 1px solid var(--slate-200);
+      border-radius: 5px;
+      padding: 2px 5px;
+      color: var(--slate-400);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      margin-left: 2px;
+    }
+    .btn-sku-del-icon:hover {
+      background: #fef2f2;
+      border-color: #fca5a5;
+      color: #ef4444;
+      transform: scale(1.08);
+    }
+    .sku-param-badge {
+      font-size: 8.5px;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 3px;
+      background: #f8fafc;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+      white-space: nowrap;
+    }
+
+    /* Global Toast Notification Component */
+    .toast-container {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .toast-card {
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      padding: 11px 18px;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.3s ease;
+      pointer-events: auto;
+    }
+    @keyframes toastSlideIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
     /* Range and Color Inputs in Studio */
     .param-row {
       display: flex;
@@ -1098,6 +1217,18 @@
             <span class="kpi-label">货物总重</span>
             <span class="kpi-val" id="kpi-weight">21.8<span class="kpi-unit">T</span></span>
           </div>
+          <div class="kpi-item" id="kpi-cog-item" title="实时 3D 质心偏载监控与载荷配平开关 (点击微型按钮切换)">
+            <div style="display:flex; justify-content:space-between; align-items:center; width:100%; gap:4px;">
+              <span class="kpi-label">3D 重心配平</span>
+              <button class="btn-hud-cog-pill" id="btn-hud-cog-pill" onclick="toggleCoGBalanceHud()" title="点击切换：开启载荷配平 / 关闭(纯空间推进)">
+                <span class="cog-dot-indicator" id="cog-dot-indicator"></span>
+                <span id="txt-hud-cog-status">配平开</span>
+              </button>
+            </div>
+            <span class="kpi-val" id="kpi-cog" style="font-size: 11.5px; font-weight: 700;">
+              横 <span id="kpi-cog-lat" style="color:#059669;">0.8%</span> | 纵 <span id="kpi-cog-long" style="color:#059669;">3.2%</span>
+            </span>
+          </div>
           <div class="kpi-item" style="padding: 4px 10px;">
             <span class="cache-status-badge" id="hud-cache-badge" title="已从本地空间坐标缓存极速秒开">
               <span class="cache-pulse-dot" id="cache-dot"></span>
@@ -1179,7 +1310,20 @@
             <button class="btn-chip active" id="btn-gap-zero" onclick="setGapSpacing(0)">0% 紧密零间隙</button>
             <button class="btn-chip" id="btn-gap-subtle" onclick="setGapSpacing(0.01)">1cm 宽松装卸</button>
           </div>
-          <button class="btn-island-action primary" style="width: 100%; justify-content: center; padding: 9px;" onclick="runSmartPackingAlgorithm(true)">
+
+          <!-- CoG Axle Load Balancing Switch -->
+          <div class="param-row" style="margin-top: 6px; padding: 6px 8px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <div class="param-meta" style="margin-bottom: 4px;">
+              <span style="font-size: 11px; font-weight: 700; color: #1e293b;">⚖️ 载荷偏置平衡优化 (CoG)</span>
+              <span class="param-val" id="val-cog-mode" style="font-size: 10.5px; font-weight: 800; color: #059669;">已开启</span>
+            </div>
+            <div class="chip-grid-2">
+              <button class="btn-chip active" id="btn-cog-bal-on" onclick="setCoGBalancingMode(true)">开启配平 (按重分区)</button>
+              <button class="btn-chip" id="btn-cog-bal-off" onclick="setCoGBalancingMode(false)">关闭 (纯空间推进)</button>
+            </div>
+          </div>
+
+          <button class="btn-island-action primary" style="width: 100%; justify-content: center; padding: 9px; margin-top: 6px;" onclick="runSmartPackingAlgorithm(true)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             <span>重新执行 AI 算柜装箱</span>
           </button>
@@ -1202,14 +1346,18 @@
           <!-- Luxury Manifest Toolbar -->
           <div class="manifest-toolbar-card">
             <div class="manifest-tools-row">
-              <div style="display:flex; gap:6px;">
+              <div style="display:flex; gap:5px;">
+                <button class="tool-action-btn primary" onclick="openAddSKUModal()" style="background:#eff6ff; color:#2563eb; border-color:#bfdbfe; font-weight:800;">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  <span>新增 SKU</span>
+                </button>
                 <button class="tool-action-btn" onclick="selectAllSKUs(true)">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                   <span>全选</span>
                 </button>
                 <button class="tool-action-btn" onclick="resetSKUSelection()">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                  <span>全部重置</span>
+                  <span>重置</span>
                 </button>
               </div>
               <div style="display:flex; align-items:center; gap:5px;">
@@ -1318,6 +1466,15 @@
           </div>
         </div>
 
+        <!-- 5. 3D Center of Gravity Visualizer -->
+        <div class="section-card">
+          <div class="section-label"><span>3D 重心 (CoG) 靶心可视化</span></div>
+          <div class="chip-grid-2">
+            <button class="btn-chip active" id="btn-cog-on" onclick="toggleCoGDisplay(true)">🎯 显示 3D 重心标</button>
+            <button class="btn-chip" id="btn-cog-off" onclick="toggleCoGDisplay(false)">隐藏重心标</button>
+          </div>
+        </div>
+
         <button class="btn-island-action primary" style="width: 100%; justify-content: center; padding: 9px;" onclick="copyCurrentConfig()">
           <span>📋 复制当前渲染配置 (JSON)</span>
         </button>
@@ -1401,9 +1558,231 @@
         </table>
       </div>
 
-      <div class="modal-footer">
+      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
         <button class="btn-island-action" onclick="closeImportModal()">取消</button>
-        <button class="btn-island-action primary" onclick="applyImportedManifest()">⚡ 导入并执行 3D 智能算柜</button>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-island-action" onclick="applyImportedManifest(false)" style="color:#2563eb; border-color:#bfdbfe; background:#eff6ff; font-weight:700;">
+            📋 仅导入至货单列表 (手动算柜)
+          </button>
+          <button class="btn-island-action primary" onclick="applyImportedManifest(true)">
+            ⚡ 导入并立即执行算柜
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. SKU SETTINGS & PARAMETERS CONFIGURATION MODAL (ULTRA-CLEAN UI) -->
+  <div class="modal-overlay" id="sku-settings-modal" style="display:none;">
+    <div class="modal-card" style="max-width: 560px; border-radius: 16px; box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.35); border: 1px solid rgba(226, 232, 240, 0.8);">
+      <div class="modal-header" style="padding: 16px 22px; border-bottom: 1px solid #f1f5f9; background: #fafcff;">
+        <div class="modal-title" style="font-size: 14px; font-weight: 800; display:flex; align-items:center; gap:8px;">
+          <div style="width:28px; height:28px; border-radius:8px; background:#eff6ff; display:flex; align-items:center; justify-content:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.4"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </div>
+          <span style="color:#0f172a;">SKU 装载规则与空间参数配置</span>
+        </div>
+        <button class="close-btn" onclick="closeSKUSettingsModal()" style="font-size:16px; color:#94a3b8; background:none; border:none; cursor:pointer;">✕</button>
+      </div>
+
+      <div class="modal-body" style="padding: 18px 22px; max-height: 520px; overflow-y:auto;">
+        <input type="hidden" id="sku-edit-id">
+        
+        <!-- SKU Info Card -->
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px; padding:10px 14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px;">
+          <span id="sku-modal-dot" style="width:14px; height:14px; border-radius:50%; background:#3b82f6; flex-shrink:0; box-shadow:0 0 0 3px rgba(59,130,246,0.18);"></span>
+          <div style="flex:1;">
+            <div id="sku-modal-name" style="font-weight:800; color:#0f172a; font-size:13.5px; line-height:1.3;">-</div>
+            <div id="sku-modal-code" style="font-size:11px; color:#64748b; font-family:'JetBrains Mono',monospace; font-weight:600;">SKU-00</div>
+          </div>
+        </div>
+
+        <!-- 1. Position Requirement Segmented Group -->
+        <div style="margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <label style="font-size:12px; font-weight:700; color:#1e293b;">1. 货柜纵向位置区间 (Position Zone)</label>
+            <span style="font-size:10px; color:#64748b;">影响进深前后装载区位</span>
+          </div>
+          <select id="sku-edit-req" style="width:100%; padding:8px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:12px; font-weight:600; background:white; outline:none; transition:border 0.2s;">
+            <option value="放柜子最里面">📍 放柜子最里面 (Deep Inside / Rear - 优先置于箱体深处)</option>
+            <option value="放中间">🏢 放中间 (Middle Section - 紧密排布于货柜中段)</option>
+            <option value="封柜门">🚪 封柜门 (Front / Door End - 作为门端封箱与防倾挡板)</option>
+          </select>
+        </div>
+
+        <!-- 2. Allowed Orientation -->
+        <div style="margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <label style="font-size:12px; font-weight:700; color:#1e293b;">2. 货物翻转与朝向权限 (Orientation Permission)</label>
+            <span style="font-size:10px; color:#64748b;">保护封箱胶带与直立标</span>
+          </div>
+          <select id="sku-edit-ori" style="width:100%; padding:8px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:12px; font-weight:600; background:white; outline:none; transition:border 0.2s;">
+            <option value="upright">⬆️ 仅允许立放 (Upright Only - 正立偏航90°旋转，封箱胶带向上)</option>
+            <option value="allow_flat">📦 允许平放 (Allow Flat - 允许大面积朝下平铺，降低重心)</option>
+            <option value="allow_side">📑 允许侧卧 (Allow Side - 允许窄侧面竖直放置)</option>
+            <option value="any">🔄 任意翻转 (Any - 全开放 6 个空间朝向)</option>
+          </select>
+        </div>
+
+        <!-- 3. Max Stacking Layers & Max Weight -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:16px;">
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
+            <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">
+              3. 最大堆叠层数 (Max Layers)
+            </label>
+            <input type="number" id="sku-edit-max-layers" min="0" max="25" step="1" placeholder="0为不限" style="width:100%; padding:6px 8px; border:1.5px solid #cbd5e1; border-radius:6px; font-size:12px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box; outline:none;">
+            <span style="font-size:9.5px; color:#94a3b8; display:block; margin-top:3px;">填 0 或留空按柜顶算满</span>
+          </div>
+
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
+            <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">
+              4. 承重抗压极限 (Max kg)
+            </label>
+            <input type="number" id="sku-edit-max-bearing" min="10" max="1000" step="5" placeholder="默认 180kg" style="width:100%; padding:6px 8px; border:1.5px solid #cbd5e1; border-radius:6px; font-size:12px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box; outline:none;">
+            <span style="font-size:9.5px; color:#94a3b8; display:block; margin-top:3px;">上方累计最大承载重量</span>
+          </div>
+        </div>
+
+        <!-- 4. Capacity Trimming Strategy -->
+        <div style="margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <label style="font-size:12px; font-weight:700; color:#1e293b;">5. 模块五超容弹性核减策略 (Capacity Rule)</label>
+          </div>
+          <select id="sku-edit-elastic" style="width:100%; padding:8px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:12px; font-weight:600; background:white; outline:none;">
+            <option value="false">🔒 刚性必装件 (Mandatory - 100% 满额履约装完)</option>
+            <option value="true">⚡ 弹性缓冲件 (Elastic - 装不下时自动填满柜容并核减)</option>
+          </select>
+        </div>
+
+        <!-- 5. Dimensions & Quantity Micro-adjust -->
+        <div style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
+          <span style="font-size:11px; font-weight:700; color:#475569; display:block; margin-bottom:6px;">单箱物理尺寸与计划发货数微调</span>
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:8px;">
+            <div>
+              <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">长 (m)</label>
+              <input type="number" id="sku-edit-w" step="0.001" style="width:100%; padding:5px 6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">宽 (m)</label>
+              <input type="number" id="sku-edit-d" step="0.001" style="width:100%; padding:5px 6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">高 (m)</label>
+              <input type="number" id="sku-edit-h" step="0.001" style="width:100%; padding:5px 6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">计划数(箱)</label>
+              <input type="number" id="sku-edit-qty" min="1" step="1" style="width:100%; padding:5px 6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding:14px 22px; border-top:1px solid #f1f5f9; background:#fafcff; border-radius:0 0 16px 16px; display:flex; justify-content:space-between; align-items:center;">
+        <button class="btn-island-action" onclick="deleteCurrentEditingSKU()" style="color:#ef4444; border-color:#fecaca; background:#fff5f5; font-weight:700;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.4"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          <span>删除此 SKU</span>
+        </button>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-island-action" onclick="closeSKUSettingsModal()">取消</button>
+          <button class="btn-island-action primary" onclick="saveSKUSettingsAndRepack()" style="background:var(--primary); color:white; font-weight:700; box-shadow:0 4px 12px rgba(37,99,235,0.25);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>保存规则并重新算柜</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. ADD NEW SKU MODAL -->
+  <div class="modal-overlay" id="add-sku-modal" style="display:none;">
+    <div class="modal-card" style="max-width: 560px; border-radius: 16px; box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.35); border: 1px solid rgba(226, 232, 240, 0.8);">
+      <div class="modal-header" style="padding: 16px 22px; border-bottom: 1px solid #f1f5f9; background: #fafcff;">
+        <div class="modal-title" style="font-size: 14px; font-weight: 800; display:flex; align-items:center; gap:8px;">
+          <div style="width:28px; height:28px; border-radius:8px; background:#eff6ff; display:flex; align-items:center; justify-content:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </div>
+          <span style="color:#0f172a;">新增货物 SKU</span>
+        </div>
+        <button class="close-btn" onclick="closeAddSKUModal()" style="font-size:16px; color:#94a3b8; background:none; border:none; cursor:pointer;">✕</button>
+      </div>
+
+      <div class="modal-body" style="padding: 18px 22px; max-height: 520px; overflow-y:auto;">
+        <!-- SKU Name & Code -->
+        <div style="display:grid; grid-template-columns: 1fr 2fr; gap:12px; margin-bottom:14px;">
+          <div>
+            <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">SKU 编号</label>
+            <input type="text" id="sku-add-code" placeholder="SKU-15" style="width:100%; padding:7px 10px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:12px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">产品分类品名</label>
+            <input type="text" id="sku-add-name" placeholder="例如: 32寸曲面显示器 / 伺服电机" style="width:100%; padding:7px 10px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:12px; box-sizing:border-box;">
+          </div>
+        </div>
+
+        <!-- Position Requirement -->
+        <div style="margin-bottom:14px;">
+          <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">1. 货柜纵向摆放区间要求</label>
+          <select id="sku-add-req" style="width:100%; padding:8px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:12px; font-weight:600; background:white;">
+            <option value="放中间" selected>🏢 放中间 (Middle Section - 紧密排布于货柜中段)</option>
+            <option value="放柜子最里面">📍 放柜子最里面 (Deep Inside / Rear - 优先置于箱体深处)</option>
+            <option value="封柜门">🚪 封柜门 (Front / Door End - 作为门端封箱与防倾挡板)</option>
+          </select>
+        </div>
+
+        <!-- Allowed Orientation -->
+        <div style="margin-bottom:14px;">
+          <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">2. 翻转朝向权限</label>
+          <select id="sku-add-ori" style="width:100%; padding:8px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:12px; font-weight:600; background:white;">
+            <option value="upright" selected>⬆️ 仅允许立放 (Upright Only - 正立偏航90°旋转，封箱胶带向上)</option>
+            <option value="allow_flat">📦 允许平放 (Allow Flat - 允许大面积朝下平铺，降低重心)</option>
+            <option value="allow_side">📑 允许侧卧 (Allow Side - 允许窄侧面竖直放置)</option>
+            <option value="any">🔄 任意翻转 (Any - 全开放 6 个空间朝向)</option>
+          </select>
+        </div>
+
+        <!-- Stacking Layers & Max Weight -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:14px;">
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
+            <label style="font-size:11px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">最大堆叠层数 (0为不限)</label>
+            <input type="number" id="sku-add-max-layers" min="0" max="25" placeholder="0为不限" style="width:100%; padding:6px 8px; border:1.5px solid #cbd5e1; border-radius:6px; font-size:12px; font-family:'JetBrains Mono'; box-sizing:border-box;">
+          </div>
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
+            <label style="font-size:11px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">单箱重量 (kg)</label>
+            <input type="number" id="sku-add-weight" min="0.1" step="0.1" value="10.0" style="width:100%; padding:6px 8px; border:1.5px solid #cbd5e1; border-radius:6px; font-size:12px; font-family:'JetBrains Mono'; box-sizing:border-box;">
+          </div>
+        </div>
+
+        <!-- Dimensions & Quantity -->
+        <div style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
+          <span style="font-size:11px; font-weight:700; color:#475569; display:block; margin-bottom:6px;">单箱物理尺寸与总箱数</span>
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:8px;">
+            <div>
+              <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">长 (m)</label>
+              <input type="number" id="sku-add-w" step="0.001" value="0.50" style="width:100%; padding:5px 6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">宽 (m)</label>
+              <input type="number" id="sku-add-d" step="0.001" value="0.40" style="width:100%; padding:5px 6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">高 (m)</label>
+              <input type="number" id="sku-add-h" step="0.001" value="0.35" style="width:100%; padding:5px 6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">数量 (箱)</label>
+              <input type="number" id="sku-add-qty" min="1" step="1" value="50" style="width:100%; padding:5px 6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding:14px 22px; border-top:1px solid #f1f5f9; background:#fafcff; border-radius:0 0 16px 16px;">
+        <button class="btn-island-action" onclick="closeAddSKUModal()">取消</button>
+        <button class="btn-island-action primary" onclick="submitAddNewSKU()" style="background:var(--primary); color:white; font-weight:700; box-shadow:0 4px 12px rgba(37,99,235,0.25);">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>确认添加并计算装载</span>
+        </button>
       </div>
     </div>
   </div>
@@ -1472,15 +1851,17 @@
     let currentContainerType = '40HQ';
     let currentSpec = CONTAINER_SPECS['40HQ'];
 
-    // --- 2. ZERO-GAP & GRAVITY-CONSTRAINED CLUSTER PACKER ---
-    class RobustContainerPacker {
+    // --- 2. INDUSTRIAL SMART CONTAINER PACKING KERNEL (6-MODULE SYSTEM) ---
+    class IndustrialSmartContainerPacker {
       constructor(containerDim, options = {}) {
         this.L = containerDim.length;
         this.H = containerDim.height;
         this.W = containerDim.width;
         this.gap = options.gap || 0.0;
         this.strategy = options.strategy || 'cluster';
-        this.minSupportRatio = 0.70;
+        this.enableCoGBalance = (options.enableCoGBalance !== false);
+        this.minSupportRatio = 0.75;
+        this.doorZoneX = this.L - 1.20; // Last 1.2m near front doors
       }
 
       static isOverlap(boxA, boxB, epsilon = 0.0005) {
@@ -1494,190 +1875,383 @@
         );
       }
 
-      isSupported(candidateBox, placedBoxes) {
-        if (candidateBox.y <= 0.001) return true;
+      // Module 1 & 3: Contact pressure & Coplanarity load-bearing safety check
+      isSupportedAndPressureSafe(candidateBox, placedBoxes) {
+        if (candidateBox.y <= 0.001) return true; // Direct floor support
 
         const boxBottomArea = candidateBox.w * candidateBox.d;
         let supportedArea = 0;
+        const supportingBoxes = [];
 
         for (const pb of placedBoxes) {
-          if (Math.abs((pb.y + pb.h) - candidateBox.y) < 0.002) {
+          if (Math.abs((pb.y + pb.h) - candidateBox.y) < 0.003) {
             const overlapX1 = Math.max(candidateBox.x, pb.x);
             const overlapX2 = Math.min(candidateBox.x + candidateBox.w, pb.x + pb.w);
             const overlapZ1 = Math.max(candidateBox.z, pb.z);
             const overlapZ2 = Math.min(candidateBox.z + candidateBox.d, pb.z + pb.d);
 
             if (overlapX2 > overlapX1 && overlapZ2 > overlapZ1) {
-              supportedArea += (overlapX2 - overlapX1) * (overlapZ2 - overlapZ1);
+              const area = (overlapX2 - overlapX1) * (overlapZ2 - overlapZ1);
+              supportedArea += area;
+              supportingBoxes.push({ box: pb, area });
             }
           }
         }
 
-        return (supportedArea / boxBottomArea) >= this.minSupportRatio;
+        // Must meet minimum bottom support surface ratio (default 75%)
+        if ((supportedArea / boxBottomArea) < this.minSupportRatio) {
+          return false;
+        }
+
+        // Contact pressure distribution check (kPa = kg / m2)
+        const contactPressure = candidateBox.weight / Math.max(supportedArea, 0.01);
+        for (const sup of supportingBoxes) {
+          // Default allowable bearing load on bottom boxes
+          const allowedBearingPressure = (sup.box.weight * 60) / Math.max(sup.box.w * sup.box.d, 0.01);
+          if (contactPressure > allowedBearingPressure * 1.8) {
+            return false; // Intercept if upper heavy pressure exceeds lower compressive limits
+          }
+        }
+
+        return true;
+      }
+
+      // Module 6: Orientation Permissions & Door-end safety lock
+      getSafeOrientations(item, xPos) {
+        const isNearDoor = (xPos >= this.doorZoneX);
+        const allowedOri = item.allowedOrientation || (item.allowFlat ? 'allow_flat' : 'upright');
+
+        let rawOrientations = [];
+        if (allowedOri === 'upright') {
+          rawOrientations = [
+            { l: item.w, wz: item.d, h: item.h, w: item.w, d: item.d, mode: 'upright-normal' },
+            { l: item.d, wz: item.w, h: item.h, w: item.d, d: item.w, mode: 'upright-yaw90' }
+          ];
+        } else if (allowedOri === 'allow_flat') {
+          rawOrientations = [
+            { l: item.w, wz: item.d, h: item.h, w: item.w, d: item.d, mode: 'upright-normal' },
+            { l: item.d, wz: item.w, h: item.h, w: item.d, d: item.w, mode: 'upright-yaw90' },
+            { l: item.w, wz: item.h, h: item.d, w: item.w, d: item.h, mode: 'flat-1' },
+            { l: item.d, wz: item.h, h: item.w, w: item.d, d: item.h, mode: 'flat-2' }
+          ];
+        } else if (allowedOri === 'allow_side') {
+          rawOrientations = [
+            { l: item.w, wz: item.d, h: item.h, w: item.w, d: item.d, mode: 'upright-normal' },
+            { l: item.d, wz: item.w, h: item.h, w: item.d, d: item.w, mode: 'upright-yaw90' },
+            { l: item.h, wz: item.d, h: item.w, w: item.h, d: item.d, mode: 'side-1' },
+            { l: item.h, wz: item.w, h: item.d, w: item.h, d: item.w, mode: 'side-2' }
+          ];
+        } else {
+          // 'any' - 6 orientations
+          rawOrientations = [
+            { l: item.w, wz: item.d, h: item.h, w: item.w, d: item.d, mode: 'upright-normal' },
+            { l: item.d, wz: item.w, h: item.h, w: item.d, d: item.w, mode: 'upright-yaw90' },
+            { l: item.w, wz: item.h, h: item.d, w: item.w, d: item.h, mode: 'flat-1' },
+            { l: item.d, wz: item.h, h: item.w, w: item.d, d: item.h, mode: 'flat-2' },
+            { l: item.h, wz: item.d, h: item.w, w: item.h, d: item.d, mode: 'side-1' },
+            { l: item.h, wz: item.w, h: item.d, w: item.h, d: item.w, mode: 'side-2' }
+          ];
+        }
+
+        if (!isNearDoor) {
+          return rawOrientations;
+        }
+
+        // STRICT MODULE 6: DOOR-END ANTI-TOPPLING ORIENTATION LOCK
+        return rawOrientations.filter(ori => {
+          const depthRatio = ori.l / ori.h;
+          return depthRatio >= 0.80 || ori.h <= 0.20 || ori.l >= 0.45;
+        });
+      }
+
+      // Column Borrowing & Height Leveling (削峰填谷平准化)
+      // Distributes remaining Q units across C columns to avoid isolated short step spikes
+      computeLeveledLayers(totalQty, maxFullLayers) {
+        if (totalQty <= 0) return [];
+        if (totalQty <= maxFullLayers) return [totalQty];
+
+        const numCols = Math.ceil(totalQty / maxFullLayers);
+        const baseLayers = Math.floor(totalQty / numCols);
+        const remainder = totalQty % numCols;
+
+        const layers = [];
+        for (let c = 0; c < numCols; c++) {
+          layers.push(c < remainder ? baseLayers + 1 : baseLayers);
+        }
+        return layers;
       }
 
       pack(cargoManifest) {
         const placedBoxes = [];
         const unplacedItems = [];
+        const elasticTrimmedMap = new Map();
 
-        const rearGroup = [];
-        const middleGroup = [];
-        const doorGroup = [];
+        const skuPool = cargoManifest.map(m => ({
+          ...m,
+          remQty: m.quantity,
+          actualPlaced: 0,
+          isElastic: /可以少放|可以减少|可减少|调节|按需/i.test(m.requirement || '') || m.isElastic === true
+        }));
 
-        cargoManifest.forEach(item => {
-          const req = item.requirement || '';
-          if (/最里面|里面|rear|deep/i.test(req)) rearGroup.push(item);
-          else if (/封柜门|门|door|front/i.test(req)) doorGroup.push(item);
-          else middleGroup.push(item);
-        });
-
-        const sortGroup = (arr) => {
-          arr.sort((a, b) => {
-            const volA = a.w * a.h * a.d;
-            const volB = b.w * b.h * b.d;
-            if (Math.abs(volB - volA) > 0.001) return volB - volA;
-            return b.weight - a.weight;
-          });
+        const getZonePriority = (sku, currentX) => {
+          const req = sku.requirement || '';
+          if (/最里面|rear|deep/i.test(req)) return (currentX <= 3.5) ? 1200 : 10;
+          if (/放中间|mid|middle/i.test(req)) return (currentX >= 1.5 && currentX <= 8.5) ? 900 : 200;
+          if (/封柜门|door|front/i.test(req)) return (currentX >= 6.5) ? 1000 : 100;
+          return 500;
         };
-        sortGroup(rearGroup);
-        sortGroup(middleGroup);
-        sortGroup(doorGroup);
 
-        const orderedSKUs = [...rearGroup, ...middleGroup, ...doorGroup];
-        let candidatePoints = [{ x: 0, y: 0, z: 0 }];
+        let boxGlobalIndex = 0;
+        let currentX = 0;
 
-        for (const skuItem of orderedSKUs) {
-          let remainingQty = skuItem.quantity;
-          let boxIndex = 0;
+        // Outer Loop: STRICT ADVANCEMENT WALL SLICE BY WALL SLICE ALONG X (0 -> L)
+        while (currentX < this.L - 0.05) {
+          const availableSKUs = skuPool.filter(s => s.remQty > 0);
+          if (availableSKUs.length === 0) break;
 
-          while (remainingQty > 0) {
-            let bestFit = null;
-            let bestScore = -Infinity;
+          // 1. Select the Best Anchor Primary SKU for this new wall slice
+          availableSKUs.sort((a, b) => {
+            if (this.enableCoGBalance) {
+              const prioA = getZonePriority(a, currentX);
+              const prioB = getZonePriority(b, currentX);
+              if (prioB !== prioA) return prioB - prioA;
+            }
+            return (b.w * b.h * b.d) - (a.w * a.h * a.d);
+          });
 
-            const orientations = skuItem.allowRotations !== false ? [
-              { w: skuItem.w, h: skuItem.h, d: skuItem.d },
-              { w: skuItem.d, h: skuItem.h, d: skuItem.w }
-            ] : [{ w: skuItem.w, h: skuItem.h, d: skuItem.d }];
+          let primarySKU = null;
+          let primaryOri = null;
 
-            for (const point of candidatePoints) {
-              for (const ori of orientations) {
-                const candidateBox = {
-                  id: `${skuItem.sku}-${boxIndex + 1}`,
-                  sku: skuItem.sku,
-                  name: skuItem.name,
-                  color: skuItem.color,
-                  weight: skuItem.weight,
-                  requirement: skuItem.requirement || '放中间',
-                  x: point.x,
-                  y: point.y,
-                  z: point.z,
-                  w: ori.w,
-                  h: ori.h,
-                  d: ori.d
-                };
-
-                if (candidateBox.x + candidateBox.w > this.L + 0.001 ||
-                    candidateBox.y + candidateBox.h > this.H + 0.001 ||
-                    candidateBox.z + candidateBox.d > this.W + 0.001) {
-                  continue;
-                }
-
-                let hasOverlap = false;
-                for (const pb of placedBoxes) {
-                  if (RobustContainerPacker.isOverlap(candidateBox, pb)) {
-                    hasOverlap = true;
-                    break;
-                  }
-                }
-                if (hasOverlap) continue;
-
-                if (!this.isSupported(candidateBox, placedBoxes)) {
-                  continue;
-                }
-
-                let adjacencyBonus = 0;
-                for (const pb of placedBoxes) {
-                  if (pb.sku === candidateBox.sku) {
-                    if (Math.abs(pb.x + pb.w - candidateBox.x) < 0.01 ||
-                        Math.abs(candidateBox.x + candidateBox.w - pb.x) < 0.01 ||
-                        Math.abs(pb.z + pb.d - candidateBox.z) < 0.01 ||
-                        Math.abs(candidateBox.z + candidateBox.d - pb.z) < 0.01 ||
-                        Math.abs(pb.y + pb.h - candidateBox.y) < 0.01) {
-                      adjacencyBonus += 500;
-                    }
-                  }
-                }
-
-                const score = adjacencyBonus - (candidateBox.x * 1000 + candidateBox.y * 300 + candidateBox.z * 10);
-                if (score > bestScore) {
-                  bestScore = score;
-                  bestFit = candidateBox;
-                }
+          for (const sku of availableSKUs) {
+            const oris = this.getSafeOrientations(sku, currentX);
+            for (const ori of oris) {
+              if (currentX + ori.l <= this.L + 0.001) {
+                primarySKU = sku;
+                primaryOri = ori;
+                break;
               }
             }
+            if (primarySKU) break;
+          }
 
-            if (bestFit) {
-              placedBoxes.push(bestFit);
-              remainingQty--;
-              boxIndex++;
+          if (!primarySKU || !primaryOri) break;
 
-              const newPoints = [
-                { x: bestFit.x, y: bestFit.y + bestFit.h + this.gap, z: bestFit.z },
-                { x: bestFit.x, y: bestFit.y, z: bestFit.z + bestFit.d + this.gap },
-                { x: bestFit.x + bestFit.w + this.gap, y: bestFit.y, z: bestFit.z }
-              ];
+          const wallThickness = primaryOri.l;
+          let currentZ = 0;
 
-              for (const pt of newPoints) {
-                if (pt.x < this.L && pt.y < this.H && pt.z < this.W) {
-                  let isInside = false;
-                  for (const pb of placedBoxes) {
-                    if (pt.x >= pb.x && pt.x < pb.x + pb.w - 0.001 &&
-                        pt.y >= pb.y && pt.y < pb.y + pb.h - 0.001 &&
-                        pt.z >= pb.z && pt.z < pb.z + pb.d - 0.001) {
-                      isInside = true;
+          // Inner Loop 1: SWEEP WIDTH STRICTLY FROM Z = 0 TO Z = W (NO GAP CORRIDORS)
+          while (currentZ < this.W - 0.05) {
+            const activeSKUs = skuPool.filter(s => s.remQty > 0);
+            if (activeSKUs.length === 0) break;
+
+            activeSKUs.sort((a, b) => {
+              if (a.sku === primarySKU.sku) return -1;
+              if (b.sku === primarySKU.sku) return 1;
+              if (this.enableCoGBalance) {
+                const prioA = getZonePriority(a, currentX);
+                const prioB = getZonePriority(b, currentX);
+                if (prioB !== prioA) return prioB - prioA;
+              }
+              return (b.w * b.h * b.d) - (a.w * a.h * a.d);
+            });
+
+            let colSKU = null;
+            let colOri = null;
+
+            for (const sku of activeSKUs) {
+              const oris = this.getSafeOrientations(sku, currentX);
+              oris.sort((o1, o2) => Math.abs(o1.l - wallThickness) - Math.abs(o2.l - wallThickness));
+
+              for (const ori of oris) {
+                if (currentX + ori.l <= this.L + 0.001 &&
+                    currentZ + ori.wz <= this.W + 0.001) {
+                  colSKU = sku;
+                  colOri = ori;
+                  break;
+                }
+              }
+              if (colSKU) break;
+            }
+
+            if (!colSKU || !colOri) {
+              break;
+            }
+
+            const maxFullLayers = Math.floor(this.H / colOri.h);
+            const maxAllowedLayers = (colSKU.maxStackLayers && colSKU.maxStackLayers > 0)
+              ? Math.min(colSKU.maxStackLayers, maxFullLayers)
+              : maxFullLayers;
+
+            const leveledPlan = this.computeLeveledLayers(colSKU.remQty, maxAllowedLayers);
+            const actualLayers = Math.max(1, Math.min(colSKU.remQty, leveledPlan.length > 0 ? leveledPlan[0] : maxAllowedLayers));
+
+            for (let lay = 0; lay < actualLayers && colSKU.remQty > 0; lay++) {
+              const boxY = lay * colOri.h;
+              placedBoxes.push({
+                id: `${colSKU.sku}-${boxGlobalIndex + 1}`,
+                sku: colSKU.sku,
+                name: colSKU.name,
+                color: colSKU.color,
+                weight: colSKU.weight,
+                requirement: colSKU.requirement,
+                isElastic: colSKU.isElastic,
+                x: currentX,
+                y: boxY,
+                z: currentZ,
+                w: colOri.l,
+                h: colOri.h,
+                d: colOri.wz
+              });
+              boxGlobalIndex++;
+              colSKU.actualPlaced++;
+              colSKU.remQty--;
+            }
+
+            currentZ += colOri.wz;
+          }
+
+          // Advance X by the thickness of this full-width wall
+          currentX += wallThickness;
+        }
+
+        // Single box gap-fill pass for small residual voids
+        for (let x = 0; x < this.L - 0.1; x += 0.1) {
+          for (let z = 0; z < this.W - 0.1; z += 0.1) {
+            for (let y = 0; y < this.H - 0.1; y += 0.1) {
+              const remaining = skuPool.filter(s => s.remQty > 0);
+              if (remaining.length === 0) break;
+
+              for (const sku of remaining) {
+                const oris = this.getSafeOrientations(sku, x);
+                for (const ori of oris) {
+                  if (x + ori.l <= this.L + 0.001 &&
+                      y + ori.h <= this.H + 0.001 &&
+                      z + ori.wz <= this.W + 0.001) {
+                    const cand = { x, y, z, w: ori.l, h: ori.h, d: ori.wz };
+                    let col = false;
+                    for (const pb of placedBoxes) {
+                      if (IndustrialSmartContainerPacker.isOverlap(cand, pb)) { col = true; break; }
+                    }
+                    if (!col) {
+                      placedBoxes.push({
+                        id: `${sku.sku}-${boxGlobalIndex + 1}`,
+                        sku: sku.sku,
+                        name: sku.name,
+                        color: sku.color,
+                        weight: sku.weight,
+                        requirement: sku.requirement,
+                        isElastic: sku.isElastic,
+                        x, y, z,
+                        w: ori.l, h: ori.h, d: ori.wz
+                      });
+                      boxGlobalIndex++;
+                      sku.actualPlaced++;
+                      sku.remQty--;
                       break;
                     }
                   }
-                  if (!isInside) candidatePoints.push(pt);
                 }
               }
-
-              candidatePoints = candidatePoints.filter((p, idx, self) =>
-                idx === self.findIndex(t => Math.abs(t.x - p.x) < 0.001 && Math.abs(t.y - p.y) < 0.001 && Math.abs(t.z - p.z) < 0.001)
-              );
-              candidatePoints.sort((a, b) => (a.x - b.x) || (a.y - b.y) || (a.z - b.z));
-            } else {
-              unplacedItems.push({ ...skuItem, unplacedQty: remainingQty });
-              break;
             }
           }
         }
 
-        const containerVol = this.L * this.H * this.W;
-        let usedVol = 0;
-        let totalWeight = 0;
-
-        placedBoxes.forEach(b => {
-          usedVol += (b.w * b.h * b.d);
-          totalWeight += b.weight;
+        skuPool.forEach(s => {
+          if (s.isElastic) {
+            elasticTrimmedMap.set(s.sku, {
+              sku: s.sku,
+              name: s.name,
+              plannedQty: s.quantity,
+              actualQty: s.actualPlaced,
+              trimmedQty: s.remQty,
+              reason: s.remQty > 0 ? '已达到集装箱安全容积上限，根据弹性规则自动核减留存' : '100% 满额装入'
+            });
+          }
         });
 
-        const utilization = (usedVol / containerVol) * 100;
+        // 3. STEPPED TAIL ANTI-TOPPLING ENFORCEMENT
+        let maxEndX = 0;
+        placedBoxes.forEach(b => {
+          if (b.x + b.w > maxEndX) maxEndX = b.x + b.w;
+        });
+
+        if (maxEndX < this.L - 0.50) {
+          const step1X = maxEndX - 0.90;
+          const step2X = maxEndX - 1.80;
+
+          const displacedBoxes = [];
+
+          for (let i = placedBoxes.length - 1; i >= 0; i--) {
+            const b = placedBoxes[i];
+            if (b.x >= step1X) {
+              if (b.y + b.h > this.H * 0.38) {
+                displacedBoxes.push(placedBoxes.splice(i, 1)[0]);
+              }
+            } else if (b.x >= step2X) {
+              if (b.y + b.h > this.H * 0.68) {
+                displacedBoxes.push(placedBoxes.splice(i, 1)[0]);
+              }
+            }
+          }
+
+          displacedBoxes.forEach(b => {
+            if (maxEndX + b.w <= this.L) {
+              b.x = maxEndX;
+              b.y = 0;
+              placedBoxes.push(b);
+              maxEndX += b.w;
+            }
+          });
+        }
+
+        // 3. Dynamic 3D Center of Gravity (CoG) & Axle Load Balancing
+        let totalMass = 0;
+        let sumMX = 0;
+        let sumMY = 0;
+        let sumMZ = 0;
+        let usedVol = 0;
+
+        placedBoxes.forEach(b => {
+          totalMass += b.weight;
+          sumMX += b.weight * (b.x + b.w / 2);
+          sumMY += b.weight * (b.y + b.h / 2);
+          sumMZ += b.weight * (b.z + b.d / 2);
+          usedVol += (b.w * b.h * b.d);
+        });
+
+        const cogX = totalMass > 0 ? (sumMX / totalMass) : (this.L / 2);
+        const cogY = totalMass > 0 ? (sumMY / totalMass) : (this.H / 2);
+        const cogZ = totalMass > 0 ? (sumMZ / totalMass) : (this.W / 2);
+
+        const latOffsetPercent = Math.abs((cogZ - this.W / 2) / (this.W / 2)) * 100;
+        const longOffsetPercent = ((cogX - this.L / 2) / (this.L / 2)) * 100;
+        const totalVol = this.L * this.W * this.H;
+        const util = (usedVol / totalVol) * 100;
 
         return {
           placedBoxes,
           unplacedItems,
-          usedVol: usedVol.toFixed(1),
-          utilization: utilization.toFixed(1),
-          totalWeightTons: (totalWeight / 1000).toFixed(1),
-          totalCount: placedBoxes.length
+          elasticTrimmedMap,
+          usedVol: usedVol.toFixed(2),
+          utilization: util.toFixed(1),
+          totalWeightTons: (totalMass / 1000).toFixed(2),
+          totalCount: placedBoxes.length,
+          cog: {
+            x: cogX.toFixed(3),
+            y: cogY.toFixed(3),
+            z: cogZ.toFixed(3),
+            latOffsetPercent: latOffsetPercent.toFixed(1),
+            longOffsetPercent: longOffsetPercent.toFixed(1),
+            isLatBalanced: latOffsetPercent <= 5.0,
+            isLongBalanced: Math.abs(longOffsetPercent) <= 10.0
+          }
         };
       }
     }
 
     // --- 3. PRODUCTION CLEANED MANIFEST PRESET ---
     const PALETTE = [
-      0x3b82f6, 0x10b981, 0xf59e0b, 0xef4444, 0x8b5cf6, 
+      0x3b82f6, 0x10b981, 0xf59e0b, 0xef4444, 0x8b5cf6,  
       0x06b6d4, 0xec4899, 0x6366f1, 0x14b8a6, 0xf97316,
       0x84cc16, 0xa855f7, 0x0ea5e9, 0xeab308
     ];
@@ -1721,10 +2295,11 @@
     let activePackingResult = null;
     let currentGap = 0.0;
     let currentStrategy = 'cluster';
+    let isCoGBalanceEnabled = true;
 
     // --- CLIENT-SIDE SPATIAL COORDINATE CACHE ENGINE ---
-    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V4_';
-    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V4';
+    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V15_';
+    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V15';
 
     function generatePackingCacheKey(specCode, strategy, gap, manifest) {
       const summary = manifest.map(m => `${m.sku}_${m.quantity}_${m.w}x${m.d}x${m.h}_${m.weight}_${m.requirement||''}`).join('|');
@@ -1943,7 +2518,7 @@
       document.getElementById('excel-file-input').value = '';
     }
 
-    function applyImportedManifest() {
+    function applyImportedManifest(autoCalculate = true) {
       if (!pendingImportManifest) return;
       activeManifest = pendingImportManifest;
       closeImportModal();
@@ -1953,7 +2528,21 @@
       saveAppState();
       renderManifestUI();
       renderAnchorRibbon();
-      runSmartPackingAlgorithm(false);
+
+      if (autoCalculate) {
+        runSmartPackingAlgorithm(true);
+      } else {
+        const cacheBadge = document.getElementById('hud-cache-badge');
+        const cacheTxt = document.getElementById('txt-cache-badge');
+        const cacheDot = document.getElementById('cache-dot');
+        if (cacheBadge && cacheTxt && cacheDot) {
+          cacheBadge.style.color = '#d97706';
+          cacheBadge.style.background = '#fef3c7';
+          cacheBadge.style.borderColor = '#fde68a';
+          cacheDot.style.background = '#f59e0b';
+          cacheTxt.textContent = '货单已更新 (等待算柜)';
+        }
+      }
     }
 
     function downloadExactTemplate() {
@@ -2210,12 +2799,10 @@
       sCtx.stroke();
 
       sCtx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-      sCtx.beginPath();
-      sCtx.roundRect(196, 236, 120, 40, 20);
-      sCtx.fill();
+      sCtx.fillRect(196, 236, 120, 40);
       sCtx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
       sCtx.lineWidth = 2;
-      sCtx.stroke();
+      sCtx.strokeRect(196, 236, 120, 40);
 
       sCtx.fillStyle = 'rgba(15, 23, 42, 0.65)';
       sCtx.font = 'bold 12px monospace';
@@ -2361,6 +2948,9 @@
       setupEnvironment();
 
       rebuildContainerModel();
+      renderManifestUI();
+      renderAnchorRibbon();
+      runSmartPackingAlgorithm(false);
 
       raycaster = new THREE.Raycaster();
       mouse = new THREE.Vector2();
@@ -2883,15 +3473,18 @@
       controls.update();
 
       rebuildContainerModel();
+      runSmartPackingAlgorithm(false);
     };
 
     // --- 7. HIGH-PERFORMANCE SMART PACKING WITH SHARED SKU MATERIALS & CACHE ---
     window.runSmartPackingAlgorithm = function(forceRecompute = false) {
-      if (cargoGroup) {
+      if (cargoGroup && containerGroup) {
         containerGroup.remove(cargoGroup);
       }
       cargoGroup = new THREE.Group();
-      containerGroup.add(cargoGroup);
+      if (containerGroup) {
+        containerGroup.add(cargoGroup);
+      }
       boxMeshes = [];
 
       const usableDim = {
@@ -2921,9 +3514,10 @@
           cacheTxt.textContent = '坐标缓存秒开';
         }
       } else {
-        const packer = new RobustContainerPacker(usableDim, {
+        const packer = new IndustrialSmartContainerPacker(usableDim, {
           gap: currentGap,
-          strategy: currentStrategy
+          strategy: currentStrategy,
+          enableCoGBalance: isCoGBalanceEnabled
         });
         activePackingResult = packer.pack(activeManifest);
         savePackingResultToStorage(cacheKey, activePackingResult);
@@ -2998,13 +3592,124 @@
         boxMeshes.push(boxMesh);
       });
 
+      // Update 3D CoG visualizer mesh
+      updateCoGIndicatorMesh(activePackingResult.cog, usableDim);
+
       document.getElementById('kpi-util').innerHTML = `${activePackingResult.utilization}<span class="kpi-unit">%</span>`;
       document.getElementById('kpi-vol').innerHTML = `${activePackingResult.usedVol}<span class="kpi-unit">/ ${currentSpec.nominalVol}m³</span>`;
       document.getElementById('kpi-count').innerHTML = `${activePackingResult.totalCount}<span class="kpi-unit">箱</span>`;
       document.getElementById('kpi-weight').innerHTML = `${activePackingResult.totalWeightTons}<span class="kpi-unit">T</span>`;
 
+      if (activePackingResult.cog) {
+        const latEl = document.getElementById('kpi-cog-lat');
+        const longEl = document.getElementById('kpi-cog-long');
+        if (latEl) {
+          latEl.textContent = `${activePackingResult.cog.latOffsetPercent}% ${activePackingResult.cog.isLatBalanced ? '✓' : '⚠️'}`;
+          latEl.style.color = activePackingResult.cog.isLatBalanced ? '#059669' : '#dc2626';
+        }
+        if (longEl) {
+          longEl.textContent = `${activePackingResult.cog.longOffsetPercent}% ${activePackingResult.cog.isLongBalanced ? '✓' : '⚠️'}`;
+          longEl.style.color = activePackingResult.cog.isLongBalanced ? '#059669' : '#dc2626';
+        }
+      }
+
+      renderManifestUI();
       updateBoxVisibilityAndMaterials();
+
+      if (forceRecompute) {
+        showToast(`AI 算柜完成！已装载 ${activePackingResult.totalCount} 箱货物，内腔利用率 ${activePackingResult.utilization}%`, 'success');
+      }
     };
+
+    function showToast(msg, type = 'success') {
+      let container = document.getElementById('global-toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'global-toast-container';
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+      }
+
+      const toast = document.createElement('div');
+      toast.className = 'toast-card';
+      const icon = (type === 'success') ? '✨' : (type === 'info' ? '⚡' : '⚠️');
+      toast.innerHTML = `<span style="font-size:15px;">${icon}</span><span>${msg}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px) scale(0.9)';
+        setTimeout(() => toast.remove(), 300);
+      }, 2800);
+    }
+
+    let cogIndicatorGroup = null;
+    let showCoGIndicator = true;
+
+    window.toggleCoGDisplay = function(show) {
+      showCoGIndicator = show;
+      document.getElementById('btn-cog-on')?.classList.toggle('active', show);
+      document.getElementById('btn-cog-off')?.classList.toggle('active', !show);
+      if (cogIndicatorGroup) {
+        cogIndicatorGroup.visible = show;
+      }
+    };
+
+    function updateCoGIndicatorMesh(cogData, usableDim) {
+      if (cogIndicatorGroup) {
+        containerGroup.remove(cogIndicatorGroup);
+        cogIndicatorGroup = null;
+      }
+      if (!cogData) return;
+
+      cogIndicatorGroup = new THREE.Group();
+
+      const halfIntL = usableDim.length / 2;
+      const startY = -usableDim.height / 2;
+      const startZ = -usableDim.width / 2;
+
+      const posX = halfIntL - parseFloat(cogData.x);
+      const posY = startY + parseFloat(cogData.y);
+      const posZ = startZ + parseFloat(cogData.z);
+
+      // 1. Glowing CoG Sphere (Gold / Amber)
+      const sphereGeo = new THREE.SphereGeometry(0.08, 20, 20);
+      const sphereMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+      const sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);
+      sphereMesh.position.set(posX, posY, posZ);
+      cogIndicatorGroup.add(sphereMesh);
+
+      // 2. 3D Crosshair axis lines
+      const crossMat = new THREE.LineBasicMaterial({ color: 0xf59e0b });
+      const crossGeo = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(posX - 0.20, posY, posZ), new THREE.Vector3(posX + 0.20, posY, posZ),
+        new THREE.Vector3(posX, posY - 0.20, posZ), new THREE.Vector3(posX, posY + 0.20, posZ),
+        new THREE.Vector3(posX, posY, posZ - 0.20), new THREE.Vector3(posX, posY, posZ + 0.20)
+      ]);
+      const crossLines = new THREE.LineSegments(crossGeo, crossMat);
+      cogIndicatorGroup.add(crossLines);
+
+      // 3. Drop Line to Container Floor
+      const dropMat = new THREE.LineDashedMaterial({ color: 0xf59e0b, dashSize: 0.04, gapSize: 0.03 });
+      const dropGeo = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(posX, posY, posZ),
+        new THREE.Vector3(posX, startY + 0.015, posZ)
+      ]);
+      const dropLine = new THREE.Line(dropGeo, dropMat);
+      dropLine.computeLineDistances();
+      cogIndicatorGroup.add(dropLine);
+
+      // 4. Floor Bullseye Target
+      const ringGeo = new THREE.RingGeometry(0.10, 0.14, 32);
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b, side: THREE.DoubleSide, transparent: true, opacity: 0.75 });
+      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      ringMesh.rotation.x = -Math.PI / 2;
+      ringMesh.position.set(posX, startY + 0.02, posZ);
+      cogIndicatorGroup.add(ringMesh);
+
+      cogIndicatorGroup.visible = showCoGIndicator;
+      containerGroup.add(cogIndicatorGroup);
+    }
 
     window.setPackingStrategy = function(strat) {
       currentStrategy = strat;
@@ -3085,13 +3790,40 @@
       if (!container) return;
       container.innerHTML = '';
 
-      document.getElementById('manifest-sku-count').textContent = `${activeManifest.length} 种 SKU`;
+      const countEl = document.getElementById('manifest-sku-count');
+      if (countEl) countEl.textContent = `${activeManifest.length} 种 SKU`;
 
       activeManifest.forEach(sku => {
         const hexColor = '#' + new THREE.Color(sku.color).getHexString();
         const card = document.createElement('div');
         card.className = 'sku-item';
         card.id = `manifest-card-${sku.sku}`;
+
+        const trimInfo = activePackingResult?.elasticTrimmedMap?.get(sku.sku);
+        let countDisplayHtml = `<strong style="color:var(--primary); font-size:11px;">${sku.quantity} 箱</strong>`;
+        let trimBadgeHtml = '';
+
+        if (trimInfo && trimInfo.trimmedQty > 0) {
+          countDisplayHtml = `
+            <div style="text-align:right;">
+              <span style="color:#059669; font-size:11px; font-weight:800;">实装 ${trimInfo.actualQty} 箱</span>
+              <span style="color:#94a3b8; font-size:9.5px; text-decoration:line-through; margin-left:3px;">计 ${trimInfo.plannedQty}</span>
+            </div>
+          `;
+          trimBadgeHtml = `<span style="font-size:9px; color:#d97706; background:#fef3c7; border:1px solid #fde68a; padding:1px 4px; border-radius:3px; font-weight:700; margin-left:4px;" title="${trimInfo.reason}">⚡ 核减 ${trimInfo.trimmedQty}箱</span>`;
+        }
+
+        let oriTag = '';
+        if (sku.allowedOrientation === 'allow_flat') oriTag = '<span class="sku-param-badge">平放</span>';
+        else if (sku.allowedOrientation === 'allow_side') oriTag = '<span class="sku-param-badge">侧卧</span>';
+        else if (sku.allowedOrientation === 'any') oriTag = '<span class="sku-param-badge">任意</span>';
+        else oriTag = '<span class="sku-param-badge">立放</span>';
+
+        let layerTag = '';
+        if (sku.maxStackLayers && sku.maxStackLayers > 0) {
+          layerTag = `<span class="sku-param-badge" style="color:#2563eb; background:#eff6ff;">限${sku.maxStackLayers}层</span>`;
+        }
+
         card.innerHTML = `
           <div class="sku-item-top">
             <div class="sku-left-col">
@@ -3101,11 +3833,22 @@
               <span style="width:8px; height:8px; border-radius:50%; background:${hexColor}; flex-shrink:0;"></span>
               <span class="sku-name-txt" title="${sku.name}">${sku.name}</span>
             </div>
-            <span class="req-tag ${getReqClass(sku.requirement)}">${sku.requirement || '放中间'}</span>
+            <div style="display:flex; align-items:center; gap:2px;">
+              <span class="req-tag ${getReqClass(sku.requirement)}">${sku.requirement || '放中间'}</span>
+              ${oriTag}
+              ${layerTag}
+              ${trimBadgeHtml}
+              <button class="btn-sku-edit-icon" onclick="event.stopPropagation(); openSKUSettingsModal('${sku.sku}')" title="设置此SKU摆放位置、朝向与堆叠层高">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              </button>
+              <button class="btn-sku-del-icon" onclick="event.stopPropagation(); deleteSKUItem('${sku.sku}')" title="删除此货物 SKU">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.4"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
           </div>
           <div class="sku-meta">
             <span>${sku.w}×${sku.d}×${sku.h}m • ${sku.weight}kg</span>
-            <strong style="color:var(--primary); font-size:11px;">${sku.quantity} 箱</strong>
+            ${countDisplayHtml}
           </div>
         `;
 
@@ -3135,9 +3878,175 @@
 
         container.appendChild(card);
       });
-
-      renderAnchorRibbon();
     }
+
+    // --- CoG Balancing Switch & HUD Micro-Toggle ---
+    window.toggleCoGBalanceHud = function() {
+      setCoGBalancingMode(!isCoGBalanceEnabled);
+    };
+
+    window.setCoGBalancingMode = function(enabled) {
+      isCoGBalanceEnabled = !!enabled;
+      const valEl = document.getElementById('val-cog-mode');
+      if (valEl) {
+        valEl.textContent = isCoGBalanceEnabled ? '已开启' : '已关闭(纯空间)';
+        valEl.style.color = isCoGBalanceEnabled ? '#059669' : '#64748b';
+      }
+      const btnOn = document.getElementById('btn-cog-bal-on');
+      const btnOff = document.getElementById('btn-cog-bal-off');
+      if (btnOn) btnOn.classList.toggle('active', isCoGBalanceEnabled);
+      if (btnOff) btnOff.classList.toggle('active', !isCoGBalanceEnabled);
+
+      const hudPill = document.getElementById('btn-hud-cog-pill');
+      const hudTxt = document.getElementById('txt-hud-cog-status');
+      if (hudPill && hudTxt) {
+        hudPill.classList.toggle('off', !isCoGBalanceEnabled);
+        hudTxt.textContent = isCoGBalanceEnabled ? '配平开' : '空间优先';
+      }
+
+      saveAppState();
+      runSmartPackingAlgorithm(true);
+    };
+
+    // --- SKU CRUD Operations ---
+    window.deleteSKUItem = function(skuCode) {
+      if (activeManifest.length <= 1) {
+        alert('货单中至少需要保留 1 个货物 SKU！');
+        return;
+      }
+      const target = activeManifest.find(s => s.sku === skuCode);
+      const name = target ? target.name : skuCode;
+      if (!confirm(`确定要从当前装载清单中移除「${name}」吗？`)) return;
+
+      activeManifest = activeManifest.filter(s => s.sku !== skuCode);
+      selectedSKUs.delete(skuCode);
+      saveAppState();
+      renderManifestUI();
+      renderAnchorRibbon();
+      runSmartPackingAlgorithm(true);
+    };
+
+    window.deleteCurrentEditingSKU = function() {
+      const skuCode = document.getElementById('sku-edit-id').value;
+      closeSKUSettingsModal();
+      deleteSKUItem(skuCode);
+    };
+
+    window.openAddSKUModal = function() {
+      const nextNum = activeManifest.length + 1;
+      document.getElementById('sku-add-code').value = `SKU-${String(nextNum).padStart(2, '0')}`;
+      document.getElementById('sku-add-name').value = `新产品 SKU-${String(nextNum).padStart(2, '0')}`;
+      document.getElementById('sku-add-req').value = '放中间';
+      document.getElementById('sku-add-ori').value = 'upright';
+      document.getElementById('sku-add-max-layers').value = '';
+      document.getElementById('sku-add-weight').value = '10.0';
+      document.getElementById('sku-add-w').value = '0.50';
+      document.getElementById('sku-add-d').value = '0.40';
+      document.getElementById('sku-add-h').value = '0.35';
+      document.getElementById('sku-add-qty').value = '50';
+      document.getElementById('add-sku-modal').style.display = 'flex';
+    };
+
+    window.closeAddSKUModal = function() {
+      document.getElementById('add-sku-modal').style.display = 'none';
+    };
+
+    window.submitAddNewSKU = function() {
+      const code = document.getElementById('sku-add-code').value.trim() || `SKU-${String(activeManifest.length + 1).padStart(2, '0')}`;
+      const name = document.getElementById('sku-add-name').value.trim() || code;
+      const req = document.getElementById('sku-add-req').value;
+      const ori = document.getElementById('sku-add-ori').value;
+      const maxLay = parseInt(document.getElementById('sku-add-max-layers').value, 10);
+      const weight = parseFloat(document.getElementById('sku-add-weight').value) || 10.0;
+      const w = parseFloat(document.getElementById('sku-add-w').value) || 0.50;
+      const d = parseFloat(document.getElementById('sku-add-d').value) || 0.40;
+      const h = parseFloat(document.getElementById('sku-add-h').value) || 0.35;
+      const qty = parseInt(document.getElementById('sku-add-qty').value, 10) || 50;
+
+      const color = PALETTE[activeManifest.length % PALETTE.length];
+
+      activeManifest.push({
+        sku: code,
+        name: name,
+        w: w,
+        d: d,
+        h: h,
+        weight: weight,
+        quantity: qty,
+        requirement: req,
+        allowedOrientation: ori,
+        allowFlat: (ori === 'allow_flat' || ori === 'any'),
+        maxStackLayers: (!isNaN(maxLay) && maxLay > 0) ? maxLay : null,
+        color: color
+      });
+
+      closeAddSKUModal();
+      saveAppState();
+      renderManifestUI();
+      renderAnchorRibbon();
+      runSmartPackingAlgorithm(true);
+    };
+
+    window.openSKUSettingsModal = function(skuCode) {
+      const item = activeManifest.find(s => s.sku === skuCode);
+      if (!item) return;
+
+      document.getElementById('sku-edit-id').value = item.sku;
+      document.getElementById('sku-modal-name').textContent = item.name;
+      document.getElementById('sku-modal-code').textContent = item.sku;
+      document.getElementById('sku-modal-dot').style.background = '#' + new THREE.Color(item.color).getHexString();
+
+      document.getElementById('sku-edit-req').value = item.requirement || '放中间';
+      document.getElementById('sku-edit-ori').value = item.allowedOrientation || (item.allowFlat ? 'allow_flat' : 'upright');
+      document.getElementById('sku-edit-max-layers').value = item.maxStackLayers || '';
+      document.getElementById('sku-edit-max-bearing').value = item.maxBearingKg || '';
+      document.getElementById('sku-edit-elastic').value = String(item.isElastic === true || /可以少放|可以减少|可减少|调节/i.test(item.requirement || ''));
+
+      document.getElementById('sku-edit-w').value = item.w;
+      document.getElementById('sku-edit-d').value = item.d;
+      document.getElementById('sku-edit-h').value = item.h;
+      document.getElementById('sku-edit-qty').value = item.quantity;
+
+      document.getElementById('sku-settings-modal').style.display = 'flex';
+    };
+
+    window.closeSKUSettingsModal = function() {
+      document.getElementById('sku-settings-modal').style.display = 'none';
+    };
+
+    window.saveSKUSettingsAndRepack = function() {
+      const skuCode = document.getElementById('sku-edit-id').value;
+      const item = activeManifest.find(s => s.sku === skuCode);
+      if (!item) return;
+
+      item.requirement = document.getElementById('sku-edit-req').value;
+      item.allowedOrientation = document.getElementById('sku-edit-ori').value;
+      item.allowFlat = (item.allowedOrientation === 'allow_flat' || item.allowedOrientation === 'any');
+
+      const maxLay = parseInt(document.getElementById('sku-edit-max-layers').value, 10);
+      item.maxStackLayers = (!isNaN(maxLay) && maxLay > 0) ? maxLay : null;
+
+      const maxBear = parseFloat(document.getElementById('sku-edit-max-bearing').value);
+      item.maxBearingKg = (!isNaN(maxBear) && maxBear > 0) ? maxBear : null;
+
+      item.isElastic = (document.getElementById('sku-edit-elastic').value === 'true');
+
+      const w = parseFloat(document.getElementById('sku-edit-w').value);
+      const d = parseFloat(document.getElementById('sku-edit-d').value);
+      const h = parseFloat(document.getElementById('sku-edit-h').value);
+      const qty = parseInt(document.getElementById('sku-edit-qty').value, 10);
+
+      if (!isNaN(w) && w > 0) item.w = w;
+      if (!isNaN(d) && d > 0) item.d = d;
+      if (!isNaN(h) && h > 0) item.h = h;
+      if (!isNaN(qty) && qty > 0) item.quantity = qty;
+
+      closeSKUSettingsModal();
+      saveAppState();
+      renderManifestUI();
+      renderAnchorRibbon();
+      runSmartPackingAlgorithm(true);
+    };
 
     window.selectAllSKUs = function(selectAll) {
       if (selectAll) {
