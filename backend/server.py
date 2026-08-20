@@ -42,7 +42,6 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
 
     def do_OPTIONS(self):
         self.send_response(200)
-        self._send_cors_headers()
         self.end_headers()
 
     def end_headers(self):

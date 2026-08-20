@@ -3933,8 +3933,14 @@
     // --- 7. HIGH-PERFORMANCE SMART PACKING WITH PYTHON 3 MICROSERVICE & CLIENT CACHE ---
     async function requestPackingFromBackend(spec, manifest, weights) {
       try {
-        console.log('📡 [3D-AICIVS] 发起 Python 后端微服务装柜推演...', { spec: spec.code, manifestCount: manifest.length, weights });
-        const response = await fetch('/api/v1/pack', {
+        let apiUrl = '/api/v1/pack';
+        // Auto-detect Python server port when opened via file:// or LiveServer on another port
+        if (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '8080')) {
+          apiUrl = 'http://localhost:8080/api/v1/pack';
+        }
+
+        console.log(`📡 [3D-AICIVS] 发起 Python 后端微服务推演 -> ${apiUrl}`, { spec: spec.code, manifestCount: manifest.length, weights });
+        const response = await fetch(apiUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
