@@ -2671,8 +2671,8 @@
     let isCoGBalanceEnabled = true;
 
     // --- CLIENT-SIDE SPATIAL COORDINATE CACHE ENGINE ---
-    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V26_FALLBACK_ZONES_';
-    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V26_FALLBACK_ZONES';
+    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V27_PYTHON_SERVICE_';
+    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V27_PYTHON_SERVICE';
 
     function generatePackingCacheKey(specCode, strategy, gap, manifest, weights = activeAlgorithmWeights) {
       const summary = manifest.map(m => `${m.sku}_${m.quantity}_${m.w}x${m.d}x${m.h}_${m.weight}_${m.requirement||''}`).join('|');
@@ -3930,8 +3930,35 @@
       runSmartPackingAlgorithm(false);
     };
 
-    // --- 7. HIGH-PERFORMANCE SMART PACKING WITH SHARED SKU MATERIALS & CACHE ---
-    window.runSmartPackingAlgorithm = function(forceRecompute = false) {
+    // --- 7. HIGH-PERFORMANCE SMART PACKING WITH PYTHON 3 MICROSERVICE & CLIENT CACHE ---
+    async function requestPackingFromBackend(spec, manifest, weights) {
+      try {
+        const response = await fetch('/api/v1/pack', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            containerSpec: {
+              code: spec.code,
+              usable: spec.usable || { L: spec.intL, W: spec.intW, H: spec.intH },
+              maxPayloadTons: spec.maxPayloadTons || 26.5
+            },
+            manifest: manifest,
+            weights: weights
+          })
+        });
+        if (!response.ok) throw new Error('API server returned status ' + response.status);
+        const result = await response.json();
+        if (result && result.success && result.placedBoxes) {
+          result.isFromBackend = true;
+          return result;
+        }
+      } catch (err) {
+        console.warn('[3D-AICIVS] Python Backend API unavailable, falling back to local kernel:', err);
+      }
+      return null;
+    }
+
+    window.runSmartPackingAlgorithm = async function(forceRecompute = false) {
       if (cargoGroup && containerGroup) {
         containerGroup.remove(cargoGroup);
       }
@@ -3968,21 +3995,36 @@
           cacheTxt.textContent = '坐标缓存秒开';
         }
       } else {
-        const packer = new IndustrialSmartContainerPacker(usableDim, {
-          gap: currentGap,
-          strategy: currentStrategy,
-          enableCoGBalance: isCoGBalanceEnabled,
-          weights: activeAlgorithmWeights
-        });
-        activePackingResult = packer.pack(activeManifest);
-        savePackingResultToStorage(cacheKey, activePackingResult);
+        // Try Python 3 Microservice Backend First
+        const backendResult = await requestPackingFromBackend(currentSpec, activeManifest, activeAlgorithmWeights);
+        if (backendResult) {
+          activePackingResult = backendResult;
+          savePackingResultToStorage(cacheKey, activePackingResult);
+          if (cacheBadge && cacheTxt && cacheDot) {
+            cacheBadge.style.color = '#059669';
+            cacheBadge.style.background = '#f0fdf4';
+            cacheBadge.style.borderColor = '#86efac';
+            cacheDot.style.background = '#22c55e';
+            cacheTxt.textContent = `🐍 Python 3 服务内核 (${backendResult.elapsedMs}ms)`;
+          }
+        } else {
+          // Graceful fallback to local client kernel
+          const packer = new IndustrialSmartContainerPacker(usableDim, {
+            gap: currentGap,
+            strategy: currentStrategy,
+            enableCoGBalance: isCoGBalanceEnabled,
+            weights: activeAlgorithmWeights
+          });
+          activePackingResult = packer.pack(activeManifest);
+          savePackingResultToStorage(cacheKey, activePackingResult);
 
-        if (cacheBadge && cacheTxt && cacheDot) {
-          cacheBadge.style.color = '#2563eb';
-          cacheBadge.style.background = '#eff6ff';
-          cacheBadge.style.borderColor = '#bfdbfe';
-          cacheDot.style.background = '#3b82f6';
-          cacheTxt.textContent = '全新计算暂存';
+          if (cacheBadge && cacheTxt && cacheDot) {
+            cacheBadge.style.color = '#2563eb';
+            cacheBadge.style.background = '#eff6ff';
+            cacheBadge.style.borderColor = '#bfdbfe';
+            cacheDot.style.background = '#3b82f6';
+            cacheTxt.textContent = '全新计算暂存';
+          }
         }
       }
 
