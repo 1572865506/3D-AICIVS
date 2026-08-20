@@ -2162,13 +2162,13 @@
     let activeAlgorithmWeights = { ...DEFAULT_ALGORITHM_WEIGHTS };
 
     // --- 2. INDUSTRIAL SMART CONTAINER PACKING KERNEL (PERFECTED 6-MODULE SYSTEM) ---
+    // --- 2. INDUSTRIAL SMART CONTAINER PACKING KERNEL (TRI-AXIS EVALUATOR & ROW-FIRST HIERARCHY) ---
     class IndustrialSmartContainerPacker {
       constructor(containerDim, options = {}) {
         this.L = containerDim.length;
         this.H = containerDim.height;
         this.W = containerDim.width;
         this.maxPayloadKg = (options.maxPayloadTons || 28.6) * 1000.0;
-        this.doorZoneX = Math.max(0, this.L - 1.20);
         this.weights = Object.assign({
           affinity: 3000,
           verticalStack: 3500,
@@ -2190,34 +2190,36 @@
         );
       }
 
-      getSafeOrientations(item, maxW, maxH, maxD) {
+      // 获取安全朝向集合
+      getSafeOrientations(item, maxL, maxH, maxW) {
         const allowed = item.allowedOrientation || (item.allowFlat ? 'allow_flat' : 'upright');
         let oris = [
-          { l: item.w, wz: item.d, h: item.h },
-          { l: item.d, wz: item.w, h: item.h }
+          { l: item.w, wz: item.d, h: item.h, mode: 'upright-normal' },
+          { l: item.d, wz: item.w, h: item.h, mode: 'upright-yaw90' }
         ];
         if (allowed === 'allow_flat') {
           oris.push(
-            { l: item.w, wz: item.h, h: item.d },
-            { l: item.d, wz: item.h, h: item.w }
+            { l: item.w, wz: item.h, h: item.d, mode: 'flat-normal' },
+            { l: item.d, wz: item.h, h: item.w, mode: 'flat-yaw90' }
           );
         } else if (allowed === 'allow_side') {
           oris.push(
-            { l: item.h, wz: item.d, h: item.w },
-            { l: item.h, wz: item.w, h: item.d }
+            { l: item.h, wz: item.d, h: item.w, mode: 'side-normal' },
+            { l: item.h, wz: item.w, h: item.d, mode: 'side-yaw90' }
           );
         } else if (allowed === 'any') {
           oris.push(
-            { l: item.w, wz: item.h, h: item.d },
-            { l: item.d, wz: item.h, h: item.w },
-            { l: item.h, wz: item.d, h: item.w },
-            { l: item.h, wz: item.w, h: item.d }
+            { l: item.w, wz: item.h, h: item.d, mode: 'flat-normal' },
+            { l: item.d, wz: item.h, h: item.w, mode: 'flat-yaw90' },
+            { l: item.h, wz: item.d, h: item.w, mode: 'side-normal' },
+            { l: item.h, wz: item.w, h: item.d, mode: 'side-yaw90' }
           );
         }
 
-        return oris.filter(o => o.l <= maxW + 0.001 && o.wz <= maxD + 0.001 && o.h <= maxH + 0.001);
+        return oris.filter(o => o.l <= maxL + 0.001 && o.h <= maxH + 0.001 && o.wz <= maxW + 0.001);
       }
 
+      // 分区亲和力权重评估
       getZoneAffinityScore(sku, currentX) {
         const req = sku.requirement || '';
         const isRear = /最里面|rear|deep|头/i.test(req);
@@ -2231,7 +2233,7 @@
         if (currentX <= rearBoundary) {
           if (isRear) return 1000000;
           if (isMid) return 50000;
-          if (isDoor) return -1000000; // 严禁封柜门货物放在柜头最里面
+          if (isDoor) return -1000000; // 严禁封柜门货物放在柜头
           return 10000;
         } else if (currentX >= doorBoundary) {
           if (isDoor) return sku.isElastic ? 400000 : 1000000;
@@ -2246,10 +2248,59 @@
         }
       }
 
+      // --- X,Y,Z 多轴保底评估器 (Tri-Axis Projection Evaluator) ---
+      evaluateTriAxisCandidate(candidateBoxes, existingBoxes) {
+        for (const b of candidateBoxes) {
+          // 物理支撑面检查 (Anti-Floating: y > 0 时必须有底部实心支撑)
+          if (b.y > 0.001) {
+            let supportArea = 0;
+            const bArea = b.w * b.d;
+            for (const ex of existingBoxes.concat(candidateBoxes)) {
+              if (ex === b) continue;
+              if (Math.abs((ex.y + ex.h) - b.y) <= 0.005) {
+                const lapX1 = Math.max(b.x, ex.x);
+                const lapX2 = Math.min(b.x + b.w, ex.x + ex.w);
+                const lapZ1 = Math.max(b.z, ex.z);
+                const lapZ2 = Math.min(b.z + b.d, ex.z + ex.d);
+                if (lapX2 > lapX1 && lapZ2 > lapZ1) {
+                  supportArea += (lapX2 - lapX1) * (lapZ2 - lapZ1);
+                }
+              }
+            }
+            if (supportArea / bArea < 0.70) {
+              return { valid: false, reason: '底部支撑率不足70%，存在悬浮风险', failedBox: b };
+            }
+          }
+
+          // 边界越界检查
+          if (b.x + b.w > this.L + 0.005 || b.y + b.h > this.H + 0.005 || b.z + b.d > this.W + 0.005) {
+            return { valid: false, reason: '超出货柜内腔物理边界', failedBox: b };
+          }
+        }
+
+        // 碰撞重叠检查 (Anti-Collision)
+        for (let i = 0; i < candidateBoxes.length; i++) {
+          for (let j = i + 1; j < candidateBoxes.length; j++) {
+            if (IndustrialSmartContainerPacker.isOverlap(candidateBoxes[i], candidateBoxes[j])) {
+              return { valid: false, reason: '候选箱体内部相互碰撞重叠' };
+            }
+          }
+          for (const ex of existingBoxes) {
+            if (IndustrialSmartContainerPacker.isOverlap(candidateBoxes[i], ex)) {
+              return { valid: false, reason: '与已有货垛发生空间碰撞' };
+            }
+          }
+        }
+
+        return { valid: true };
+      }
+
+      // --- 主装载求解流水线 (优先横向成排 -> 向上成墙 -> 进深成栋 -> 余货队列) ---
       pack(cargoManifest) {
         const startTime = performance.now();
         const placedBoxes = [];
         const elasticTrimmed = [];
+        let boxGlobalIndex = 0;
 
         const affinityWeight = this.weights.affinity || 3000;
         const wallWeight = this.weights.wallSlicing || 50000;
@@ -2272,15 +2323,15 @@
           };
         });
 
-        let boxGlobalIndex = 0;
         let currentX = 0;
         let lastPrimarySKU = null;
 
+        // 核心状态推进循环
         while (currentX < this.L - 0.02) {
           const available = skuPool.filter(s => s.remQty > 0);
           if (available.length === 0) break;
 
-          // 1. 选取主要排布锚点 SKU (严格按分区要求与层数要求研判)
+          // 1. 选取主力 SKU (依据分区亲和力、体积与余量权重)
           available.sort((a, b) => {
             let scoreA = this.getZoneAffinityScore(a, currentX);
             let scoreB = this.getZoneAffinityScore(b, currentX);
@@ -2296,38 +2347,43 @@
           });
 
           const primarySKU = available[0];
-          let primaryOris = this.getSafeOrientations(primarySKU, this.L - currentX, this.H, this.W);
-          if (primaryOris.length === 0) {
+          const candidateOris = this.getSafeOrientations(primarySKU, this.L - currentX, this.H, this.W);
+          if (candidateOris.length === 0) {
             currentX += 0.05;
             continue;
           }
 
-          primaryOris.sort((a, b) => {
-            const utilA = Math.floor(this.W / a.wz) * a.wz * Math.floor(this.H / a.h) * a.h;
-            const utilB = Math.floor(this.W / b.wz) * b.wz * Math.floor(this.H / b.h) * b.h;
-            return utilB - utilA;
+          // 评估最优横向成排朝向 (优先横向铺满宽度 W)
+          candidateOris.sort((a, b) => {
+            const rowUtilA = Math.floor(this.W / a.wz) * a.wz;
+            const rowUtilB = Math.floor(this.W / b.wz) * b.wz;
+            if (Math.abs(rowUtilB - rowUtilA) > 0.05) return rowUtilB - rowUtilA;
+            return (Math.floor(this.H / b.h) * b.h) - (Math.floor(this.H / a.h) * a.h);
           });
-          const primaryOri = primaryOris[0];
+
+          const primaryOri = candidateOris[0];
           const sliceThickness = primaryOri.l;
 
-          const colsP = Math.max(1, Math.floor(this.W / primaryOri.wz));
-          const rawLaysP = Math.max(1, Math.floor(this.H / primaryOri.h));
-          // 严格遵守 maxStackLayers
-          const laysP = primarySKU.maxStackLayers ? Math.min(rawLaysP, primarySKU.maxStackLayers) : rawLaysP;
-          const sliceCapacity = colsP * laysP;
+          // 计算横向成排指标 (Row Formation Metrics)
+          const colsPerRow = Math.max(1, Math.floor(this.W / primaryOri.wz));
+          const maxLays = primarySKU.maxStackLayers ? Math.min(Math.floor(this.H / primaryOri.h), primarySKU.maxStackLayers) : Math.floor(this.H / primaryOri.h);
+          const wallCapacity = colsPerRow * maxLays;
 
-          // 如果剩余数量够装满至少 1 个整切片且该切片为整栋结构 (成栋 Monolithic 3D Block)
-          // 注意：如果 primarySKU 有 maxStackLayers 限制导致顶部悬空且还有其他 SKU，进入分列填顶逻辑
-          if (!primarySKU.maxStackLayers && primarySKU.remQty >= sliceCapacity && currentX + sliceThickness <= this.L + 0.001) {
-            const fullSlices = Math.min(Math.floor(primarySKU.remQty / sliceCapacity), Math.floor((this.L - currentX) / sliceThickness));
-            for (let sx = 0; sx < fullSlices; sx++) {
+          // -------------------------------------------------------------
+          // 模式 A：成栋大方阵 (Monolithic Block - 满整墙且无特殊层高混装)
+          // -------------------------------------------------------------
+          if (!primarySKU.maxStackLayers && primarySKU.remQty >= wallCapacity && currentX + sliceThickness <= this.L + 0.001) {
+            const fullWalls = Math.min(Math.floor(primarySKU.remQty / wallCapacity), Math.floor((this.L - currentX) / sliceThickness));
+            const candidateBlockBoxes = [];
+
+            for (let sx = 0; sx < fullWalls; sx++) {
               const slX = currentX + sx * sliceThickness;
-              for (let c = 0; c < colsP; c++) {
+              for (let c = 0; c < colsPerRow; c++) {
                 const colZ = c * primaryOri.wz;
-                for (let lay = 0; lay < laysP; lay++) {
+                for (let lay = 0; lay < maxLays; lay++) {
                   const boxY = lay * primaryOri.h;
-                  placedBoxes.push({
-                    id: `${primarySKU.sku}-${boxGlobalIndex + 1}`,
+                  candidateBlockBoxes.push({
+                    id: `${primarySKU.sku}-${boxGlobalIndex + candidateBlockBoxes.length + 1}`,
                     sku: primarySKU.sku,
                     name: primarySKU.name || '',
                     color: primarySKU.color || 0x3b82f6,
@@ -2341,18 +2397,28 @@
                     h: Math.round(primaryOri.h * 10000) / 10000,
                     d: Math.round(primaryOri.wz * 10000) / 10000
                   });
-                  boxGlobalIndex++;
-                  primarySKU.actualPlaced++;
-                  primarySKU.remQty--;
                 }
               }
             }
-            currentX += fullSlices * sliceThickness;
-            lastPrimarySKU = primarySKU.remQty > 0 ? primarySKU : null;
-            continue;
+
+            // X, Y, Z 三轴多重视图质检验收
+            const evalRes = this.evaluateTriAxisCandidate(candidateBlockBoxes, placedBoxes);
+            if (evalRes.valid) {
+              candidateBlockBoxes.forEach(b => {
+                placedBoxes.push(b);
+                boxGlobalIndex++;
+                primarySKU.actualPlaced++;
+                primarySKU.remQty--;
+              });
+              currentX += fullWalls * sliceThickness;
+              lastPrimarySKU = primarySKU.remQty > 0 ? primarySKU : null;
+              continue;
+            }
           }
 
-          // 2. 如果不足一个完整切片或有限层要求，执行【横向拼装 + 顶部继续填充 + 凹面平准化】
+          // -------------------------------------------------------------
+          // 模式 B：优先横向成排 + 向上成列成墙 + 余货队列与凹面平准化
+          // -------------------------------------------------------------
           let currentZ = 0;
           const sliceCols = [];
 
@@ -2392,12 +2458,12 @@
             let colY = 0;
             const colPlacedSKUCount = {};
 
-            // 垂直逐层向上堆叠主 SKU (严格遵守 maxStackLayers)
+            // 1. 垂直逐层向上堆叠主 SKU (严格遵守 maxStackLayers)
             const colMaxLay = colSKU.maxStackLayers || 999;
             let colLayCount = 0;
 
             while (colLayCount < colMaxLay && colY + colOri.h <= this.H + 0.001 && colSKU.remQty > 0) {
-              placedBoxes.push({
+              const candidateBox = {
                 id: `${colSKU.sku}-${boxGlobalIndex + 1}`,
                 sku: colSKU.sku,
                 name: colSKU.name || '',
@@ -2411,17 +2477,24 @@
                 w: Math.round(colOri.l * 10000) / 10000,
                 h: Math.round(colOri.h * 10000) / 10000,
                 d: Math.round(colOri.wz * 10000) / 10000
-              });
-              boxGlobalIndex++;
-              colSKU.actualPlaced++;
-              colSKU.remQty--;
-              colY += colOri.h;
-              colLayCount++;
-              colPlacedSKUCount[colSKU.sku] = (colPlacedSKUCount[colSKU.sku] || 0) + 1;
+              };
+
+              const evalRes = this.evaluateTriAxisCandidate([candidateBox], placedBoxes);
+              if (evalRes.valid) {
+                placedBoxes.push(candidateBox);
+                boxGlobalIndex++;
+                colSKU.actualPlaced++;
+                colSKU.remQty--;
+                colY += colOri.h;
+                colLayCount++;
+                colPlacedSKUCount[colSKU.sku] = (colPlacedSKUCount[colSKU.sku] || 0) + 1;
+              } else {
+                break;
+              }
             }
 
-            // 【核心模块 3】：单件/限层货物上面，继续填充其它符合尺寸要求的货物 (顶部空间向上填满至 H)
-            while (colY < this.H - 0.10) {
+            // 2. 顶部空间向上填平至 H (Top Headspace Filling)
+            while (colY < this.H - 0.08) {
               const availTop = skuPool.filter(s => {
                 if (s.remQty <= 0) return false;
                 const curCount = colPlacedSKUCount[s.sku] || 0;
@@ -2437,7 +2510,7 @@
                   const tOri = topOris[0];
                   let tLayCount = colPlacedSKUCount[topSKU.sku] || 0;
                   while (tLayCount < topMaxLay && colY + tOri.h <= this.H + 0.001 && topSKU.remQty > 0) {
-                    placedBoxes.push({
+                    const candidateTopBox = {
                       id: `${topSKU.sku}-${boxGlobalIndex + 1}`,
                       sku: topSKU.sku,
                       name: topSKU.name || '',
@@ -2451,14 +2524,20 @@
                       w: Math.round(tOri.l * 10000) / 10000,
                       h: Math.round(tOri.h * 10000) / 10000,
                       d: Math.round(tOri.wz * 10000) / 10000
-                    });
-                    boxGlobalIndex++;
-                    topSKU.actualPlaced++;
-                    topSKU.remQty--;
-                    colY += tOri.h;
-                    tLayCount++;
-                    colPlacedSKUCount[topSKU.sku] = tLayCount;
-                    filledTop = true;
+                    };
+                    const evalTopRes = this.evaluateTriAxisCandidate([candidateTopBox], placedBoxes);
+                    if (evalTopRes.valid) {
+                      placedBoxes.push(candidateTopBox);
+                      boxGlobalIndex++;
+                      topSKU.actualPlaced++;
+                      topSKU.remQty--;
+                      colY += tOri.h;
+                      tLayCount++;
+                      colPlacedSKUCount[topSKU.sku] = tLayCount;
+                      filledTop = true;
+                    } else {
+                      break;
+                    }
                   }
                   if (filledTop) break;
                 }
@@ -2482,7 +2561,7 @@
 
           const maxSliceX = Math.max(...sliceCols.map(c => c.xEnd));
 
-          // 【核心模块 3 & 4】：货物成墙切片后出现的凹面 (Notch)，用符合深度的货物填平抹平
+          // 3. 凹面平准化与多轴自适应朝向调优 (Notch Leveling & Tri-Axis Orientation Optimizer)
           for (const col of sliceCols) {
             let notchX = col.xEnd;
             while (notchX < maxSliceX - 0.05) {
@@ -2501,7 +2580,7 @@
                   let countN = 0;
                   let nLayCount = 0;
                   while (nLayCount < nMaxLay && nY + nOri.h <= this.H + 0.001 && nSKU.remQty > 0) {
-                    placedBoxes.push({
+                    const candidateNotchBox = {
                       id: `${nSKU.sku}-${boxGlobalIndex + 1}`,
                       sku: nSKU.sku,
                       name: nSKU.name || '',
@@ -2515,13 +2594,19 @@
                       w: Math.round(nOri.l * 10000) / 10000,
                       h: Math.round(nOri.h * 10000) / 10000,
                       d: Math.round(nOri.wz * 10000) / 10000
-                    });
-                    boxGlobalIndex++;
-                    nSKU.actualPlaced++;
-                    nSKU.remQty--;
-                    nY += nOri.h;
-                    nLayCount++;
-                    countN++;
+                    };
+                    const evalNRes = this.evaluateTriAxisCandidate([candidateNotchBox], placedBoxes);
+                    if (evalNRes.valid) {
+                      placedBoxes.push(candidateNotchBox);
+                      boxGlobalIndex++;
+                      nSKU.actualPlaced++;
+                      nSKU.remQty--;
+                      nY += nOri.h;
+                      nLayCount++;
+                      countN++;
+                    } else {
+                      break;
+                    }
                   }
                   if (countN > 0) {
                     notchX += nOri.l;
@@ -2538,7 +2623,7 @@
           lastPrimarySKU = null;
         }
 
-        // 统计指标
+        // 统计指标与重心
         const skuStats = {};
         let totalUnplaced = 0;
         for (const s of skuPool) {
