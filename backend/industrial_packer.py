@@ -106,6 +106,7 @@ class IndustrialSmartContainerPacker:
         """
         模块 4：3D 重心调控与业务装货要求（最里面 -> 放中间 -> 封柜门）
         模块 5：超容时优先刚性，弹性件最后满柜核减
+        全面联动 6 维动态权重：cogBalance, doorSafety
         """
         req = sku.get('requirement', '')
         is_rear = bool(re.search(r'最里面|rear|deep', req, re.IGNORECASE))
@@ -113,28 +114,32 @@ class IndustrialSmartContainerPacker:
         is_door = bool(re.search(r'封柜门|door|front', req, re.IGNORECASE))
         is_elastic = sku.get('isElastic', False)
 
+        cog_scale = float(self.weights.get('cogBalance', 1500.0)) / 1500.0
+        door_scale = float(self.weights.get('doorSafety', 1200.0)) / 1200.0
+
         if current_x <= 2.5:
             # 深端：最里面最高优先；装完后放中间顺延填充，杜绝浪费
             if is_rear:
-                return 100000.0
+                return 100000.0 * cog_scale
             if is_mid:
-                return 20000.0
+                return 20000.0 * cog_scale
             if is_door:
-                return -5000.0
+                return -5000.0 * cog_scale
             return 10000.0
         elif current_x <= 8.0:
             # 中段：放中间最高优先；刚性封柜门次之
             if is_mid:
-                return 50000.0
+                return 50000.0 * cog_scale
             if is_door:
-                return 10000.0 if is_elastic else 30000.0
+                return (10000.0 if is_elastic else 30000.0) * cog_scale
             if is_rear:
-                return -10000.0
+                return -10000.0 * cog_scale
             return 10000.0
         else:
             # 门区：刚性封柜门最高优先，弹性件最后收口
             if is_door:
-                return 70000.0 if is_elastic else 100000.0
+                base_score = 70000.0 if is_elastic else 100000.0
+                return base_score * door_scale
             if is_mid:
                 return 10000.0
             if is_rear:
@@ -146,6 +151,11 @@ class IndustrialSmartContainerPacker:
         start_time = time.time()
         placed_boxes: List[Dict[str, Any]] = []
         elastic_trimmed_map: Dict[str, Any] = {}
+
+        affinity_weight = float(self.weights.get('affinity', 3000.0))
+        wall_weight = float(self.weights.get('wallSlicing', 50000.0))
+        notch_weight = float(self.weights.get('notchLeveling', 2500.0))
+        vert_weight = float(self.weights.get('verticalStack', 3500.0))
 
         sku_pool = []
         for m in cargo_manifest:
@@ -177,10 +187,10 @@ class IndustrialSmartContainerPacker:
             def sku_anchor_sort_key(s):
                 score = self.get_zone_affinity_score(s, current_wall_x)
                 if last_primary_sku and s['sku'] == last_primary_sku['sku']:
-                    score += self.weights.get('affinity', 50000.0)
+                    score += affinity_weight * 10.0
                 if s['isElastic']:
                     score -= 20000.0
-                score += min(s['remQty'], 500) * 10.0 + (s['w'] * s['h'] * s['d']) * 50.0
+                score += min(s['remQty'], 500) * 10.0 + (s['w'] * s['h'] * s['d']) * (wall_weight / 1000.0)
                 return score
 
             available_skus.sort(key=sku_anchor_sort_key, reverse=True)

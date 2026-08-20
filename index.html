@@ -2671,8 +2671,8 @@
     let isCoGBalanceEnabled = true;
 
     // --- CLIENT-SIDE SPATIAL COORDINATE CACHE ENGINE ---
-    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V27_PYTHON_SERVICE_';
-    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V27_PYTHON_SERVICE';
+    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V28_HOT_RELOAD_';
+    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V28_HOT_RELOAD';
 
     function generatePackingCacheKey(specCode, strategy, gap, manifest, weights = activeAlgorithmWeights) {
       const summary = manifest.map(m => `${m.sku}_${m.quantity}_${m.w}x${m.d}x${m.h}_${m.weight}_${m.requirement||''}`).join('|');
@@ -3336,7 +3336,7 @@
       rebuildContainerModel();
       renderManifestUI();
       renderAnchorRibbon();
-      runSmartPackingAlgorithm(false);
+      runSmartPackingAlgorithm(true);
 
       raycaster = new THREE.Raycaster();
       mouse = new THREE.Vector2();
