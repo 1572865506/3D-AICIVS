@@ -2382,7 +2382,7 @@
           const wallCapacity = colsPerRow * maxLays;
 
           // -------------------------------------------------------------
-          // 模块二：成栋大方阵 (Monolithic Block - 满整墙且无特殊层高混装)
+          // 模块二：成栋大方阵 (Monolithic Block) + 【全高实心顶填与抗中空强化】
           // -------------------------------------------------------------
           if (!primarySKU.maxStackLayers && primarySKU.remQty >= wallCapacity && currentX + sliceThickness <= this.L + 0.001) {
             const fullWalls = Math.min(Math.floor(primarySKU.remQty / wallCapacity), Math.floor((this.L - currentX) / sliceThickness));
@@ -2413,14 +2413,80 @@
               }
             }
 
+            const blockTopY = maxLays * primaryOri.h;
+
+            // 🌟 核心调优：成栋大方阵顶部若有空隙 (如只堆了3层还剩大空间)，在顶部连续向上铺满至 H！
+            if (blockTopY < this.H - 0.10) {
+              for (let sx = 0; sx < fullWalls; sx++) {
+                const slX = currentX + sx * sliceThickness;
+                for (let c = 0; c < colsPerRow; c++) {
+                  const colZ = c * primaryOri.wz;
+                  let topY = blockTopY;
+                  const colPlacedSKUCount = {};
+
+                  while (topY < this.H - 0.08) {
+                    let availTop = skuPool.filter(s => {
+                      if (s.remQty <= 0) return false;
+                      const curCount = colPlacedSKUCount[s.sku] || 0;
+                      if (s.maxStackLayers && curCount >= s.maxStackLayers) return false;
+                      return true;
+                    });
+                    const nonDoorTop = availTop.filter(s => !/封柜门|door|front|尾|门/i.test(s.requirement || ''));
+                    if (slX < doorBoundary && nonDoorTop.length > 0) {
+                      availTop = nonDoorTop;
+                    }
+                    if (availTop.length === 0) break;
+
+                    let filledT = false;
+                    availTop.sort((a, b) => this.getZoneAffinityScore(b, slX) - this.getZoneAffinityScore(a, slX));
+                    for (const topSKU of availTop) {
+                      const topMaxLay = topSKU.maxStackLayers || 999;
+                      const topOris = this.getSafeOrientations(topSKU, sliceThickness, this.H - topY, primaryOri.wz);
+                      if (topOris.length > 0) {
+                        const tOri = topOris[0];
+                        let tLayCount = colPlacedSKUCount[topSKU.sku] || 0;
+                        while (tLayCount < topMaxLay && topY + tOri.h <= this.H + 0.001 && topSKU.remQty > 0) {
+                          candidateBlockBoxes.push({
+                            id: `${topSKU.sku}-${boxGlobalIndex + candidateBlockBoxes.length + 1}`,
+                            sku: topSKU.sku,
+                            name: topSKU.name || '',
+                            color: topSKU.color || 0x3b82f6,
+                            weight: topSKU.weight,
+                            requirement: topSKU.requirement || '',
+                            isElastic: topSKU.isElastic,
+                            x: Math.round(slX * 10000) / 10000,
+                            y: Math.round(topY * 10000) / 10000,
+                            z: Math.round(colZ * 10000) / 10000,
+                            w: Math.round(tOri.l * 10000) / 10000,
+                            h: Math.round(tOri.h * 10000) / 10000,
+                            d: Math.round(tOri.wz * 10000) / 10000
+                          });
+                          topSKU.remQty--;
+                          topSKU.actualPlaced++;
+                          topY += tOri.h;
+                          tLayCount++;
+                          colPlacedSKUCount[topSKU.sku] = tLayCount;
+                          filledT = true;
+                        }
+                        if (filledT) break;
+                      }
+                    }
+                    if (!filledT) break;
+                  }
+                }
+              }
+            }
+
             // X, Y, Z 三轴多重视图质检验收
             const evalRes = this.evaluateTriAxisCandidate(candidateBlockBoxes, placedBoxes);
             if (evalRes.valid) {
               candidateBlockBoxes.forEach(b => {
                 placedBoxes.push(b);
                 boxGlobalIndex++;
-                primarySKU.actualPlaced++;
-                primarySKU.remQty--;
+                if (b.sku === primarySKU.sku) {
+                  primarySKU.actualPlaced++;
+                  primarySKU.remQty--;
+                }
               });
               currentX += fullWalls * sliceThickness;
               lastPrimarySKU = primarySKU.remQty > 0 ? primarySKU : null;
