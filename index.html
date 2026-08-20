@@ -2469,111 +2469,120 @@
               continue;
             }
 
-            const colXEnd = currentX + colOri.l;
-            const colZStart = currentZ;
-            const colZEnd = currentZ + colOri.wz;
-            let colY = 0;
-            const colPlacedSKUCount = {};
+            // 同物多列聚合 (Intra-SKU Multi-Column Cohesion): 连续铺满该 SKU，避免逐列随机切换导致中段散乱
+            const availableZWidth = this.W - currentZ;
+            const maxPossibleCols = Math.max(1, Math.floor(availableZWidth / colOri.wz));
+            const maxLay = colSKU.maxStackLayers || Math.floor(this.H / colOri.h);
+            const boxesPerCol = Math.min(maxLay, Math.floor(this.H / colOri.h));
+            const numColsToPlace = Math.min(maxPossibleCols, Math.max(1, Math.ceil(colSKU.remQty / boxesPerCol)));
 
-            // 1. 垂直逐层向上堆叠主 SKU (严格遵守 maxStackLayers)
-            const colMaxLay = colSKU.maxStackLayers || 999;
-            let colLayCount = 0;
+            for (let colIdx = 0; colIdx < numColsToPlace; colIdx++) {
+              if (currentZ + colOri.wz > this.W + 0.001 || colSKU.remQty <= 0) break;
 
-            while (colLayCount < colMaxLay && colY + colOri.h <= this.H + 0.001 && colSKU.remQty > 0) {
-              const candidateBox = {
-                id: `${colSKU.sku}-${boxGlobalIndex + 1}`,
-                sku: colSKU.sku,
-                name: colSKU.name || '',
-                color: colSKU.color || 0x3b82f6,
-                weight: colSKU.weight,
-                requirement: colSKU.requirement || '',
-                isElastic: colSKU.isElastic,
-                x: Math.round(currentX * 10000) / 10000,
-                y: Math.round(colY * 10000) / 10000,
-                z: Math.round(colZStart * 10000) / 10000,
-                w: Math.round(colOri.l * 10000) / 10000,
-                h: Math.round(colOri.h * 10000) / 10000,
-                d: Math.round(colOri.wz * 10000) / 10000
-              };
+              const colXEnd = currentX + colOri.l;
+              const colZStart = currentZ;
+              const colZEnd = currentZ + colOri.wz;
+              let colY = 0;
+              const colPlacedSKUCount = {};
+              let colLayCount = 0;
 
-              const evalRes = this.evaluateTriAxisCandidate([candidateBox], placedBoxes);
-              if (evalRes.valid) {
-                placedBoxes.push(candidateBox);
-                boxGlobalIndex++;
-                colSKU.actualPlaced++;
-                colSKU.remQty--;
-                colY += colOri.h;
-                colLayCount++;
-                colPlacedSKUCount[colSKU.sku] = (colPlacedSKUCount[colSKU.sku] || 0) + 1;
-              } else {
-                break;
-              }
-            }
+              // 1. 垂直逐层堆叠
+              while (colLayCount < maxLay && colY + colOri.h <= this.H + 0.001 && colSKU.remQty > 0) {
+                const candidateBox = {
+                  id: `${colSKU.sku}-${boxGlobalIndex + 1}`,
+                  sku: colSKU.sku,
+                  name: colSKU.name || '',
+                  color: colSKU.color || 0x3b82f6,
+                  weight: colSKU.weight,
+                  requirement: colSKU.requirement || '',
+                  isElastic: colSKU.isElastic,
+                  x: Math.round(currentX * 10000) / 10000,
+                  y: Math.round(colY * 10000) / 10000,
+                  z: Math.round(colZStart * 10000) / 10000,
+                  w: Math.round(colOri.l * 10000) / 10000,
+                  h: Math.round(colOri.h * 10000) / 10000,
+                  d: Math.round(colOri.wz * 10000) / 10000
+                };
 
-            // 2. 顶部空间向上填平至 H (Top Headspace Filling)
-            while (colY < this.H - 0.08) {
-              let availTop = skuPool.filter(s => {
-                if (s.remQty <= 0) return false;
-                const curCount = colPlacedSKUCount[s.sku] || 0;
-                if (s.maxStackLayers && curCount >= s.maxStackLayers) return false;
-                return true;
-              });
-              const nonDoorTop = availTop.filter(s => !/封柜门|door|front|尾|门/i.test(s.requirement || ''));
-              if (currentX < doorBoundary && nonDoorTop.length > 0) {
-                availTop = nonDoorTop;
-              }
-
-              let filledTop = false;
-              availTop.sort((a, b) => this.getZoneAffinityScore(b, currentX) - this.getZoneAffinityScore(a, currentX));
-              for (const topSKU of availTop) {
-                const topMaxLay = topSKU.maxStackLayers || 999;
-                const topOris = this.getSafeOrientations(topSKU, colOri.l, this.H - colY, colOri.wz);
-                if (topOris.length > 0) {
-                  const tOri = topOris[0];
-                  let tLayCount = colPlacedSKUCount[topSKU.sku] || 0;
-                  while (tLayCount < topMaxLay && colY + tOri.h <= this.H + 0.001 && topSKU.remQty > 0) {
-                    const candidateTopBox = {
-                      id: `${topSKU.sku}-${boxGlobalIndex + 1}`,
-                      sku: topSKU.sku,
-                      name: topSKU.name || '',
-                      color: topSKU.color || 0x3b82f6,
-                      weight: topSKU.weight,
-                      requirement: topSKU.requirement || '',
-                      isElastic: topSKU.isElastic,
-                      x: Math.round(currentX * 10000) / 10000,
-                      y: Math.round(colY * 10000) / 10000,
-                      z: Math.round(colZStart * 10000) / 10000,
-                      w: Math.round(tOri.l * 10000) / 10000,
-                      h: Math.round(tOri.h * 10000) / 10000,
-                      d: Math.round(tOri.wz * 10000) / 10000
-                    };
-                    const evalTopRes = this.evaluateTriAxisCandidate([candidateTopBox], placedBoxes);
-                    if (evalTopRes.valid) {
-                      placedBoxes.push(candidateTopBox);
-                      boxGlobalIndex++;
-                      topSKU.actualPlaced++;
-                      topSKU.remQty--;
-                      colY += tOri.h;
-                      tLayCount++;
-                      colPlacedSKUCount[topSKU.sku] = tLayCount;
-                      filledTop = true;
-                    } else {
-                      break;
-                    }
-                  }
-                  if (filledTop) break;
+                const evalRes = this.evaluateTriAxisCandidate([candidateBox], placedBoxes);
+                if (evalRes.valid) {
+                  placedBoxes.push(candidateBox);
+                  boxGlobalIndex++;
+                  colSKU.actualPlaced++;
+                  colSKU.remQty--;
+                  colY += colOri.h;
+                  colLayCount++;
+                  colPlacedSKUCount[colSKU.sku] = (colPlacedSKUCount[colSKU.sku] || 0) + 1;
+                } else {
+                  break;
                 }
               }
-              if (!filledTop) break;
-            }
 
-            sliceCols.push({
-              zStart: colZStart,
-              zEnd: colZEnd,
-              xEnd: colXEnd,
-              topY: colY
-            });
-            currentZ = colZEnd;
+              // 2. 顶部空间向上填平至 H
+              while (colY < this.H - 0.08) {
+                let availTop = skuPool.filter(s => {
+                  if (s.remQty <= 0) return false;
+                  const curCount = colPlacedSKUCount[s.sku] || 0;
+                  if (s.maxStackLayers && curCount >= s.maxStackLayers) return false;
+                  return true;
+                });
+                const nonDoorTop = availTop.filter(s => !/封柜门|door|front|尾|门/i.test(s.requirement || ''));
+                if (currentX < doorBoundary && nonDoorTop.length > 0) {
+                  availTop = nonDoorTop;
+                }
+
+                let filledTop = false;
+                availTop.sort((a, b) => this.getZoneAffinityScore(b, currentX) - this.getZoneAffinityScore(a, currentX));
+                for (const topSKU of availTop) {
+                  const topMaxLay = topSKU.maxStackLayers || 999;
+                  const topOris = this.getSafeOrientations(topSKU, colOri.l, this.H - colY, colOri.wz);
+                  if (topOris.length > 0) {
+                    const tOri = topOris[0];
+                    let tLayCount = colPlacedSKUCount[topSKU.sku] || 0;
+                    while (tLayCount < topMaxLay && colY + tOri.h <= this.H + 0.001 && topSKU.remQty > 0) {
+                      const candidateTopBox = {
+                        id: `${topSKU.sku}-${boxGlobalIndex + 1}`,
+                        sku: topSKU.sku,
+                        name: topSKU.name || '',
+                        color: topSKU.color || 0x3b82f6,
+                        weight: topSKU.weight,
+                        requirement: topSKU.requirement || '',
+                        isElastic: topSKU.isElastic,
+                        x: Math.round(currentX * 10000) / 10000,
+                        y: Math.round(colY * 10000) / 10000,
+                        z: Math.round(colZStart * 10000) / 10000,
+                        w: Math.round(tOri.l * 10000) / 10000,
+                        h: Math.round(tOri.h * 10000) / 10000,
+                        d: Math.round(tOri.wz * 10000) / 10000
+                      };
+                      const evalTopRes = this.evaluateTriAxisCandidate([candidateTopBox], placedBoxes);
+                      if (evalTopRes.valid) {
+                        placedBoxes.push(candidateTopBox);
+                        boxGlobalIndex++;
+                        topSKU.actualPlaced++;
+                        topSKU.remQty--;
+                        colY += tOri.h;
+                        tLayCount++;
+                        colPlacedSKUCount[topSKU.sku] = tLayCount;
+                        filledTop = true;
+                      } else {
+                        break;
+                      }
+                    }
+                    if (filledTop) break;
+                  }
+                }
+                if (!filledTop) break;
+              }
+
+              sliceCols.push({
+                zStart: colZStart,
+                zEnd: colZEnd,
+                xEnd: colXEnd,
+                topY: colY
+              });
+              currentZ = colZEnd;
+            }
           }
 
           if (sliceCols.length === 0) {
