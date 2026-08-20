@@ -4149,25 +4149,35 @@
     async function requestPackingFromBackend(spec, manifest, weights) {
       try {
         let apiUrl = '/api/v1/pack';
-        // Auto-detect Python server port when opened via file:// or LiveServer on another port
-        if (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '8080')) {
-          apiUrl = 'http://localhost:8080/api/v1/pack';
+        // 同源优先：http(s)://host:port 打开时直接请求当前 origin，命中部署该页面的后端端口（如 8081）
+        // 仅 file:// 直开（无后端同源）时回退到默认后端端口 8081
+        if (window.location.protocol === 'file:') {
+          apiUrl = 'http://localhost:8081/api/v1/pack';
         }
 
         console.log(`📡 [3D-AICIVS] 发起 Python 后端微服务推演 -> ${apiUrl}`, { spec: spec.code, manifestCount: manifest.length, weights });
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            containerSpec: {
-              code: spec.code,
-              usable: spec.usable || { L: spec.intL, W: spec.intW, H: spec.intH },
-              maxPayloadTons: spec.maxPayloadTons || 26.5
-            },
-            manifest: manifest,
-            weights: weights
-          })
-        });
+        // 25s 超时：防止后端挂起时界面无限等待（表现为"改了参数没反应"）
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 25000);
+        let response;
+        try {
+          response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              containerSpec: {
+                code: spec.code,
+                usable: spec.usable || { L: spec.intL, W: spec.intW, H: spec.intH },
+                maxPayloadTons: spec.maxPayloadTons || 26.5
+              },
+              manifest: manifest,
+              weights: weights
+            }),
+            signal: controller.signal
+          });
+        } finally {
+          clearTimeout(timeoutId);
+        }
         if (!response.ok) throw new Error('API server returned status ' + response.status);
         const result = await response.json();
         if (result && result.success && result.placedBoxes) {
@@ -4181,8 +4191,8 @@
       return null;
     }
 
-    window.runSmartPackingAlgorithm = function(forceRecompute = true) {
-      console.log('[3D-AICIVS] runSmartPackingAlgorithm called -> 纯前端 6 大核心模块即时计算');
+    window.runSmartPackingAlgorithm = async function(forceRecompute = true) {
+      console.log('[3D-AICIVS] runSmartPackingAlgorithm called -> 优先 Python 后端 v1.4.1，失败降级纯前端内核');
 
       const usableDim = {
         length: currentSpec.intL,
@@ -4194,22 +4204,57 @@
       const cacheTxt = document.getElementById('txt-cache-badge');
       const cacheDot = document.getElementById('cache-dot');
 
-      // 执行纯前端 6 大核心模块装载内核 (成栋成墙、余货队列、朝向隔离、凹面填平)
-      const packer = new IndustrialSmartContainerPacker(usableDim, {
-        gap: currentGap,
-        strategy: currentStrategy,
-        enableCoGBalance: isCoGBalanceEnabled,
-        weights: activeAlgorithmWeights,
-        maxPayloadTons: currentSpec.maxPayloadTons || 28.6
-      });
-      activePackingResult = packer.pack(activeManifest);
+      // 优先调用 Python 后端（约束内核 v1.4.1：层优先 + XYZ 审计 + 限层/承重），成功则直接用后端结果渲染
+      let fromBackend = false;
+      try {
+        const backendResult = await requestPackingFromBackend(currentSpec, activeManifest, activeAlgorithmWeights);
+        if (backendResult) {
+          activePackingResult = backendResult;
+          fromBackend = true;
+        }
+      } catch (err) {
+        console.warn('[3D-AICIVS] 后端请求异常，降级前端内核:', err);
+      }
+
+      if (!fromBackend) {
+        // 降级：执行纯前端 6 大核心模块装载内核 (成栋成墙、余货队列、朝向隔离、凹面填平)
+        // 提示用户当前处于降级模式（避免误以为"没重算"）
+        const now = Date.now();
+        if (now - (window.__lastFallbackToastTime || 0) > 5000) {
+          window.__lastFallbackToastTime = now;
+          showToast('⚠️ 后端算柜服务不可用，本次已降级为内置内核计算', 'warning');
+        }
+        try {
+          const packer = new IndustrialSmartContainerPacker(usableDim, {
+            gap: currentGap,
+            strategy: currentStrategy,
+            enableCoGBalance: isCoGBalanceEnabled,
+            weights: activeAlgorithmWeights,
+            maxPayloadTons: currentSpec.maxPayloadTons || 28.6
+          });
+          activePackingResult = packer.pack(activeManifest);
+        } catch (err) {
+          // 内核异常时保留上次结果，明确报错而不是静默失败
+          console.error('[3D-AICIVS] 前端内核计算异常，保留上次结果:', err);
+          showToast('⚠️ 前端内核计算失败: ' + (err.message || err) + '（已保留上次排布结果）', 'warning');
+          return;
+        }
+      }
 
       if (cacheBadge && cacheTxt && cacheDot) {
-        cacheBadge.style.color = '#059669';
-        cacheBadge.style.background = '#f0fdf4';
-        cacheBadge.style.borderColor = '#86efac';
-        cacheDot.style.background = '#22c55e';
-        cacheTxt.textContent = `⚡ 纯前端极速内核 (${activePackingResult.elapsedMs}ms)`;
+        if (fromBackend) {
+          cacheBadge.style.color = '#1d4ed8';
+          cacheBadge.style.background = '#eff6ff';
+          cacheBadge.style.borderColor = '#93c5fd';
+          cacheDot.style.background = '#3b82f6';
+          cacheTxt.textContent = `🧠 Python 后端约束内核 v1.4.1 (${activePackingResult.elapsedMs}ms)`;
+        } else {
+          cacheBadge.style.color = '#059669';
+          cacheBadge.style.background = '#f0fdf4';
+          cacheBadge.style.borderColor = '#86efac';
+          cacheDot.style.background = '#22c55e';
+          cacheTxt.textContent = `⚡ 纯前端极速内核 (${activePackingResult.elapsedMs}ms)`;
+        }
       }
 
       // --- 3D Scene Rebuild ---
@@ -4795,9 +4840,15 @@
       saveAppState();
       renderManifestUI();
       renderAnchorRibbon();
+      const prevTotal = (activePackingResult && activePackingResult.totalCount) || 0;
       await runSmartPackingAlgorithm(true);
       const placedCount = activePackingResult?.skuStats?.[item.sku]?.placed || 0;
-      showToast(`✨ SKU [${item.sku}] 规则已生效：实装 ${placedCount}/${item.quantity} 箱，3D 货柜已完成重新推演排布！`, 'success');
+      const newTotal = activePackingResult?.totalCount || 0;
+      if (newTotal === prevTotal) {
+        showToast(`✅ SKU [${item.sku}] 参数已生效：实装 ${placedCount}/${item.quantity} 箱。总装载数 ${newTotal} 箱未变化（容器已满或该 SKU 已达可装上限）`, 'info');
+      } else {
+        showToast(`✨ SKU [${item.sku}] 规则已生效：实装 ${placedCount}/${item.quantity} 箱，3D 货柜已完成重新推演排布！`, 'success');
+      }
     };
 
     window.selectAllSKUs = function(selectAll) {

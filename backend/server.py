@@ -58,7 +58,7 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
             health_data = {
                 'status': 'healthy',
                 'service': '3D-AICIVS Industrial Packing Kernel (Python 3)',
-                'version': '1.1.0',
+                'version': '1.4.1',
                 'timestamp': time.time()
             }
             self.wfile.write(json.dumps(health_data).encode('utf-8'))
