@@ -3960,7 +3960,19 @@
       return null;
     }
 
+    let _packingInFlight = false;
+    let _packingQueued = false;
+
     window.runSmartPackingAlgorithm = async function(forceRecompute = false) {
+      // Prevent concurrent async packing — queue the latest request
+      if (_packingInFlight) {
+        _packingQueued = forceRecompute || _packingQueued;
+        return;
+      }
+      _packingInFlight = true;
+      _packingQueued = false;
+
+      try {
       const usableDim = {
         length: currentSpec.intL,
         height: currentSpec.intH,
@@ -4129,6 +4141,17 @@
           showToast(`AI 算柜完成！已装载 ${activePackingResult.totalCount} 箱，利用率 ${activePackingResult.utilization}%（⚠️ 余 ${unplaced} 箱未装下，详见货单）`, 'warning');
         } else {
           showToast(`✨ AI 算柜完成！100% 装载全部 ${activePackingResult.totalCount} 箱货物，内腔利用率 ${activePackingResult.utilization}%`, 'success');
+        }
+      }
+
+      } catch (err) {
+        console.error('[3D-AICIVS] runSmartPackingAlgorithm error:', err);
+      } finally {
+        _packingInFlight = false;
+        // If another request was queued while we were computing, run it now
+        if (_packingQueued) {
+          _packingQueued = false;
+          runSmartPackingAlgorithm(true);
         }
       }
     };
