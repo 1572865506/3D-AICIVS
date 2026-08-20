@@ -2,7 +2,7 @@
 3D-AICIVS Industrial Container Packing Engine (Python 3 Kernel)
 Implementation of the 6 Core Modules based on implementation_plan.md:
 1. 物理压强与朝向控制 (Physical Pressure & Matrix Orientation Control)
-2. 成柱成墙同品聚合 (Column & Wall Building with Homogeneous Affinity)
+2. 成栋成墙成排成列 (Monolithic 3D Block, Wall Flush, Row & Column Stacking)
 3. 尾数箱双重安全拦截与平整度 (Remainder Security & Flatness Control Δh <= 3mm)
 4. 3D 动态重心与业务装载分区 (Dynamic 3D CoG & Zone Requirements)
 5. 阶梯防倾与超容弹性智能核减 (Anti-Toppling Step & Overcapacity Elastic Trimming)
@@ -16,18 +16,11 @@ from typing import List, Dict, Any, Optional, Tuple
 
 class IndustrialSmartContainerPacker:
     def __init__(self, container_spec: Dict[str, Any], weights: Optional[Dict[str, float]] = None):
-        """
-        container_spec contains:
-          - usable: {'L': float, 'W': float, 'H': float}
-          - maxPayloadTons: float
-        weights contains 6-dimensional tunable parameters:
-          - affinity, verticalStack, wallSlicing, notchLeveling, cogBalance, doorSafety
-        """
         usable = container_spec.get('usable', {})
         self.L = float(usable.get('L', container_spec.get('intL', 12.032)))
         self.W = float(usable.get('W', container_spec.get('intW', 2.352)))
         self.H = float(usable.get('H', container_spec.get('intH', 2.698)))
-        self.max_payload_kg = float(container_spec.get('maxPayloadTons', 26.5)) * 1000.0
+        self.max_payload_kg = float(container_spec.get('maxPayloadTons', 28.6)) * 1000.0
         
         # 模块 6：箱门 1.2m 警戒区边界
         self.door_zone_x = max(0.0, self.L - 1.20)
@@ -54,96 +47,73 @@ class IndustrialSmartContainerPacker:
             b['z'] + b['d'] > a['z'] + eps
         )
 
-    def get_safe_orientations(self, item: Dict[str, Any], current_x: float) -> List[Dict[str, float]]:
-        """
-        模块 1：朝向生成与姿态约束
-        模块 6：箱门 1.2m 警戒区防倾倒锁定 (K = Dx / H >= 0.50)
-        """
-        allowed = item.get('allowedOrientation', 'allow_flat' if item.get('allowFlat') else 'upright')
-        w, d, h = float(item['w']), float(item['d']), float(item['h'])
-        
-        raw = []
-        if allowed == 'upright':
-            raw = [
-                {'l': w, 'wz': d, 'h': h},
-                {'l': d, 'wz': w, 'h': h}
-            ]
-        elif allowed == 'allow_flat':
-            raw = [
-                {'l': w, 'wz': d, 'h': h},
-                {'l': d, 'wz': w, 'h': h},
-                {'l': w, 'wz': h, 'h': d},
-                {'l': d, 'wz': h, 'h': d}
-            ]
+    def get_best_orientations(self, item: Dict[str, Any], target_thickness: Optional[float] = None) -> List[Dict[str, float]]:
+        """模块 1：朝向权限矩阵与安全旋转朝向评估"""
+        allowed = item.get('allowedOrientation', 'upright')
+        if item.get('allowFlat'):
+            allowed = 'allow_flat'
+
+        oris = [
+            {'l': item['w'], 'wz': item['d'], 'h': item['h']},
+            {'l': item['d'], 'wz': item['w'], 'h': item['h']}
+        ]
+        if allowed == 'allow_flat':
+            oris.extend([
+                {'l': item['w'], 'wz': item['h'], 'h': item['d']},
+                {'l': item['d'], 'wz': item['h'], 'h': item['w']}
+            ])
+        elif allowed == 'allow_side':
+            oris.extend([
+                {'l': item['h'], 'wz': item['d'], 'h': item['w']},
+                {'l': item['h'], 'wz': item['w'], 'h': item['d']}
+            ])
+        elif allowed == 'any':
+            oris.extend([
+                {'l': item['w'], 'wz': item['h'], 'h': item['d']},
+                {'l': item['d'], 'wz': item['h'], 'h': item['w']},
+                {'l': item['h'], 'wz': item['d'], 'h': item['w']},
+                {'l': item['h'], 'wz': item['w'], 'h': item['d']}
+            ])
+
+        # 过滤超过货柜边界尺寸的朝向
+        valid = [o for o in oris if o['wz'] <= self.W + 0.001 and o['h'] <= self.H + 0.001]
+        if not valid:
+            valid = oris[:1]
+
+        if target_thickness is not None:
+            valid.sort(key=lambda o: (abs(o['l'] - target_thickness), -((self.W // o['wz']) * (self.H // o['h']))))
         else:
-            raw = [
-                {'l': w, 'wz': d, 'h': h},
-                {'l': d, 'wz': w, 'h': h},
-                {'l': w, 'wz': h, 'h': d},
-                {'l': d, 'wz': h, 'h': d},
-                {'l': h, 'wz': d, 'h': w},
-                {'l': h, 'wz': w, 'h': d}
-            ]
+            valid.sort(key=lambda o: ((self.W // o['wz']) * o['wz'] * (self.H // o['h']) * o['h']), reverse=True)
 
-        # 模块 6 强制：箱门末端 1.2m 警戒区强制长高比 K = Dx/H >= 0.50，严禁窄面朝外翻转
-        is_near_door = (current_x >= self.door_zone_x)
-        if is_near_door:
-            filtered = [
-                ori for ori in raw 
-                if (ori['l'] / ori['h'] >= 0.50) or (ori['h'] <= 0.25) or (ori['l'] >= 0.40)
-            ]
-            if filtered:
-                raw = filtered
-
-        # 排序：优先选择横截面填充率最高的朝向
-        raw.sort(
-            key=lambda o: (math.floor(self.W / o['wz']) * math.floor(self.H / o['h'])),
-            reverse=True
-        )
-        return raw
+        return valid
 
     def get_zone_affinity_score(self, sku: Dict[str, Any], current_x: float) -> float:
         """
-        模块 4：3D 重心调控与业务装货要求（最里面 -> 放中间 -> 封柜门）
-        模块 5：超容时优先刚性，弹性件最后满柜核减
-        全面联动 6 维动态权重：cogBalance, doorSafety
+        模块 4：3D 重心调控与业务装载分区（深端最里面 -> 中段放中间 -> 门端封柜门）
+        与 6 维动态权重深度联动
         """
         req = sku.get('requirement', '')
         is_rear = bool(re.search(r'最里面|rear|deep', req, re.IGNORECASE))
         is_mid = bool(re.search(r'放中间|mid|middle', req, re.IGNORECASE))
         is_door = bool(re.search(r'封柜门|door|front', req, re.IGNORECASE))
-        is_elastic = sku.get('isElastic', False)
 
         cog_scale = float(self.weights.get('cogBalance', 1500.0)) / 1500.0
         door_scale = float(self.weights.get('doorSafety', 1200.0)) / 1200.0
 
         if current_x <= 2.5:
-            # 深端：最里面最高优先；装完后放中间顺延填充，杜绝浪费
-            if is_rear:
-                return 100000.0 * cog_scale
-            if is_mid:
-                return 20000.0 * cog_scale
-            if is_door:
-                return -5000.0 * cog_scale
+            if is_rear: return 100000.0 * cog_scale
+            if is_mid: return 20000.0 * cog_scale
+            if is_door: return -5000.0 * cog_scale
             return 10000.0
-        elif current_x <= 8.0:
-            # 中段：放中间最高优先；刚性封柜门次之
-            if is_mid:
-                return 50000.0 * cog_scale
-            if is_door:
-                return (10000.0 if is_elastic else 30000.0) * cog_scale
-            if is_rear:
-                return -10000.0 * cog_scale
+        elif current_x <= 8.5:
+            if is_mid: return 50000.0 * cog_scale
+            if is_door: return (10000.0 if sku['isElastic'] else 30000.0) * cog_scale
+            if is_rear: return -10000.0 * cog_scale
             return 10000.0
         else:
-            # 门区：刚性封柜门最高优先，弹性件最后收口
-            if is_door:
-                base_score = 70000.0 if is_elastic else 100000.0
-                return base_score * door_scale
-            if is_mid:
-                return 10000.0
-            if is_rear:
-                return -20000.0
+            if is_door: return (70000.0 if sku['isElastic'] else 100000.0) * door_scale
+            if is_mid: return 10000.0
+            if is_rear: return -20000.0
             return 10000.0
 
     def pack(self, cargo_manifest: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -154,8 +124,6 @@ class IndustrialSmartContainerPacker:
 
         affinity_weight = float(self.weights.get('affinity', 3000.0))
         wall_weight = float(self.weights.get('wallSlicing', 50000.0))
-        notch_weight = float(self.weights.get('notchLeveling', 2500.0))
-        vert_weight = float(self.weights.get('verticalStack', 3500.0))
 
         sku_pool = []
         for m in cargo_manifest:
@@ -174,18 +142,18 @@ class IndustrialSmartContainerPacker:
             })
 
         box_global_index = 0
-        current_wall_x = 0.0
+        current_x = 0.0
         last_primary_sku: Optional[Dict[str, Any]] = None
 
-        # 模块 2：垂直成柱 ➔ 横向延展成墙 ➔ 同品连贯推进
-        while current_wall_x < self.L - 0.03:
-            available_skus = [s for s in sku_pool if s['remQty'] > 0]
-            if not available_skus:
+        # 模块 2：成栋 (Monolithic 3D Block) ➔ 成墙 (Wall Flush) ➔ 成排 (Row) ➔ 成列 (Column)
+        while current_x < self.L - 0.02:
+            available = [s for s in sku_pool if s['remQty'] > 0]
+            if not available:
                 break
 
-            # 模块 2 同品聚合：优先锁定上一 SKU，保持同品类大宗大方阵
-            def sku_anchor_sort_key(s):
-                score = self.get_zone_affinity_score(s, current_wall_x)
+            # 1. 选取主要排布锚点 SKU (成栋大方阵优先)
+            def sku_rank(s):
+                score = self.get_zone_affinity_score(s, current_x)
                 if last_primary_sku and s['sku'] == last_primary_sku['sku']:
                     score += affinity_weight * 10.0
                 if s['isElastic']:
@@ -193,56 +161,81 @@ class IndustrialSmartContainerPacker:
                 score += min(s['remQty'], 500) * 10.0 + (s['w'] * s['h'] * s['d']) * (wall_weight / 1000.0)
                 return score
 
-            available_skus.sort(key=sku_anchor_sort_key, reverse=True)
-            primary_sku = available_skus[0]
-            primary_oris = self.get_safe_orientations(primary_sku, current_wall_x)
+            available.sort(key=sku_rank, reverse=True)
+            primary_sku = available[0]
+            primary_oris = self.get_best_orientations(primary_sku)
             primary_ori = primary_oris[0]
-            target_wall_thickness = primary_ori['l']
+            slice_thickness = primary_ori['l']
 
+            cols_p = max(1, math.floor(self.W / primary_ori['wz']))
+            lays_p = max(1, math.floor(self.H / primary_ori['h']))
+            slice_capacity = cols_p * lays_p
+
+            # 如果剩余数量够装满至少 1 个整切片且该切片为整栋结构 (成栋 Monolithic 3D Block)
+            if primary_sku['remQty'] >= slice_capacity and current_x + slice_thickness <= self.L + 0.001:
+                full_slices = min(primary_sku['remQty'] // slice_capacity, int((self.L - current_x) // slice_thickness))
+                for sx in range(full_slices):
+                    sl_x = current_x + sx * slice_thickness
+                    for c in range(cols_p):
+                        col_z = c * primary_ori['wz']
+                        for lay in range(lays_p):
+                            box_y = lay * primary_ori['h']
+                            cand = {
+                                'x': sl_x,
+                                'y': box_y,
+                                'z': col_z,
+                                'w': slice_thickness,
+                                'h': primary_ori['h'],
+                                'd': primary_ori['wz']
+                            }
+                            placed_boxes.append({
+                                'id': f"{primary_sku['sku']}-{box_global_index + 1}",
+                                'sku': primary_sku['sku'],
+                                'name': primary_sku.get('name', ''),
+                                'color': primary_sku.get('color', 0x3b82f6),
+                                'weight': primary_sku['weight'],
+                                'requirement': primary_sku.get('requirement', ''),
+                                'isElastic': primary_sku['isElastic'],
+                                'x': round(cand['x'], 4),
+                                'y': round(cand['y'], 4),
+                                'z': round(cand['z'], 4),
+                                'w': round(cand['w'], 4),
+                                'h': round(cand['h'], 4),
+                                'd': round(cand['d'], 4)
+                            })
+                            box_global_index += 1
+                            primary_sku['actualPlaced'] += 1
+                            primary_sku['remQty'] -= 1
+
+                current_x += full_slices * slice_thickness
+                last_primary_sku = primary_sku if primary_sku['remQty'] > 0 else None
+                continue
+
+            # 2. 如果不足一个完整切片，执行【横向紧凑成墙拼装 (Wall-Flush Lateral Co-Packing)】
             current_z = 0.0
-            wall_cols = []
+            slice_max_x = current_x
 
-            # 横向延展成墙 (Z: 0 -> W)
             while current_z < self.W - 0.02:
-                active_skus = [s for s in sku_pool if s['remQty'] > 0]
-                if not active_skus:
+                avail_in_col = [s for s in sku_pool if s['remQty'] > 0]
+                if not avail_in_col:
                     break
 
-                def col_sku_sort_key(s):
-                    score = 60000.0 if s['sku'] == primary_sku['sku'] else self.get_zone_affinity_score(s, current_wall_x)
-                    if s['isElastic']:
-                        score -= 20000.0
-                    return score
-
-                active_skus.sort(key=col_sku_sort_key, reverse=True)
+                avail_in_col.sort(key=lambda s: (
+                    100000.0 if s['sku'] == primary_sku['sku'] else self.get_zone_affinity_score(s, current_x),
+                    -1 if s['isElastic'] else 1,
+                    s['remQty']
+                ), reverse=True)
 
                 col_sku = None
                 col_ori = None
 
-                for sku in active_skus:
-                    sk_oris = self.get_safe_orientations(sku, current_wall_x)
-                    sk_oris.sort(key=lambda o: abs(o['l'] - target_wall_thickness))
-
-                    for ori in sk_oris:
-                        if current_wall_x + ori['l'] <= self.L + 0.001 and current_z + ori['wz'] <= self.W + 0.001:
-                            test_box = {
-                                'x': current_wall_x,
-                                'y': 0.0,
-                                'z': current_z,
-                                'w': ori['l'],
-                                'h': ori['h'],
-                                'd': ori['wz']
-                            }
-                            collides = False
-                            for pb in placed_boxes:
-                                if self.is_aabb_overlap(test_box, pb):
-                                    collides = True
-                                    break
-
-                            if not collides:
-                                col_sku = sku
-                                col_ori = ori
-                                break
+                for s in avail_in_col:
+                    soris = self.get_best_orientations(s, target_thickness=slice_thickness)
+                    for ori in soris:
+                        if current_x + ori['l'] <= self.L + 0.001 and current_z + ori['wz'] <= self.W + 0.001:
+                            col_sku = s
+                            col_ori = ori
+                            break
                     if col_sku:
                         break
 
@@ -250,25 +243,19 @@ class IndustrialSmartContainerPacker:
                     current_z += 0.05
                     continue
 
-                # 模块 2：垂直连续成柱至内腔顶高 (Y: 0 -> H)
-                # 模块 3：平整度约束与整层堆叠（杜绝孤立悬空碎块箱）
-                max_layers = math.floor(self.H / col_ori['h'])
-                actual_layers = min(col_sku['remQty'], max_layers)
-                stacked = 0
+                # 垂直堆叠至内腔顶部 H (成列)
+                max_col_layers = math.floor(self.H / col_ori['h'])
+                actual_layers = min(col_sku['remQty'], max_col_layers)
 
                 for lay in range(actual_layers):
-                    if col_sku['remQty'] <= 0:
-                        break
-
                     cand = {
-                        'x': current_wall_x,
+                        'x': current_x,
                         'y': lay * col_ori['h'],
                         'z': current_z,
                         'w': col_ori['l'],
                         'h': col_ori['h'],
                         'd': col_ori['wz']
                     }
-
                     placed_boxes.append({
                         'id': f"{col_sku['sku']}-{box_global_index + 1}",
                         'sku': col_sku['sku'],
@@ -287,87 +274,16 @@ class IndustrialSmartContainerPacker:
                     box_global_index += 1
                     col_sku['actualPlaced'] += 1
                     col_sku['remQty'] -= 1
-                    stacked += 1
 
-                if stacked > 0:
-                    wall_cols.append({
-                        'zStart': current_z,
-                        'zEnd': current_z + col_ori['wz'],
-                        'xEnd': current_wall_x + col_ori['l'],
-                        'topY': stacked * col_ori['h']
-                    })
-                    current_z += col_ori['wz']
-                else:
-                    current_z += 0.05
+                slice_max_x = max(slice_max_x, current_x + col_ori['l'])
+                current_z += col_ori['wz']
 
-            if not wall_cols:
-                current_wall_x += 0.08
-                continue
+            if slice_max_x > current_x:
+                current_x = slice_max_x
+            else:
+                current_x += 0.05
 
-            max_x_in_wall = max(c['xEnd'] for c in wall_cols)
-
-            # 模块 3 & 4：前沿缺口与平整度平准化（平整度 Δh <= 3mm，0 虚位推进）
-            for col in wall_cols:
-                notch_x = col['xEnd']
-                while notch_x < max_x_in_wall - 0.03:
-                    avail_in_notch = [s for s in sku_pool if s['remQty'] > 0]
-                    filled_notch = False
-
-                    for sku in avail_in_notch:
-                        oris = self.get_safe_orientations(sku, notch_x)
-                        for ori in oris:
-                            if notch_x + ori['l'] <= max_x_in_wall + 0.001 and col['zStart'] + ori['wz'] <= col['zEnd'] + 0.001:
-                                current_y = 0.0
-                                count = 0
-                                while current_y + ori['h'] <= self.H + 0.001 and sku['remQty'] > 0:
-                                    cand = {
-                                        'x': notch_x,
-                                        'y': current_y,
-                                        'z': col['zStart'],
-                                        'w': ori['l'],
-                                        'h': ori['h'],
-                                        'd': ori['wz']
-                                    }
-                                    c_check = False
-                                    for pb in placed_boxes:
-                                        if self.is_aabb_overlap(cand, pb):
-                                            c_check = True
-                                            break
-                                    if c_check:
-                                        break
-
-                                    placed_boxes.append({
-                                        'id': f"{sku['sku']}-{box_global_index + 1}",
-                                        'sku': sku['sku'],
-                                        'name': sku.get('name', ''),
-                                        'color': sku.get('color', 0x3b82f6),
-                                        'weight': sku['weight'],
-                                        'requirement': sku.get('requirement', ''),
-                                        'isElastic': sku['isElastic'],
-                                        'x': round(cand['x'], 4),
-                                        'y': round(cand['y'], 4),
-                                        'z': round(cand['z'], 4),
-                                        'w': round(cand['w'], 4),
-                                        'h': round(cand['h'], 4),
-                                        'd': round(cand['d'], 4)
-                                    })
-                                    box_global_index += 1
-                                    sku['actualPlaced'] += 1
-                                    sku['remQty'] -= 1
-                                    count += 1
-                                    current_y += ori['h']
-
-                                if count > 0:
-                                    notch_x += ori['l']
-                                    filled_notch = True
-                                    break
-                        if filled_notch:
-                            break
-                    if not filled_notch:
-                        break
-
-            last_primary_sku = primary_sku if primary_sku['remQty'] > 0 else None
-            current_wall_x = max_x_in_wall
+            last_primary_sku = None
 
         # 模块 5：超容弹性智能核减
         sku_stats_dict = {}
@@ -415,7 +331,6 @@ class IndustrialSmartContainerPacker:
         lat_offset_percent = abs((cog_z - self.W / 2.0) / (self.W / 2.0)) * 100.0
         long_offset_percent = ((cog_x - self.L / 2.0) / (self.L / 2.0)) * 100.0
 
-        # 0 碰撞安全审计
         total_collisions = 0
         n = len(placed_boxes)
         for i in range(n):
@@ -439,7 +354,7 @@ class IndustrialSmartContainerPacker:
             'totalWeightTons': round(total_mass / 1000.0, 2),
             'maxPayloadKg': self.max_payload_kg,
             'isOverweight': total_mass > self.max_payload_kg,
-            'packedLength': round(current_wall_x, 3),
+            'packedLength': round(current_x, 3),
             'containerLength': self.L,
             'cog': {
                 'x': round(cog_x, 3),

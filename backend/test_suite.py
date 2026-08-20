@@ -61,8 +61,8 @@ def run_tests():
     print(f"⚡ Elapsed Time: {result['elapsedMs']} ms")
     print("-----------------------------------------------------------------")
     print("SKU Placement Breakdown:")
-    for s in result['skuStats']:
-        print(f"  • {s['sku']} [{s['requirement']}]: Placed {s['actualPlaced']}/{s['quantity']} (Rem: {s['remQty']})")
+    for s in result['skuStats'].values():
+        print(f"  • {s['sku']} [{s['requirement']}]: Placed {s['placed']}/{s['planned']} (Rem: {s['unplaced']})")
 
     assert result['totalCollisions'] == 0, f"Collision check failed: {result['totalCollisions']} collisions found!"
     assert result['totalPlaced'] > 0, "No boxes were placed!"
