@@ -45,9 +45,8 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
         self.end_headers()
 
     def end_headers(self):
-        """Inject no-cache for HTML files and CORS for all responses."""
-        if hasattr(self, 'path') and (self.path == '/' or self.path.endswith('.html')):
-            self._send_no_cache_headers()
+        """Inject no-cache and CORS for all responses."""
+        self._send_no_cache_headers()
         self._send_cors_headers()
         super().end_headers()
 
