@@ -4602,11 +4602,15 @@
       if (!isNaN(qty) && qty > 0) item.quantity = qty;
 
       closeSKUSettingsModal();
+      selectedSKUs.clear();
+      hoveredSKU = null;
+      syncSelectionStates();
       saveAppState();
       renderManifestUI();
       renderAnchorRibbon();
       await runSmartPackingAlgorithm(true);
-      showToast(`✨ SKU [${item.sku}] 装配要求已更新为【${item.requirement}】，已触发重新推演！`, 'success');
+      const placedCount = activePackingResult?.skuStats?.[item.sku]?.placed || 0;
+      showToast(`✨ SKU [${item.sku}] 规则已生效：实装 ${placedCount}/${item.quantity} 箱，3D 货柜已完成重新推演排布！`, 'success');
     };
 
     window.selectAllSKUs = function(selectAll) {
