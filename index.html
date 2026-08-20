@@ -2508,89 +2508,100 @@
             }
           }
 
-          lastPrimarySKU = primarySKU.remQty > 0 ? primarySKU : null;
-          currentWallX = maxXInWall;
+          currentX = maxSliceX;
+          lastPrimarySKU = null;
         }
 
-        skuPool.forEach(s => {
+        // 统计指标
+        const skuStats = {};
+        let totalUnplaced = 0;
+        for (const s of skuPool) {
+          totalUnplaced += s.remQty;
+          skuStats[s.sku] = {
+            sku: s.sku,
+            name: s.name || '',
+            requirement: s.requirement || '',
+            planned: s.quantity,
+            placed: s.actualPlaced,
+            unplaced: s.remQty,
+            isFullyPlaced: (s.remQty === 0),
+            isElastic: s.isElastic
+          };
           if (s.isElastic) {
-            elasticTrimmedMap.set(s.sku, {
+            elasticTrimmed.push({
               sku: s.sku,
-              name: s.name,
+              name: s.name || '',
               plannedQty: s.quantity,
               actualQty: s.actualPlaced,
               trimmedQty: s.remQty,
               reason: s.remQty > 0 ? '已达到集装箱安全容积上限，根据弹性规则自动核减留存' : '100% 满额装入'
             });
           }
-        });
+        }
 
-        // 3. Dynamic 3D Center of Gravity (CoG) & Axle Load Balancing
         let totalMass = 0;
-        let sumMX = 0;
-        let sumMY = 0;
-        let sumMZ = 0;
+        let sumMx = 0;
+        let sumMy = 0;
+        let sumMz = 0;
         let usedVol = 0;
 
-        placedBoxes.forEach(b => {
+        for (const b of placedBoxes) {
           totalMass += b.weight;
-          sumMX += b.weight * (b.x + b.w / 2);
-          sumMY += b.weight * (b.y + b.h / 2);
-          sumMZ += b.weight * (b.z + b.d / 2);
+          sumMx += b.weight * (b.x + b.w / 2);
+          sumMy += b.weight * (b.y + b.h / 2);
+          sumMz += b.weight * (b.z + b.d / 2);
           usedVol += (b.w * b.h * b.d);
-        });
+        }
 
-        const cogX = totalMass > 0 ? (sumMX / totalMass) : (this.L / 2);
-        const cogY = totalMass > 0 ? (sumMY / totalMass) : (this.H / 2);
-        const cogZ = totalMass > 0 ? (sumMZ / totalMass) : (this.W / 2);
+        const cogX = totalMass > 0 ? (sumMx / totalMass) : (this.L / 2);
+        const cogY = totalMass > 0 ? (sumMy / totalMass) : (this.H / 2);
+        const cogZ = totalMass > 0 ? (sumMz / totalMass) : (this.W / 2);
 
         const latOffsetPercent = Math.abs((cogZ - this.W / 2) / (this.W / 2)) * 100;
         const longOffsetPercent = ((cogX - this.L / 2) / (this.L / 2)) * 100;
-        const totalVol = this.L * this.W * this.H;
-        const util = (usedVol / totalVol) * 100;
 
-        // Compute per-SKU detailed packing statistics & unplaced tracking
-        const skuStats = {};
-        let totalUnplacedCount = 0;
-        let fullyPlacedSKUCount = 0;
+        let totalCollisions = 0;
+        const n = placedBoxes.length;
+        for (let i = 0; i < n; i++) {
+          for (let j = i + 1; j < n; j++) {
+            if (IndustrialSmartContainerPacker.isOverlap(placedBoxes[i], placedBoxes[j])) {
+              totalCollisions++;
+            }
+          }
+        }
 
-        cargoManifest.forEach(m => {
-          const placedCount = placedBoxes.filter(b => b.sku === m.sku).length;
-          const unplaced = Math.max(0, m.quantity - placedCount);
-          if (unplaced > 0) totalUnplacedCount += unplaced;
-          else fullyPlacedSKUCount++;
-
-          skuStats[m.sku] = {
-            sku: m.sku,
-            name: m.name,
-            planned: m.quantity,
-            placed: placedCount,
-            unplaced: unplaced,
-            isFullyPlaced: (unplaced === 0),
-            placedRatio: ((placedCount / Math.max(m.quantity, 1)) * 100).toFixed(0)
-          };
-        });
+        const containerVol = this.L * this.W * this.H;
+        const util = Math.round((usedVol / containerVol) * 1000) / 10;
+        const elapsedMs = Math.round((performance.now() - startTime) * 100) / 100;
 
         return {
-          placedBoxes,
-          unplacedItems,
-          elasticTrimmedMap,
-          skuStats,
-          totalUnplacedCount,
-          fullyPlacedSKUCount,
-          usedVol: usedVol.toFixed(2),
-          utilization: util.toFixed(1),
-          totalWeightTons: (totalMass / 1000).toFixed(2),
+          success: true,
           totalCount: placedBoxes.length,
+          totalPlaced: placedBoxes.length,
+          totalUnplacedCount: totalUnplaced,
+          totalCollisions: totalCollisions,
+          usedVol: Math.round(usedVol * 100) / 100,
+          utilization: util,
+          totalMassKg: Math.round(totalMass * 100) / 100,
+          totalWeightTons: Math.round((totalMass / 1000) * 100) / 100,
+          maxPayloadKg: this.maxPayloadKg,
+          isOverweight: totalMass > this.maxPayloadKg,
+          packedLength: Math.round(currentX * 1000) / 1000,
+          containerLength: this.L,
           cog: {
-            x: cogX.toFixed(3),
-            y: cogY.toFixed(3),
-            z: cogZ.toFixed(3),
-            latOffsetPercent: latOffsetPercent.toFixed(1),
-            longOffsetPercent: longOffsetPercent.toFixed(1),
+            x: Math.round(cogX * 1000) / 1000,
+            y: Math.round(cogY * 1000) / 1000,
+            z: Math.round(cogZ * 1000) / 1000,
+            latOffsetPercent: Math.round(latOffsetPercent * 10) / 10,
+            longOffsetPercent: Math.round(longOffsetPercent * 10) / 10,
             isLatBalanced: latOffsetPercent <= 5.0,
-            isLongBalanced: Math.abs(longOffsetPercent) <= 10.0
-          }
+            isLongBalanced: Math.abs(longOffsetPercent) <= 10.0,
+            isLongCompliant: Math.abs(longOffsetPercent) <= 10.0
+          },
+          elasticTrimmed: elasticTrimmed,
+          skuStats: skuStats,
+          placedBoxes: placedBoxes,
+          elapsedMs: elapsedMs
         };
       }
     }
