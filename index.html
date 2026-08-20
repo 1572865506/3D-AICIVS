@@ -2671,8 +2671,25 @@
     let isCoGBalanceEnabled = true;
 
     // --- CLIENT-SIDE SPATIAL COORDINATE CACHE ENGINE ---
-    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V28_HOT_RELOAD_';
-    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V28_HOT_RELOAD';
+    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V30_TRUE_6MODULES_';
+    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V30_TRUE_6MODULES';
+
+    // Auto purge obsolete localStorage caches from older versions
+    (function purgeObsoleteCaches() {
+      try {
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith('3D_AICIVS_') && !k.includes('V30_TRUE_6MODULES')) {
+            keysToRemove.push(k);
+          }
+        }
+        keysToRemove.forEach(k => localStorage.removeItem(k));
+        if (keysToRemove.length > 0) {
+          console.log(`[3D-AICIVS] Cleared ${keysToRemove.length} obsolete cache entries.`);
+        }
+      } catch (e) {}
+    })();
 
     function generatePackingCacheKey(specCode, strategy, gap, manifest, weights = activeAlgorithmWeights) {
       const summary = manifest.map(m => `${m.sku}_${m.quantity}_${m.w}x${m.d}x${m.h}_${m.weight}_${m.requirement||''}`).join('|');
@@ -3754,7 +3771,7 @@
 
       renderManifestUI();
       renderAnchorRibbon();
-      runSmartPackingAlgorithm(false);
+      runSmartPackingAlgorithm(true);
     }
 
     function buildFrontDoors(postX, postZ, doorH, hardwareMat) {
@@ -3927,7 +3944,7 @@
       controls.update();
 
       rebuildContainerModel();
-      runSmartPackingAlgorithm(false);
+      runSmartPackingAlgorithm(true);
     };
 
     // --- 7. HIGH-PERFORMANCE SMART PACKING WITH PYTHON 3 MICROSERVICE & CLIENT CACHE ---
@@ -3966,7 +3983,7 @@
       return null;
     }
 
-    window.runSmartPackingAlgorithm = async function(forceRecompute = false) {
+    window.runSmartPackingAlgorithm = async function(forceRecompute = true) {
       console.log('[3D-AICIVS] runSmartPackingAlgorithm called, forceRecompute =', forceRecompute);
 
       const usableDim = {
@@ -3983,7 +4000,7 @@
       const cacheDot = document.getElementById('cache-dot');
 
       // Show computing indicator immediately
-      if (cacheBadge && cacheTxt && cacheDot && forceRecompute) {
+      if (cacheBadge && cacheTxt && cacheDot) {
         cacheBadge.style.color = '#d97706';
         cacheBadge.style.background = '#fffbeb';
         cacheBadge.style.borderColor = '#fcd34d';
@@ -4264,7 +4281,7 @@
       saveAppState();
       document.getElementById('btn-strat-cluster').classList.toggle('active', strat === 'cluster');
       document.getElementById('btn-strat-mec').classList.toggle('active', strat === 'mec');
-      runSmartPackingAlgorithm(false);
+      runSmartPackingAlgorithm(true);
     };
 
     window.setGapSpacing = function(gapVal) {
@@ -4272,7 +4289,7 @@
       saveAppState();
       document.getElementById('btn-gap-zero').classList.toggle('active', gapVal === 0);
       document.getElementById('btn-gap-subtle').classList.toggle('active', gapVal > 0);
-      runSmartPackingAlgorithm(false);
+      runSmartPackingAlgorithm(true);
     };
 
     window.loadManifestPreset = function(presetKey) {
@@ -4284,7 +4301,7 @@
       saveAppState();
       renderManifestUI();
       renderAnchorRibbon();
-      runSmartPackingAlgorithm(false);
+      runSmartPackingAlgorithm(true);
     };
 
     // --- 8. ANCHOR RIBBON (MULTI-ROW & EDGE-ALIGNED) & MANIFEST UI ---
