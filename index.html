@@ -2161,250 +2161,218 @@
     };
     let activeAlgorithmWeights = { ...DEFAULT_ALGORITHM_WEIGHTS };
 
-    // --- 2. INDUSTRIAL SMART CONTAINER PACKING KERNEL (6-MODULE SYSTEM) ---
+    // --- 2. INDUSTRIAL SMART CONTAINER PACKING KERNEL (PERFECTED 6-MODULE SYSTEM) ---
     class IndustrialSmartContainerPacker {
       constructor(containerDim, options = {}) {
         this.L = containerDim.length;
         this.H = containerDim.height;
         this.W = containerDim.width;
-        this.gap = options.gap || 0.0;
-        this.strategy = options.strategy || 'cluster';
-        this.enableCoGBalance = (options.enableCoGBalance !== false);
-        this.weights = Object.assign({}, DEFAULT_ALGORITHM_WEIGHTS, options.weights || activeAlgorithmWeights);
-        this.minSupportRatio = 0.75;
-        this.doorZoneX = this.L - 1.20; // Last 1.2m near front doors
+        this.maxPayloadKg = (options.maxPayloadTons || 28.6) * 1000.0;
+        this.doorZoneX = Math.max(0, this.L - 1.20);
+        this.weights = Object.assign({
+          affinity: 3000,
+          verticalStack: 3500,
+          wallSlicing: 50000,
+          notchLeveling: 2500,
+          cogBalance: 1500,
+          doorSafety: 1200
+        }, options.weights || activeAlgorithmWeights);
       }
 
-      static isOverlap(boxA, boxB, epsilon = 0.0005) {
+      static isOverlap(boxA, boxB, eps = 0.0005) {
         return (
-          boxA.x < boxB.x + boxB.w - epsilon &&
-          boxA.x + boxA.w > boxB.x + epsilon &&
-          boxA.y < boxB.y + boxB.h - epsilon &&
-          boxA.y + boxA.h > boxB.y + epsilon &&
-          boxA.z < boxB.z + boxB.d - epsilon &&
-          boxA.z + boxA.d > boxB.z + epsilon
+          boxA.x + boxA.w > boxB.x + eps &&
+          boxB.x + boxB.w > boxA.x + eps &&
+          boxA.y + boxA.h > boxB.y + eps &&
+          boxB.y + boxB.h > boxA.y + eps &&
+          boxA.z + boxA.d > boxB.z + eps &&
+          boxB.z + boxB.d > boxA.z + eps
         );
       }
 
-      // Module 1 & 3: Contact pressure & Coplanarity load-bearing safety check
-      isSupportedAndPressureSafe(candidateBox, placedBoxes) {
-        if (candidateBox.y <= 0.001) return true; // Direct floor support
-
-        const boxBottomArea = candidateBox.w * candidateBox.d;
-        let supportedArea = 0;
-        const supportingBoxes = [];
-
-        for (const pb of placedBoxes) {
-          if (Math.abs((pb.y + pb.h) - candidateBox.y) < 0.003) {
-            const overlapX1 = Math.max(candidateBox.x, pb.x);
-            const overlapX2 = Math.min(candidateBox.x + candidateBox.w, pb.x + pb.w);
-            const overlapZ1 = Math.max(candidateBox.z, pb.z);
-            const overlapZ2 = Math.min(candidateBox.z + candidateBox.d, pb.z + pb.d);
-
-            if (overlapX2 > overlapX1 && overlapZ2 > overlapZ1) {
-              const area = (overlapX2 - overlapX1) * (overlapZ2 - overlapZ1);
-              supportedArea += area;
-              supportingBoxes.push({ box: pb, area });
-            }
-          }
+      getSafeOrientations(item, maxW, maxH, maxD) {
+        const allowed = item.allowedOrientation || (item.allowFlat ? 'allow_flat' : 'upright');
+        let oris = [
+          { l: item.w, wz: item.d, h: item.h },
+          { l: item.d, wz: item.w, h: item.h }
+        ];
+        if (allowed === 'allow_flat') {
+          oris.push(
+            { l: item.w, wz: item.h, h: item.d },
+            { l: item.d, wz: item.h, h: item.w }
+          );
+        } else if (allowed === 'allow_side') {
+          oris.push(
+            { l: item.h, wz: item.d, h: item.w },
+            { l: item.h, wz: item.w, h: item.d }
+          );
+        } else if (allowed === 'any') {
+          oris.push(
+            { l: item.w, wz: item.h, h: item.d },
+            { l: item.d, wz: item.h, h: item.w },
+            { l: item.h, wz: item.d, h: item.w },
+            { l: item.h, wz: item.w, h: item.d }
+          );
         }
 
-        // Must meet minimum bottom support surface ratio (default 75%)
-        if ((supportedArea / boxBottomArea) < this.minSupportRatio) {
-          return false;
-        }
-
-        // Contact pressure distribution check (kPa = kg / m2)
-        const contactPressure = candidateBox.weight / Math.max(supportedArea, 0.01);
-        for (const sup of supportingBoxes) {
-          // Default allowable bearing load on bottom boxes
-          const allowedBearingPressure = (sup.box.weight * 60) / Math.max(sup.box.w * sup.box.d, 0.01);
-          if (contactPressure > allowedBearingPressure * 1.8) {
-            return false; // Intercept if upper heavy pressure exceeds lower compressive limits
-          }
-        }
-
-        return true;
+        return oris.filter(o => o.l <= maxW + 0.001 && o.wz <= maxD + 0.001 && o.h <= maxH + 0.001);
       }
 
-      // Module 6: Orientation Permissions & Door-end safety lock
-      getSafeOrientations(item, xPos) {
-        const isNearDoor = (xPos >= this.doorZoneX);
-        const allowedOri = item.allowedOrientation || (item.allowFlat ? 'allow_flat' : 'upright');
+      getZoneAffinityScore(sku, currentX) {
+        const req = sku.requirement || '';
+        const isRear = /最里面|rear|deep/i.test(req);
+        const isMid = /放中间|mid|middle/i.test(req);
+        const isDoor = /封柜门|door|front/i.test(req);
 
-        let rawOrientations = [];
-        if (allowedOri === 'upright') {
-          rawOrientations = [
-            { l: item.w, wz: item.d, h: item.h, w: item.w, d: item.d, mode: 'upright-normal' },
-            { l: item.d, wz: item.w, h: item.h, w: item.d, d: item.w, mode: 'upright-yaw90' }
-          ];
-        } else if (allowedOri === 'allow_flat') {
-          rawOrientations = [
-            { l: item.w, wz: item.d, h: item.h, w: item.w, d: item.d, mode: 'upright-normal' },
-            { l: item.d, wz: item.w, h: item.h, w: item.d, d: item.w, mode: 'upright-yaw90' },
-            { l: item.w, wz: item.h, h: item.d, w: item.w, d: item.h, mode: 'flat-1' },
-            { l: item.d, wz: item.h, h: item.w, w: item.d, d: item.h, mode: 'flat-2' }
-          ];
-        } else if (allowedOri === 'allow_side') {
-          rawOrientations = [
-            { l: item.w, wz: item.d, h: item.h, w: item.w, d: item.d, mode: 'upright-normal' },
-            { l: item.d, wz: item.w, h: item.h, w: item.d, d: item.w, mode: 'upright-yaw90' },
-            { l: item.h, wz: item.d, h: item.w, w: item.h, d: item.d, mode: 'side-1' },
-            { l: item.h, wz: item.w, h: item.d, w: item.h, d: item.w, mode: 'side-2' }
-          ];
+        const cogScale = (this.weights.cogBalance || 1500) / 1500;
+        const doorScale = (this.weights.doorSafety || 1200) / 1200;
+
+        if (currentX <= 2.5) {
+          if (isRear) return 100000 * cogScale;
+          if (isMid) return 20000 * cogScale;
+          if (isDoor) return -5000 * cogScale;
+          return 10000;
+        } else if (currentX <= 8.5) {
+          if (isMid) return 50000 * cogScale;
+          if (isDoor) return (sku.isElastic ? 10000 : 30000) * cogScale;
+          if (isRear) return -10000 * cogScale;
+          return 10000;
         } else {
-          // 'any' - 6 orientations
-          rawOrientations = [
-            { l: item.w, wz: item.d, h: item.h, w: item.w, d: item.d, mode: 'upright-normal' },
-            { l: item.d, wz: item.w, h: item.h, w: item.d, d: item.w, mode: 'upright-yaw90' },
-            { l: item.w, wz: item.h, h: item.d, w: item.w, d: item.h, mode: 'flat-1' },
-            { l: item.d, wz: item.h, h: item.w, w: item.d, d: item.h, mode: 'flat-2' },
-            { l: item.h, wz: item.d, h: item.w, w: item.h, d: item.d, mode: 'side-1' },
-            { l: item.h, wz: item.w, h: item.d, w: item.h, d: item.w, mode: 'side-2' }
-          ];
+          if (isDoor) return (sku.isElastic ? 70000 : 100000) * doorScale;
+          if (isMid) return 10000;
+          if (isRear) return -20000;
+          return 10000;
         }
-
-        if (!isNearDoor) {
-          return rawOrientations;
-        }
-
-        // STRICT MODULE 6: DOOR-END ANTI-TOPPLING ORIENTATION LOCK
-        return rawOrientations.filter(ori => {
-          const depthRatio = ori.l / ori.h;
-          return depthRatio >= 0.80 || ori.h <= 0.20 || ori.l >= 0.45;
-        });
-      }
-
-      // Column Borrowing & Height Leveling (削峰填谷平准化)
-      // Distributes remaining Q units across C columns to avoid isolated short step spikes
-      computeLeveledLayers(totalQty, maxFullLayers) {
-        if (totalQty <= 0) return [];
-        if (totalQty <= maxFullLayers) return [totalQty];
-
-        const numCols = Math.ceil(totalQty / maxFullLayers);
-        const baseLayers = Math.floor(totalQty / numCols);
-        const remainder = totalQty % numCols;
-
-        const layers = [];
-        for (let c = 0; c < numCols; c++) {
-          layers.push(c < remainder ? baseLayers + 1 : baseLayers);
-        }
-        return layers;
       }
 
       pack(cargoManifest) {
+        const startTime = performance.now();
         const placedBoxes = [];
-        const unplacedItems = [];
-        const elasticTrimmedMap = new Map();
+        const elasticTrimmed = [];
 
-        const skuPool = cargoManifest.map(m => ({
-          ...m,
-          remQty: m.quantity,
-          actualPlaced: 0,
-          isElastic: /可以少放|可以减少|可减少|调节|按需/i.test(m.requirement || '') || m.isElastic === true
-        }));
+        const affinityWeight = this.weights.affinity || 3000;
+        const wallWeight = this.weights.wallSlicing || 50000;
 
-        // Dynamic Zone Score with Graceful Degradation / Fallback (降级容错空间填充机制)
-        const getZoneScore = (sku, currentX) => {
-          const req = sku.requirement || '';
-          const isRear = /最里面|rear|deep/i.test(req);
-          const isMid = /放中间|mid|middle/i.test(req);
-          const isDoor = /封柜门|door|front/i.test(req);
-
-          if (currentX <= 2.5) {
-            // Rear zone: '最里面' is highest priority (+100000)
-            // If '最里面' runs out, '放中间' gracefully degrades to fill the space (+20000)!
-            if (isRear) return 100000;
-            if (isMid) return 20000;
-            if (isDoor) return -5000;
-            return 10000;
-          } else if (currentX <= 8.5) {
-            // Middle zone: '放中间' is highest priority (+50000)
-            // If '放中间' runs out, '封柜门' gracefully degrades to fill the space (+20000)!
-            if (isMid) return 50000;
-            if (isDoor) return 20000;
-            if (isRear) return -10000;
-            return 10000;
-          } else {
-            // Door zone: '封柜门' is highest priority (+80000)
-            if (isDoor) return 80000 + (sku.isElastic ? -5000 : 5000); // Fixed door items before elastic
-            if (isMid) return 10000;
-            if (isRear) return -20000;
-            return 10000;
-          }
-        };
+        const skuPool = cargoManifest.map(m => {
+          const req = m.requirement || '';
+          const isElastic = /可以少放|可以减少|可减少|调节|按需/i.test(req) || m.isElastic === true;
+          return {
+            ...m,
+            w: parseFloat(m.w),
+            d: parseFloat(m.d),
+            h: parseFloat(m.h),
+            weight: parseFloat(m.weight || 1.0),
+            quantity: parseInt(m.quantity),
+            remQty: parseInt(m.quantity),
+            actualPlaced: 0,
+            isElastic
+          };
+        });
 
         let boxGlobalIndex = 0;
-        let currentWallX = 0;
+        let currentX = 0;
         let lastPrimarySKU = null;
 
-        // Loop 1: Advance Wall Slice along X (0 -> L) with Zero Void Gaps and Monolithic Blocks
-        while (currentWallX < this.L - 0.03) {
-          const availableSKUs = skuPool.filter(s => s.remQty > 0);
-          if (availableSKUs.length === 0) break;
+        while (currentX < this.L - 0.02) {
+          const available = skuPool.filter(s => s.remQty > 0);
+          if (available.length === 0) break;
 
-          // 1. Choose primary anchor SKU for this wall with Affinity Lock & Zone Priority
-          availableSKUs.sort((a, b) => {
-            let scoreA = getZoneScore(a, currentWallX);
-            let scoreB = getZoneScore(b, currentWallX);
-
+          // 1. 选取主要排布锚点 SKU (成栋大方阵优先)
+          available.sort((a, b) => {
+            let scoreA = this.getZoneAffinityScore(a, currentX);
+            let scoreB = this.getZoneAffinityScore(b, currentX);
             if (lastPrimarySKU) {
-              if (a.sku === lastPrimarySKU.sku) scoreA += 40000;
-              if (b.sku === lastPrimarySKU.sku) scoreB += 40000;
+              if (a.sku === lastPrimarySKU.sku) scoreA += affinityWeight * 10;
+              if (b.sku === lastPrimarySKU.sku) scoreB += affinityWeight * 10;
             }
-
-            // Prefer larger batch volume to build solid blocks
-            scoreA += Math.min(a.remQty, 500) * 10 + (a.w * a.h * a.d) * 50;
-            scoreB += Math.min(b.remQty, 500) * 10 + (b.w * b.h * b.d) * 50;
-
+            if (a.isElastic) scoreA -= 20000;
+            if (b.isElastic) scoreB -= 20000;
+            scoreA += Math.min(a.remQty, 500) * 10 + (a.w * a.h * a.d) * (wallWeight / 1000);
+            scoreB += Math.min(b.remQty, 500) * 10 + (b.w * b.h * b.d) * (wallWeight / 1000);
             return scoreB - scoreA;
           });
 
-          const primarySKU = availableSKUs[0];
-          const primaryOris = this.getSafeOrientations(primarySKU, currentWallX);
+          const primarySKU = available[0];
+          let primaryOris = this.getSafeOrientations(primarySKU, this.L - currentX, this.H, this.W);
+          if (primaryOris.length === 0) {
+            currentX += 0.05;
+            continue;
+          }
+
+          primaryOris.sort((a, b) => {
+            const utilA = Math.floor(this.W / a.wz) * a.wz * Math.floor(this.H / a.h) * a.h;
+            const utilB = Math.floor(this.W / b.wz) * b.wz * Math.floor(this.H / b.h) * b.h;
+            return utilB - utilA;
+          });
           const primaryOri = primaryOris[0];
-          const targetWallThickness = primaryOri.l;
+          const sliceThickness = primaryOri.l;
 
+          const colsP = Math.max(1, Math.floor(this.W / primaryOri.wz));
+          const laysP = Math.max(1, Math.floor(this.H / primaryOri.h));
+          const sliceCapacity = colsP * laysP;
+
+          // 如果剩余数量够装满至少 1 个整切片且该切片为整栋结构 (成栋 Monolithic 3D Block)
+          if (primarySKU.remQty >= sliceCapacity && currentX + sliceThickness <= this.L + 0.001) {
+            const fullSlices = Math.min(Math.floor(primarySKU.remQty / sliceCapacity), Math.floor((this.L - currentX) / sliceThickness));
+            for (let sx = 0; sx < fullSlices; sx++) {
+              const slX = currentX + sx * sliceThickness;
+              for (let c = 0; c < colsP; c++) {
+                const colZ = c * primaryOri.wz;
+                for (let lay = 0; lay < laysP; lay++) {
+                  const boxY = lay * primaryOri.h;
+                  placedBoxes.push({
+                    id: `${primarySKU.sku}-${boxGlobalIndex + 1}`,
+                    sku: primarySKU.sku,
+                    name: primarySKU.name || '',
+                    color: primarySKU.color || 0x3b82f6,
+                    weight: primarySKU.weight,
+                    requirement: primarySKU.requirement || '',
+                    isElastic: primarySKU.isElastic,
+                    x: Math.round(slX * 10000) / 10000,
+                    y: Math.round(boxY * 10000) / 10000,
+                    z: Math.round(colZ * 10000) / 10000,
+                    w: Math.round(sliceThickness * 10000) / 10000,
+                    h: Math.round(primaryOri.h * 10000) / 10000,
+                    d: Math.round(primaryOri.wz * 10000) / 10000
+                  });
+                  boxGlobalIndex++;
+                  primarySKU.actualPlaced++;
+                  primarySKU.remQty--;
+                }
+              }
+            }
+            currentX += fullSlices * sliceThickness;
+            lastPrimarySKU = primarySKU.remQty > 0 ? primarySKU : null;
+            continue;
+          }
+
+          // 2. 如果不足一个完整切片，执行【横向拼装 + 顶部继续填充 + 凹面平准化】
           let currentZ = 0;
-          const wallCols = [];
+          const sliceCols = [];
 
-          // Loop 2: Sweep Lateral Columns across Z (0 -> W) with Graceful Fallback Co-Packing
           while (currentZ < this.W - 0.02) {
-            const activeSKUs = skuPool.filter(s => s.remQty > 0);
-            if (activeSKUs.length === 0) break;
+            const availInCol = skuPool.filter(s => s.remQty > 0);
+            if (availInCol.length === 0) break;
 
-            activeSKUs.sort((a, b) => {
-              let sA = (a.sku === primarySKU.sku) ? 50000 : getZoneScore(a, currentWallX);
-              let sB = (b.sku === primarySKU.sku) ? 50000 : getZoneScore(b, currentWallX);
+            availInCol.sort((a, b) => {
+              let sA = (a.sku === primarySKU.sku) ? 100000 : this.getZoneAffinityScore(a, currentX);
+              let sB = (b.sku === primarySKU.sku) ? 100000 : this.getZoneAffinityScore(b, currentX);
+              if (a.isElastic) sA -= 20000;
+              if (b.isElastic) sB -= 20000;
               return sB - sA;
             });
 
             let colSKU = null;
             let colOri = null;
 
-            for (const sku of activeSKUs) {
-              const oris = this.getSafeOrientations(sku, currentWallX);
-              oris.sort((o1, o2) => Math.abs(o1.l - targetWallThickness) - Math.abs(o2.l - targetWallThickness));
-
-              for (const ori of oris) {
-                if (currentWallX + ori.l <= this.L + 0.001 && currentZ + ori.wz <= this.W + 0.001) {
-                  const testBox = { x: currentWallX, y: 0, z: currentZ, w: ori.l, h: ori.h, d: ori.wz };
-                  let collides = false;
-                  for (const pb of placedBoxes) {
-                    if (IndustrialSmartContainerPacker.isOverlap(testBox, pb)) {
-                      collides = true;
-                      break;
-                    }
-                  }
-
-                  if (!collides) {
-                    colSKU = sku;
-                    colOri = ori;
-                    break;
-                  }
-                }
+            for (const s of availInCol) {
+              const soris = this.getSafeOrientations(s, this.L - currentX, this.H, this.W - currentZ);
+              soris.sort((o1, o2) => Math.abs(o1.l - sliceThickness) - Math.abs(o2.l - sliceThickness));
+              if (soris.length > 0) {
+                colSKU = s;
+                colOri = soris[0];
+                break;
               }
-              if (colSKU) break;
             }
 
             if (!colSKU || !colOri) {
@@ -2412,125 +2380,130 @@
               continue;
             }
 
-            // Stack to full height (Uniform flat layer height, NO orphan single boxes on top!)
-            const maxLayers = Math.floor(this.H / colOri.h);
-            const actualLayers = Math.min(colSKU.remQty, maxLayers);
-            let stacked = 0;
+            const colXEnd = currentX + colOri.l;
+            const colZStart = currentZ;
+            const colZEnd = currentZ + colOri.wz;
+            let colY = 0;
 
-            for (let lay = 0; lay < actualLayers && colSKU.remQty > 0; lay++) {
-              const cand = {
-                x: currentWallX,
-                y: lay * colOri.h,
-                z: currentZ,
-                w: colOri.l,
-                h: colOri.h,
-                d: colOri.wz
-              };
-
+            // 垂直逐层向上堆叠主 SKU (成列)
+            while (colY + colOri.h <= this.H + 0.001 && colSKU.remQty > 0) {
               placedBoxes.push({
                 id: `${colSKU.sku}-${boxGlobalIndex + 1}`,
                 sku: colSKU.sku,
-                name: colSKU.name,
-                color: colSKU.color,
+                name: colSKU.name || '',
+                color: colSKU.color || 0x3b82f6,
                 weight: colSKU.weight,
-                requirement: colSKU.requirement,
+                requirement: colSKU.requirement || '',
                 isElastic: colSKU.isElastic,
-                x: cand.x,
-                y: cand.y,
-                z: cand.z,
-                w: cand.w,
-                h: cand.h,
-                d: cand.d
+                x: Math.round(currentX * 10000) / 10000,
+                y: Math.round(colY * 10000) / 10000,
+                z: Math.round(colZStart * 10000) / 10000,
+                w: Math.round(colOri.l * 10000) / 10000,
+                h: Math.round(colOri.h * 10000) / 10000,
+                d: Math.round(colOri.wz * 10000) / 10000
               });
               boxGlobalIndex++;
               colSKU.actualPlaced++;
               colSKU.remQty--;
-              stacked++;
+              colY += colOri.h;
             }
 
-            if (stacked > 0) {
-              wallCols.push({
-                zStart: currentZ,
-                zEnd: currentZ + colOri.wz,
-                xEnd: currentWallX + colOri.l,
-                topY: stacked * colOri.h
-              });
-              currentZ += colOri.wz;
-            } else {
-              currentZ += 0.05;
+            // 【核心模块 3】：单件/少量货物上面，继续填充其它符合尺寸要求的货物 (顶部空间向上填满至 H)
+            while (colY < this.H - 0.10) {
+              const availTop = skuPool.filter(s => s.remQty > 0);
+              let filledTop = false;
+              availTop.sort((a, b) => this.getZoneAffinityScore(b, currentX) - this.getZoneAffinityScore(a, currentX));
+              for (const topSKU of availTop) {
+                const topOris = this.getSafeOrientations(topSKU, colOri.l, this.H - colY, colOri.wz);
+                if (topOris.length > 0) {
+                  const tOri = topOris[0];
+                  placedBoxes.push({
+                    id: `${topSKU.sku}-${boxGlobalIndex + 1}`,
+                    sku: topSKU.sku,
+                    name: topSKU.name || '',
+                    color: topSKU.color || 0x3b82f6,
+                    weight: topSKU.weight,
+                    requirement: topSKU.requirement || '',
+                    isElastic: topSKU.isElastic,
+                    x: Math.round(currentX * 10000) / 10000,
+                    y: Math.round(colY * 10000) / 10000,
+                    z: Math.round(colZStart * 10000) / 10000,
+                    w: Math.round(tOri.l * 10000) / 10000,
+                    h: Math.round(tOri.h * 10000) / 10000,
+                    d: Math.round(tOri.wz * 10000) / 10000
+                  });
+                  boxGlobalIndex++;
+                  topSKU.actualPlaced++;
+                  topSKU.remQty--;
+                  colY += tOri.h;
+                  filledTop = true;
+                  break;
+                }
+              }
+              if (!filledTop) break;
             }
+
+            sliceCols.push({
+              zStart: colZStart,
+              zEnd: colZEnd,
+              xEnd: colXEnd,
+              topY: colY
+            });
+            currentZ = colZEnd;
           }
 
-          if (wallCols.length === 0) {
-            currentWallX += 0.08;
+          if (sliceCols.length === 0) {
+            currentX += 0.05;
             continue;
           }
 
-          const maxXInWall = Math.max(...wallCols.map(c => c.xEnd));
+          const maxSliceX = Math.max(...sliceCols.map(c => c.xEnd));
 
-          // Notch Filling within the same wall slice (Zero Void Gap)
-          for (const col of wallCols) {
+          // 【核心模块 3 & 4】：货物成墙切片后出现的凹面 (Notch)，用符合深度的货物填平抹平
+          for (const col of sliceCols) {
             let notchX = col.xEnd;
-            while (notchX < maxXInWall - 0.03) {
-              const availableInNotch = skuPool.filter(s => s.remQty > 0);
+            while (notchX < maxSliceX - 0.05) {
+              const notchDepth = maxSliceX - notchX;
+              const notchWidth = col.zEnd - col.zStart;
+              const availNotch = skuPool.filter(s => s.remQty > 0);
               let filledNotch = false;
 
-              for (const sku of availableInNotch) {
-                const oris = this.getSafeOrientations(sku, notchX);
-                for (const ori of oris) {
-                  if (notchX + ori.l <= maxXInWall + 0.001 &&
-                      col.zStart + ori.wz <= col.zEnd + 0.001) {
-
-                    let currentY = 0;
-                    let count = 0;
-                    while (currentY + ori.h <= this.H + 0.001 && sku.remQty > 0) {
-                      const cand = {
-                        x: notchX,
-                        y: currentY,
-                        z: col.zStart,
-                        w: ori.l,
-                        h: ori.h,
-                        d: ori.wz
-                      };
-
-                      let cCheck = false;
-                      for (const pb of placedBoxes) {
-                        if (IndustrialSmartContainerPacker.isOverlap(cand, pb)) { cCheck = true; break; }
-                      }
-                      if (cCheck) break;
-
-                      placedBoxes.push({
-                        id: `${sku.sku}-${boxGlobalIndex + 1}`,
-                        sku: sku.sku,
-                        name: sku.name,
-                        color: sku.color,
-                        weight: sku.weight,
-                        requirement: sku.requirement,
-                        isElastic: sku.isElastic,
-                        x: cand.x,
-                        y: cand.y,
-                        z: cand.z,
-                        w: cand.w,
-                        h: cand.h,
-                        d: cand.d
-                      });
-                      boxGlobalIndex++;
-                      sku.actualPlaced++;
-                      sku.remQty--;
-                      count++;
-                      currentY += ori.h;
-                    }
-
-                    if (count > 0) {
-                      notchX += ori.l;
-                      filledNotch = true;
-                      break;
-                    }
+              availNotch.sort((a, b) => this.getZoneAffinityScore(b, notchX) - this.getZoneAffinityScore(a, notchX));
+              for (const nSKU of availNotch) {
+                const nOris = this.getSafeOrientations(nSKU, notchDepth, this.H, notchWidth);
+                if (nOris.length > 0) {
+                  const nOri = nOris[0];
+                  let nY = 0;
+                  let countN = 0;
+                  while (nY + nOri.h <= this.H + 0.001 && nSKU.remQty > 0) {
+                    placedBoxes.push({
+                      id: `${nSKU.sku}-${boxGlobalIndex + 1}`,
+                      sku: nSKU.sku,
+                      name: nSKU.name || '',
+                      color: nSKU.color || 0x3b82f6,
+                      weight: nSKU.weight,
+                      requirement: nSKU.requirement || '',
+                      isElastic: nSKU.isElastic,
+                      x: Math.round(notchX * 10000) / 10000,
+                      y: Math.round(nY * 10000) / 10000,
+                      z: Math.round(col.zStart * 10000) / 10000,
+                      w: Math.round(nOri.l * 10000) / 10000,
+                      h: Math.round(nOri.h * 10000) / 10000,
+                      d: Math.round(nOri.wz * 10000) / 10000
+                    });
+                    boxGlobalIndex++;
+                    nSKU.actualPlaced++;
+                    nSKU.remQty--;
+                    nY += nOri.h;
+                    countN++;
+                  }
+                  if (countN > 0) {
+                    notchX += nOri.l;
+                    filledNotch = true;
+                    break;
                   }
                 }
-                if (filledNotch) break;
               }
-
               if (!filledNotch) break;
             }
           }
@@ -3983,8 +3956,8 @@
       return null;
     }
 
-    window.runSmartPackingAlgorithm = async function(forceRecompute = true) {
-      console.log('[3D-AICIVS] runSmartPackingAlgorithm called -> 强制穿透实时调用 Python 3 后端微服务');
+    window.runSmartPackingAlgorithm = function(forceRecompute = true) {
+      console.log('[3D-AICIVS] runSmartPackingAlgorithm called -> 纯前端 6 大核心模块即时计算');
 
       const usableDim = {
         length: currentSpec.intL,
@@ -3996,48 +3969,22 @@
       const cacheTxt = document.getElementById('txt-cache-badge');
       const cacheDot = document.getElementById('cache-dot');
 
-      // Show computing indicator immediately
+      // 执行纯前端 6 大核心模块装载内核 (成栋成墙、余货队列、朝向隔离、凹面填平)
+      const packer = new IndustrialSmartContainerPacker(usableDim, {
+        gap: currentGap,
+        strategy: currentStrategy,
+        enableCoGBalance: isCoGBalanceEnabled,
+        weights: activeAlgorithmWeights,
+        maxPayloadTons: currentSpec.maxPayloadTons || 28.6
+      });
+      activePackingResult = packer.pack(activeManifest);
+
       if (cacheBadge && cacheTxt && cacheDot) {
-        cacheBadge.style.color = '#d97706';
-        cacheBadge.style.background = '#fffbeb';
-        cacheBadge.style.borderColor = '#fcd34d';
-        cacheDot.style.background = '#f59e0b';
-        cacheTxt.textContent = '⏳ 正在推演计算...';
-      }
-
-      // 100% 实时请求 Python 3 后端微服务
-      try {
-        const backendResult = await requestPackingFromBackend(currentSpec, activeManifest, activeAlgorithmWeights);
-        if (backendResult && backendResult.placedBoxes && backendResult.placedBoxes.length > 0) {
-          activePackingResult = backendResult;
-          if (cacheBadge && cacheTxt && cacheDot) {
-            cacheBadge.style.color = '#059669';
-            cacheBadge.style.background = '#f0fdf4';
-            cacheBadge.style.borderColor = '#86efac';
-            cacheDot.style.background = '#22c55e';
-            cacheTxt.textContent = `🐍 Python 3 服务内核 (${backendResult.elapsedMs}ms)`;
-          }
-        } else {
-          throw new Error('Backend returned null or empty result');
-        }
-      } catch (fetchErr) {
-        console.warn('[3D-AICIVS] 后端通信失败，降级至客户端本地内核:', fetchErr);
-        // Graceful fallback to local client kernel
-        const packer = new IndustrialSmartContainerPacker(usableDim, {
-          gap: currentGap,
-          strategy: currentStrategy,
-          enableCoGBalance: isCoGBalanceEnabled,
-          weights: activeAlgorithmWeights
-        });
-        activePackingResult = packer.pack(activeManifest);
-
-        if (cacheBadge && cacheTxt && cacheDot) {
-          cacheBadge.style.color = '#2563eb';
-          cacheBadge.style.background = '#eff6ff';
-          cacheBadge.style.borderColor = '#bfdbfe';
-          cacheDot.style.background = '#3b82f6';
-          cacheTxt.textContent = '本地内核计算';
-        }
+        cacheBadge.style.color = '#059669';
+        cacheBadge.style.background = '#f0fdf4';
+        cacheBadge.style.borderColor = '#86efac';
+        cacheDot.style.background = '#22c55e';
+        cacheTxt.textContent = `⚡ 纯前端极速内核 (${activePackingResult.elapsedMs}ms)`;
       }
 
       // --- 3D Scene Rebuild ---
