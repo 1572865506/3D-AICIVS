@@ -2219,7 +2219,7 @@
         return oris.filter(o => o.l <= maxL + 0.001 && o.h <= maxH + 0.001 && o.wz <= maxW + 0.001);
       }
 
-      // 分区亲和力权重评估
+      // 分区亲和力权重评估 (模块一：三段式装载作业区严格划分)
       getZoneAffinityScore(sku, currentX) {
         const req = sku.requirement || '';
         const isRear = /最里面|rear|deep|头/i.test(req);
@@ -2227,23 +2227,23 @@
         const isDoor = /封柜门|door|front|尾|门/i.test(req);
 
         const L = this.L;
-        const rearBoundary = Math.min(3.5, L * 0.30);
-        const doorBoundary = Math.max(L - 3.5, L * 0.65);
+        const rearBoundary = 3.2; // 柜头前段 3.2 米
+        const doorBoundary = L - 4.2; // 柜门尾段 (7.8m ~ 12.03m)
 
-        if (currentX <= rearBoundary) {
-          if (isRear) return 1000000;
-          if (isMid) return 50000;
-          if (isDoor) return -1000000; // 严禁封柜门货物放在柜头
+        if (currentX < rearBoundary) {
+          if (isRear) return 10000000;
+          if (isMid) return 500000;
+          if (isDoor) return -9999999; // 柜头绝不使用封柜门
           return 10000;
         } else if (currentX >= doorBoundary) {
-          if (isDoor) return sku.isElastic ? 400000 : 1000000;
-          if (isMid) return 50000;
-          if (isRear) return -1000000; // 严禁柜头货物放在柜门端
+          if (isDoor) return sku.isElastic ? 800000 : 3000000; // 封柜门主料绝对优先
+          if (isMid) return 10000;
+          if (isRear) return -9999999;
           return 10000;
         } else {
-          if (isMid) return 1000000;
+          if (isMid) return 3000000;
           if (isRear) return 20000;
-          if (isDoor) return -500000;
+          if (isDoor) return -9999999; // 中间段绝不提前消耗封柜门货物
           return 10000;
         }
       }
@@ -2295,7 +2295,7 @@
         return { valid: true };
       }
 
-      // --- 主装载求解流水线 (优先横向成排 -> 向上成墙 -> 进深成栋 -> 余货队列) ---
+      // --- 主装载求解流水线 (6大核心模块全流程推演) ---
       pack(cargoManifest) {
         const startTime = performance.now();
         const placedBoxes = [];
@@ -2331,10 +2331,22 @@
           const available = skuPool.filter(s => s.remQty > 0);
           if (available.length === 0) break;
 
-          // 1. 选取主力 SKU (依据分区亲和力、体积与余量权重)
-          available.sort((a, b) => {
+          const doorBoundary = this.L - 4.2;
+          const nonDoorAvailable = available.filter(s => !/封柜门|door|front|尾|门/i.test(s.requirement || ''));
+
+          // 核心作业区门禁：在未到达柜门段且尚有非封柜门货物时，严格过滤封柜门货物
+          let candidatePool = available;
+          if (currentX < doorBoundary && nonDoorAvailable.length > 0) {
+            candidatePool = nonDoorAvailable;
+          }
+
+          // 1. 选取主力 SKU (严格按分区亲和力)
+          candidatePool.sort((a, b) => {
             let scoreA = this.getZoneAffinityScore(a, currentX);
             let scoreB = this.getZoneAffinityScore(b, currentX);
+            if (Math.abs(scoreA - scoreB) >= 100000) {
+              return scoreB - scoreA;
+            }
             if (lastPrimarySKU && scoreA > 0 && scoreB > 0) {
               if (a.sku === lastPrimarySKU.sku) scoreA += affinityWeight * 10;
               if (b.sku === lastPrimarySKU.sku) scoreB += affinityWeight * 10;
@@ -2346,7 +2358,7 @@
             return scoreB - scoreA;
           });
 
-          const primarySKU = available[0];
+          const primarySKU = candidatePool[0];
           const candidateOris = this.getSafeOrientations(primarySKU, this.L - currentX, this.H, this.W);
           if (candidateOris.length === 0) {
             currentX += 0.05;
@@ -2370,7 +2382,7 @@
           const wallCapacity = colsPerRow * maxLays;
 
           // -------------------------------------------------------------
-          // 模式 A：成栋大方阵 (Monolithic Block - 满整墙且无特殊层高混装)
+          // 模块二：成栋大方阵 (Monolithic Block - 满整墙且无特殊层高混装)
           // -------------------------------------------------------------
           if (!primarySKU.maxStackLayers && primarySKU.remQty >= wallCapacity && currentX + sliceThickness <= this.L + 0.001) {
             const fullWalls = Math.min(Math.floor(primarySKU.remQty / wallCapacity), Math.floor((this.L - currentX) / sliceThickness));
@@ -2417,18 +2429,23 @@
           }
 
           // -------------------------------------------------------------
-          // 模式 B：优先横向成排 + 向上成列成墙 + 余货队列与凹面平准化
+          // 模块三 & 四：优先横向成排 + 向上成列填平至 H + 余货队列与凹面平准化
           // -------------------------------------------------------------
           let currentZ = 0;
           const sliceCols = [];
 
           while (currentZ < this.W - 0.02) {
-            const availInCol = skuPool.filter(s => s.remQty > 0);
+            let availInCol = skuPool.filter(s => s.remQty > 0);
             if (availInCol.length === 0) break;
 
+            const nonDoorCol = availInCol.filter(s => !/封柜门|door|front|尾|门/i.test(s.requirement || ''));
+            if (currentX < doorBoundary && nonDoorCol.length > 0) {
+              availInCol = nonDoorCol;
+            }
+
             availInCol.sort((a, b) => {
-              let sA = (a.sku === primarySKU.sku) ? 100000 : this.getZoneAffinityScore(a, currentX);
-              let sB = (b.sku === primarySKU.sku) ? 100000 : this.getZoneAffinityScore(b, currentX);
+              let sA = (a.sku === primarySKU.sku) ? 50000000 : this.getZoneAffinityScore(a, currentX);
+              let sB = (b.sku === primarySKU.sku) ? 50000000 : this.getZoneAffinityScore(b, currentX);
               if (a.isElastic) sA -= 20000;
               if (b.isElastic) sB -= 20000;
               return sB - sA;
@@ -2495,12 +2512,17 @@
 
             // 2. 顶部空间向上填平至 H (Top Headspace Filling)
             while (colY < this.H - 0.08) {
-              const availTop = skuPool.filter(s => {
+              let availTop = skuPool.filter(s => {
                 if (s.remQty <= 0) return false;
                 const curCount = colPlacedSKUCount[s.sku] || 0;
                 if (s.maxStackLayers && curCount >= s.maxStackLayers) return false;
                 return true;
               });
+              const nonDoorTop = availTop.filter(s => !/封柜门|door|front|尾|门/i.test(s.requirement || ''));
+              if (currentX < doorBoundary && nonDoorTop.length > 0) {
+                availTop = nonDoorTop;
+              }
+
               let filledTop = false;
               availTop.sort((a, b) => this.getZoneAffinityScore(b, currentX) - this.getZoneAffinityScore(a, currentX));
               for (const topSKU of availTop) {
@@ -2561,13 +2583,18 @@
 
           const maxSliceX = Math.max(...sliceCols.map(c => c.xEnd));
 
-          // 3. 凹面平准化与多轴自适应朝向调优 (Notch Leveling & Tri-Axis Orientation Optimizer)
+          // 3. 凹面平准化与多轴自适应朝向调优 (Notch Leveling)
           for (const col of sliceCols) {
             let notchX = col.xEnd;
             while (notchX < maxSliceX - 0.05) {
               const notchDepth = maxSliceX - notchX;
               const notchWidth = col.zEnd - col.zStart;
-              const availNotch = skuPool.filter(s => s.remQty > 0);
+              let availNotch = skuPool.filter(s => s.remQty > 0);
+              const nonDoorNotch = availNotch.filter(s => !/封柜门|door|front|尾|门/i.test(s.requirement || ''));
+              if (notchX < doorBoundary && nonDoorNotch.length > 0) {
+                availNotch = nonDoorNotch;
+              }
+
               let filledNotch = false;
 
               availNotch.sort((a, b) => this.getZoneAffinityScore(b, notchX) - this.getZoneAffinityScore(a, notchX));
