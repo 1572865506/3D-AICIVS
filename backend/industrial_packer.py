@@ -360,7 +360,20 @@ class IndustrialSmartContainerPacker:
             current_wall_x = max_x_in_wall
 
         # 模块 5：超容弹性智能核减
+        sku_stats_dict = {}
+        total_unplaced = 0
         for s in sku_pool:
+            total_unplaced += s['remQty']
+            sku_stats_dict[s['sku']] = {
+                'sku': s['sku'],
+                'name': s.get('name', ''),
+                'requirement': s.get('requirement', ''),
+                'planned': s['quantity'],
+                'placed': s['actualPlaced'],
+                'unplaced': s['remQty'],
+                'isFullyPlaced': (s['remQty'] == 0),
+                'isElastic': s['isElastic']
+            }
             if s['isElastic']:
                 elastic_trimmed_map[s['sku']] = {
                     'sku': s['sku'],
@@ -406,10 +419,14 @@ class IndustrialSmartContainerPacker:
 
         return {
             'success': True,
+            'totalCount': len(placed_boxes),
             'totalPlaced': len(placed_boxes),
+            'totalUnplacedCount': total_unplaced,
             'totalCollisions': total_collisions,
+            'usedVol': round(used_vol, 2),
             'utilization': utilization_rate,
             'totalMassKg': round(total_mass, 2),
+            'totalWeightTons': round(total_mass / 1000.0, 2),
             'maxPayloadKg': self.max_payload_kg,
             'isOverweight': total_mass > self.max_payload_kg,
             'packedLength': round(current_wall_x, 3),
@@ -421,10 +438,12 @@ class IndustrialSmartContainerPacker:
                 'latOffsetPercent': round(lat_offset_percent, 1),
                 'longOffsetPercent': round(long_offset_percent, 1),
                 'isLatBalanced': lat_offset_percent <= 5.0,
+                'isLongBalanced': abs(long_offset_percent) <= 10.0,
                 'isLongCompliant': abs(long_offset_percent) <= 10.0
             },
             'elasticTrimmed': list(elastic_trimmed_map.values()),
-            'skuStats': [
+            'skuStats': sku_stats_dict,
+            'skuList': [
                 {
                     'sku': s['sku'],
                     'name': s.get('name', ''),
