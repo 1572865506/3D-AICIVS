@@ -3933,6 +3933,7 @@
     // --- 7. HIGH-PERFORMANCE SMART PACKING WITH PYTHON 3 MICROSERVICE & CLIENT CACHE ---
     async function requestPackingFromBackend(spec, manifest, weights) {
       try {
+        console.log('📡 [3D-AICIVS] 发起 Python 后端微服务装柜推演...', { spec: spec.code, manifestCount: manifest.length, weights });
         const response = await fetch('/api/v1/pack', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -3950,24 +3951,16 @@
         const result = await response.json();
         if (result && result.success && result.placedBoxes) {
           result.isFromBackend = true;
+          console.log(`✅ [3D-AICIVS] Python 后端推演完成！耗时: ${result.elapsedMs}ms, 装载: ${result.totalCount}箱, 利用率: ${result.utilization}%`);
           return result;
         }
       } catch (err) {
-        console.warn('[3D-AICIVS] Python Backend API unavailable, falling back to local kernel:', err);
+        console.warn('[3D-AICIVS] Python 后端微服务通信失败，自动降级至客户端备用内核:', err);
       }
       return null;
     }
 
     window.runSmartPackingAlgorithm = async function(forceRecompute = false) {
-      if (cargoGroup && containerGroup) {
-        containerGroup.remove(cargoGroup);
-      }
-      cargoGroup = new THREE.Group();
-      if (containerGroup) {
-        containerGroup.add(cargoGroup);
-      }
-      boxMeshes = [];
-
       const usableDim = {
         length: currentSpec.intL,
         height: currentSpec.intH,
@@ -4027,6 +4020,15 @@
           }
         }
       }
+
+      if (cargoGroup && containerGroup) {
+        containerGroup.remove(cargoGroup);
+      }
+      cargoGroup = new THREE.Group();
+      if (containerGroup) {
+        containerGroup.add(cargoGroup);
+      }
+      boxMeshes = [];
 
       // Pre-build Shared Materials per SKU
       skuMaterialRegistry.clear();
@@ -4554,7 +4556,7 @@
       document.getElementById('sku-settings-modal').style.display = 'none';
     };
 
-    window.saveSKUSettingsAndRepack = function() {
+    window.saveSKUSettingsAndRepack = async function() {
       const skuCode = document.getElementById('sku-edit-id').value;
       const item = activeManifest.find(s => s.sku === skuCode);
       if (!item) return;
@@ -4585,7 +4587,8 @@
       saveAppState();
       renderManifestUI();
       renderAnchorRibbon();
-      runSmartPackingAlgorithm(true);
+      await runSmartPackingAlgorithm(true);
+      showToast(`✨ SKU [${item.sku}] 装配要求已更新为【${item.requirement}】，已触发重新推演！`, 'success');
     };
 
     window.selectAllSKUs = function(selectAll) {
