@@ -293,6 +293,121 @@
       z-index: 25;
     }
 
+    /* Longitudinal Slicing Timeline Dock above Operation Island */
+    .slicing-timeline-dock {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 50px; /* Floating directly above bottom-island */
+      width: 520px;
+      max-width: calc(100vw - 40px);
+      padding: 7px 14px 8px;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      pointer-events: auto;
+      z-index: 24;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(226, 232, 240, 0.85);
+      box-shadow: 0 10px 28px -6px rgba(15, 23, 42, 0.14);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .slice-header-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+    }
+
+    .slice-title-col {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      color: var(--slate-800);
+      font-size: 11px;
+    }
+
+    .slice-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--primary);
+      background: rgba(37, 99, 235, 0.08);
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(37, 99, 235, 0.18);
+    }
+
+    .btn-slice-reset {
+      background: none;
+      border: none;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--slate-500);
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+    .btn-slice-reset:hover {
+      color: var(--primary);
+      background: #f1f5f9;
+    }
+
+    .slice-slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slice-end-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--slate-600);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .slice-slider-wrapper {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .slice-range-input {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: #e2e8f0;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .slice-range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 2.5px solid white;
+      box-shadow: 0 2px 7px rgba(37, 99, 235, 0.5);
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+    .slice-range-input::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
     /* Edge-Aligned Transparent SKU Anchor Dock spanning from right of center island to right screen edge */
     .sku-anchor-panel {
       position: absolute;
@@ -668,6 +783,82 @@
       color: #ffffff;
       border-color: var(--primary);
       box-shadow: 0 2px 6px var(--primary-glow);
+    }
+
+    /* Floating Algorithm Weights Panel on Right */
+    .algorithm-weights-panel {
+      position: absolute;
+      top: 68px;
+      right: 20px;
+      width: 325px;
+      max-height: calc(100vh - 120px);
+      display: flex;
+      flex-direction: column;
+      border-radius: 16px;
+      box-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.25);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 45;
+      animation: weightsFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes weightsFadeIn {
+      from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .weights-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fafcff;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+    }
+    .weights-heading {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .weights-body {
+      padding: 14px 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scrollbar-width: thin;
+    }
+    .weight-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .weight-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      color: #475569;
+    }
+    .weight-val {
+      font-family: 'JetBrains Mono', monospace;
+      color: #2563eb;
+      font-weight: 700;
+      font-size: 11px;
+    }
+    .weights-footer {
+      padding: 10px 16px;
+      border-top: 1px solid #f1f5f9;
+      background: #fafcff;
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+      display: flex;
+      gap: 8px;
     }
 
     /* Color Swatch Buttons in Studio */
@@ -1245,12 +1436,95 @@
           <span>货柜与货单配置</span>
         </button>
 
+        <button class="btn-action-pill secondary" id="btn-toggle-weights" onclick="toggleWeightsPanel()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span>算法动态权重</span>
+        </button>
+
         <button class="btn-action-pill secondary" id="btn-toggle-studio" onclick="toggleStudioDrawer()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           <span>渲染调优控制台</span>
         </button>
       </div>
     </header>
+
+    <!-- 1.5 ALGORITHM DYNAMIC WEIGHTS PANEL (RIGHT SIDE FLOATING) -->
+    <div class="glass-card algorithm-weights-panel interactive" id="algorithm-weights-panel" style="display: none;">
+      <div class="weights-header">
+        <div class="weights-heading">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span>算柜算法动态权重配置</span>
+        </div>
+        <button class="close-btn" onclick="toggleWeightsPanel()">✕</button>
+      </div>
+
+      <div class="weights-body">
+        <!-- 1. Affinity Weight -->
+        <div class="weight-row">
+          <div class="weight-meta">
+            <span>📦 品类同构聚合权重</span>
+            <span class="weight-val" id="val-weight-affinity">3000</span>
+          </div>
+          <input type="range" class="range-input" id="rng-weight-affinity" min="0" max="8000" step="100" value="3000" oninput="updateWeightVal('affinity', this.value)">
+          <div style="font-size: 9.5px; color: #94a3b8;">同 SKU 相邻成团排布的吸引力</div>
+        </div>
+
+        <!-- 2. Vertical Stacking Weight -->
+        <div class="weight-row">
+          <div class="weight-meta">
+            <span>🏗️ 立柱垂直成栋堆叠权重</span>
+            <span class="weight-val" id="val-weight-verticalStack">3500</span>
+          </div>
+          <input type="range" class="range-input" id="rng-weight-verticalStack" min="0" max="8000" step="100" value="3500" oninput="updateWeightVal('verticalStack', this.value)">
+          <div style="font-size: 9.5px; color: #94a3b8;">优先将单列连续叠装至柜顶的倾向</div>
+        </div>
+
+        <!-- 3. Wall Slicing Strictness -->
+        <div class="weight-row">
+          <div class="weight-meta">
+            <span>🧱 横向整墙切片推进刚性</span>
+            <span class="weight-val" id="val-weight-wallSlicing">50000</span>
+          </div>
+          <input type="range" class="range-input" id="rng-weight-wallSlicing" min="5000" max="100000" step="1000" value="50000" oninput="updateWeightVal('wallSlicing', this.value)">
+          <div style="font-size: 9.5px; color: #94a3b8;">铺满宽度 Z 截面后再向前推进 X 的惩罚刚性</div>
+        </div>
+
+        <!-- 4. Notch Leveling Priority -->
+        <div class="weight-row">
+          <div class="weight-meta">
+            <span>📐 切片前沿凹口填平敏锐度</span>
+            <span class="weight-val" id="val-weight-notchLeveling">2500</span>
+          </div>
+          <input type="range" class="range-input" id="rng-weight-notchLeveling" min="0" max="8000" step="100" value="2500" oninput="updateWeightVal('notchLeveling', this.value)">
+          <div style="font-size: 9.5px; color: #94a3b8;">识别并优先回填前切片凹陷缺口的强度</div>
+        </div>
+
+        <!-- 5. CoG Balance Bias Weight -->
+        <div class="weight-row">
+          <div class="weight-meta">
+            <span>⚖️ 3D 轴荷配平物理偏置权重</span>
+            <span class="weight-val" id="val-weight-cogBalance">1500</span>
+          </div>
+          <input type="range" class="range-input" id="rng-weight-cogBalance" min="0" max="5000" step="100" value="1500" oninput="updateWeightVal('cogBalance', this.value)">
+          <div style="font-size: 9.5px; color: #94a3b8;">前后重心与重轻分区的物理引力系数</div>
+        </div>
+
+        <!-- 6. Door Safety Weight -->
+        <div class="weight-row">
+          <div class="weight-meta">
+            <span>🚪 柜门防倾倒朝向锁定严格度</span>
+            <span class="weight-val" id="val-weight-doorSafety">1200</span>
+          </div>
+          <input type="range" class="range-input" id="rng-weight-doorSafety" min="0" max="5000" step="100" value="1200" oninput="updateWeightVal('doorSafety', this.value)">
+          <div style="font-size: 9.5px; color: #94a3b8;">靠近柜门位置强制长边沿纵深锁定的严苛度</div>
+        </div>
+      </div>
+
+      <div class="weights-footer">
+        <button class="btn-island-action" style="flex:1; justify-content:center;" onclick="resetAlgorithmWeights()">🔄 恢复推荐</button>
+        <button class="btn-island-action primary" style="flex:1.6; justify-content:center;" onclick="applyAlgorithmWeights()">⚡ 应用并重算</button>
+      </div>
+    </div>
 
     <!-- 2. LEFT CONFIG WORKBENCH DRAWER -->
     <aside class="glass-card workbench-drawer left interactive" id="left-drawer" style="display: none;">
@@ -1483,6 +1757,27 @@
 
     <!-- 4. FLOATING BOTTOM CONTROL DOCK & EDGE-ALIGNED TRANSPARENT ANCHOR DOCK -->
     <footer class="bottom-floating-dock">
+      <!-- Longitudinal Slicing Timeline Pointer (Above Operation Island) -->
+      <div class="glass-card slicing-timeline-dock interactive" id="slicing-timeline-dock">
+        <div class="slice-header-info">
+          <div class="slice-title-col">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <span>纵向切片指针</span>
+          </div>
+          <div class="slice-badge" id="slice-depth-badge">
+            <span class="slice-val-txt" id="slice-depth-txt">纵深位置: 12.03m / 12.03m (全部可见)</span>
+          </div>
+          <button class="btn-slice-reset" onclick="resetSlicingTimeline()" title="恢复完整装载视图">🔄 重置切片</button>
+        </div>
+        <div class="slice-slider-row">
+          <span class="slice-end-label left" title="柜门方向 (X=L)">🚪 柜门 (0.00m)</span>
+          <div class="slice-slider-wrapper">
+            <input type="range" class="slice-range-input" id="slice-depth-slider" min="0" max="100" step="0.2" value="0" oninput="onSlicingTimelineChange(this.value)">
+          </div>
+          <span class="slice-end-label right" id="slice-deep-label" title="柜尾最远端 (X=0)">📦 最远端 (12.03m)</span>
+        </div>
+      </div>
+
       <!-- Main Operation Island (Left/Center) -->
       <div class="glass-card bottom-island interactive">
         <div class="segmented-control">
@@ -1812,6 +2107,7 @@
         badge: 'ISO 40HQ • 超高柜',
         extL: 12.192, extW: 2.438, extH: 2.896,
         intL: 12.032, intW: 2.352, intH: 2.698,
+        usable: { L: 12.032, W: 2.352, H: 2.698 },
         nominalVol: 76.4,
         maxPayloadTons: 28.6,
         cameraDist: 19.5
@@ -1822,6 +2118,7 @@
         badge: 'ISO 40GP • 标准柜',
         extL: 12.192, extW: 2.438, extH: 2.591,
         intL: 12.032, intW: 2.352, intH: 2.393,
+        usable: { L: 12.032, W: 2.352, H: 2.393 },
         nominalVol: 67.7,
         maxPayloadTons: 28.8,
         cameraDist: 18.5
@@ -1832,6 +2129,7 @@
         badge: 'ISO 20GP • 小柜',
         extL: 6.058,  extW: 2.438, extH: 2.591,
         intL: 5.898,  intW: 2.352, intH: 2.393,
+        usable: { L: 5.898, W: 2.352, H: 2.393 },
         nominalVol: 33.2,
         maxPayloadTons: 28.2,
         cameraDist: 11.5
@@ -1842,6 +2140,7 @@
         badge: 'ISO 45HQ • 特种长柜',
         extL: 13.716, extW: 2.438, extH: 2.896,
         intL: 13.556, intW: 2.352, intH: 2.698,
+        usable: { L: 13.556, W: 2.352, H: 2.698 },
         nominalVol: 86.0,
         maxPayloadTons: 29.5,
         cameraDist: 21.5
@@ -1850,6 +2149,17 @@
 
     let currentContainerType = '40HQ';
     let currentSpec = CONTAINER_SPECS['40HQ'];
+
+    // --- DYNAMIC ALGORITHM WEIGHTS CONFIGURATION ---
+    const DEFAULT_ALGORITHM_WEIGHTS = {
+      affinity: 3000,
+      verticalStack: 3500,
+      wallSlicing: 50000,
+      notchLeveling: 2500,
+      cogBalance: 1500,
+      doorSafety: 1200
+    };
+    let activeAlgorithmWeights = { ...DEFAULT_ALGORITHM_WEIGHTS };
 
     // --- 2. INDUSTRIAL SMART CONTAINER PACKING KERNEL (6-MODULE SYSTEM) ---
     class IndustrialSmartContainerPacker {
@@ -1860,6 +2170,7 @@
         this.gap = options.gap || 0.0;
         this.strategy = options.strategy || 'cluster';
         this.enableCoGBalance = (options.enableCoGBalance !== false);
+        this.weights = Object.assign({}, DEFAULT_ALGORITHM_WEIGHTS, options.weights || activeAlgorithmWeights);
         this.minSupportRatio = 0.75;
         this.doorZoneX = this.L - 1.20; // Last 1.2m near front doors
       }
@@ -1993,100 +2304,129 @@
           isElastic: /可以少放|可以减少|可减少|调节|按需/i.test(m.requirement || '') || m.isElastic === true
         }));
 
-        const getZonePriority = (sku, currentX) => {
+        // Dynamic Zone Score with Graceful Degradation / Fallback (降级容错空间填充机制)
+        const getZoneScore = (sku, currentX) => {
           const req = sku.requirement || '';
-          if (/最里面|rear|deep/i.test(req)) return (currentX <= 3.5) ? 1200 : 10;
-          if (/放中间|mid|middle/i.test(req)) return (currentX >= 1.5 && currentX <= 8.5) ? 900 : 200;
-          if (/封柜门|door|front/i.test(req)) return (currentX >= 6.5) ? 1000 : 100;
-          return 500;
+          const isRear = /最里面|rear|deep/i.test(req);
+          const isMid = /放中间|mid|middle/i.test(req);
+          const isDoor = /封柜门|door|front/i.test(req);
+
+          if (currentX <= 2.5) {
+            // Rear zone: '最里面' is highest priority (+100000)
+            // If '最里面' runs out, '放中间' gracefully degrades to fill the space (+20000)!
+            if (isRear) return 100000;
+            if (isMid) return 20000;
+            if (isDoor) return -5000;
+            return 10000;
+          } else if (currentX <= 8.5) {
+            // Middle zone: '放中间' is highest priority (+50000)
+            // If '放中间' runs out, '封柜门' gracefully degrades to fill the space (+20000)!
+            if (isMid) return 50000;
+            if (isDoor) return 20000;
+            if (isRear) return -10000;
+            return 10000;
+          } else {
+            // Door zone: '封柜门' is highest priority (+80000)
+            if (isDoor) return 80000 + (sku.isElastic ? -5000 : 5000); // Fixed door items before elastic
+            if (isMid) return 10000;
+            if (isRear) return -20000;
+            return 10000;
+          }
         };
 
         let boxGlobalIndex = 0;
-        let currentX = 0;
+        let currentWallX = 0;
+        let lastPrimarySKU = null;
 
-        // Outer Loop: STRICT ADVANCEMENT WALL SLICE BY WALL SLICE ALONG X (0 -> L)
-        while (currentX < this.L - 0.05) {
+        // Loop 1: Advance Wall Slice along X (0 -> L) with Zero Void Gaps and Monolithic Blocks
+        while (currentWallX < this.L - 0.03) {
           const availableSKUs = skuPool.filter(s => s.remQty > 0);
           if (availableSKUs.length === 0) break;
 
-          // 1. Select the Best Anchor Primary SKU for this new wall slice
+          // 1. Choose primary anchor SKU for this wall with Affinity Lock & Zone Priority
           availableSKUs.sort((a, b) => {
-            if (this.enableCoGBalance) {
-              const prioA = getZonePriority(a, currentX);
-              const prioB = getZonePriority(b, currentX);
-              if (prioB !== prioA) return prioB - prioA;
+            let scoreA = getZoneScore(a, currentWallX);
+            let scoreB = getZoneScore(b, currentWallX);
+
+            if (lastPrimarySKU) {
+              if (a.sku === lastPrimarySKU.sku) scoreA += 40000;
+              if (b.sku === lastPrimarySKU.sku) scoreB += 40000;
             }
-            return (b.w * b.h * b.d) - (a.w * a.h * a.d);
+
+            // Prefer larger batch volume to build solid blocks
+            scoreA += Math.min(a.remQty, 500) * 10 + (a.w * a.h * a.d) * 50;
+            scoreB += Math.min(b.remQty, 500) * 10 + (b.w * b.h * b.d) * 50;
+
+            return scoreB - scoreA;
           });
 
-          let primarySKU = null;
-          let primaryOri = null;
+          const primarySKU = availableSKUs[0];
+          const primaryOris = this.getSafeOrientations(primarySKU, currentWallX);
+          const primaryOri = primaryOris[0];
+          const targetWallThickness = primaryOri.l;
 
-          for (const sku of availableSKUs) {
-            const oris = this.getSafeOrientations(sku, currentX);
-            for (const ori of oris) {
-              if (currentX + ori.l <= this.L + 0.001) {
-                primarySKU = sku;
-                primaryOri = ori;
-                break;
-              }
-            }
-            if (primarySKU) break;
-          }
-
-          if (!primarySKU || !primaryOri) break;
-
-          const wallThickness = primaryOri.l;
           let currentZ = 0;
+          const wallCols = [];
 
-          // Inner Loop 1: SWEEP WIDTH STRICTLY FROM Z = 0 TO Z = W (NO GAP CORRIDORS)
-          while (currentZ < this.W - 0.05) {
+          // Loop 2: Sweep Lateral Columns across Z (0 -> W) with Graceful Fallback Co-Packing
+          while (currentZ < this.W - 0.02) {
             const activeSKUs = skuPool.filter(s => s.remQty > 0);
             if (activeSKUs.length === 0) break;
 
             activeSKUs.sort((a, b) => {
-              if (a.sku === primarySKU.sku) return -1;
-              if (b.sku === primarySKU.sku) return 1;
-              if (this.enableCoGBalance) {
-                const prioA = getZonePriority(a, currentX);
-                const prioB = getZonePriority(b, currentX);
-                if (prioB !== prioA) return prioB - prioA;
-              }
-              return (b.w * b.h * b.d) - (a.w * a.h * a.d);
+              let sA = (a.sku === primarySKU.sku) ? 50000 : getZoneScore(a, currentWallX);
+              let sB = (b.sku === primarySKU.sku) ? 50000 : getZoneScore(b, currentWallX);
+              return sB - sA;
             });
 
             let colSKU = null;
             let colOri = null;
 
             for (const sku of activeSKUs) {
-              const oris = this.getSafeOrientations(sku, currentX);
-              oris.sort((o1, o2) => Math.abs(o1.l - wallThickness) - Math.abs(o2.l - wallThickness));
+              const oris = this.getSafeOrientations(sku, currentWallX);
+              oris.sort((o1, o2) => Math.abs(o1.l - targetWallThickness) - Math.abs(o2.l - targetWallThickness));
 
               for (const ori of oris) {
-                if (currentX + ori.l <= this.L + 0.001 &&
-                    currentZ + ori.wz <= this.W + 0.001) {
-                  colSKU = sku;
-                  colOri = ori;
-                  break;
+                if (currentWallX + ori.l <= this.L + 0.001 && currentZ + ori.wz <= this.W + 0.001) {
+                  const testBox = { x: currentWallX, y: 0, z: currentZ, w: ori.l, h: ori.h, d: ori.wz };
+                  let collides = false;
+                  for (const pb of placedBoxes) {
+                    if (IndustrialSmartContainerPacker.isOverlap(testBox, pb)) {
+                      collides = true;
+                      break;
+                    }
+                  }
+
+                  if (!collides) {
+                    colSKU = sku;
+                    colOri = ori;
+                    break;
+                  }
                 }
               }
               if (colSKU) break;
             }
 
             if (!colSKU || !colOri) {
-              break;
+              currentZ += 0.05;
+              continue;
             }
 
-            const maxFullLayers = Math.floor(this.H / colOri.h);
-            const maxAllowedLayers = (colSKU.maxStackLayers && colSKU.maxStackLayers > 0)
-              ? Math.min(colSKU.maxStackLayers, maxFullLayers)
-              : maxFullLayers;
-
-            const leveledPlan = this.computeLeveledLayers(colSKU.remQty, maxAllowedLayers);
-            const actualLayers = Math.max(1, Math.min(colSKU.remQty, leveledPlan.length > 0 ? leveledPlan[0] : maxAllowedLayers));
+            // Stack to full height (Uniform flat layer height, NO orphan single boxes on top!)
+            const maxLayers = Math.floor(this.H / colOri.h);
+            const actualLayers = Math.min(colSKU.remQty, maxLayers);
+            let stacked = 0;
 
             for (let lay = 0; lay < actualLayers && colSKU.remQty > 0; lay++) {
-              const boxY = lay * colOri.h;
+              const cand = {
+                x: currentWallX,
+                y: lay * colOri.h,
+                z: currentZ,
+                w: colOri.l,
+                h: colOri.h,
+                d: colOri.wz
+              };
+
               placedBoxes.push({
                 id: `${colSKU.sku}-${boxGlobalIndex + 1}`,
                 sku: colSKU.sku,
@@ -2095,44 +2435,70 @@
                 weight: colSKU.weight,
                 requirement: colSKU.requirement,
                 isElastic: colSKU.isElastic,
-                x: currentX,
-                y: boxY,
-                z: currentZ,
-                w: colOri.l,
-                h: colOri.h,
-                d: colOri.wz
+                x: cand.x,
+                y: cand.y,
+                z: cand.z,
+                w: cand.w,
+                h: cand.h,
+                d: cand.d
               });
               boxGlobalIndex++;
               colSKU.actualPlaced++;
               colSKU.remQty--;
+              stacked++;
             }
 
-            currentZ += colOri.wz;
+            if (stacked > 0) {
+              wallCols.push({
+                zStart: currentZ,
+                zEnd: currentZ + colOri.wz,
+                xEnd: currentWallX + colOri.l,
+                topY: stacked * colOri.h
+              });
+              currentZ += colOri.wz;
+            } else {
+              currentZ += 0.05;
+            }
           }
 
-          // Advance X by the thickness of this full-width wall
-          currentX += wallThickness;
-        }
+          if (wallCols.length === 0) {
+            currentWallX += 0.08;
+            continue;
+          }
 
-        // Single box gap-fill pass for small residual voids
-        for (let x = 0; x < this.L - 0.1; x += 0.1) {
-          for (let z = 0; z < this.W - 0.1; z += 0.1) {
-            for (let y = 0; y < this.H - 0.1; y += 0.1) {
-              const remaining = skuPool.filter(s => s.remQty > 0);
-              if (remaining.length === 0) break;
+          const maxXInWall = Math.max(...wallCols.map(c => c.xEnd));
 
-              for (const sku of remaining) {
-                const oris = this.getSafeOrientations(sku, x);
+          // Notch Filling within the same wall slice (Zero Void Gap)
+          for (const col of wallCols) {
+            let notchX = col.xEnd;
+            while (notchX < maxXInWall - 0.03) {
+              const availableInNotch = skuPool.filter(s => s.remQty > 0);
+              let filledNotch = false;
+
+              for (const sku of availableInNotch) {
+                const oris = this.getSafeOrientations(sku, notchX);
                 for (const ori of oris) {
-                  if (x + ori.l <= this.L + 0.001 &&
-                      y + ori.h <= this.H + 0.001 &&
-                      z + ori.wz <= this.W + 0.001) {
-                    const cand = { x, y, z, w: ori.l, h: ori.h, d: ori.wz };
-                    let col = false;
-                    for (const pb of placedBoxes) {
-                      if (IndustrialSmartContainerPacker.isOverlap(cand, pb)) { col = true; break; }
-                    }
-                    if (!col) {
+                  if (notchX + ori.l <= maxXInWall + 0.001 &&
+                      col.zStart + ori.wz <= col.zEnd + 0.001) {
+
+                    let currentY = 0;
+                    let count = 0;
+                    while (currentY + ori.h <= this.H + 0.001 && sku.remQty > 0) {
+                      const cand = {
+                        x: notchX,
+                        y: currentY,
+                        z: col.zStart,
+                        w: ori.l,
+                        h: ori.h,
+                        d: ori.wz
+                      };
+
+                      let cCheck = false;
+                      for (const pb of placedBoxes) {
+                        if (IndustrialSmartContainerPacker.isOverlap(cand, pb)) { cCheck = true; break; }
+                      }
+                      if (cCheck) break;
+
                       placedBoxes.push({
                         id: `${sku.sku}-${boxGlobalIndex + 1}`,
                         sku: sku.sku,
@@ -2141,19 +2507,36 @@
                         weight: sku.weight,
                         requirement: sku.requirement,
                         isElastic: sku.isElastic,
-                        x, y, z,
-                        w: ori.l, h: ori.h, d: ori.wz
+                        x: cand.x,
+                        y: cand.y,
+                        z: cand.z,
+                        w: cand.w,
+                        h: cand.h,
+                        d: cand.d
                       });
                       boxGlobalIndex++;
                       sku.actualPlaced++;
                       sku.remQty--;
+                      count++;
+                      currentY += ori.h;
+                    }
+
+                    if (count > 0) {
+                      notchX += ori.l;
+                      filledNotch = true;
                       break;
                     }
                   }
                 }
+                if (filledNotch) break;
               }
+
+              if (!filledNotch) break;
             }
           }
+
+          lastPrimarySKU = primarySKU.remQty > 0 ? primarySKU : null;
+          currentWallX = maxXInWall;
         }
 
         skuPool.forEach(s => {
@@ -2168,41 +2551,6 @@
             });
           }
         });
-
-        // 3. STEPPED TAIL ANTI-TOPPLING ENFORCEMENT
-        let maxEndX = 0;
-        placedBoxes.forEach(b => {
-          if (b.x + b.w > maxEndX) maxEndX = b.x + b.w;
-        });
-
-        if (maxEndX < this.L - 0.50) {
-          const step1X = maxEndX - 0.90;
-          const step2X = maxEndX - 1.80;
-
-          const displacedBoxes = [];
-
-          for (let i = placedBoxes.length - 1; i >= 0; i--) {
-            const b = placedBoxes[i];
-            if (b.x >= step1X) {
-              if (b.y + b.h > this.H * 0.38) {
-                displacedBoxes.push(placedBoxes.splice(i, 1)[0]);
-              }
-            } else if (b.x >= step2X) {
-              if (b.y + b.h > this.H * 0.68) {
-                displacedBoxes.push(placedBoxes.splice(i, 1)[0]);
-              }
-            }
-          }
-
-          displacedBoxes.forEach(b => {
-            if (maxEndX + b.w <= this.L) {
-              b.x = maxEndX;
-              b.y = 0;
-              placedBoxes.push(b);
-              maxEndX += b.w;
-            }
-          });
-        }
 
         // 3. Dynamic 3D Center of Gravity (CoG) & Axle Load Balancing
         let totalMass = 0;
@@ -2228,10 +2576,35 @@
         const totalVol = this.L * this.W * this.H;
         const util = (usedVol / totalVol) * 100;
 
+        // Compute per-SKU detailed packing statistics & unplaced tracking
+        const skuStats = {};
+        let totalUnplacedCount = 0;
+        let fullyPlacedSKUCount = 0;
+
+        cargoManifest.forEach(m => {
+          const placedCount = placedBoxes.filter(b => b.sku === m.sku).length;
+          const unplaced = Math.max(0, m.quantity - placedCount);
+          if (unplaced > 0) totalUnplacedCount += unplaced;
+          else fullyPlacedSKUCount++;
+
+          skuStats[m.sku] = {
+            sku: m.sku,
+            name: m.name,
+            planned: m.quantity,
+            placed: placedCount,
+            unplaced: unplaced,
+            isFullyPlaced: (unplaced === 0),
+            placedRatio: ((placedCount / Math.max(m.quantity, 1)) * 100).toFixed(0)
+          };
+        });
+
         return {
           placedBoxes,
           unplacedItems,
           elasticTrimmedMap,
+          skuStats,
+          totalUnplacedCount,
+          fullyPlacedSKUCount,
           usedVol: usedVol.toFixed(2),
           utilization: util.toFixed(1),
           totalWeightTons: (totalMass / 1000).toFixed(2),
@@ -2298,14 +2671,16 @@
     let isCoGBalanceEnabled = true;
 
     // --- CLIENT-SIDE SPATIAL COORDINATE CACHE ENGINE ---
-    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V15_';
-    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V15';
+    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V26_FALLBACK_ZONES_';
+    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V26_FALLBACK_ZONES';
 
-    function generatePackingCacheKey(specCode, strategy, gap, manifest) {
+    function generatePackingCacheKey(specCode, strategy, gap, manifest, weights = activeAlgorithmWeights) {
       const summary = manifest.map(m => `${m.sku}_${m.quantity}_${m.w}x${m.d}x${m.h}_${m.weight}_${m.requirement||''}`).join('|');
+      const wSummary = Object.entries(weights || {}).map(([k, v]) => `${k}:${v}`).join(',');
       let hash = 0;
-      for (let i = 0; i < summary.length; i++) {
-        const char = summary.charCodeAt(i);
+      const str = `${specCode}_${strategy}_${gap}_${isCoGBalanceEnabled}_${wSummary}_${summary}`;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
         hash = ((hash << 5) - hash) + char;
         hash |= 0;
       }
@@ -2350,7 +2725,8 @@
           strategy: currentStrategy,
           gap: currentGap,
           activeManifest: activeManifest,
-          unselectedDisplayMode: unselectedDisplayMode
+          unselectedDisplayMode: unselectedDisplayMode,
+          algorithmWeights: activeAlgorithmWeights
         }));
       } catch (e) {}
     }
@@ -2371,6 +2747,16 @@
           }
           if (state.unselectedDisplayMode) {
             unselectedDisplayMode = state.unselectedDisplayMode;
+          }
+          if (state.algorithmWeights) {
+            activeAlgorithmWeights = Object.assign({}, DEFAULT_ALGORITHM_WEIGHTS, state.algorithmWeights);
+            // Synchronize sliders
+            for (const [k, v] of Object.entries(activeAlgorithmWeights)) {
+              const input = document.getElementById(`rng-weight-${k}`);
+              const label = document.getElementById(`val-weight-${k}`);
+              if (input) input.value = v;
+              if (label) label.textContent = v;
+            }
           }
         }
       } catch (e) {}
@@ -2912,7 +3298,7 @@
         0.1,
         1000
       );
-      camera.position.set(-20, 20 * Math.SQRT2, 20);
+      camera.position.set(-20, 19.8, 20);
       camera.lookAt(0, currentSpec.extH / 2, 0);
 
       renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
@@ -3280,10 +3666,78 @@
         contactShadowPlane.geometry = new THREE.PlaneGeometry(L + 2.0, W + 1.8);
       }
 
+      // Build External Ground Depth Ruler (外侧地面刻度标尺，高度紧贴地面 Y=0.025)
+      const rulerZ = postZ + 0.38;
+      const rulerY = 0.025; // Directly above ground plane (Y=0) and shadow plane (Y=0.015)
+
+      if (groundRulerMesh) {
+        scene.remove(groundRulerMesh);
+        if (groundRulerMesh.geometry) groundRulerMesh.geometry.dispose();
+        if (groundRulerMesh.material) {
+          if (groundRulerMesh.material.map) groundRulerMesh.material.map.dispose();
+          groundRulerMesh.material.dispose();
+        }
+      }
+
+      const rulerGeo = new THREE.PlaneGeometry(L, 0.28);
+      const rulerTex = createGroundRulerTexture(currentSpec.intL);
+      const rulerMat = new THREE.MeshBasicMaterial({
+        map: rulerTex,
+        transparent: true,
+        opacity: 0.96,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+      groundRulerMesh = new THREE.Mesh(rulerGeo, rulerMat);
+      groundRulerMesh.rotation.x = -Math.PI / 2;
+      groundRulerMesh.position.set(0, rulerY, rulerZ);
+      scene.add(groundRulerMesh);
+
+      // Build Ground Laser Slicing Marker (地面激光指示针)
+      if (slicingGroundMarkerMesh) {
+        scene.remove(slicingGroundMarkerMesh);
+      }
+
+      const markerGroup = new THREE.Group();
+
+      // Glowing needle cursor pointing at the ruler towards the container
+      const arrowShape = new THREE.Shape();
+      arrowShape.moveTo(0, 0);
+      arrowShape.lineTo(0.08, 0.16);
+      arrowShape.lineTo(-0.08, 0.16);
+      arrowShape.closePath();
+      const arrowGeo = new THREE.ShapeGeometry(arrowShape);
+      const arrowMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, side: THREE.DoubleSide, depthWrite: false });
+      const arrowMesh = new THREE.Mesh(arrowGeo, arrowMat);
+      arrowMesh.rotation.x = Math.PI / 2; // Point inwards towards container
+      arrowMesh.position.set(0, 0.003, rulerZ + 0.16);
+      markerGroup.add(arrowMesh);
+
+      // Ground laser projector line along floor (lying flat on ground, not obstructing cargo)
+      const laserLineGeo = new THREE.PlaneGeometry(0.018, W + 0.85);
+      const laserLineMat = new THREE.MeshBasicMaterial({
+        color: 0x0ea5e9,
+        transparent: true,
+        opacity: 0.85,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+      const laserLine = new THREE.Mesh(laserLineGeo, laserLineMat);
+      laserLine.rotation.x = -Math.PI / 2;
+      laserLine.position.set(0, 0.002, 0);
+      markerGroup.add(laserLine);
+
+      markerGroup.position.set(-L / 2, rulerY, 0);
+      slicingGroundMarkerMesh = markerGroup;
+      scene.add(slicingGroundMarkerMesh);
+      slicingGroundMarkerMesh.visible = false;
+
       // Sync UI Specs
       document.getElementById('hud-container-badge').textContent = currentSpec.badge;
       document.getElementById('spec-ext').textContent = `${currentSpec.extL.toFixed(3)} × ${currentSpec.extW.toFixed(3)} × ${currentSpec.extH.toFixed(3)} m`;
       document.getElementById('spec-int').textContent = `${currentSpec.intL.toFixed(3)} × ${currentSpec.intW.toFixed(3)} × ${currentSpec.intH.toFixed(3)} m`;
+      const deepLabel = document.getElementById('slice-deep-label');
+      if (deepLabel) deepLabel.textContent = `📦 最远端 (${currentSpec.usable.L.toFixed(2)}m)`;
       document.getElementById('spec-vol').textContent = `${currentSpec.nominalVol.toFixed(1)} m³`;
       document.getElementById('spec-payload').textContent = `${(currentSpec.maxPayloadTons * 1000).toLocaleString()} kg (${currentSpec.maxPayloadTons} 吨)`;
 
@@ -3517,7 +3971,8 @@
         const packer = new IndustrialSmartContainerPacker(usableDim, {
           gap: currentGap,
           strategy: currentStrategy,
-          enableCoGBalance: isCoGBalanceEnabled
+          enableCoGBalance: isCoGBalanceEnabled,
+          weights: activeAlgorithmWeights
         });
         activePackingResult = packer.pack(activeManifest);
         savePackingResultToStorage(cacheKey, activePackingResult);
@@ -3585,7 +4040,14 @@
           position: `X:${posX.toFixed(2)} Y:${posY.toFixed(2)} Z:${posZ.toFixed(2)}`,
           originY: posY,
           skuMaterials: skuMats,
-          isCargoBox: true
+          isCargoBox: true,
+          rawX: item.x,
+          rawW: item.w,
+          rawY: item.y,
+          rawH: item.h,
+          rawZ: item.z,
+          rawD: item.d,
+          maxX: item.x + item.w
         };
 
         cargoGroup.add(boxMesh);
@@ -3614,10 +4076,16 @@
       }
 
       renderManifestUI();
+      renderAnchorRibbon();
       updateBoxVisibilityAndMaterials();
 
       if (forceRecompute) {
-        showToast(`AI 算柜完成！已装载 ${activePackingResult.totalCount} 箱货物，内腔利用率 ${activePackingResult.utilization}%`, 'success');
+        const unplaced = activePackingResult?.totalUnplacedCount || 0;
+        if (unplaced > 0) {
+          showToast(`AI 算柜完成！已装载 ${activePackingResult.totalCount} 箱，利用率 ${activePackingResult.utilization}%（⚠️ 余 ${unplaced} 箱未装下，详见货单）`, 'warning');
+        } else {
+          showToast(`✨ AI 算柜完成！100% 装载全部 ${activePackingResult.totalCount} 箱货物，内腔利用率 ${activePackingResult.utilization}%`, 'success');
+        }
       }
     };
 
@@ -3750,12 +4218,24 @@
         const chip = document.createElement('button');
         chip.className = 'anchor-chip';
         chip.id = `anchor-chip-${item.sku}`;
-        chip.title = `${item.sku}: ${item.name} (${item.quantity}箱)`;
+
+        const stats = activePackingResult?.skuStats?.[item.sku];
+        const isUnfinished = (stats && !stats.isFullyPlaced);
+        const placedCount = stats ? stats.placed : item.quantity;
+        const plannedCount = item.quantity;
+
+        chip.title = `${item.sku}: ${item.name} (${stats ? `实装 ${placedCount}箱 / 计 ${plannedCount}箱` : `${item.quantity}箱`}${isUnfinished ? ` • ⚠️ 有 ${stats.unplaced}箱未装下` : ' • 100% 已装完'})`;
+        
         chip.innerHTML = `
           <span class="anchor-dot" style="background:${hexColor};"></span>
           <span>${item.sku}</span>
-          <span class="anchor-count-badge">(${item.quantity})</span>
+          <span class="anchor-count-badge" style="${isUnfinished ? 'color:#b45309; background:#fef3c7; font-weight:800; border:1px solid #fcd34d;' : ''}">(${placedCount}/${plannedCount}${isUnfinished ? ' ⚠️' : ''})</span>
         `;
+
+        if (isUnfinished) {
+          chip.style.borderColor = '#fde68a';
+          chip.style.background = '#fffdf5';
+        }
 
         chip.addEventListener('mouseenter', () => {
           highlightSKUInScene(item.sku);
@@ -3791,7 +4271,14 @@
       container.innerHTML = '';
 
       const countEl = document.getElementById('manifest-sku-count');
-      if (countEl) countEl.textContent = `${activeManifest.length} 种 SKU`;
+      const totalUnplaced = activePackingResult?.totalUnplacedCount || 0;
+      if (countEl) {
+        if (totalUnplaced > 0) {
+          countEl.innerHTML = `<span style="color:#b45309; font-weight:800;">⚠️ ${activeManifest.length} 种 SKU • 余 ${totalUnplaced} 箱未装完</span>`;
+        } else {
+          countEl.innerHTML = `<span style="color:#059669; font-weight:800;">✅ ${activeManifest.length} 种 SKU • 100% 全部装完</span>`;
+        }
+      }
 
       activeManifest.forEach(sku => {
         const hexColor = '#' + new THREE.Color(sku.color).getHexString();
@@ -3799,18 +4286,29 @@
         card.className = 'sku-item';
         card.id = `manifest-card-${sku.sku}`;
 
-        const trimInfo = activePackingResult?.elasticTrimmedMap?.get(sku.sku);
-        let countDisplayHtml = `<strong style="color:var(--primary); font-size:11px;">${sku.quantity} 箱</strong>`;
-        let trimBadgeHtml = '';
+        const stats = activePackingResult?.skuStats?.[sku.sku];
+        const isUnfinished = (stats && !stats.isFullyPlaced);
+        let countDisplayHtml = '';
+        let statusBadgeHtml = '';
 
-        if (trimInfo && trimInfo.trimmedQty > 0) {
-          countDisplayHtml = `
-            <div style="text-align:right;">
-              <span style="color:#059669; font-size:11px; font-weight:800;">实装 ${trimInfo.actualQty} 箱</span>
-              <span style="color:#94a3b8; font-size:9.5px; text-decoration:line-through; margin-left:3px;">计 ${trimInfo.plannedQty}</span>
-            </div>
-          `;
-          trimBadgeHtml = `<span style="font-size:9px; color:#d97706; background:#fef3c7; border:1px solid #fde68a; padding:1px 4px; border-radius:3px; font-weight:700; margin-left:4px;" title="${trimInfo.reason}">⚡ 核减 ${trimInfo.trimmedQty}箱</span>`;
+        if (stats) {
+          if (stats.isFullyPlaced) {
+            statusBadgeHtml = `<span style="font-size:9px; color:#059669; background:#ecfdf5; border:1px solid #a7f3d0; padding:1px 5px; border-radius:3px; font-weight:700;">✅ 已全装</span>`;
+            countDisplayHtml = `<strong style="color:#059669; font-size:11px;">${stats.placed} / ${stats.planned} 箱</strong>`;
+          } else {
+            card.style.border = '1px solid #fde68a';
+            card.style.background = '#fffdf7';
+            statusBadgeHtml = `<span style="font-size:9px; color:#b45309; background:#fef3c7; border:1px solid #fcd34d; padding:1px 5px; border-radius:3px; font-weight:800;" title="空间已满或安全限制，剩余 ${stats.unplaced} 箱未装入">⚠️ 未装完 (余${stats.unplaced}箱)</span>`;
+            countDisplayHtml = `
+              <div style="text-align:right;">
+                <span style="color:#dc2626; font-size:11px; font-weight:800;">实装 ${stats.placed}</span>
+                <span style="color:#94a3b8; font-size:9.5px; margin-left:2px;">/ 计 ${stats.planned}</span>
+                <span style="display:block; font-size:9px; color:#d97706; font-weight:700;">缺 ${stats.unplaced} 箱</span>
+              </div>
+            `;
+          }
+        } else {
+          countDisplayHtml = `<strong style="color:var(--primary); font-size:11px;">${sku.quantity} 箱</strong>`;
         }
 
         let oriTag = '';
@@ -3837,7 +4335,7 @@
               <span class="req-tag ${getReqClass(sku.requirement)}">${sku.requirement || '放中间'}</span>
               ${oriTag}
               ${layerTag}
-              ${trimBadgeHtml}
+              ${statusBadgeHtml}
               <button class="btn-sku-edit-icon" onclick="event.stopPropagation(); openSKUSettingsModal('${sku.sku}')" title="设置此SKU摆放位置、朝向与堆叠层高">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
               </button>
@@ -4110,12 +4608,123 @@
       if (chip) chip.style.transform = isHighlighted ? 'translateY(-1px)' : '';
     }
 
-    // --- 9. HIGH-PERFORMANCE BATCH MATERIAL & VISIBILITY ENGINE ---
+    // --- 9. LONGITUDINAL SLICING TIMELINE CONTROLLER & HIGH-PERFORMANCE VISIBILITY ENGINE ---
+    let currentSliceCutPercent = 0; // 0 = at door (no slice cut), 100 = at deepest end
+    let groundRulerMesh = null;
+    let slicingGroundMarkerMesh = null;
+
+    function createGroundRulerTexture(lengthMeters) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 2048;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+
+      // Metallic slate background ribbon
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, 2048, 128);
+
+      // Top glowing cyan rail
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(0, 0, 2048, 5);
+
+      // Bottom subtle edge
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(0, 122, 2048, 6);
+
+      // Metric ticks from Door (Left in 3D: +halfIntL) to Deep end (Right: -halfIntL)
+      const numMeters = Math.ceil(lengthMeters);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'bold 22px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      for (let m = 0; m <= numMeters; m += 0.5) {
+        const x = (m / lengthMeters) * 2048;
+        const isMajor = (m % 1 === 0);
+
+        if (isMajor) {
+          ctx.fillStyle = '#38bdf8';
+          ctx.fillRect(x - 1.5, 0, 3, 38);
+          ctx.fillStyle = '#f8fafc';
+          if (m === 0) {
+            ctx.fillText('🚪 0m', x + 25, 78);
+          } else if (m >= numMeters) {
+            ctx.fillText(`${m}m 📦`, x - 25, 78);
+          } else {
+            ctx.fillText(`${m}m`, x, 78);
+          }
+        } else {
+          ctx.fillStyle = '#64748b';
+          ctx.fillRect(x - 1, 0, 2, 22);
+        }
+      }
+
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.anisotropy = 8;
+      return tex;
+    }
+
+    window.onSlicingTimelineChange = function(valPercent) {
+      currentSliceCutPercent = parseFloat(valPercent) || 0;
+      updateSlicingVisuals();
+      updateBoxVisibilityAndMaterials();
+    };
+
+    window.resetSlicingTimeline = function() {
+      currentSliceCutPercent = 0;
+      const slider = document.getElementById('slice-depth-slider');
+      if (slider) slider.value = 0;
+      updateSlicingVisuals();
+      updateBoxVisibilityAndMaterials();
+    };
+
+    function updateSlicingVisuals() {
+      const usableDim = CONTAINER_SPECS[currentContainerType]?.usable || { L: 12.032, W: 2.352, H: 2.698 };
+      const L = usableDim.L;
+      const cutDepthFromDoor = (currentSliceCutPercent / 100) * L;
+      const X_cut = Math.max(0, L - cutDepthFromDoor);
+
+      const txtEl = document.getElementById('slice-depth-txt');
+      const deepLabel = document.getElementById('slice-deep-label');
+      if (deepLabel) deepLabel.textContent = `📦 最远端 (${L.toFixed(2)}m)`;
+
+      if (currentSliceCutPercent <= 0.01) {
+        if (txtEl) txtEl.textContent = `纵深位置: ${L.toFixed(2)}m / ${L.toFixed(2)}m (全部可见)`;
+        if (slicingGroundMarkerMesh) slicingGroundMarkerMesh.visible = false;
+      } else {
+        let visibleCount = 0;
+        let hiddenCount = 0;
+        boxMeshes.forEach(b => {
+          const maxX = b.userData.maxX ?? (b.userData.rawX + b.userData.rawW);
+          if (maxX <= X_cut + 0.001) visibleCount++;
+          else hiddenCount++;
+        });
+
+        if (txtEl) {
+          txtEl.textContent = `切片截面: 距门 ${cutDepthFromDoor.toFixed(2)}m • 纵深 ${X_cut.toFixed(2)}m (已显 ${visibleCount}箱 / 隐 ${hiddenCount}箱)`;
+        }
+
+        if (slicingGroundMarkerMesh) {
+          const halfIntL = usableDim.L / 2;
+          // Scene coordinate: Door is on the Left at -halfIntL, Rear is on the Right at +halfIntL
+          const sceneX = -halfIntL + cutDepthFromDoor;
+          slicingGroundMarkerMesh.position.x = sceneX;
+          slicingGroundMarkerMesh.visible = true;
+        }
+      }
+    }
+
     function updateBoxVisibilityAndMaterials() {
       if (!boxMeshes || boxMeshes.length === 0) return;
 
       const hasHover = hoveredSKU !== null;
       const hasFilter = selectedSKUs.size > 0;
+
+      const usableDim = CONTAINER_SPECS[currentContainerType]?.usable || { L: 12.032, W: 2.352, H: 2.698 };
+      const L = usableDim.L;
+      const cutDepthFromDoor = (currentSliceCutPercent / 100) * L;
+      const X_cut = Math.max(0, L - cutDepthFromDoor);
+      const isSlicingActive = (currentSliceCutPercent > 0.01);
 
       activeManifest.forEach(skuItem => {
         const skuMats = skuMaterialRegistry.get(skuItem.sku);
@@ -4139,25 +4748,36 @@
         let isVisible = true;
         let isSolid = true;
 
-        if (hasHover) {
-          if (sku === hoveredSKU) {
+        // 1. Discrete whole-box slicing filter:
+        // Slicing hides the whole box as soon as the cut touches its outer bound (no slicing boxes in half!)
+        if (isSlicingActive) {
+          const boxMaxX = box.userData.maxX ?? (box.userData.rawX + box.userData.rawW);
+          if (boxMaxX > X_cut + 0.001) {
+            isVisible = false;
+          }
+        }
+
+        if (isVisible) {
+          if (hasHover) {
+            if (sku === hoveredSKU) {
+              isSolid = true;
+              isVisible = true;
+            } else {
+              isSolid = false;
+              isVisible = (unselectedDisplayMode === 'ghost');
+            }
+          } else if (hasFilter) {
+            if (selectedSKUs.has(sku)) {
+              isSolid = true;
+              isVisible = true;
+            } else {
+              isSolid = false;
+              isVisible = (unselectedDisplayMode === 'ghost');
+            }
+          } else {
             isSolid = true;
             isVisible = true;
-          } else {
-            isSolid = false;
-            isVisible = (unselectedDisplayMode === 'ghost');
           }
-        } else if (hasFilter) {
-          if (selectedSKUs.has(sku)) {
-            isSolid = true;
-            isVisible = true;
-          } else {
-            isSolid = false;
-            isVisible = (unselectedDisplayMode === 'ghost');
-          }
-        } else {
-          isSolid = true;
-          isVisible = true;
         }
 
         box.visible = isVisible;
@@ -4229,7 +4849,60 @@
       if (isHidden) {
         document.getElementById('left-drawer').style.display = 'none';
         document.getElementById('btn-toggle-left').classList.remove('active');
+        // When studio drawer is opened, automatically hide algorithm weights panel!
+        const weightsPanel = document.getElementById('algorithm-weights-panel');
+        if (weightsPanel) weightsPanel.style.display = 'none';
+        const weightsBtn = document.getElementById('btn-toggle-weights');
+        if (weightsBtn) weightsBtn.classList.remove('active');
       }
+    };
+
+    window.toggleWeightsPanel = function() {
+      const panel = document.getElementById('algorithm-weights-panel');
+      const btn = document.getElementById('btn-toggle-weights');
+      const isHidden = panel.style.display === 'none';
+      panel.style.display = isHidden ? 'flex' : 'none';
+      if (btn) btn.classList.toggle('active', isHidden);
+      if (isHidden) {
+        // When opening weights panel, hide studio drawer!
+        document.getElementById('studio-drawer').style.display = 'none';
+        document.getElementById('btn-toggle-studio').classList.remove('active');
+      }
+    };
+
+    let weightRecomputeTimer = null;
+    window.updateWeightVal = function(key, val) {
+      const numVal = parseInt(val, 10);
+      const label = document.getElementById(`val-weight-${key}`);
+      if (label) label.textContent = numVal;
+      activeAlgorithmWeights[key] = numVal;
+
+      // Live debounced real-time 3D recompute on slider drag
+      if (weightRecomputeTimer) clearTimeout(weightRecomputeTimer);
+      weightRecomputeTimer = setTimeout(() => {
+        saveAppState();
+        runSmartPackingAlgorithm(true);
+      }, 150);
+    };
+
+    window.applyAlgorithmWeights = function() {
+      if (weightRecomputeTimer) clearTimeout(weightRecomputeTimer);
+      showToast('⚡ 算法动态权重已生效，已完成 3D 重新推演！', 'info');
+      saveAppState();
+      runSmartPackingAlgorithm(true);
+    };
+
+    window.resetAlgorithmWeights = function() {
+      activeAlgorithmWeights = { ...DEFAULT_ALGORITHM_WEIGHTS };
+      for (const [k, v] of Object.entries(DEFAULT_ALGORITHM_WEIGHTS)) {
+        const input = document.getElementById(`rng-weight-${k}`);
+        const label = document.getElementById(`val-weight-${k}`);
+        if (input) input.value = v;
+        if (label) label.textContent = v;
+      }
+      showToast('🔄 已恢复推荐标准算法权重！', 'success');
+      saveAppState();
+      runSmartPackingAlgorithm(true);
     };
 
     window.setSmartCutaway = function(state) {
@@ -4312,7 +4985,7 @@
       const targetLook = new THREE.Vector3(0, currentSpec.extH / 2, 0);
 
       switch(type) {
-        case 'iso': targetPos.set(-20, 20 * Math.SQRT2, 20); break;
+        case 'iso': targetPos.set(-20, 19.8, 20); break;
         case 'front': targetPos.set(-30, currentSpec.extH / 2, 0); break;
         case 'side': targetPos.set(0, currentSpec.extH / 2, 30); break;
         case 'top': targetPos.set(0, 35, 0.01); break;
