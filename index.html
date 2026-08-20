@@ -2220,27 +2220,28 @@
 
       getZoneAffinityScore(sku, currentX) {
         const req = sku.requirement || '';
-        const isRear = /最里面|rear|deep/i.test(req);
-        const isMid = /放中间|mid|middle/i.test(req);
-        const isDoor = /封柜门|door|front/i.test(req);
+        const isRear = /最里面|rear|deep|头/i.test(req);
+        const isMid = /放中间|mid|middle|中/i.test(req);
+        const isDoor = /封柜门|door|front|尾|门/i.test(req);
 
-        const cogScale = (this.weights.cogBalance || 1500) / 1500;
-        const doorScale = (this.weights.doorSafety || 1200) / 1200;
+        const L = this.L;
+        const rearBoundary = Math.min(3.5, L * 0.30);
+        const doorBoundary = Math.max(L - 3.5, L * 0.65);
 
-        if (currentX <= 2.5) {
-          if (isRear) return 100000 * cogScale;
-          if (isMid) return 20000 * cogScale;
-          if (isDoor) return -5000 * cogScale;
+        if (currentX <= rearBoundary) {
+          if (isRear) return 1000000;
+          if (isMid) return 50000;
+          if (isDoor) return -1000000; // 严禁封柜门货物放在柜头最里面
           return 10000;
-        } else if (currentX <= 8.5) {
-          if (isMid) return 50000 * cogScale;
-          if (isDoor) return (sku.isElastic ? 10000 : 30000) * cogScale;
-          if (isRear) return -10000 * cogScale;
+        } else if (currentX >= doorBoundary) {
+          if (isDoor) return sku.isElastic ? 400000 : 1000000;
+          if (isMid) return 50000;
+          if (isRear) return -1000000; // 严禁柜头货物放在柜门端
           return 10000;
         } else {
-          if (isDoor) return (sku.isElastic ? 70000 : 100000) * doorScale;
-          if (isMid) return 10000;
-          if (isRear) return -20000;
+          if (isMid) return 1000000;
+          if (isRear) return 20000;
+          if (isDoor) return -500000;
           return 10000;
         }
       }
@@ -2256,6 +2257,7 @@
         const skuPool = cargoManifest.map(m => {
           const req = m.requirement || '';
           const isElastic = /可以少放|可以减少|可减少|调节|按需/i.test(req) || m.isElastic === true;
+          const maxLay = (m.maxStackLayers && parseInt(m.maxStackLayers, 10) > 0) ? parseInt(m.maxStackLayers, 10) : null;
           return {
             ...m,
             w: parseFloat(m.w),
@@ -2265,6 +2267,7 @@
             quantity: parseInt(m.quantity),
             remQty: parseInt(m.quantity),
             actualPlaced: 0,
+            maxStackLayers: maxLay,
             isElastic
           };
         });
@@ -2277,11 +2280,11 @@
           const available = skuPool.filter(s => s.remQty > 0);
           if (available.length === 0) break;
 
-          // 1. 选取主要排布锚点 SKU (成栋大方阵优先)
+          // 1. 选取主要排布锚点 SKU (严格按分区要求与层数要求研判)
           available.sort((a, b) => {
             let scoreA = this.getZoneAffinityScore(a, currentX);
             let scoreB = this.getZoneAffinityScore(b, currentX);
-            if (lastPrimarySKU) {
+            if (lastPrimarySKU && scoreA > 0 && scoreB > 0) {
               if (a.sku === lastPrimarySKU.sku) scoreA += affinityWeight * 10;
               if (b.sku === lastPrimarySKU.sku) scoreB += affinityWeight * 10;
             }
@@ -2308,11 +2311,14 @@
           const sliceThickness = primaryOri.l;
 
           const colsP = Math.max(1, Math.floor(this.W / primaryOri.wz));
-          const laysP = Math.max(1, Math.floor(this.H / primaryOri.h));
+          const rawLaysP = Math.max(1, Math.floor(this.H / primaryOri.h));
+          // 严格遵守 maxStackLayers
+          const laysP = primarySKU.maxStackLayers ? Math.min(rawLaysP, primarySKU.maxStackLayers) : rawLaysP;
           const sliceCapacity = colsP * laysP;
 
           // 如果剩余数量够装满至少 1 个整切片且该切片为整栋结构 (成栋 Monolithic 3D Block)
-          if (primarySKU.remQty >= sliceCapacity && currentX + sliceThickness <= this.L + 0.001) {
+          // 注意：如果 primarySKU 有 maxStackLayers 限制导致顶部悬空且还有其他 SKU，进入分列填顶逻辑
+          if (!primarySKU.maxStackLayers && primarySKU.remQty >= sliceCapacity && currentX + sliceThickness <= this.L + 0.001) {
             const fullSlices = Math.min(Math.floor(primarySKU.remQty / sliceCapacity), Math.floor((this.L - currentX) / sliceThickness));
             for (let sx = 0; sx < fullSlices; sx++) {
               const slX = currentX + sx * sliceThickness;
@@ -2346,7 +2352,7 @@
             continue;
           }
 
-          // 2. 如果不足一个完整切片，执行【横向拼装 + 顶部继续填充 + 凹面平准化】
+          // 2. 如果不足一个完整切片或有限层要求，执行【横向拼装 + 顶部继续填充 + 凹面平准化】
           let currentZ = 0;
           const sliceCols = [];
 
@@ -2384,9 +2390,13 @@
             const colZStart = currentZ;
             const colZEnd = currentZ + colOri.wz;
             let colY = 0;
+            const colPlacedSKUCount = {};
 
-            // 垂直逐层向上堆叠主 SKU (成列)
-            while (colY + colOri.h <= this.H + 0.001 && colSKU.remQty > 0) {
+            // 垂直逐层向上堆叠主 SKU (严格遵守 maxStackLayers)
+            const colMaxLay = colSKU.maxStackLayers || 999;
+            let colLayCount = 0;
+
+            while (colLayCount < colMaxLay && colY + colOri.h <= this.H + 0.001 && colSKU.remQty > 0) {
               placedBoxes.push({
                 id: `${colSKU.sku}-${boxGlobalIndex + 1}`,
                 sku: colSKU.sku,
@@ -2406,38 +2416,51 @@
               colSKU.actualPlaced++;
               colSKU.remQty--;
               colY += colOri.h;
+              colLayCount++;
+              colPlacedSKUCount[colSKU.sku] = (colPlacedSKUCount[colSKU.sku] || 0) + 1;
             }
 
-            // 【核心模块 3】：单件/少量货物上面，继续填充其它符合尺寸要求的货物 (顶部空间向上填满至 H)
+            // 【核心模块 3】：单件/限层货物上面，继续填充其它符合尺寸要求的货物 (顶部空间向上填满至 H)
             while (colY < this.H - 0.10) {
-              const availTop = skuPool.filter(s => s.remQty > 0);
+              const availTop = skuPool.filter(s => {
+                if (s.remQty <= 0) return false;
+                const curCount = colPlacedSKUCount[s.sku] || 0;
+                if (s.maxStackLayers && curCount >= s.maxStackLayers) return false;
+                return true;
+              });
               let filledTop = false;
               availTop.sort((a, b) => this.getZoneAffinityScore(b, currentX) - this.getZoneAffinityScore(a, currentX));
               for (const topSKU of availTop) {
+                const topMaxLay = topSKU.maxStackLayers || 999;
                 const topOris = this.getSafeOrientations(topSKU, colOri.l, this.H - colY, colOri.wz);
                 if (topOris.length > 0) {
                   const tOri = topOris[0];
-                  placedBoxes.push({
-                    id: `${topSKU.sku}-${boxGlobalIndex + 1}`,
-                    sku: topSKU.sku,
-                    name: topSKU.name || '',
-                    color: topSKU.color || 0x3b82f6,
-                    weight: topSKU.weight,
-                    requirement: topSKU.requirement || '',
-                    isElastic: topSKU.isElastic,
-                    x: Math.round(currentX * 10000) / 10000,
-                    y: Math.round(colY * 10000) / 10000,
-                    z: Math.round(colZStart * 10000) / 10000,
-                    w: Math.round(tOri.l * 10000) / 10000,
-                    h: Math.round(tOri.h * 10000) / 10000,
-                    d: Math.round(tOri.wz * 10000) / 10000
-                  });
-                  boxGlobalIndex++;
-                  topSKU.actualPlaced++;
-                  topSKU.remQty--;
-                  colY += tOri.h;
-                  filledTop = true;
-                  break;
+                  let tLayCount = colPlacedSKUCount[topSKU.sku] || 0;
+                  while (tLayCount < topMaxLay && colY + tOri.h <= this.H + 0.001 && topSKU.remQty > 0) {
+                    placedBoxes.push({
+                      id: `${topSKU.sku}-${boxGlobalIndex + 1}`,
+                      sku: topSKU.sku,
+                      name: topSKU.name || '',
+                      color: topSKU.color || 0x3b82f6,
+                      weight: topSKU.weight,
+                      requirement: topSKU.requirement || '',
+                      isElastic: topSKU.isElastic,
+                      x: Math.round(currentX * 10000) / 10000,
+                      y: Math.round(colY * 10000) / 10000,
+                      z: Math.round(colZStart * 10000) / 10000,
+                      w: Math.round(tOri.l * 10000) / 10000,
+                      h: Math.round(tOri.h * 10000) / 10000,
+                      d: Math.round(tOri.wz * 10000) / 10000
+                    });
+                    boxGlobalIndex++;
+                    topSKU.actualPlaced++;
+                    topSKU.remQty--;
+                    colY += tOri.h;
+                    tLayCount++;
+                    colPlacedSKUCount[topSKU.sku] = tLayCount;
+                    filledTop = true;
+                  }
+                  if (filledTop) break;
                 }
               }
               if (!filledTop) break;
@@ -2470,12 +2493,14 @@
 
               availNotch.sort((a, b) => this.getZoneAffinityScore(b, notchX) - this.getZoneAffinityScore(a, notchX));
               for (const nSKU of availNotch) {
+                const nMaxLay = nSKU.maxStackLayers || 999;
                 const nOris = this.getSafeOrientations(nSKU, notchDepth, this.H, notchWidth);
                 if (nOris.length > 0) {
                   const nOri = nOris[0];
                   let nY = 0;
                   let countN = 0;
-                  while (nY + nOri.h <= this.H + 0.001 && nSKU.remQty > 0) {
+                  let nLayCount = 0;
+                  while (nLayCount < nMaxLay && nY + nOri.h <= this.H + 0.001 && nSKU.remQty > 0) {
                     placedBoxes.push({
                       id: `${nSKU.sku}-${boxGlobalIndex + 1}`,
                       sku: nSKU.sku,
@@ -2495,6 +2520,7 @@
                     nSKU.actualPlaced++;
                     nSKU.remQty--;
                     nY += nOri.h;
+                    nLayCount++;
                     countN++;
                   }
                   if (countN > 0) {
@@ -2521,6 +2547,7 @@
             sku: s.sku,
             name: s.name || '',
             requirement: s.requirement || '',
+            maxStackLayers: s.maxStackLayers,
             planned: s.quantity,
             placed: s.actualPlaced,
             unplaced: s.remQty,
