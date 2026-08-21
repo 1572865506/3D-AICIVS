@@ -77,11 +77,11 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                 container_spec = payload.get('containerSpec', {})
                 manifest = payload.get('manifest', [])
                 weights = payload.get('weights', None)
-                # v1.5.0 前后端参数贯通：gap 货物间距(m) / strategy 装箱策略 / enableCoGBalance 配平开关
+                # v1.5.0 前后端参数贯通:gap 货物间距(m) / strategy 装箱策略 / enableCoGBalance 配平开关
                 gap = float(payload.get('gap', 0) or 0)
                 strategy = payload.get('strategy', 'cluster')
                 enable_cog = bool(payload.get('enableCoGBalance', True))
-                # v1.7.0 全局规划层开关（默认开启）
+                # v1.7.0 全局规划层开关(默认开启)
                 use_plan = bool(payload.get('usePlan', True))
 
                 # Log incoming request summary

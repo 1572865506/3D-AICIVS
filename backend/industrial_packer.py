@@ -188,14 +188,21 @@ class IndustrialSmartContainerPacker:
         形成低位孤儿列直接推高 flatness 台阶。此退化尾段视同非门货耗尽，
         门货提前进场接管截面（此时该切片本就处于非门货耗尽临界点）。
         """
+        rigid = [s for s in available if not s.get('isElastic')]
         if current_x >= self.door_boundary - 1e-9:
+            if rigid:
+                return rigid
             return available
+        
+        rigid_non_door = [s for s in rigid if not self._is_door_req(s)]
+        if rigid_non_door:
+            return rigid_non_door
+        if rigid:
+            return rigid
         non_door = [s for s in available if not self._is_door_req(s)]
-        if not non_door:
-            return available
-        if all(self._orphan_penalty(s, current_x, self.W) > 0 for s in non_door):
-            return available
-        return non_door
+        if non_door:
+            return non_door
+        return available
 
     def _achievable_col_height(self, s: Dict[str, Any], current_x: float, rem_width: float) -> float:
         """SKU 在 (纵深余量, 剩余宽度) 约束下，按当前剩余量可堆出的最高列高"""
@@ -215,6 +222,12 @@ class IndustrialSmartContainerPacker:
         直接推高 flatness 台阶。此类 SKU 重降权，残箱改由顶部填空/凹面填平消耗。
         全部候选均为残箱时（尾段常态）排序仍生效，不阻断放置。
         """
+        # 柜头深处的放最里面货物 (如 SKU-01) 必须允许在 X < 1.0m 落地起排，不受孤儿惩罚
+        if current_x < 1.0 and re.search(r'最里面|rear|deep', s.get('requirement', '') or '', re.IGNORECASE):
+            return 0
+        # 刚性件在门区余货段不受孤儿惩罚，允许混合成排以 100% 装满
+        if not s.get('isElastic') and current_x >= self.door_boundary - 0.5:
+            return 0
         h = self._achievable_col_height(s, current_x, rem_width)
         return 0 if h >= self.min_col_height_ratio * self.H else 1
 
@@ -246,6 +259,7 @@ class IndustrialSmartContainerPacker:
         is_rear = bool(re.search(r'最里面|rear|deep', req, re.IGNORECASE))
         is_mid = bool(re.search(r'放中间|mid|middle', req, re.IGNORECASE))
         is_door = bool(re.search(r'封柜门|door|front', req, re.IGNORECASE))
+        is_elastic = sku.get('isElastic', False)
 
         # 配平关闭：分区只按业务需求评分，不做重心加权（纯空间推进）
         cog_scale = (float(self.weights.get('cogBalance', 1500.0)) / 1500.0) if self.enable_cog else 1.0
@@ -263,8 +277,10 @@ class IndustrialSmartContainerPacker:
             if is_rear: return -10000.0 * cog_scale
             return 10000.0
         else:
-            if is_door: return (70000.0 if sku['isElastic'] else 100000.0) * door_scale
-            if is_mid: return 10000.0
+            if not is_elastic:
+                if is_door: return 100000.0 * door_scale
+                return 80000.0  # 未装完的刚性货（中段/柜头溢流件）在门区拥有极高优先级，排在弹性门货前
+            if is_door: return 10000.0 * door_scale
             if is_rear: return -20000.0
             return 10000.0
 

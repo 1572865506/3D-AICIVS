@@ -2272,9 +2272,9 @@
     // --- 2. INDUSTRIAL SMART CONTAINER PACKING KERNEL (TRI-AXIS EVALUATOR & ROW-FIRST HIERARCHY) ---
     class IndustrialSmartContainerPacker {
       constructor(containerDim, options = {}) {
-        this.L = containerDim.length;
-        this.H = containerDim.height;
-        this.W = containerDim.width;
+        this.L = containerDim.length || containerDim.L;
+        this.H = containerDim.height || containerDim.H;
+        this.W = containerDim.width || containerDim.W;
         this.maxPayloadKg = (options.maxPayloadTons || 28.6) * 1000.0;
         this.weights = Object.assign({
           affinity: 3000,
@@ -2332,6 +2332,7 @@
         const isRear = /最里面|rear|deep|头/i.test(req);
         const isMid = /放中间|mid|middle|中/i.test(req);
         const isDoor = /封柜门|door|front|尾|门/i.test(req);
+        const isElastic = sku.isElastic || /可以少放|可以减少|可减少|调节|按需/i.test(req);
 
         const L = this.L;
         const rearBoundary = 3.2; // 柜头前段 3.2 米
@@ -2343,8 +2344,9 @@
           if (isDoor) return -9999999; // 柜头绝不使用封柜门
           return 10000;
         } else if (currentX >= doorBoundary) {
-          if (isDoor) return sku.isElastic ? 800000 : 3000000; // 封柜门主料绝对优先
-          if (isMid) return 10000;
+          if (isDoor && !isElastic) return 3000000; // 刚性封门货绝对优先
+          if (!isElastic) return 2000000; // 任何未装完的刚性货在门区优先级高于弹性件
+          if (isDoor && isElastic) return 800000; // 弹性件作为最后封门垫料
           if (isRear) return -9999999;
           return 10000;
         } else {
@@ -2441,10 +2443,23 @@
           const doorBoundary = this.L - 4.2;
           const nonDoorAvailable = available.filter(s => !/封柜门|door|front|尾|门/i.test(s.requirement || ''));
 
-          // 核心作业区门禁：在未到达柜门段且尚有非封柜门货物时，严格过滤封柜门货物
+          // 核心作业区门禁与刚性件绝对优先法则 (Iron Law of Rigid Fulfillment)
+          const rigidAvailable = available.filter(s => !s.isElastic);
           let candidatePool = available;
-          if (currentX < doorBoundary && nonDoorAvailable.length > 0) {
-            candidatePool = nonDoorAvailable;
+          if (currentX < doorBoundary) {
+            const rigidNonDoor = rigidAvailable.filter(s => !/封柜门|door|front|尾|门/i.test(s.requirement || ''));
+            if (rigidNonDoor.length > 0) {
+              candidatePool = rigidNonDoor;
+            } else if (rigidAvailable.length > 0) {
+              candidatePool = rigidAvailable;
+            } else if (nonDoorAvailable.length > 0) {
+              candidatePool = nonDoorAvailable;
+            }
+          } else {
+            // 门区内：优先让未装完的刚性货进池，全部装完后再放行弹性门货
+            if (rigidAvailable.length > 0) {
+              candidatePool = rigidAvailable;
+            }
           }
 
           // 1. 选取主力 SKU (严格按分区亲和力)
@@ -2617,10 +2632,11 @@
             }
 
             availInCol.sort((a, b) => {
+              if (a.isElastic !== b.isElastic) {
+                return a.isElastic ? 1 : -1; // 刚性件绝对优先排在弹性件前面
+              }
               let sA = (a.sku === primarySKU.sku) ? 50000000 : this.getZoneAffinityScore(a, currentX);
               let sB = (b.sku === primarySKU.sku) ? 50000000 : this.getZoneAffinityScore(b, currentX);
-              if (a.isElastic) sA -= 20000;
-              if (b.isElastic) sB -= 20000;
               return sB - sA;
             });
 
@@ -4457,6 +4473,7 @@
           return;
         }
       }
+      window.activePackingResult = activePackingResult;
 
       if (cacheBadge && cacheTxt && cacheDot) {
         if (fromBackend) {
@@ -4581,6 +4598,9 @@
           }
         }
 
+        isCameraDirty = true;
+        isRaycastDirty = true;
+        updateAdaptiveCutaway();
         renderManifestUI();
         renderAnchorRibbon();
         updateBoxVisibilityAndMaterials();
