@@ -1151,37 +1151,100 @@
       white-space: nowrap;
     }
 
-    /* Global Toast Notification Component */
+    /* Global Notification & Toast Components (Docked Above Anchor Area) */
     .toast-container {
       position: fixed;
-      bottom: 28px;
-      right: 28px;
+      bottom: 110px; /* Docked right above the bottom-right anchor panel */
+      right: 20px;
       z-index: 99999;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      align-items: flex-end;
+      gap: 8px;
       pointer-events: none;
+      width: 340px;
+      max-width: calc(100vw - 40px);
     }
     .toast-card {
-      background: rgba(15, 23, 42, 0.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 12px;
-      padding: 11px 18px;
-      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.45);
+      width: 100%;
+      box-sizing: border-box;
+      background: rgba(15, 23, 42, 0.90);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 13px;
+      padding: 12px 14px;
+      box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08);
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 10px;
-      font-size: 12.5px;
-      font-weight: 700;
-      animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      transition: all 0.3s ease;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.45;
+      animation: toastSlideUp 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       pointer-events: auto;
     }
-    @keyframes toastSlideIn {
-      from { opacity: 0; transform: translateY(16px) scale(0.95); }
+    .toast-card.success {
+      border-left: 3.5px solid #10b981;
+    }
+    .toast-card.warning {
+      border-left: 3.5px solid #f59e0b;
+    }
+    .toast-card.info {
+      border-left: 3.5px solid #38bdf8;
+    }
+    .toast-icon-wrap {
+      width: 22px;
+      height: 22px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 13px;
+    }
+    .toast-card.success .toast-icon-wrap {
+      background: rgba(16, 185, 129, 0.18);
+      color: #34d399;
+    }
+    .toast-card.warning .toast-icon-wrap {
+      background: rgba(245, 158, 11, 0.18);
+      color: #fbbf24;
+    }
+    .toast-card.info .toast-icon-wrap {
+      background: rgba(56, 189, 248, 0.18);
+      color: #38bdf8;
+    }
+    .toast-content {
+      flex: 1;
+    }
+    .toast-title {
+      font-weight: 800;
+      font-size: 12.5px;
+      margin-bottom: 2px;
+      color: #ffffff;
+    }
+    .toast-body {
+      font-size: 11.5px;
+      color: #cbd5e1;
+    }
+    .toast-close {
+      color: #94a3b8;
+      background: transparent;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 0 2px;
+      line-height: 1;
+      transition: color 0.15s ease;
+    }
+    .toast-close:hover {
+      color: #ffffff;
+    }
+    @keyframes toastSlideUp {
+      from { opacity: 0; transform: translateY(12px) scale(0.96); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
@@ -1401,43 +1464,137 @@
       gap: 10px;
     }
 
-    /* Luxury 3D Tooltip */
+    /* Modern Industrial Form Components */
+    .custom-select, select.styled-select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      width: 100%;
+      padding: 8px 32px 8px 12px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #1e293b;
+      background-color: #ffffff;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 14px 14px;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .custom-select:hover, select.styled-select:hover {
+      border-color: #94a3b8;
+      background-color: #f8fafc;
+    }
+    .custom-select:focus, select.styled-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3.5px rgba(37, 99, 235, 0.15);
+      background-color: #ffffff;
+    }
+
+    .custom-input, input.styled-input {
+      width: 100%;
+      padding: 7px 11px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #0f172a;
+      background: #ffffff;
+      outline: none;
+      box-sizing: border-box;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .custom-input:hover, input.styled-input:hover {
+      border-color: #94a3b8;
+      background: #f8fafc;
+    }
+    .custom-input:focus, input.styled-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3.5px rgba(37, 99, 235, 0.15);
+      background: #ffffff;
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    /* Luxury 3D Inspector HUD Card (Docked directly above the SKU Anchor Panel) */
     .tooltip-card {
       position: absolute;
-      pointer-events: none;
+      right: 20px;
+      bottom: 110px; /* Docked right above the bottom-right anchor panel */
+      width: 330px;
+      max-width: calc(100vw - 40px);
+      pointer-events: auto;
       display: none;
-      padding: 10px 14px;
-      border-radius: 12px;
-      background: var(--glass-dark);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 13px 15px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       color: #f8fafc;
-      font-size: 11px;
-      z-index: 100;
-      box-shadow: var(--shadow-lg);
-      border: 1px solid rgba(255,255,255,0.14);
-      transform: translate(-50%, -125%);
+      font-size: 11.5px;
+      z-index: 95;
+      box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(255, 255, 255, 0.12);
+    }
+    .tooltip-card.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .tooltip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
     }
     .tooltip-title {
       font-weight: 800;
-      font-size: 12px;
-      color: #60a5fa;
-      margin-bottom: 4px;
+      font-size: 12.5px;
+      color: #38bdf8;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
     }
-    .tooltip-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-      color: #cbd5e1;
-      line-height: 1.45;
+    .tooltip-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 10px;
+      margin-bottom: 8px;
     }
-    .tooltip-val {
-      font-family: 'JetBrains Mono', monospace;
-      color: #fff;
+    .tooltip-grid-item {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 5px 8px;
+    }
+    .tooltip-grid-label {
+      font-size: 9.5px;
+      color: #94a3b8;
       font-weight: 600;
+      display: block;
+      margin-bottom: 1px;
+    }
+    .tooltip-grid-val {
+      font-family: 'JetBrains Mono', monospace;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
     }
     .tooltip-hint {
       margin-top: 6px;
@@ -1993,7 +2150,7 @@
             <label style="font-size:12px; font-weight:700; color:#1e293b;">1. 货柜纵向位置区间 (Position Zone)</label>
             <span style="font-size:10px; color:#64748b;">影响进深前后装载区位</span>
           </div>
-          <select id="sku-edit-req" style="width:100%; padding:8px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:12px; font-weight:600; background:white; outline:none; transition:border 0.2s;">
+          <select id="sku-edit-req" class="custom-select">
             <option value="放柜子最里面">📍 放柜子最里面 (Deep Inside / Rear - 优先置于箱体深处)</option>
             <option value="放中间">🏢 放中间 (Middle Section - 紧密排布于货柜中段)</option>
             <option value="封柜门">🚪 封柜门 (Front / Door End - 作为门端封箱与防倾挡板)</option>
@@ -2006,7 +2163,7 @@
             <label style="font-size:12px; font-weight:700; color:#1e293b;">2. 货物翻转与朝向权限 (Orientation Permission)</label>
             <span style="font-size:10px; color:#64748b;">保护封箱胶带与直立标</span>
           </div>
-          <select id="sku-edit-ori" style="width:100%; padding:8px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:12px; font-weight:600; background:white; outline:none; transition:border 0.2s;">
+          <select id="sku-edit-ori" class="custom-select">
             <option value="upright">⬆️ 仅允许立放 (Upright Only - 正立偏航90°旋转，封箱胶带向上)</option>
             <option value="allow_flat">📦 允许平放 (Allow Flat - 允许大面积朝下平铺，降低重心)</option>
             <option value="allow_side">📑 允许侧卧 (Allow Side - 允许窄侧面竖直放置)</option>
@@ -2020,7 +2177,7 @@
             <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">
               3. 最大堆叠层数 (Max Layers)
             </label>
-            <input type="number" id="sku-edit-max-layers" min="0" max="25" step="1" placeholder="0为不限" style="width:100%; padding:6px 8px; border:1.5px solid #cbd5e1; border-radius:6px; font-size:12px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box; outline:none;">
+            <input type="number" id="sku-edit-max-layers" class="custom-input" min="0" max="25" step="1" placeholder="0为不限" style="font-family:'JetBrains Mono';">
             <span style="font-size:9.5px; color:#94a3b8; display:block; margin-top:3px;">填 0 或留空按柜顶算满</span>
           </div>
 
@@ -2028,7 +2185,7 @@
             <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">
               4. 承重抗压极限 (Max kg)
             </label>
-            <input type="number" id="sku-edit-max-bearing" min="10" max="1000" step="5" placeholder="默认 180kg" style="width:100%; padding:6px 8px; border:1.5px solid #cbd5e1; border-radius:6px; font-size:12px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box; outline:none;">
+            <input type="number" id="sku-edit-max-bearing" class="custom-input" min="10" max="1000" step="5" placeholder="默认 180kg" style="font-family:'JetBrains Mono';">
             <span style="font-size:9.5px; color:#94a3b8; display:block; margin-top:3px;">上方累计最大承载重量</span>
           </div>
 
@@ -2036,7 +2193,7 @@
             <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">
               承压强度上限 (Max kg/m²)
             </label>
-            <input type="number" id="sku-edit-max-pressure" min="0" max="10000" step="10" placeholder="0为不限" style="width:100%; padding:6px 8px; border:1.5px solid #cbd5e1; border-radius:6px; font-size:12px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box; outline:none;">
+            <input type="number" id="sku-edit-max-pressure" class="custom-input" min="0" max="10000" step="10" placeholder="0为不限" style="font-family:'JetBrains Mono';">
             <span style="font-size:9.5px; color:#94a3b8; display:block; margin-top:3px;">单位面积允许压强，填 0 留空不限</span>
           </div>
         </div>
@@ -2046,7 +2203,7 @@
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
             <label style="font-size:12px; font-weight:700; color:#1e293b;">5. 模块五超容弹性核减策略 (Capacity Rule)</label>
           </div>
-          <select id="sku-edit-elastic" style="width:100%; padding:8px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:12px; font-weight:600; background:white; outline:none;">
+          <select id="sku-edit-elastic" class="custom-select">
             <option value="false">🔒 刚性必装件 (Mandatory - 100% 满额履约装完)</option>
             <option value="true">⚡ 弹性缓冲件 (Elastic - 装不下时自动填满柜容并核减)</option>
           </select>
@@ -2058,19 +2215,19 @@
           <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:8px;">
             <div>
               <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">长 (m)</label>
-              <input type="number" id="sku-edit-w" step="0.001" style="width:100%; padding:5px 6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+              <input type="number" id="sku-edit-w" class="custom-input" step="0.001" style="font-family:'JetBrains Mono';">
             </div>
             <div>
               <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">宽 (m)</label>
-              <input type="number" id="sku-edit-d" step="0.001" style="width:100%; padding:5px 6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+              <input type="number" id="sku-edit-d" class="custom-input" step="0.001" style="font-family:'JetBrains Mono';">
             </div>
             <div>
               <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">高 (m)</label>
-              <input type="number" id="sku-edit-h" step="0.001" style="width:100%; padding:5px 6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+              <input type="number" id="sku-edit-h" class="custom-input" step="0.001" style="font-family:'JetBrains Mono';">
             </div>
             <div>
               <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">计划数(箱)</label>
-              <input type="number" id="sku-edit-qty" min="1" step="1" style="width:100%; padding:5px 6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+              <input type="number" id="sku-edit-qty" class="custom-input" min="1" step="1" style="font-family:'JetBrains Mono';">
             </div>
           </div>
         </div>
@@ -2110,18 +2267,18 @@
         <div style="display:grid; grid-template-columns: 1fr 2fr; gap:12px; margin-bottom:14px;">
           <div>
             <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">SKU 编号</label>
-            <input type="text" id="sku-add-code" placeholder="SKU-15" style="width:100%; padding:7px 10px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:12px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+            <input type="text" id="sku-add-code" class="custom-input" placeholder="SKU-15" style="font-family:'JetBrains Mono';">
           </div>
           <div>
             <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">产品分类品名</label>
-            <input type="text" id="sku-add-name" placeholder="例如: 32寸曲面显示器 / 伺服电机" style="width:100%; padding:7px 10px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:12px; box-sizing:border-box;">
+            <input type="text" id="sku-add-name" class="custom-input" placeholder="例如: 32寸曲面显示器 / 伺服电机">
           </div>
         </div>
 
         <!-- Position Requirement -->
         <div style="margin-bottom:14px;">
           <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">1. 货柜纵向摆放区间要求</label>
-          <select id="sku-add-req" style="width:100%; padding:8px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:12px; font-weight:600; background:white;">
+          <select id="sku-add-req" class="custom-select">
             <option value="放中间" selected>🏢 放中间 (Middle Section - 紧密排布于货柜中段)</option>
             <option value="放柜子最里面">📍 放柜子最里面 (Deep Inside / Rear - 优先置于箱体深处)</option>
             <option value="封柜门">🚪 封柜门 (Front / Door End - 作为门端封箱与防倾挡板)</option>
@@ -2131,7 +2288,7 @@
         <!-- Allowed Orientation -->
         <div style="margin-bottom:14px;">
           <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">2. 翻转朝向权限</label>
-          <select id="sku-add-ori" style="width:100%; padding:8px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:12px; font-weight:600; background:white;">
+          <select id="sku-add-ori" class="custom-select">
             <option value="upright" selected>⬆️ 仅允许立放 (Upright Only - 正立偏航90°旋转，封箱胶带向上)</option>
             <option value="allow_flat">📦 允许平放 (Allow Flat - 允许大面积朝下平铺，降低重心)</option>
             <option value="allow_side">📑 允许侧卧 (Allow Side - 允许窄侧面竖直放置)</option>
@@ -2143,15 +2300,15 @@
         <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-bottom:14px;">
           <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
             <label style="font-size:11px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">最大堆叠层数 (0为不限)</label>
-            <input type="number" id="sku-add-max-layers" min="0" max="25" placeholder="0为不限" style="width:100%; padding:6px 8px; border:1.5px solid #cbd5e1; border-radius:6px; font-size:12px; font-family:'JetBrains Mono'; box-sizing:border-box;">
+            <input type="number" id="sku-add-max-layers" class="custom-input" min="0" max="25" placeholder="0为不限" style="font-family:'JetBrains Mono';">
           </div>
           <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
             <label style="font-size:11px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">单箱重量 (kg)</label>
-            <input type="number" id="sku-add-weight" min="0.1" step="0.1" value="10.0" style="width:100%; padding:6px 8px; border:1.5px solid #cbd5e1; border-radius:6px; font-size:12px; font-family:'JetBrains Mono'; box-sizing:border-box;">
+            <input type="number" id="sku-add-weight" class="custom-input" min="0.1" step="0.1" value="10.0" style="font-family:'JetBrains Mono';">
           </div>
           <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
             <label style="font-size:11px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">承压强度 (kg/m²，0为不限)</label>
-            <input type="number" id="sku-add-max-pressure" min="0" step="10" placeholder="0为不限" style="width:100%; padding:6px 8px; border:1.5px solid #cbd5e1; border-radius:6px; font-size:12px; font-family:'JetBrains Mono'; box-sizing:border-box;">
+            <input type="number" id="sku-add-max-pressure" class="custom-input" min="0" step="10" placeholder="0为不限" style="font-family:'JetBrains Mono';">
           </div>
         </div>
 
@@ -2161,19 +2318,19 @@
           <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:8px;">
             <div>
               <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">长 (m)</label>
-              <input type="number" id="sku-add-w" step="0.001" value="0.50" style="width:100%; padding:5px 6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+              <input type="number" id="sku-add-w" class="custom-input" step="0.001" value="0.50" style="font-family:'JetBrains Mono';">
             </div>
             <div>
               <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">宽 (m)</label>
-              <input type="number" id="sku-add-d" step="0.001" value="0.40" style="width:100%; padding:5px 6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+              <input type="number" id="sku-add-d" class="custom-input" step="0.001" value="0.40" style="font-family:'JetBrains Mono';">
             </div>
             <div>
               <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">高 (m)</label>
-              <input type="number" id="sku-add-h" step="0.001" value="0.35" style="width:100%; padding:5px 6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+              <input type="number" id="sku-add-h" class="custom-input" step="0.001" value="0.35" style="font-family:'JetBrains Mono';">
             </div>
             <div>
               <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">数量 (箱)</label>
-              <input type="number" id="sku-add-qty" min="1" step="1" value="50" style="width:100%; padding:5px 6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box;">
+              <input type="number" id="sku-add-qty" class="custom-input" min="1" step="1" value="50" style="font-family:'JetBrains Mono';">
             </div>
           </div>
         </div>
@@ -2189,19 +2346,42 @@
     </div>
   </div>
 
-  <!-- 3D Raycast Tooltip -->
+  <!-- 3D Raycast Tooltip (Docked Above Anchor Area) -->
   <div id="box-tooltip" class="tooltip-card">
-    <div class="tooltip-title" id="tt-sku">
-      <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#60a5fa;"></span>
-      <span>SKU: PKG-89201</span>
+    <div class="tooltip-header">
+      <div class="tooltip-title" id="tt-sku">
+        <span id="tt-color-dot" style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#38bdf8; box-shadow:0 0 6px #38bdf8;"></span>
+        <span id="tt-sku-code">SKU: SKU-01</span>
+      </div>
+      <span id="tt-req-tag" class="req-tag req-mid" style="font-size:9.5px; padding:2px 7px;">放中间</span>
     </div>
-    <div class="tooltip-row"><span>分类品名:</span> <span class="tooltip-val" id="tt-type">精密电子元器件</span></div>
-    <div class="tooltip-row"><span>规格尺寸:</span> <span class="tooltip-val" id="tt-dim">600×400×450mm</span></div>
-    <div class="tooltip-row"><span>单箱重量:</span> <span class="tooltip-val" id="tt-weight">24.5 kg</span></div>
-    <div class="tooltip-row"><span>摆放要求:</span> <span class="tooltip-val" id="tt-req">放柜子最里面</span></div>
-    <div class="tooltip-row"><span>空间坐标:</span> <span class="tooltip-val" id="tt-pos">X:0 Y:0 Z:0</span></div>
+
+    <div style="font-weight:700; font-size:12px; color:#f1f5f9; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between;">
+      <span id="tt-type" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:210px;">产品名称</span>
+      <span id="tt-status-badge" style="font-size:9.5px; color:#34d399; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); padding:1px 5px; border-radius:4px; font-weight:700;">100% 满装</span>
+    </div>
+
+    <div class="tooltip-grid">
+      <div class="tooltip-grid-item">
+        <span class="tooltip-grid-label">📦 规格尺寸 (长×宽×高)</span>
+        <span class="tooltip-grid-val" id="tt-dim">600×400×450mm</span>
+      </div>
+      <div class="tooltip-grid-item">
+        <span class="tooltip-grid-label">⚖️ 单箱毛重</span>
+        <span class="tooltip-grid-val" id="tt-weight">24.5 kg</span>
+      </div>
+      <div class="tooltip-grid-item">
+        <span class="tooltip-grid-label">🧭 空间坐标 (XYZ)</span>
+        <span class="tooltip-grid-val" id="tt-pos">X:0.0 Y:0.0 Z:0.0</span>
+      </div>
+      <div class="tooltip-grid-item">
+        <span class="tooltip-grid-label">📊 装载进度</span>
+        <span class="tooltip-grid-val" id="tt-progress" style="color:#38bdf8;">50/50 箱</span>
+      </div>
+    </div>
+
     <div class="tooltip-hint">
-      <span class="kbd-chip">双击</span> 或 <span class="kbd-chip">Alt/Ctrl+点击</span> 锁定聚焦此货物
+      <span class="kbd-chip">双击</span> 或 <span class="kbd-chip">Alt/Ctrl+点击</span> 锁定聚焦 • 鼠标悬停实时追踪
     </div>
   </div>
 
@@ -4628,7 +4808,7 @@
       }
     };
 
-    function showToast(msg, type = 'success') {
+    function showToast(msg, type = 'success', customTitle = '') {
       let container = document.getElementById('global-toast-container');
       if (!container) {
         container = document.createElement('div');
@@ -4638,16 +4818,25 @@
       }
 
       const toast = document.createElement('div');
-      toast.className = 'toast-card';
-      const icon = (type === 'success') ? '✨' : (type === 'info' ? '⚡' : '⚠️');
-      toast.innerHTML = `<span style="font-size:15px;">${icon}</span><span>${msg}</span>`;
+      toast.className = `toast-card ${type}`;
+      const icon = (type === 'success') ? '✓' : (type === 'info' ? '⚡' : '⚠️');
+      const title = customTitle || (type === 'success' ? '算柜排布成功' : (type === 'warning' ? '装载提示' : '系统通知'));
+
+      toast.innerHTML = `
+        <div class="toast-icon-wrap">${icon}</div>
+        <div class="toast-content">
+          <div class="toast-title">${title}</div>
+          <div class="toast-body">${msg}</div>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.remove()" title="关闭提示">✕</button>
+      `;
       container.appendChild(toast);
 
       setTimeout(() => {
         toast.style.opacity = '0';
-        toast.style.transform = 'translateY(10px) scale(0.9)';
-        setTimeout(() => toast.remove(), 300);
-      }, 2800);
+        toast.style.transform = 'translateY(12px) scale(0.96)';
+        setTimeout(() => toast.remove(), 260);
+      }, 3600);
     }
 
     let cogIndicatorGroup = null;
@@ -4779,10 +4968,12 @@
         chip.addEventListener('mouseenter', () => {
           highlightSKUInScene(item.sku);
           highlightCardInList(item.sku, true);
+          showSKUInfoHUD(item);
         });
         chip.addEventListener('mouseleave', () => {
           restoreSKUDisplay();
           highlightCardInList(item.sku, false);
+          if (!hoveredBox) hideSKUInfoHUD();
         });
 
         chip.addEventListener('click', (e) => {
@@ -4895,10 +5086,12 @@
         card.addEventListener('mouseenter', () => {
           highlightSKUInScene(sku.sku);
           highlightAnchorChip(sku.sku, true);
+          showSKUInfoHUD(sku);
         });
         card.addEventListener('mouseleave', () => {
           restoreSKUDisplay();
           highlightAnchorChip(sku.sku, false);
+          if (!hoveredBox) hideSKUInfoHUD();
         });
 
         card.addEventListener('click', (e) => {
@@ -5724,19 +5917,106 @@
     }
 
     const tooltip = document.getElementById('box-tooltip');
-    const ttSku = document.getElementById('tt-sku');
+    const ttSkuCode = document.getElementById('tt-sku-code');
+    const ttColorDot = document.getElementById('tt-color-dot');
+    const ttReqTag = document.getElementById('tt-req-tag');
     const ttType = document.getElementById('tt-type');
+    const ttStatusBadge = document.getElementById('tt-status-badge');
     const ttDim = document.getElementById('tt-dim');
     const ttWeight = document.getElementById('tt-weight');
-    const ttReq = document.getElementById('tt-req');
     const ttPos = document.getElementById('tt-pos');
+    const ttProgress = document.getElementById('tt-progress');
+
+    function showSKUInfoHUD(skuData, boxData) {
+      if (!tooltip || !skuData) return;
+      const hexColor = '#' + new THREE.Color(skuData.color || 0x38bdf8).getHexString();
+      if (ttColorDot) {
+        ttColorDot.style.background = hexColor;
+        ttColorDot.style.boxShadow = `0 0 6px ${hexColor}`;
+      }
+      if (ttSkuCode) ttSkuCode.textContent = `SKU: ${skuData.sku}`;
+      if (ttType) ttType.textContent = skuData.name || '-';
+
+      const stats = activePackingResult?.skuStats?.[skuData.sku];
+      const isElastic = skuData.isElastic || (skuData.requirement && skuData.requirement.includes('可以减少'));
+      const placed = stats ? stats.placed : (skuData.quantity || 0);
+      const planned = stats ? stats.planned : (skuData.quantity || 0);
+
+      if (ttStatusBadge) {
+        if (isElastic) {
+          ttStatusBadge.textContent = '⚡ 弹性缓冲件';
+          ttStatusBadge.style.color = '#f59e0b';
+          ttStatusBadge.style.background = 'rgba(245, 158, 11, 0.15)';
+          ttStatusBadge.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+        } else if (stats && !stats.isFullyPlaced) {
+          ttStatusBadge.textContent = `⚠️ 未装完 (${stats.unplaced}箱未放)`;
+          ttStatusBadge.style.color = '#ef4444';
+          ttStatusBadge.style.background = 'rgba(239, 68, 68, 0.15)';
+          ttStatusBadge.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+        } else {
+          ttStatusBadge.textContent = '✅ 100% 满装';
+          ttStatusBadge.style.color = '#34d399';
+          ttStatusBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+          ttStatusBadge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+        }
+      }
+
+      if (ttReqTag) {
+        const req = skuData.requirement || '放中间';
+        ttReqTag.textContent = req;
+        if (req.includes('最里面')) {
+          ttReqTag.className = 'req-tag req-deep';
+        } else if (req.includes('封柜门')) {
+          ttReqTag.className = 'req-tag req-door';
+        } else {
+          ttReqTag.className = 'req-tag req-mid';
+        }
+      }
+
+      if (ttDim) {
+        if (boxData && boxData.dimensions) {
+          ttDim.textContent = boxData.dimensions;
+        } else {
+          const w = (skuData.w * 1000).toFixed(0);
+          const d = (skuData.d * 1000).toFixed(0);
+          const h = (skuData.h * 1000).toFixed(0);
+          ttDim.textContent = `${w}×${d}×${h}mm`;
+        }
+      }
+
+      if (ttWeight) {
+        ttWeight.textContent = `${skuData.weight || 0} kg`;
+      }
+
+      if (ttProgress) {
+        ttProgress.textContent = `${placed} / ${planned} 箱`;
+      }
+
+      if (ttPos) {
+        if (boxData && boxData.position) {
+          ttPos.textContent = boxData.position;
+        } else {
+          ttPos.textContent = `规划切片分段`;
+        }
+      }
+
+      tooltip.style.display = 'block';
+      setTimeout(() => tooltip.classList.add('active'), 10);
+    }
+
+    function hideSKUInfoHUD() {
+      if (!tooltip) return;
+      tooltip.classList.remove('active');
+      setTimeout(() => {
+        if (!tooltip.classList.contains('active')) {
+          tooltip.style.display = 'none';
+        }
+      }, 200);
+    }
 
     function onMouseMove(event) {
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-      tooltip.style.left = event.clientX + 'px';
-      tooltip.style.top = event.clientY + 'px';
 
       if (!isOrbiting) {
         isRaycastDirty = true;
@@ -5768,16 +6048,8 @@
           }
 
           const d = hit.userData;
-          ttSku.innerHTML = `
-            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#${new THREE.Color(d.color).getHexString()};"></span>
-            <span>SKU: ${d.sku}</span>
-          `;
-          ttType.textContent = d.name;
-          ttDim.textContent = d.dimensions;
-          ttWeight.textContent = d.weight;
-          ttReq.textContent = d.requirement;
-          ttPos.textContent = d.position;
-          tooltip.style.display = 'block';
+          const matchedItem = activeManifest.find(m => m.sku === d.sku);
+          showSKUInfoHUD(matchedItem || d, d);
         }
       } else {
         if (hoveredBox) {
@@ -5788,7 +6060,9 @@
             });
           }
           hoveredBox = null;
-          tooltip.style.display = 'none';
+          if (!hoveredSKU) {
+            hideSKUInfoHUD();
+          }
         }
       }
     }
