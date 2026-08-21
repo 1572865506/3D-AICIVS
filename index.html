@@ -1185,6 +1185,101 @@
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
+    /* --- v1.5.1 算柜进度反馈卡：参数修改 -> 内核推演 -> 3D 渲染 全流程可视化 --- */
+    .pp-overlay {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 99998;
+      pointer-events: none;
+      animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .pp-overlay.closing {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-10px) scale(0.96);
+      transition: all 0.35s ease;
+    }
+    .pp-card {
+      min-width: 320px;
+      max-width: 460px;
+      background: rgba(15, 23, 42, 0.93);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 14px;
+      padding: 13px 16px 12px;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.45);
+      color: #fff;
+    }
+    .pp-header { display: flex; align-items: center; gap: 9px; }
+    .pp-spinner {
+      width: 15px; height: 15px; flex: none;
+      border: 2.5px solid rgba(255, 255, 255, 0.22);
+      border-top-color: #60a5fa;
+      border-radius: 50%;
+      animation: ppSpin 0.8s linear infinite;
+    }
+    @keyframes ppSpin { to { transform: rotate(360deg); } }
+    .pp-title { font-size: 12.5px; font-weight: 800; letter-spacing: 0.2px; }
+    .pp-elapsed {
+      margin-left: auto;
+      font-size: 11px; font-weight: 700; color: #93c5fd;
+      font-variant-numeric: tabular-nums;
+    }
+    .pp-steps { margin: 10px 0 0; display: flex; flex-direction: column; gap: 5px; }
+    .pp-step {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 11px; font-weight: 600;
+      color: rgba(255, 255, 255, 0.36);
+      transition: color 0.25s ease;
+    }
+    .pp-dot {
+      width: 15px; height: 15px; flex: none;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.25s ease;
+    }
+    .pp-step.active { color: #e2e8f0; }
+    .pp-step.active .pp-dot {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.18);
+    }
+    .pp-step.active .pp-dot::after {
+      content: '';
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #60a5fa;
+      animation: ppPulse 1s ease-in-out infinite;
+    }
+    @keyframes ppPulse {
+      0%, 100% { opacity: 0.4; transform: scale(0.85); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    .pp-step.done { color: rgba(134, 239, 172, 0.95); }
+    .pp-step.done .pp-dot { border-color: #22c55e; background: #22c55e; }
+    .pp-step.done .pp-dot::after {
+      content: '✓'; width: auto; height: auto; background: none;
+      animation: none; color: #052e16; font-size: 9px; font-weight: 900;
+    }
+    .pp-note {
+      font-size: 10px; font-weight: 600; color: rgba(148, 163, 184, 0.95);
+      margin-top: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .pp-bar {
+      height: 4px; border-radius: 999px;
+      background: rgba(255, 255, 255, 0.10); overflow: hidden; margin-top: 8px;
+    }
+    .pp-bar-fill {
+      height: 100%; width: 6%; border-radius: 999px;
+      background: linear-gradient(90deg, #3b82f6, #60a5fa);
+      transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .pp-card.ok .pp-bar-fill { background: linear-gradient(90deg, #16a34a, #4ade80); }
+    .pp-card.ok .pp-title { color: #86efac; }
+    .pp-card.err .pp-bar-fill { background: linear-gradient(90deg, #dc2626, #f87171); }
+    .pp-card.err .pp-title { color: #fca5a5; }
+
     /* Range and Color Inputs in Studio */
     .param-row {
       display: flex;
@@ -1597,7 +1692,7 @@
             </div>
           </div>
 
-          <button class="btn-island-action primary" style="width: 100%; justify-content: center; padding: 9px; margin-top: 6px;" onclick="runSmartPackingAlgorithm(true)">
+          <button class="btn-island-action primary" id="btn-run-packing" style="width: 100%; justify-content: center; padding: 9px; margin-top: 6px;" onclick="runSmartPackingAlgorithm(true)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             <span>重新执行 AI 算柜装箱</span>
           </button>
@@ -1919,8 +2014,8 @@
           </select>
         </div>
 
-        <!-- 3. Max Stacking Layers & Max Weight -->
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:16px;">
+        <!-- 3. Max Stacking Layers & Max Weight & Max Pressure -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-bottom:16px;">
           <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
             <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">
               3. 最大堆叠层数 (Max Layers)
@@ -1935,6 +2030,14 @@
             </label>
             <input type="number" id="sku-edit-max-bearing" min="10" max="1000" step="5" placeholder="默认 180kg" style="width:100%; padding:6px 8px; border:1.5px solid #cbd5e1; border-radius:6px; font-size:12px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box; outline:none;">
             <span style="font-size:9.5px; color:#94a3b8; display:block; margin-top:3px;">上方累计最大承载重量</span>
+          </div>
+
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
+            <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">
+              承压强度上限 (Max kg/m²)
+            </label>
+            <input type="number" id="sku-edit-max-pressure" min="0" max="10000" step="10" placeholder="0为不限" style="width:100%; padding:6px 8px; border:1.5px solid #cbd5e1; border-radius:6px; font-size:12px; font-weight:700; font-family:'JetBrains Mono'; box-sizing:border-box; outline:none;">
+            <span style="font-size:9.5px; color:#94a3b8; display:block; margin-top:3px;">单位面积允许压强，填 0 留空不限</span>
           </div>
         </div>
 
@@ -2036,8 +2139,8 @@
           </select>
         </div>
 
-        <!-- Stacking Layers & Max Weight -->
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:14px;">
+        <!-- Stacking Layers & Max Weight & Max Pressure -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-bottom:14px;">
           <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
             <label style="font-size:11px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">最大堆叠层数 (0为不限)</label>
             <input type="number" id="sku-add-max-layers" min="0" max="25" placeholder="0为不限" style="width:100%; padding:6px 8px; border:1.5px solid #cbd5e1; border-radius:6px; font-size:12px; font-family:'JetBrains Mono'; box-sizing:border-box;">
@@ -2045,6 +2148,10 @@
           <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
             <label style="font-size:11px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">单箱重量 (kg)</label>
             <input type="number" id="sku-add-weight" min="0.1" step="0.1" value="10.0" style="width:100%; padding:6px 8px; border:1.5px solid #cbd5e1; border-radius:6px; font-size:12px; font-family:'JetBrains Mono'; box-sizing:border-box;">
+          </div>
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
+            <label style="font-size:11px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">承压强度 (kg/m²，0为不限)</label>
+            <input type="number" id="sku-add-max-pressure" min="0" step="10" placeholder="0为不限" style="width:100%; padding:6px 8px; border:1.5px solid #cbd5e1; border-radius:6px; font-size:12px; font-family:'JetBrains Mono'; box-sizing:border-box;">
           </div>
         </div>
 
@@ -4146,28 +4253,126 @@
     };
 
     // --- 7. HIGH-PERFORMANCE SMART PACKING WITH PYTHON 3 MICROSERVICE & CLIENT CACHE ---
+
+    // --- v1.5.1 算柜进度反馈：参数修改 -> 内核推演 -> 3D 渲染 全流程可视化 ---
+    // 解决"点击/修改后视图未立即变化，用户误以为操作无效"的体验问题。
+    // 快速连续改参数时只保留最新一次的进度卡（runId 守卫，旧卡片直接移除）。
+    let __packingProgressRunId = 0;
+    function nextPaint() {
+      // 让浏览器先把进度卡绘制出来，再进入同步的重计算/渲染，避免 UI 冻住不动
+      return new Promise(res => requestAnimationFrame(() => setTimeout(res, 16)));
+    }
+    function createPackingProgress() {
+      const runId = ++__packingProgressRunId;
+      document.getElementById('packing-progress-overlay')?.remove();
+
+      const overlay = document.createElement('div');
+      overlay.id = 'packing-progress-overlay';
+      overlay.className = 'pp-overlay';
+      overlay.innerHTML = `
+        <div class="pp-card">
+          <div class="pp-header">
+            <span class="pp-spinner"></span>
+            <span class="pp-title">AI 算柜推演中…</span>
+            <span class="pp-elapsed">0.0s</span>
+          </div>
+          <div class="pp-steps">
+            <div class="pp-step" data-step="1"><span class="pp-dot"></span><span>提交参数请求（策略 / 间距 / 配平）</span></div>
+            <div class="pp-step" data-step="2"><span class="pp-dot"></span><span>智能装箱内核推演</span></div>
+            <div class="pp-step" data-step="3"><span class="pp-dot"></span><span>重建 3D 装载场景</span></div>
+          </div>
+          <div class="pp-bar"><div class="pp-bar-fill"></div></div>
+          <div class="pp-note">正在准备…</div>
+        </div>`;
+      document.body.appendChild(overlay);
+
+      const card = overlay.querySelector('.pp-card');
+      const elapsedEl = overlay.querySelector('.pp-elapsed');
+      const noteEl = overlay.querySelector('.pp-note');
+      const barFill = overlay.querySelector('.pp-bar-fill');
+      const steps = overlay.querySelectorAll('.pp-step');
+      const titleEl = overlay.querySelector('.pp-title');
+      const spinnerEl = overlay.querySelector('.pp-spinner');
+
+      const t0 = Date.now();
+      const alive = () => runId === __packingProgressRunId && document.body.contains(overlay);
+      const timer = setInterval(() => {
+        if (!alive()) { clearInterval(timer); return; }
+        elapsedEl.textContent = ((Date.now() - t0) / 1000).toFixed(1) + 's';
+      }, 100);
+
+      return {
+        isCurrent: () => runId === __packingProgressRunId,
+        elapsedSec: () => (Date.now() - t0) / 1000,
+        step(idx, note) {
+          if (!alive()) return;
+          steps.forEach(s => {
+            const i = parseInt(s.dataset.step, 10);
+            s.classList.toggle('active', i === idx);
+            s.classList.toggle('done', i < idx);
+          });
+          barFill.style.width = (idx === 1 ? '12%' : idx === 2 ? '55%' : '90%');
+          if (note !== undefined) noteEl.textContent = note;
+        },
+        note(text) { if (alive()) noteEl.textContent = text; },
+        finish(ok, summary, holdMs) {
+          if (!alive()) return;
+          clearInterval(timer);
+          spinnerEl.style.display = 'none';
+          if (ok) {
+            steps.forEach(s => { s.classList.add('done'); s.classList.remove('active'); });
+            barFill.style.width = '100%';
+            card.classList.add('ok');
+            titleEl.textContent = '✓ 算柜完成';
+          } else {
+            card.classList.add('err');
+            titleEl.textContent = '算柜失败';
+          }
+          if (summary) noteEl.textContent = summary;
+          setTimeout(() => {
+            overlay.classList.add('closing');
+            setTimeout(() => overlay.remove(), 400);
+          }, holdMs !== undefined ? holdMs : (ok ? 1300 : 3600));
+        }
+      };
+    }
+
     async function requestPackingFromBackend(spec, manifest, weights) {
       try {
         let apiUrl = '/api/v1/pack';
-        // Auto-detect Python server port when opened via file:// or LiveServer on another port
-        if (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '8080')) {
-          apiUrl = 'http://localhost:8080/api/v1/pack';
+        // 同源优先：http(s)://host:port 打开时直接请求当前 origin，命中部署该页面的后端端口（如 8081）
+        // 仅 file:// 直开（无后端同源）时回退到默认后端端口 8081
+        if (window.location.protocol === 'file:') {
+          apiUrl = 'http://localhost:8081/api/v1/pack';
         }
 
         console.log(`📡 [3D-AICIVS] 发起 Python 后端微服务推演 -> ${apiUrl}`, { spec: spec.code, manifestCount: manifest.length, weights });
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            containerSpec: {
-              code: spec.code,
-              usable: spec.usable || { L: spec.intL, W: spec.intW, H: spec.intH },
-              maxPayloadTons: spec.maxPayloadTons || 26.5
-            },
-            manifest: manifest,
-            weights: weights
-          })
-        });
+        // 25s 超时：防止后端挂起时界面无限等待（表现为"改了参数没反应"）
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 25000);
+        let response;
+        try {
+          response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              containerSpec: {
+                code: spec.code,
+                usable: spec.usable || { L: spec.intL, W: spec.intW, H: spec.intH },
+                maxPayloadTons: spec.maxPayloadTons || 26.5
+              },
+              manifest: manifest,
+              weights: weights,
+              // v1.5.0 参数贯通：策略 / 货物间距 / 配平开关（与降级内核参数集对齐）
+              strategy: currentStrategy,
+              gap: currentGap,
+              enableCoGBalance: isCoGBalanceEnabled
+            }),
+            signal: controller.signal
+          });
+        } finally {
+          clearTimeout(timeoutId);
+        }
         if (!response.ok) throw new Error('API server returned status ' + response.status);
         const result = await response.json();
         if (result && result.success && result.placedBoxes) {
@@ -4181,8 +4386,23 @@
       return null;
     }
 
-    window.runSmartPackingAlgorithm = function(forceRecompute = true) {
-      console.log('[3D-AICIVS] runSmartPackingAlgorithm called -> 纯前端 6 大核心模块即时计算');
+    window.runSmartPackingAlgorithm = async function(forceRecompute = true) {
+      console.log('[3D-AICIVS] runSmartPackingAlgorithm called -> 优先 Python 后端 v1.5.0，失败降级纯前端内核');
+
+      // v1.5.1 进度反馈：全流程可视化，避免"改了参数没反应"的错觉
+      const prog = createPackingProgress();
+      const runBtn = document.getElementById('btn-run-packing');
+      const runBtnLabel = runBtn ? runBtn.querySelector('span') : null;
+      const setRunBusy = (busy) => {
+        if (!runBtn || !prog.isCurrent()) return;
+        runBtn.disabled = busy;
+        runBtn.style.opacity = busy ? '0.55' : '';
+        runBtn.style.pointerEvents = busy ? 'none' : '';
+        if (runBtnLabel) runBtnLabel.textContent = busy ? '算柜推演中…' : '重新执行 AI 算柜装箱';
+      };
+      setRunBusy(true);
+      prog.step(1, `策略 ${currentStrategy === 'mec' ? 'MEC 紧凑填充' : '同品聚合'} · 货物间距 ${Math.round(currentGap * 1000)}mm · 配平 ${isCoGBalanceEnabled ? '开' : '关'}`);
+      await nextPaint(); // 先让进度卡绘制出来再进入计算
 
       const usableDim = {
         length: currentSpec.intL,
@@ -4194,25 +4414,69 @@
       const cacheTxt = document.getElementById('txt-cache-badge');
       const cacheDot = document.getElementById('cache-dot');
 
-      // 执行纯前端 6 大核心模块装载内核 (成栋成墙、余货队列、朝向隔离、凹面填平)
-      const packer = new IndustrialSmartContainerPacker(usableDim, {
-        gap: currentGap,
-        strategy: currentStrategy,
-        enableCoGBalance: isCoGBalanceEnabled,
-        weights: activeAlgorithmWeights,
-        maxPayloadTons: currentSpec.maxPayloadTons || 28.6
-      });
-      activePackingResult = packer.pack(activeManifest);
+      // 优先调用 Python 后端（约束内核 v1.5.0：层优先 + XYZ 审计 + 限层/承重/策略/间距/配平），成功则直接用后端结果渲染
+      let fromBackend = false;
+      prog.step(2, `Python 后端约束内核推演中（${activeManifest.length} 种 SKU · ${currentSpec.code || ''}）…`);
+      await nextPaint();
+      try {
+        const backendResult = await requestPackingFromBackend(currentSpec, activeManifest, activeAlgorithmWeights);
+        if (backendResult) {
+          activePackingResult = backendResult;
+          fromBackend = true;
+          prog.note(`后端推演完成：${backendResult.totalCount} 箱 · 利用率 ${backendResult.utilization}% · ${backendResult.elapsedMs}ms`);
+        }
+      } catch (err) {
+        console.warn('[3D-AICIVS] 后端请求异常，降级前端内核:', err);
+      }
+
+      if (!fromBackend) {
+        // 降级：执行纯前端 6 大核心模块装载内核 (成栋成墙、余货队列、朝向隔离、凹面填平)
+        // 提示用户当前处于降级模式（避免误以为"没重算"）
+        const now = Date.now();
+        if (now - (window.__lastFallbackToastTime || 0) > 5000) {
+          window.__lastFallbackToastTime = now;
+          showToast('⚠️ 后端算柜服务不可用，本次已降级为内置内核计算', 'warning');
+        }
+        prog.note('后端不可用，切换内置前端内核计算中…');
+        await nextPaint();
+        try {
+          const packer = new IndustrialSmartContainerPacker(usableDim, {
+            gap: currentGap,
+            strategy: currentStrategy,
+            enableCoGBalance: isCoGBalanceEnabled,
+            weights: activeAlgorithmWeights,
+            maxPayloadTons: currentSpec.maxPayloadTons || 28.6
+          });
+          activePackingResult = packer.pack(activeManifest);
+        } catch (err) {
+          // 内核异常时保留上次结果，明确报错而不是静默失败
+          console.error('[3D-AICIVS] 前端内核计算异常，保留上次结果:', err);
+          showToast('⚠️ 前端内核计算失败: ' + (err.message || err) + '（已保留上次排布结果）', 'warning');
+          prog.finish(false, '前端内核计算失败，已保留上次排布结果');
+          setRunBusy(false);
+          return;
+        }
+      }
 
       if (cacheBadge && cacheTxt && cacheDot) {
-        cacheBadge.style.color = '#059669';
-        cacheBadge.style.background = '#f0fdf4';
-        cacheBadge.style.borderColor = '#86efac';
-        cacheDot.style.background = '#22c55e';
-        cacheTxt.textContent = `⚡ 纯前端极速内核 (${activePackingResult.elapsedMs}ms)`;
+        if (fromBackend) {
+          cacheBadge.style.color = '#1d4ed8';
+          cacheBadge.style.background = '#eff6ff';
+          cacheBadge.style.borderColor = '#93c5fd';
+          cacheDot.style.background = '#3b82f6';
+          cacheTxt.textContent = `🧠 Python 后端约束内核 v1.4.1 (${activePackingResult.elapsedMs}ms)`;
+        } else {
+          cacheBadge.style.color = '#059669';
+          cacheBadge.style.background = '#f0fdf4';
+          cacheBadge.style.borderColor = '#86efac';
+          cacheDot.style.background = '#22c55e';
+          cacheTxt.textContent = `⚡ 纯前端极速内核 (${activePackingResult.elapsedMs}ms)`;
+        }
       }
 
       // --- 3D Scene Rebuild ---
+      prog.step(3, `重建 3D 场景与材质（${activePackingResult.totalCount} 箱）…`);
+      await nextPaint(); // 渲染是同步重活，先让"第 3 步"状态绘制出来
       try {
         if (cargoGroup && containerGroup) {
           containerGroup.remove(cargoGroup);
@@ -4332,9 +4596,15 @@
 
         console.log('[3D-AICIVS] 3D scene rebuild complete. Boxes:', boxMeshes.length, 'Util:', activePackingResult.utilization + '%');
 
+        // v1.5.1 进度卡收尾：展示最终结果与总耗时，1.3s 后自动淡出
+        prog.finish(true, `${fromBackend ? 'Python 后端内核' : '前端内核'} · 共 ${activePackingResult.totalCount} 箱 · 利用率 ${activePackingResult.utilization}% · 总耗时 ${prog.elapsedSec().toFixed(1)}s`);
+        setRunBusy(false);
+
       } catch (renderErr) {
         console.error('[3D-AICIVS] 3D 场景渲染异常:', renderErr);
         showToast('⚠️ 3D 渲染异常: ' + renderErr.message, 'warning');
+        prog.finish(false, '3D 渲染异常: ' + (renderErr.message || renderErr));
+        setRunBusy(false);
       }
     };
 
@@ -4570,6 +4840,9 @@
         if (sku.maxStackLayers && sku.maxStackLayers > 0) {
           layerTag = `<span class="sku-param-badge" style="color:#2563eb; background:#eff6ff;">限${sku.maxStackLayers}层</span>`;
         }
+        if (sku.maxPressureKgM2 && sku.maxPressureKgM2 > 0) {
+          layerTag += `<span class="sku-param-badge" style="color:#0891b2; background:#ecfeff;">压强≤${sku.maxPressureKgM2}kg/m²</span>`;
+        }
 
         card.innerHTML = `
           <div class="sku-item-top">
@@ -4686,6 +4959,7 @@
       document.getElementById('sku-add-req').value = '放中间';
       document.getElementById('sku-add-ori').value = 'upright';
       document.getElementById('sku-add-max-layers').value = '';
+      document.getElementById('sku-add-max-pressure').value = '';
       document.getElementById('sku-add-weight').value = '10.0';
       document.getElementById('sku-add-w').value = '0.50';
       document.getElementById('sku-add-d').value = '0.40';
@@ -4704,6 +4978,7 @@
       const req = document.getElementById('sku-add-req').value;
       const ori = document.getElementById('sku-add-ori').value;
       const maxLay = parseInt(document.getElementById('sku-add-max-layers').value, 10);
+      const maxPressAdd = parseFloat(document.getElementById('sku-add-max-pressure').value);
       const weight = parseFloat(document.getElementById('sku-add-weight').value) || 10.0;
       const w = parseFloat(document.getElementById('sku-add-w').value) || 0.50;
       const d = parseFloat(document.getElementById('sku-add-d').value) || 0.40;
@@ -4724,6 +4999,7 @@
         allowedOrientation: ori,
         allowFlat: (ori === 'allow_flat' || ori === 'any'),
         maxStackLayers: (!isNaN(maxLay) && maxLay > 0) ? maxLay : null,
+        maxPressureKgM2: (!isNaN(maxPressAdd) && maxPressAdd > 0) ? maxPressAdd : null,
         color: color
       });
 
@@ -4747,6 +5023,7 @@
       document.getElementById('sku-edit-ori').value = item.allowedOrientation || (item.allowFlat ? 'allow_flat' : 'upright');
       document.getElementById('sku-edit-max-layers').value = item.maxStackLayers || '';
       document.getElementById('sku-edit-max-bearing').value = item.maxBearingKg || '';
+      document.getElementById('sku-edit-max-pressure').value = item.maxPressureKgM2 || '';
       document.getElementById('sku-edit-elastic').value = String(item.isElastic === true || /可以少放|可以减少|可减少|调节/i.test(item.requirement || ''));
 
       document.getElementById('sku-edit-w').value = item.w;
@@ -4776,6 +5053,9 @@
       const maxBear = parseFloat(document.getElementById('sku-edit-max-bearing').value);
       item.maxBearingKg = (!isNaN(maxBear) && maxBear > 0) ? maxBear : null;
 
+      const maxPress = parseFloat(document.getElementById('sku-edit-max-pressure').value);
+      item.maxPressureKgM2 = (!isNaN(maxPress) && maxPress > 0) ? maxPress : null;
+
       item.isElastic = (document.getElementById('sku-edit-elastic').value === 'true');
 
       const w = parseFloat(document.getElementById('sku-edit-w').value);
@@ -4795,9 +5075,15 @@
       saveAppState();
       renderManifestUI();
       renderAnchorRibbon();
+      const prevTotal = (activePackingResult && activePackingResult.totalCount) || 0;
       await runSmartPackingAlgorithm(true);
       const placedCount = activePackingResult?.skuStats?.[item.sku]?.placed || 0;
-      showToast(`✨ SKU [${item.sku}] 规则已生效：实装 ${placedCount}/${item.quantity} 箱，3D 货柜已完成重新推演排布！`, 'success');
+      const newTotal = activePackingResult?.totalCount || 0;
+      if (newTotal === prevTotal) {
+        showToast(`✅ SKU [${item.sku}] 参数已生效：实装 ${placedCount}/${item.quantity} 箱。总装载数 ${newTotal} 箱未变化（容器已满或该 SKU 已达可装上限）`, 'info');
+      } else {
+        showToast(`✨ SKU [${item.sku}] 规则已生效：实装 ${placedCount}/${item.quantity} 箱，3D 货柜已完成重新推演排布！`, 'success');
+      }
     };
 
     window.selectAllSKUs = function(selectAll) {

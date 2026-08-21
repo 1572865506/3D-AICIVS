@@ -58,7 +58,7 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
             health_data = {
                 'status': 'healthy',
                 'service': '3D-AICIVS Industrial Packing Kernel (Python 3)',
-                'version': '1.1.0',
+                'version': '1.7.0',
                 'timestamp': time.time()
             }
             self.wfile.write(json.dumps(health_data).encode('utf-8'))
@@ -77,13 +77,23 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                 container_spec = payload.get('containerSpec', {})
                 manifest = payload.get('manifest', [])
                 weights = payload.get('weights', None)
+                # v1.5.0 前后端参数贯通：gap 货物间距(m) / strategy 装箱策略 / enableCoGBalance 配平开关
+                gap = float(payload.get('gap', 0) or 0)
+                strategy = payload.get('strategy', 'cluster')
+                enable_cog = bool(payload.get('enableCoGBalance', True))
+                # v1.7.0 全局规划层开关（默认开启）
+                use_plan = bool(payload.get('usePlan', True))
 
                 # Log incoming request summary
                 sku_summary = ', '.join([f"{m.get('sku','?')}({m.get('requirement','?')})" for m in manifest[:5]])
                 print(f"[PACK] Received: {len(manifest)} SKUs, weights={weights is not None}, specs={container_spec.get('code','?')}")
                 print(f"[PACK] SKUs: {sku_summary}{'...' if len(manifest) > 5 else ''}")
+                print(f"[PACK] Params: strategy={strategy}, gap={gap}m, enableCoGBalance={enable_cog}")
 
-                packer = IndustrialSmartContainerPacker(container_spec, weights)
+                packer = IndustrialSmartContainerPacker(container_spec, weights,
+                                                        gap=gap, strategy=strategy,
+                                                        enableCoGBalance=enable_cog,
+                                                        usePlan=use_plan)
                 result = packer.pack(manifest)
 
                 print(f"[PACK] Result: placed={result.get('totalCount',0)}, util={result.get('utilization',0)}%, elapsed={result.get('elapsedMs',0)}ms")
