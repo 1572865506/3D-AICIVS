@@ -25,15 +25,40 @@ import time
 from typing import List, Dict, Any, Optional, Tuple
 
 class IndustrialSmartContainerPacker:
-    def __init__(self, container_spec: Dict[str, Any], weights: Optional[Dict[str, float]] = None):
+    def __init__(self, container_spec: Dict[str, Any], weights: Optional[Dict[str, float]] = None,
+                 gap: float = 0.0, strategy: str = 'cluster', enableCoGBalance: bool = True,
+                 usePlan: bool = True, multiStart: bool = True):
         usable = container_spec.get('usable', {})
         self.L = float(usable.get('L', container_spec.get('intL', 12.032)))
         self.W = float(usable.get('W', container_spec.get('intW', 2.352)))
         self.H = float(usable.get('H', container_spec.get('intH', 2.698)))
         self.max_payload_kg = float(container_spec.get('maxPayloadTons', 28.6)) * 1000.0
 
+        # v1.5.0 前后端全参数贯通：
+        # - gap: 货物间距（米）。每箱按 pitch = 尺寸 + gap 网格推进（L/W/H 三轴），
+        #   支撑判定按"隔 gap 接触"处理（上层箱视为由下层箱承重），审计联动。
+        # - strategy: 'cluster' 同品聚合+重力支撑（默认，原行为）/ 'mec' 紧凑空闲块填充
+        #   （每个空闲块优先选填充度最高的 SKU/朝向，不保持同品连续性）。
+        # - enableCoGBalance: False 时关闭列级重心硬拦截与 cogBalance 分区加权（纯空间推进）。
+        # v1.7.0 全局规划层：
+        # - usePlan: True 时构建前先跑 GlobalPlanBuilder 求全局排布序列（分区深度预算 ×
+        #   vpd 最优朝向 × 配额），作为主 SKU 评选的强先验（planBonus 加权）；
+        #   门禁/孤儿抑制/硬约束回退照常生效，规划失败自动回退纯贪心。
+        self.gap = max(0.0, float(gap or 0.0))
+        self.strategy = strategy if strategy in ('cluster', 'mec') else 'cluster'
+        self.enable_cog = bool(enableCoGBalance)
+        self.use_plan = bool(usePlan)
+        # 多起点择优外壳：pack() 内跑 plan/greedy 两个变体，按综合分
+        # （placed×box_w + util×util_w − flatness×flat_w）取最优。
+        self.multi_start = bool(multiStart)
+
         # 模块 6：箱门 1.2m 警戒区边界
         self.door_zone_x = max(0.0, self.L - 1.20)
+        # v1.6.0 分区边界动态化（对齐前端 JS 内核语义）：
+        # 柜头段 3.2m（最里面）/ 门段起点 L-4.2m（封柜门）/ 中段为两者之间。
+        # 短柜保护：门段起点不早于柜头段边界 + 0.1。
+        self.rear_boundary = 3.2
+        self.door_boundary = max(self.rear_boundary + 0.1, self.L - 4.2)
 
         default_weights = {
             'affinity': 3000.0,
@@ -45,18 +70,25 @@ class IndustrialSmartContainerPacker:
             # 新增约束参数（可调）
             'latLimit': 5.0,            # 横向偏载审计阈值（%）
             'cogHardLimit': 10.0,       # 横向偏载硬拦截阈值（%）：超过才跳过列，默认取 latLimit*2
-            'minSupportRatio': 0.30,    # 最小支撑覆盖率（阶梯防倾）
+            'minSupportRatio': 0.70,    # 最小支撑覆盖率（阶梯防倾）v1.6.0 对齐前端三轴评估器 70%
             'maxShiftRatio': 0.35,      # 支撑质心最大偏移比例
             'cogWarnRatio': 0.6,        # 重心预警线 = latLimit * 该比例
-            'cogEngageRatio': 0.5       # 重心硬门控启用线：已装质量 >= 预期总质量 * 该比例才启用列级硬拦截
+            'cogEngageRatio': 0.5,      # 重心硬门控启用线：已装质量 >= 预期总质量 * 该比例才启用列级硬拦截
+            'minColHeightRatio': 0.50,  # v1.6.1 孤儿列抑制：尾数段列 SKU 可达列高 < 柜高*该比例时重降权（残箱改走顶部填空/凹面填平）
+            'planBonus': 120000.0       # v1.7.0 规划先验权重：规划 SKU 主评选加分（< 孤儿惩罚 200000，孤儿抑制优先于规划）
         }
         self.weights = {**default_weights, **(weights or {})}
         self.lat_limit = float(self.weights.get('latLimit', 5.0))
         self.cog_hard_limit = float(self.weights.get('cogHardLimit', self.lat_limit * 2.0))
-        self.min_support_ratio = float(self.weights.get('minSupportRatio', 0.30))
+        self.min_support_ratio = float(self.weights.get('minSupportRatio', 0.70))
         self.max_shift_ratio = float(self.weights.get('maxShiftRatio', 0.35))
         self.cog_warn_ratio = float(self.weights.get('cogWarnRatio', 0.6))
         self.cog_engage_ratio = float(self.weights.get('cogEngageRatio', 0.5))
+        self.min_col_height_ratio = float(self.weights.get('minColHeightRatio', 0.50))
+        self.plan_bonus = float(self.weights.get('planBonus', 120000.0))
+        # v1.7.0 全局规划：segment 序列 + SKU 池索引（pack() 内填充）
+        self._plan_segments: List[Dict[str, Any]] = []
+        self._plan_pool: Dict[str, Dict[str, Any]] = {}
 
         # 增量重心状态（模块4 闭环）
         self._cog_mass = 0.0
@@ -81,6 +113,17 @@ class IndustrialSmartContainerPacker:
         """记录某 SKU 在某约束下被拦截的次数"""
         d = self.blocked_detail.setdefault(sku, {'doorZone': 0, 'pressure': 0, 'support': 0, 'cogSkip': 0})
         d[reason] = d.get(reason, 0) + 1
+
+    def _pitch_fit(self, total: float, unit: float) -> int:
+        """
+        gap 网格容纳数：沿某轴按 pitch = unit + gap 推进时，total 内能放几个 unit。
+        (n-1)*(unit+gap) + unit <= total  =>  n = floor((total + gap) / (unit + gap))。
+        gap=0 时退化为 floor(total / unit)，与旧版行为完全一致。
+        """
+        if unit <= 0:
+            return 0
+        pitch = unit + self.gap
+        return max(0, int((total + self.gap + 1e-9) // pitch))
 
     @staticmethod
     def is_aabb_overlap(a: Dict[str, float], b: Dict[str, float], eps: float = 0.0005) -> bool:
@@ -128,6 +171,72 @@ class IndustrialSmartContainerPacker:
                 valid.append(o)
         return valid
 
+    @staticmethod
+    def _is_door_req(sku: Dict[str, Any]) -> bool:
+        """需求声明为封柜门货"""
+        return bool(re.search(r'封柜门|door|front', sku.get('requirement', ''), re.IGNORECASE))
+
+    def _gate_candidate_pool(self, available: List[Dict[str, Any]], current_x: float) -> List[Dict[str, Any]]:
+        """
+        v1.6.0 核心作业区门禁（对齐前端硬过滤语义）：
+        未推进到门段（current_x < door_boundary）且尚有非门货时，
+        封柜门货不进候选池（既不参与主 SKU 评选，也不参与尾数拼装列填充）。
+        非门货耗尽后门禁解除，门货可在剩余空间任意放置。
+
+        v1.6.1 残箱尾段提前解锁：剩余非门货全部为残量不足起整列的残箱时，
+        若继续锁门，这批残箱会被迫自起地面列——其足迹上方大足迹 SKU 补不进，
+        形成低位孤儿列直接推高 flatness 台阶。此退化尾段视同非门货耗尽，
+        门货提前进场接管截面（此时该切片本就处于非门货耗尽临界点）。
+        """
+        if current_x >= self.door_boundary - 1e-9:
+            return available
+        non_door = [s for s in available if not self._is_door_req(s)]
+        if not non_door:
+            return available
+        if all(self._orphan_penalty(s, current_x, self.W) > 0 for s in non_door):
+            return available
+        return non_door
+
+    def _achievable_col_height(self, s: Dict[str, Any], current_x: float, rem_width: float) -> float:
+        """SKU 在 (纵深余量, 剩余宽度) 约束下，按当前剩余量可堆出的最高列高"""
+        best = 0.0
+        for o in self.get_safe_orientations(s, self.L - current_x, self.H, rem_width):
+            layers = max(1, self._pitch_fit(self.H, o['h']))
+            n = min(s['remQty'], layers)
+            h = n * o['h'] + max(0, n - 1) * self.gap
+            if h > best:
+                best = h
+        return best
+
+    def _orphan_penalty(self, s: Dict[str, Any], current_x: float, rem_width: float) -> int:
+        """
+        v1.6.1 孤儿列抑制：残量过小的 SKU（全部堆叠也达不到柜高 minColHeightRatio）
+        自起地面列会形成低位孤儿列——顶面收缩机制下大足迹 SKU 无法补高，
+        直接推高 flatness 台阶。此类 SKU 重降权，残箱改由顶部填空/凹面填平消耗。
+        全部候选均为残箱时（尾段常态）排序仍生效，不阻断放置。
+        """
+        h = self._achievable_col_height(s, current_x, rem_width)
+        return 0 if h >= self.min_col_height_ratio * self.H else 1
+
+    def _plan_sku_at(self, current_x: float) -> Optional[Dict[str, Any]]:
+        """
+        v1.7.0 规划先验：返回 current_x 所在（或最近未完成）的规划段。
+        - 段已越过的 SKU 若仍有剩量（规划滞后），不再回追——贪心按亲和度自行处理，
+          避免规划强迫滞留货反复低密度刷进度（#18 实验教训）。
+        - 当前段 SKU 已装完（remQty=0）则顺延到下一段，规划提前接班。
+        - 规划耗尽返回 None，主评选回落纯贪心。
+        """
+        if not self._plan_segments:
+            return None
+        for seg in self._plan_segments:
+            if current_x < seg['x_end'] - 1e-9:
+                entry = self._plan_pool.get(seg['sku'])
+                if entry and entry['remQty'] > 0:
+                    return seg
+                continue  # 该段 SKU 已装完，看下一段
+        return None
+
+
     def get_zone_affinity_score(self, sku: Dict[str, Any], current_x: float) -> float:
         """
         模块 4：3D 重心调控与业务装载分区（深端最里面 -> 中段放中间 -> 门端封柜门）
@@ -138,15 +247,17 @@ class IndustrialSmartContainerPacker:
         is_mid = bool(re.search(r'放中间|mid|middle', req, re.IGNORECASE))
         is_door = bool(re.search(r'封柜门|door|front', req, re.IGNORECASE))
 
-        cog_scale = float(self.weights.get('cogBalance', 1500.0)) / 1500.0
+        # 配平关闭：分区只按业务需求评分，不做重心加权（纯空间推进）
+        cog_scale = (float(self.weights.get('cogBalance', 1500.0)) / 1500.0) if self.enable_cog else 1.0
         door_scale = float(self.weights.get('doorSafety', 1200.0)) / 1200.0
 
-        if current_x <= 2.5:
+        # v1.6.0 动态分区边界（对齐前端）：柜头 3.2m / 门段 L-4.2m 起
+        if current_x <= self.rear_boundary:
             if is_rear: return 100000.0 * cog_scale
             if is_mid: return 20000.0 * cog_scale
             if is_door: return -5000.0 * cog_scale
             return 10000.0
-        elif current_x <= 8.5:
+        elif current_x <= self.door_boundary:
             if is_mid: return 50000.0 * cog_scale
             if is_door: return (10000.0 if sku['isElastic'] else 30000.0) * cog_scale
             if is_rear: return -10000.0 * cog_scale
@@ -162,10 +273,11 @@ class IndustrialSmartContainerPacker:
     # ------------------------------------------------------------------
 
     def _direct_supports(self, cand: Dict[str, float], placed_boxes: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """找出直接支撑候选箱的已放置箱子（底面接触 + 投影重叠）"""
+        """找出直接支撑候选箱的已放置箱子（底面接触[含 gap 容忍] + 投影重叠）"""
         supports = []
         for b in placed_boxes:
-            if abs(b['y'] + b['h'] - cand['y']) > 0.0015:
+            # gap 模式：上层箱 y = 下层箱顶面 + gap，视为由下层箱承重
+            if abs(b['y'] + b['h'] + self.gap - cand['y']) > 0.0015:
                 continue
             if (b['x'] + b['w'] > cand['x'] + 0.0005 and cand['x'] + cand['w'] > b['x'] + 0.0005 and
                     b['z'] + b['d'] > cand['z'] + 0.0005 and cand['z'] + cand['d'] > b['z'] + 0.0005):
@@ -271,6 +383,9 @@ class IndustrialSmartContainerPacker:
         """
         if self._cog_mass <= 0:
             return True, 0.0
+        # enableCoGBalance=False：关闭列级重心硬拦截（纯空间推进）
+        if not self.enable_cog:
+            return True, self._cog_lat_pct()
         # 早期放行：已装质量不足预期总质量一定比例时不做硬拦截
         expected = self._cog_expected_mass
         if expected > 0 and self._cog_mass < expected * self.cog_engage_ratio:
@@ -301,18 +416,31 @@ class IndustrialSmartContainerPacker:
                 'w': ori['l'], 'h': ori['h'], 'd': ori['wz'],
                 'weight': sku['weight']
             })
-            y += ori['h']
+            y += ori['h'] + self.gap
         return cands
 
     def _try_place(self, cand: Dict[str, float], sku: Dict[str, Any], placed_boxes: List[Dict[str, Any]]) -> bool:
         """
-        统一放置入口：门区 → 承重 → 防倾 全约束校验通过后提交。
+        统一放置入口：门区 → 碰撞 → 承重 → 防倾 全约束校验通过后提交。
         提交时同步更新：支撑箱 bearing、全局箱索引、增量重心。
+        v1.7.0 硬碰撞守卫：此前内核不重叠完全依赖 x/z/y 网格推进纪律（隐式不变量），
+        任何路径打破它（朝向过滤的 1mm 容差、规划朝向切换、cog 跳列推进）都会
+        产生物理重叠——实测凹面填平 1mm 侵入相邻列 18 对碰撞。碰撞检查改为
+        统一入口的显式硬约束，x 向快速预筛控制开销。
         """
         if not self._door_zone_allowed(sku, cand):
             self.stats['doorZoneLocked'] += 1
             self._bump(sku['sku'], 'doorZone')
             return False
+        # v1.7.0 AABB 硬碰撞守卫（x 向预筛 + 精确判定）
+        cx0, cx1 = cand['x'], cand['x'] + cand['w']
+        for b in placed_boxes:
+            if b['x'] >= cx1 + 0.0005 or b['x'] + b['w'] <= cx0 - 0.0005:
+                continue
+            if self.is_aabb_overlap(cand, b):
+                self.stats['collisionBlocked'] = self.stats.get('collisionBlocked', 0) + 1
+                self._bump(sku['sku'], 'collision')
+                return False
         supports = self._direct_supports(cand, placed_boxes)
         if not self._check_pressure(sku, supports, cand):
             self.stats['pressureBlocked'] += 1
@@ -374,14 +502,71 @@ class IndustrialSmartContainerPacker:
     # ------------------------------------------------------------------
 
     def pack(self, cargo_manifest: List[Dict[str, Any]], debug: bool = False) -> Dict[str, Any]:
-        """执行完整装载求解并返回 3D 空间坐标与工程审计指标"""
+        """执行完整装载求解并返回 3D 空间坐标与工程审计指标。
+
+        v1.7.0 多起点择优（外层）：同一清单并行求解「规划先验」与「纯贪心」两个变体，
+        按综合分（箱数×box_w + 利用率×util_w − 平整度台阶×flat_w）取最优。
+        设计动机：规划层在 gap/混合尺寸清单上大幅增益（+137/+621 箱），但在局部
+        排序已近优的清单上（如生产清单 MEC）会干扰截面覆盖（−70/−283 箱）——
+        单一求解路径无法同时占优是架构特性，由外层择优兜底而非继续调权重。"""
+        if not self.multi_start:
+            return self._pack_once(cargo_manifest, debug)
+
+        import copy as _copy
+        ms_w = self.weights.get('multiStartWeights', {}) or {}
+        box_w = float(ms_w.get('box', 10.0))
+        util_w = float(ms_w.get('util', 1000.0))
+        flat_w = float(ms_w.get('flatness', 0.1))
+
+        variants = [('plan', True), ('greedy', False)] if self.use_plan else [('single', False)]
+        scored = []
+        orig_use_plan = self.use_plan
+        for label, use_plan in variants:
+            self.use_plan = use_plan
+            r = self._pack_once(_copy.deepcopy(cargo_manifest), debug)
+            flat = r['flatness']['maxStepMm'] if isinstance(r['flatness'], dict) else 0.0
+            score = r['totalCount'] * box_w + r['utilization'] * util_w - flat * flat_w
+            scored.append((score, label, r))
+        self.use_plan = orig_use_plan
+
+        scored.sort(key=lambda t: t[0], reverse=True)
+        best = scored[0][2]
+        best['multiStart'] = {
+            'enabled': True,
+            'winner': scored[0][1],
+            'variants': [
+                {
+                    'variant': label,
+                    'score': round(score, 1),
+                    'placed': r['totalCount'],
+                    'util': r['utilization'],
+                    'flatnessMm': (r['flatness']['maxStepMm']
+                                   if isinstance(r['flatness'], dict) else 0.0)
+                } for score, label, r in scored
+            ]
+        }
+        return best
+
+    def _pack_once(self, cargo_manifest: List[Dict[str, Any]], debug: bool = False) -> Dict[str, Any]:
+        """单次求解（多起点的一个变体）。可重入：每轮重置全部增量状态。"""
         start_time = time.time()
         placed_boxes: List[Dict[str, Any]] = []
         elastic_trimmed_map: Dict[str, Any] = {}
 
+        # v1.7.0 可重入重置（多起点外壳会连续调用本方法）
+        self._cog_mass = 0.0
+        self._cog_mx = 0.0
+        self._cog_my = 0.0
+        self._cog_mz = 0.0
+        self._box_index = 0
+        self.stats = {'doorZoneLocked': 0, 'pressureBlocked': 0,
+                      'supportBlocked': 0, 'cogSkippedCols': 0}
+        self.blocked_detail = {}
+        self._col_tops = []
+
         # v1.3 XYZ 多轴保底评估器（软审计）：每墙切片后评估最近切片，终检全量
         from evaluator import XYZFallbackEvaluator
-        evaluator = XYZFallbackEvaluator(self.L, self.W, self.H)
+        evaluator = XYZFallbackEvaluator(self.L, self.W, self.H, gap=self.gap)
         last_eval_x = 0.0
 
         affinity_weight = float(self.weights.get('affinity', 3000.0))
@@ -408,6 +593,19 @@ class IndustrialSmartContainerPacker:
         # 预期总质量：重心硬门控启用线判定基准
         self._cog_expected_mass = sum(s['weight'] * s['quantity'] for s in sku_pool)
 
+        # v1.7.0 全局规划层：构建前求解排布序列（分区深度预算 × vpd 最优朝向 × 配额），
+        # 作为主 SKU 评选强先验。规划失败/空清单 → 空规划，回退纯贪心（fail-safe）。
+        self._plan_segments = []
+        self._plan_pool = {s['sku']: s for s in sku_pool}
+        if self.use_plan:
+            try:
+                from planner import GlobalPlanBuilder
+                builder = GlobalPlanBuilder(self.L, self.W, self.H, self.gap,
+                                            self.rear_boundary, self.door_boundary)
+                self._plan_segments = builder.build(sku_pool) or []
+            except Exception:
+                self._plan_segments = []
+
         current_x = 0.0
         last_primary_sku: Optional[Dict[str, Any]] = None
 
@@ -430,6 +628,14 @@ class IndustrialSmartContainerPacker:
             available = [s for s in sku_pool if s['remQty'] > 0]
             if not available:
                 break
+            # v1.6.0 门禁硬过滤：未到门段时封柜门货不进主 SKU 候选池
+            available = self._gate_candidate_pool(available, current_x)
+            if not available:
+                break
+
+            # v1.7.0 规划先验：当前 x 的规划段 SKU（一次求值，两套排名共用）
+            plan_seg = self._plan_sku_at(current_x)
+            plan_sku_id = plan_seg['sku'] if plan_seg else None
 
             # 1. 选取主要排布锚点 SKU (成栋大方阵优先)
             def sku_rank(s):
@@ -439,9 +645,46 @@ class IndustrialSmartContainerPacker:
                 if s['isElastic']:
                     score -= 20000.0
                 score += min(s['remQty'], 500) * 10.0 + (s['w'] * s['h'] * s['d']) * (wall_weight / 1000.0)
+                # v1.6.1 孤儿列抑制：残量不足起整列的 SKU 不担任主 SKU——
+                # 否则残箱滞留主评选反复触发低密度尾数拼装（刷 x 进度），
+                # 或以其为锚自起孤儿列。残箱由顶部填空/凹面填平消耗。
+                if self._orphan_penalty(s, current_x, self.W):
+                    score -= 200000.0
+                # v1.7.0 规划先验：规划段 SKU 加分（孤儿抑制优先——残箱规划段不强迫任主 SKU，
+                # 与 #18 反滞留设计一致：残箱由顶部填空/凹面填平消耗）
+                elif plan_sku_id and s['sku'] == plan_sku_id:
+                    score += self.plan_bonus
                 return score
 
-            available.sort(key=sku_rank, reverse=True)
+            def mec_rank(s):
+                """MEC 紧凑空闲块填充：优先选能把当前剩余截面填得最满的 SKU/朝向。
+                不保持同品连续性（无 affinity 粘滞）、不按体积偏好，只看截面填充度；
+                剩余数量不足铺满一个截面时按比例打折，避免选中后立刻转尾数拼装。"""
+                rem_x = self.L - current_x
+                best = 0.0
+                for o in self.get_safe_orientations(s, rem_x, self.H, self.W):
+                    cols = self._pitch_fit(self.W, o['wz'])
+                    lays = self._pitch_fit(self.H, o['h'])
+                    if cols <= 0 or lays <= 0:
+                        continue
+                    cover = (cols * o['wz'] * lays * o['h']) / (self.W * self.H)
+                    cap = cols * lays
+                    if s['remQty'] < cap:
+                        cover *= s['remQty'] / cap
+                    best = max(best, cover)
+                score = 1000000.0 * best
+                if s['isElastic']:
+                    score -= 20000.0
+                score += min(s['remQty'], 500) * 10.0
+                # v1.6.1 孤儿列抑制（同 cluster sku_rank）
+                if self._orphan_penalty(s, current_x, self.W):
+                    score -= 200000.0
+                # v1.7.0 规划先验（同 cluster：孤儿抑制优先）
+                elif plan_sku_id and s['sku'] == plan_sku_id:
+                    score += self.plan_bonus
+                return score
+
+            available.sort(key=(mec_rank if self.strategy == 'mec' else sku_rank), reverse=True)
 
             # 主 SKU 顺延链：排名靠前但当前剩余长度放不下的 SKU，顺延给下一个能放的。
             # 否则剩余尾段会被"排不上号"的 SKU 卡死，弹性 SKU 大批滞留 → 利用率暴跌。
@@ -452,7 +695,9 @@ class IndustrialSmartContainerPacker:
                 cand_oris = self.get_safe_orientations(cand_sku, self.L - current_x, self.H, self.W)
                 if not cand_oris:
                     continue
-                cand_oris.sort(key=lambda o: ((self.W // o['wz']) * o['wz'] * (self.H // o['h']) * o['h']), reverse=True)
+                # 截面覆盖优先（gap 网格下用 pitch 容纳数计算）
+                cand_oris.sort(key=lambda o: (self._pitch_fit(self.W, o['wz']) * o['wz'] *
+                                              self._pitch_fit(self.H, o['h']) * o['h']), reverse=True)
                 primary_sku = cand_sku
                 primary_ori = cand_oris[0]
                 primary_oris = cand_oris
@@ -461,10 +706,22 @@ class IndustrialSmartContainerPacker:
                 current_x += 0.05
                 continue
 
+            # v1.7.0 规划朝向覆盖：当选主 SKU 即规划段 SKU 时，整片/部分切片改用规划层
+            # 全局最优朝向（vpd 最大）——构建层默认按"当前截面覆盖率"局部选朝向，
+            # 规划层按"单位纵深体积装载量"全局选朝向，两者可能不同（薄而密朝向 vpd 更高）。
+            if plan_seg and primary_sku['sku'] == plan_seg['sku']:
+                po = plan_seg['ori']
+                for o in primary_oris:
+                    if (abs(o['l'] - po['l']) < 1e-6 and abs(o['wz'] - po['wz']) < 1e-6
+                            and abs(o['h'] - po['h']) < 1e-6):
+                        primary_ori = o
+                        break
+
             slice_thickness = primary_ori['l']
 
-            cols_p = max(1, math.floor(self.W / primary_ori['wz']))
-            lays_p = max(1, math.floor(self.H / primary_ori['h']))
+            # gap 网格：列/层的 pitch = 尺寸 + gap（gap=0 时与旧版 floor 一致）
+            cols_p = max(1, self._pitch_fit(self.W, primary_ori['wz']))
+            lays_p = max(1, self._pitch_fit(self.H, primary_ori['h']))
             slice_capacity = cols_p * lays_p
 
             if debug:
@@ -474,8 +731,9 @@ class IndustrialSmartContainerPacker:
             if primary_sku['remQty'] >= slice_capacity and current_x + slice_thickness <= self.L + 0.001:
                 # v1.4.1 浮点容差：self.L - current_x 在边界时可能为 0.5999999...，直接 // 得到 0
                 # → full_slices=0 → 整片"成功"但 x 不推进 → 死循环。加 1e-6 容差修正。
+                # v1.5.0 gap 网格：pitch = thickness + gap（gap=0 时与旧版一致）
                 full_slices = min(primary_sku['remQty'] // slice_capacity,
-                                  int((self.L - current_x + 1e-6) // slice_thickness))
+                                  self._pitch_fit(self.L - current_x + 1e-6, slice_thickness))
                 if full_slices < 1:
                     # 理论上已被上方条件排除；此处兜底：不足 1 整片时直接走尾数拼装
                     full_slices = 1 if current_x + slice_thickness <= self.L + 0.001 else 0
@@ -489,14 +747,14 @@ class IndustrialSmartContainerPacker:
 
                 blocked = False
                 for sx in range(full_slices):
-                    sl_x = current_x + sx * slice_thickness
+                    sl_x = current_x + sx * (slice_thickness + self.gap)
                     # v1.3 层优先：同层 z 向铺满再升层（顶面齐平，层间支撑天然完整，
                     # 消除栋优先的列高参差 → 栋顶空洞）。约束路径与栋优先等价：
                     # 每层箱子站在同 SKU 下层上，支撑/承重校验结果一致，仅中间状态不同。
                     for lay in range(lays_p):
-                        box_y = lay * primary_ori['h']
+                        box_y = lay * (primary_ori['h'] + self.gap)
                         for c in range(cols_p):
-                            col_z = c * primary_ori['wz']
+                            col_z = c * (primary_ori['wz'] + self.gap)
                             cand = {
                                 'x': sl_x, 'y': box_y, 'z': col_z,
                                 'w': slice_thickness, 'h': primary_ori['h'], 'd': primary_ori['wz']
@@ -524,17 +782,63 @@ class IndustrialSmartContainerPacker:
                         b['bearing'] = pre_bear[i]
                 else:
                     # v1.3 评估最近墙切片（软审计，不阻塞）
+                    slice_pitch = slice_thickness + self.gap
                     evaluator.evaluate(placed_boxes, sku_pool, last_eval_x,
-                                       current_x + full_slices * slice_thickness,
+                                       current_x + full_slices * slice_pitch,
                                        self.get_safe_orientations)
-                    last_eval_x = current_x + full_slices * slice_thickness
+                    last_eval_x = current_x + full_slices * slice_pitch
                     if full_slices < 1:
                         # v1.4.1 兜底：full_slices=0 时强制前进，杜绝 x 停滞死循环
                         current_x += 0.05
                     else:
-                        current_x += full_slices * slice_thickness
+                        current_x += full_slices * slice_pitch
                     last_primary_sku = primary_sku if primary_sku['remQty'] > 0 else None
                     continue
+
+            # v1.6.2 部分切片（分级触发）：主 SKU 剩量 ≥50% 整栋容量但不足整栋时，
+            # 按层优先铺残量成栋——散列尾数拼装会把这批货拆成稀疏列+顶部填空，末端
+            # 密度显著低于同切片成栋结构。触发条件按策略分级：
+            # - 终局（剩余纵深 <2 个整切片）：cluster / mec 均触发——此时纵深已无
+            #   更优用途，成栋密度必然占优；
+            # - 中段：仅 mec 触发——半栋切片留下的顶部/侧面空闲可被 mec 的空闲块
+            #   回填补偿；cluster 无回填能力，中段半栋只会低密度消耗纵深、饿死
+            #   高密度门货（gap 用例实测回退 110 箱）。
+            # 中途遇硬约束即止（已放置箱均通过校验，保留）；首箱即失败则回退尾数拼装。
+            is_terminal = (current_x + 2 * (slice_thickness + self.gap)
+                           > self.L + 0.001)
+            if (primary_sku['remQty'] * 2 >= slice_capacity and
+                    current_x + slice_thickness <= self.L + 0.001 and
+                    (is_terminal or self.strategy == 'mec')):
+                placed_any = False
+                aborted = False
+                for lay in range(lays_p):
+                    if aborted or primary_sku['remQty'] <= 0:
+                        break
+                    box_y = lay * (primary_ori['h'] + self.gap)
+                    for c in range(cols_p):
+                        if primary_sku['remQty'] <= 0:
+                            break
+                        col_z = c * (primary_ori['wz'] + self.gap)
+                        cand = {
+                            'x': current_x, 'y': box_y, 'z': col_z,
+                            'w': slice_thickness, 'h': primary_ori['h'], 'd': primary_ori['wz']
+                        }
+                        if not self._try_place(cand, primary_sku, placed_boxes):
+                            aborted = True
+                            break
+                        placed_any = True
+                if placed_any:
+                    if debug:
+                        print(f"[DBG] x={current_x:.3f} partial-slice {primary_sku['sku']} "
+                              f"rem_after={primary_sku['remQty']}")
+                    slice_pitch = slice_thickness + self.gap
+                    evaluator.evaluate(placed_boxes, sku_pool, last_eval_x,
+                                       current_x + slice_pitch, self.get_safe_orientations)
+                    last_eval_x = current_x + slice_pitch
+                    current_x += slice_pitch
+                    last_primary_sku = primary_sku if primary_sku['remQty'] > 0 else None
+                    continue
+                # 首箱即被硬约束拦截 → 落入下方尾数拼装
 
             # 2. 如果不足一个完整切片，执行【横向拼装 + 顶部继续填充 + 凹面平准化】
             #    模块4 重心闭环：保持单向铺列（z 递增），列堆叠前做重心预检，
@@ -546,16 +850,46 @@ class IndustrialSmartContainerPacker:
                 avail_in_col = [s for s in sku_pool if s['remQty'] > 0]
                 if not avail_in_col:
                     break
-
-                avail_in_col.sort(key=lambda s: (
-                    100000.0 * vs_scale if s['sku'] == primary_sku['sku'] else self.get_zone_affinity_score(s, current_x),
-                    -1 if s['isElastic'] else 1,
-                    s['remQty']
-                ), reverse=True)
+                # v1.6.0 门禁硬过滤：尾数拼装列同样受核心作业区门禁约束
+                avail_in_col = self._gate_candidate_pool(avail_in_col, current_x)
+                if not avail_in_col:
+                    break
 
                 col_sku = None
                 col_ori = None
                 rem_width = self.W - z_low
+
+                # v1.6.1 残箱终局退出：柜内已有成列结构且当前候选全部为残箱
+                # （残量不足起整列）——继续铺列只会自起孤儿地面列，放不进的
+                # 残箱按物理无法容纳处理（宁可少装零星几箱，不造 flatness 台阶）。
+                # 纯小批量清单（从未建立成列结构）不受影响，仍正常铺列。
+                if self._col_tops and all(
+                        self._orphan_penalty(s, current_x, rem_width) > 0 for s in avail_in_col):
+                    break
+
+                if self.strategy == 'mec':
+                    # MEC 紧凑空闲块填充：按"剩余宽度填充度"选列 SKU（能最紧密铺满 rem_width 的优先）
+                    def col_rank_mec(s):
+                        fit = 0.0
+                        for o in self.get_safe_orientations(s, self.L - current_x, self.H, rem_width):
+                            cols = self._pitch_fit(rem_width, o['wz'])
+                            if cols > 0:
+                                fit = max(fit, (cols * o['wz'] / rem_width) * min(1.0, s['remQty'] / cols))
+                        return (-self._orphan_penalty(s, current_x, rem_width),
+                                1000000.0 * fit, -1 if s['isElastic'] else 1, s['remQty'])
+                    avail_in_col.sort(key=col_rank_mec, reverse=True)
+                else:
+                    # v1.6.1 孤儿列抑制（首要键，跨分区生效）：
+                    # 残量不足起整列的 SKU 一律不自起地面列（列顶收缩后大足迹 SKU
+                    # 补不进 → flatness 台阶），残箱改走顶部填空/凹面填平。
+                    # 早期版本曾因残箱滞留主 SKU 评选引发低密度尾数拼装刷进度——
+                    # 现主评选（sku_rank/mec_rank）已施加同款惩罚，无滞留风险。
+                    avail_in_col.sort(key=lambda s: (
+                        -self._orphan_penalty(s, current_x, rem_width),
+                        100000.0 * vs_scale if s['sku'] == primary_sku['sku'] else self.get_zone_affinity_score(s, current_x),
+                        -1 if s['isElastic'] else 1,
+                        s['remQty']
+                    ), reverse=True)
 
                 for s in avail_in_col:
                     soris = self.get_safe_orientations(s, self.L - current_x, self.H, rem_width)
@@ -594,7 +928,7 @@ class IndustrialSmartContainerPacker:
                 col_x_end = current_x + col_ori['l']
                 col_y = 0.0
 
-                # 垂直逐层向上堆叠主 SKU (成列)，约束逐箱校验
+                # 垂直逐层向上堆叠主 SKU (成列)，约束逐箱校验（gap 网格：层间留 gap）
                 while col_y + col_ori['h'] <= self.H + 0.001 and col_sku['remQty'] > 0:
                     cand = {
                         'x': current_x, 'y': col_y, 'z': col_z_start,
@@ -602,7 +936,7 @@ class IndustrialSmartContainerPacker:
                     }
                     if not self._try_place(cand, col_sku, placed_boxes):
                         break  # 约束拦截，本列停止向上堆叠
-                    col_y += col_ori['h']
+                    col_y += col_ori['h'] + self.gap
 
                 # 【核心模块 3】：单件/少量货物上面，继续填充其它符合尺寸要求的货物 (顶部空间向上填满至 H)
                 #    模块 3 加强：贴合度优先——优先选择高度接近剩余缺口的箱子，缩小顶面台阶差
@@ -610,14 +944,26 @@ class IndustrialSmartContainerPacker:
                 top_limit_l = col_ori['l']
                 top_limit_wz = col_ori['wz']
                 while col_y < self.H - 0.10:
-                    avail_top = [s for s in sku_pool if s['remQty'] > 0]
+                    avail_top = self._gate_candidate_pool(
+                        [s for s in sku_pool if s['remQty'] > 0], current_x)
+                    if not avail_top:
+                        break
                     filled_top = False
-                    avail_top.sort(key=lambda s: (
-                        self.get_zone_affinity_score(s, current_x),
-                        s['remQty']
-                    ), reverse=True)
+                    if self.strategy == 'mec':
+                        # MEC：底面积大者优先（更紧凑地填满顶部缺口）
+                        avail_top.sort(key=lambda s: (s['w'] * s['d'], s['remQty']), reverse=True)
+                    else:
+                        avail_top.sort(key=lambda s: (
+                            self.get_zone_affinity_score(s, current_x),
+                            s['remQty']
+                        ), reverse=True)
                     for top_sku in avail_top:
-                        top_oris = self.get_safe_orientations(top_sku, top_limit_l, self.H - col_y, top_limit_wz)
+                        # v1.7.0 顶面收缩容差校准：允许侵入量 = min(gap, 1mm)——
+                        # gap=0 时严格贴合（1mm 侵入即碰撞，实测 18 对）；gap>0 时侵入吃的是
+                        # 列间隙（物理合法，旧版 +0.001 行为保留，gap 用例曾因此多装 105 箱）
+                        tol = min(self.gap, 0.001)
+                        top_oris = self.get_safe_orientations(top_sku, top_limit_l - 0.001 + tol,
+                                                              self.H - col_y, top_limit_wz - 0.001 + tol)
                         if not top_oris:
                             continue
                         # 贴合度：优先选中高度与剩余缺口最接近的朝向（减小顶面台阶）
@@ -629,7 +975,7 @@ class IndustrialSmartContainerPacker:
                         }
                         if not self._try_place(cand, top_sku, placed_boxes):
                             continue  # 约束拦截，试下一个 SKU
-                        col_y += t_ori['h']
+                        col_y += t_ori['h'] + self.gap
                         # 顶面收缩：下一层只能放在本层顶面上
                         top_limit_l = t_ori['l']
                         top_limit_wz = t_ori['wz']
@@ -645,8 +991,8 @@ class IndustrialSmartContainerPacker:
                     'xEnd': col_x_end,
                     'topY': col_y
                 })
-                # 单向推进（z 递增铺列）
-                z_low = col_z_end
+                # 单向推进（z 递增铺列，gap 网格：列间留 gap）
+                z_low = col_z_end + self.gap
 
             if not slice_cols:
                 if debug:
@@ -664,7 +1010,10 @@ class IndustrialSmartContainerPacker:
                 while notch_x < max_slice_x - 0.05:
                     notch_depth = max_slice_x - notch_x
                     notch_width = col['zEnd'] - col['zStart']
-                    avail_notch = [s for s in sku_pool if s['remQty'] > 0]
+                    avail_notch = self._gate_candidate_pool(
+                        [s for s in sku_pool if s['remQty'] > 0], notch_x)
+                    if not avail_notch:
+                        break
                     filled_notch = False
 
                     # 死权重接入：notchLeveling 缩放"深度贴合度"在候选排序中的权重
@@ -676,15 +1025,21 @@ class IndustrialSmartContainerPacker:
                         best_l = min(soris, key=lambda o: abs(o['l'] - notch_depth))['l']
                         return abs(best_l - notch_depth) * nl_scale
 
-                    avail_notch.sort(key=lambda s: (self.get_zone_affinity_score(s, notch_x), notch_fit(s), -s['remQty']), reverse=True)
+                    if self.strategy == 'mec':
+                        # MEC：凹面深度贴合度优先（不加业务分区权重）
+                        avail_notch.sort(key=lambda s: (-notch_fit(s), -s['remQty']), reverse=True)
+                    else:
+                        avail_notch.sort(key=lambda s: (self.get_zone_affinity_score(s, notch_x), notch_fit(s), -s['remQty']), reverse=True)
                     for n_sku in avail_notch:
-                        n_oris = self.get_safe_orientations(n_sku, notch_depth, self.H, notch_width)
+                        # v1.7.0 凹面宽度容差校准：侵入量 = min(gap, 1mm)，同顶面收缩逻辑
+                        n_oris = self.get_safe_orientations(n_sku, notch_depth, self.H,
+                                                            notch_width - 0.001 + min(self.gap, 0.001))
                         if not n_oris:
                             continue
                         # 深度贴合优先（l 越接近凹面深度越好）
                         n_oris.sort(key=lambda o: abs(o['l'] - notch_depth))
                         n_ori = n_oris[0]
-                        # 自底向上填满该凹面
+                        # 自底向上填满该凹面（gap 网格：层间留 gap）
                         n_y = 0.0
                         count_n = 0
                         while n_y + n_ori['h'] <= self.H + 0.001 and n_sku['remQty'] > 0:
@@ -694,11 +1049,11 @@ class IndustrialSmartContainerPacker:
                             }
                             if not self._try_place(cand, n_sku, placed_boxes):
                                 break
-                            n_y += n_ori['h']
+                            n_y += n_ori['h'] + self.gap
                             count_n += 1
 
                         if count_n > 0:
-                            notch_x += n_ori['l']
+                            notch_x += n_ori['l'] + self.gap
                             filled_notch = True
                             break
                         elif nl_scale != 1.0:
@@ -795,6 +1150,27 @@ class IndustrialSmartContainerPacker:
 
         return {
             'success': True,
+            'params': {
+                'gap': self.gap,
+                'strategy': self.strategy,
+                'enableCoGBalance': self.enable_cog,
+                'usePlan': self.use_plan
+            },
+            'plan': {
+                'enabled': bool(self._plan_segments),
+                'segments': [
+                    {
+                        'sku': seg['sku'],
+                        'zone': seg['zone'],
+                        'boxes': seg['boxes'],
+                        'slices': seg['slices'],
+                        'partial': seg['partial'],
+                        'xStart': seg['x_start'],
+                        'xEnd': seg['x_end'],
+                        'ori': seg['ori']
+                    } for seg in self._plan_segments
+                ]
+            },
             'totalCount': len(placed_boxes),
             'totalPlaced': len(placed_boxes),
             'totalUnplacedCount': total_unplaced,

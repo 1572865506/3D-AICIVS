@@ -21,19 +21,21 @@ from typing import List, Dict, Any, Optional, Callable
 
 
 class XYZFallbackEvaluator:
-    def __init__(self, L: float, W: float, H: float, grid: float = 0.05):
+    def __init__(self, L: float, W: float, H: float, grid: float = 0.05, gap: float = 0.0):
         self.L, self.W, self.H = L, W, H
         self.grid = grid
+        self.gap = max(0.0, float(gap or 0.0))
         self.eval_count = 0
 
     # ------------------------------------------------------------------
     # 悬浮检测（与 packer._direct_supports 等价，独立实现保持解耦）
     # ------------------------------------------------------------------
     @staticmethod
-    def _direct_supports(cand: Dict[str, float], placed_boxes: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _direct_supports(cand: Dict[str, float], placed_boxes: List[Dict[str, Any]], gap: float = 0.0) -> List[Dict[str, Any]]:
         supports = []
         for b in placed_boxes:
-            if abs(b['y'] + b['h'] - cand['y']) > 0.0015:
+            # gap 模式：上层箱 y = 下层箱顶面 + gap，仍视为有支撑（非悬浮）
+            if abs(b['y'] + b['h'] + gap - cand['y']) > 0.0015:
                 continue
             if (b['x'] + b['w'] > cand['x'] + 0.0005 and cand['x'] + cand['w'] > b['x'] + 0.0005 and
                     b['z'] + b['d'] > cand['z'] + 0.0005 and cand['z'] + cand['d'] > b['z'] + 0.0005):
@@ -47,7 +49,7 @@ class XYZFallbackEvaluator:
                 continue
             if b['x'] >= x1 - 1e-9 or b['x'] + b['w'] <= x0 + 1e-9:
                 continue
-            if not self._direct_supports(b, placed_boxes):
+            if not self._direct_supports(b, placed_boxes, self.gap):
                 floating.append({
                     'index': i, 'sku': b.get('sku', '?'),
                     'x': round(b['x'], 3), 'y': round(b['y'], 3), 'z': round(b['z'], 3)
