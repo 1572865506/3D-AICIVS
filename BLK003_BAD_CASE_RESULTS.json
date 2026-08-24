@@ -1,0 +1,92 @@
+{
+  "test_wall_001_same_size_full_wall": {
+    "case_id": "test_wall_001_same_size_full_wall",
+    "name": "test_wall_001_same_size_full_wall",
+    "test_function": "test_wall_001_same_size_full_wall",
+    "description": "",
+    "status": "PASS",
+    "errors": [],
+    "failures": []
+  },
+  "test_wall_002_mixed_size_aligned_wall": {
+    "case_id": "test_wall_002_mixed_size_aligned_wall",
+    "name": "test_wall_002_mixed_size_aligned_wall",
+    "test_function": "test_wall_002_mixed_size_aligned_wall",
+    "description": "",
+    "status": "PASS",
+    "errors": [],
+    "failures": []
+  },
+  "test_wall_003_valley_filling": {
+    "case_id": "test_wall_003_valley_filling",
+    "name": "test_wall_003_valley_filling",
+    "test_function": "test_wall_003_valley_filling",
+    "description": "",
+    "status": "PASS",
+    "errors": [],
+    "failures": []
+  },
+  "test_wall_004_enclosed_cavity_prevention": {
+    "case_id": "test_wall_004_enclosed_cavity_prevention",
+    "name": "test_wall_004_enclosed_cavity_prevention",
+    "test_function": "test_wall_004_enclosed_cavity_prevention",
+    "description": "",
+    "status": "PASS",
+    "errors": [],
+    "failures": []
+  },
+  "WALL-005": {
+    "case_id": "WALL-005",
+    "name": "Bridge Void / Anti-Bridge Rule",
+    "test_function": "test_wall_005_bridge_void_prevention",
+    "description": "Checks that unsupported internal bridge spans >= 0.30m are blocked.",
+    "status": "PASS",
+    "errors": [],
+    "failures": []
+  },
+  "test_wall_006_small_filler_usage": {
+    "case_id": "test_wall_006_small_filler_usage",
+    "name": "test_wall_006_small_filler_usage",
+    "test_function": "test_wall_006_small_filler_usage",
+    "description": "",
+    "status": "PASS",
+    "errors": [],
+    "failures": []
+  },
+  "test_wall_007_height_mismatch": {
+    "case_id": "test_wall_007_height_mismatch",
+    "name": "test_wall_007_height_mismatch",
+    "test_function": "test_wall_007_height_mismatch",
+    "description": "",
+    "status": "PASS",
+    "errors": [],
+    "failures": []
+  },
+  "test_wall_008_wall_close_repair": {
+    "case_id": "test_wall_008_wall_close_repair",
+    "name": "test_wall_008_wall_close_repair",
+    "test_function": "test_wall_008_wall_close_repair",
+    "description": "",
+    "status": "PASS",
+    "errors": [],
+    "failures": []
+  },
+  "test_wall_009_thin_display_wall": {
+    "case_id": "test_wall_009_thin_display_wall",
+    "name": "test_wall_009_thin_display_wall",
+    "test_function": "test_wall_009_thin_display_wall",
+    "description": "",
+    "status": "PASS",
+    "errors": [],
+    "failures": []
+  },
+  "test_wall_010_multiple_consecutive_walls": {
+    "case_id": "test_wall_010_multiple_consecutive_walls",
+    "name": "test_wall_010_multiple_consecutive_walls",
+    "test_function": "test_wall_010_multiple_consecutive_walls",
+    "description": "",
+    "status": "PASS",
+    "errors": [],
+    "failures": []
+  }
+}

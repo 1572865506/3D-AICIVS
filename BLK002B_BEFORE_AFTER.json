@@ -1,0 +1,442 @@
+{
+  "BaselineGreedySolver": {
+    "placed_count": 42,
+    "unplaced_count": 1803,
+    "volume_utilization_pct": 5.35,
+    "total_weight_kg": 356.4,
+    "is_valid": true,
+    "overlap_pair_count": 0,
+    "penetration_volume_m3": 0.0,
+    "out_of_bounds_count": 0,
+    "hard_constraint_violations": 0,
+    "door_metrics": {
+      "mode": "BaselineGreedy",
+      "sku_counts": {
+        "SKU-01": 1,
+        "SKU-06": 28,
+        "SKU-11": 7,
+        "SKU-09": 5,
+        "SKU-02": 1
+      },
+      "sku_diversity_count": 5,
+      "total_door_placed": 1,
+      "non_door_placed": 41,
+      "door_reserve_requested": 46,
+      "door_reserve_deployed": 0,
+      "door_reserve_remaining": 46,
+      "door_excess_placed_in_main": 1,
+      "door_excess_placed_in_transition": 0,
+      "required_sku_fill_rate_pct": 3.59,
+      "elastic_sku_fill_rate_pct": 0.0,
+      "main_wall_end_x": 2.915,
+      "transition_start_x": 11.132,
+      "door_closure_start_x": 11.632,
+      "transition_reached": false,
+      "door_zone_reached": false,
+      "door_closure_coverage": 0.2865,
+      "largest_door_gap": 9.117,
+      "door_zone_occupancy": 0.0,
+      "door_wall_flatness": 0.0,
+      "is_door_ready": false,
+      "door_readiness_score": 20.0,
+      "door_clearance_margin_m": 9.117,
+      "rejection_reasons": [
+        "Cargo failed to reach transition zone: max_x 2.915m < transition start 9.932m",
+        "Cargo failed to reach door closure zone: max_x 2.915m < door zone start 10.832m",
+        "Excessive longitudinal door gap: 9.117m > allowable threshold 0.50m",
+        "Door reserve pool was never deployed into door closure (reserve_deployed=0)"
+      ]
+    },
+    "telemetry": {
+      "runtime_ms": 8141.43,
+      "candidates_generated": 7184,
+      "candidates_evaluated": 7184,
+      "candidates_rejected_by_reason": {
+        "INSUFFICIENT_SUPPORT": 398,
+        "COLLISION": 5078
+      },
+      "anchors_generated_by_type": {
+        "FLOOR_FRONTIER": 6032,
+        "SUPPORTED_FRONTIER": 3499,
+        "WALL_FRONTIER": 291,
+        "EMS_CORNER": 637,
+        "EXTREME_POINT": 7850,
+        "TOP_SURFACE": 3499,
+        "GAP_FILL": 25365,
+        "EXPLORATION": 9360
+      },
+      "anchors_sampled_by_type": {
+        "FLOOR_FRONTIER": 114,
+        "SUPPORTED_FRONTIER": 96,
+        "WALL_FRONTIER": 45,
+        "EMS_CORNER": 89,
+        "EXTREME_POINT": 112,
+        "TOP_SURFACE": 143,
+        "GAP_FILL": 15438,
+        "EXPLORATION": 135
+      },
+      "candidates_generated_by_anchor_type": {
+        "FLOOR_FRONTIER": 1819,
+        "SUPPORTED_FRONTIER": 1785,
+        "WALL_FRONTIER": 900,
+        "EMS_CORNER": 665,
+        "EXTREME_POINT": 660,
+        "TOP_SURFACE": 645,
+        "GAP_FILL": 270,
+        "EXPLORATION": 440
+      },
+      "candidates_valid_by_anchor_type": {
+        "FLOOR_FRONTIER": 246,
+        "SUPPORTED_FRONTIER": 252,
+        "WALL_FRONTIER": 440,
+        "GAP_FILL": 253,
+        "EMS_CORNER": 297,
+        "EXTREME_POINT": 113,
+        "EXPLORATION": 49,
+        "TOP_SURFACE": 58
+      },
+      "floor_frontier_count": 199,
+      "supported_frontier_count": 168,
+      "wall_frontier_count": 9,
+      "no_candidate_reason": "ALL_CANDIDATES_REJECTED_BY_VALIDATION",
+      "phase_termination_reason": {
+        "Phase 1: Foundation (Floor)": "NO_ELIGIBLE_SKUS_FOR_PHASE",
+        "Phase 2: Main Walls (Body)": "NO_VALID_CANDIDATE_FOR_PHASE(tested=155)",
+        "Phase 3: Transition (Smoothing & Base Preparation)": "NO_VALID_CANDIDATE_FOR_PHASE(tested=155)",
+        "Phase 4: Top Fill (Headspace)": "NO_VALID_CANDIDATE_FOR_PHASE(tested=155)",
+        "Phase 5: Door Seal Closure": "NO_VALID_CANDIDATE_FOR_PHASE(tested=155)"
+      },
+      "ems_peak": 28,
+      "extreme_points_peak": 364,
+      "steps_committed": 42,
+      "phases_completed": [
+        "Phase 1: Foundation (Floor)",
+        "Phase 2: Main Walls (Body)",
+        "Phase 3: Transition (Smoothing & Base Preparation)",
+        "Phase 4: Top Fill (Headspace)",
+        "Phase 5: Door Seal Closure"
+      ],
+      "door_readiness": {
+        "is_door_ready": false,
+        "door_clearance_margin_m": 9.117,
+        "door_zone_occupancy": 0.0,
+        "door_closure_coverage": 0.2865,
+        "largest_door_gap": 9.117,
+        "door_wall_flatness": 0.0,
+        "anti_toppling_stable_ratio": 1.0,
+        "door_readiness_score": 20.0,
+        "reached_transition_zone": false,
+        "reached_door_closure_zone": false,
+        "reserve_deployed": 0,
+        "rejection_reasons": [
+          "Cargo failed to reach transition zone: max_x 2.915m < transition start 9.932m",
+          "Cargo failed to reach door closure zone: max_x 2.915m < door zone start 10.832m",
+          "Excessive longitudinal door gap: 9.117m > allowable threshold 0.50m",
+          "Door reserve pool was never deployed into door closure (reserve_deployed=0)"
+        ]
+      }
+    }
+  },
+  "HierarchicalSearch (FAST)": {
+    "placed_count": 211,
+    "unplaced_count": 1634,
+    "volume_utilization_pct": 28.35,
+    "total_weight_kg": 2613.8,
+    "is_valid": true,
+    "overlap_pair_count": 0,
+    "penetration_volume_m3": 0.0,
+    "out_of_bounds_count": 0,
+    "hard_constraint_violations": 0,
+    "door_metrics": {
+      "mode": "FAST",
+      "sku_counts": {
+        "SKU-01": 1,
+        "SKU-06": 90,
+        "SKU-05": 96,
+        "SKU-09": 24
+      },
+      "sku_diversity_count": 4,
+      "total_door_placed": 0,
+      "non_door_placed": 211,
+      "door_reserve_requested": 46,
+      "door_reserve_deployed": 0,
+      "door_reserve_remaining": 46,
+      "door_excess_placed_in_main": 0,
+      "door_excess_placed_in_transition": 0,
+      "required_sku_fill_rate_pct": 18.02,
+      "elastic_sku_fill_rate_pct": 0.0,
+      "main_wall_end_x": 8.948,
+      "transition_start_x": 11.132,
+      "door_closure_start_x": 11.632,
+      "transition_reached": false,
+      "door_zone_reached": false,
+      "door_closure_coverage": 0.3074,
+      "largest_door_gap": 3.084,
+      "door_zone_occupancy": 0.0,
+      "door_wall_flatness": 0.0,
+      "is_door_ready": false,
+      "door_readiness_score": 20.0,
+      "door_clearance_margin_m": 3.084,
+      "rejection_reasons": [
+        "Cargo failed to reach transition zone: max_x 8.948m < transition start 9.932m",
+        "Cargo failed to reach door closure zone: max_x 8.948m < door zone start 10.832m",
+        "Excessive longitudinal door gap: 3.084m > allowable threshold 0.50m",
+        "Door reserve pool was never deployed into door closure (reserve_deployed=0)"
+      ]
+    },
+    "telemetry": {
+      "runtime_ms": 8944.92,
+      "candidates_generated": 964,
+      "candidates_evaluated": 7662,
+      "candidates_rejected_by_reason": {
+        "INSUFFICIENT_SUPPORT": 17,
+        "COLLISION": 540
+      },
+      "anchors_generated_by_type": {
+        "FLOOR_FRONTIER": 138,
+        "SUPPORTED_FRONTIER": 428,
+        "WALL_FRONTIER": 23,
+        "EMS_CORNER": 10,
+        "EXTREME_POINT": 723,
+        "TOP_SURFACE": 428,
+        "GAP_FILL": 0,
+        "EXPLORATION": 764
+      },
+      "anchors_sampled_by_type": {},
+      "candidates_generated_by_anchor_type": {},
+      "candidates_valid_by_anchor_type": {},
+      "floor_frontier_count": 138,
+      "supported_frontier_count": 428,
+      "wall_frontier_count": 23,
+      "no_candidate_reason": "",
+      "phase_termination_reason": {
+        "MultiStart": "Completed run with strategy LARGEST_VOLUME_FIRST, placed=211"
+      },
+      "ems_peak": 0,
+      "extreme_points_peak": 0,
+      "steps_committed": 211,
+      "phases_completed": [
+        "MultiStart_LARGEST_VOLUME_FIRST",
+        "SearchCompleted(runs=1,best=LARGEST_VOLUME_FIRST)"
+      ],
+      "door_readiness": {
+        "is_door_ready": false,
+        "door_clearance_margin_m": 3.084,
+        "door_zone_occupancy": 0.0,
+        "door_closure_coverage": 0.3074,
+        "largest_door_gap": 3.084,
+        "door_wall_flatness": 0.0,
+        "anti_toppling_stable_ratio": 1.0,
+        "door_readiness_score": 20.0,
+        "reached_transition_zone": false,
+        "reached_door_closure_zone": false,
+        "reserve_deployed": 0,
+        "rejection_reasons": [
+          "Cargo failed to reach transition zone: max_x 8.948m < transition start 9.932m",
+          "Cargo failed to reach door closure zone: max_x 8.948m < door zone start 10.832m",
+          "Excessive longitudinal door gap: 3.084m > allowable threshold 0.50m",
+          "Door reserve pool was never deployed into door closure (reserve_deployed=0)"
+        ]
+      }
+    }
+  },
+  "HierarchicalSearch (BALANCED)": {
+    "placed_count": 331,
+    "unplaced_count": 1514,
+    "volume_utilization_pct": 36.39,
+    "total_weight_kg": 3093.8,
+    "is_valid": true,
+    "overlap_pair_count": 0,
+    "penetration_volume_m3": 0.0,
+    "out_of_bounds_count": 0,
+    "hard_constraint_violations": 0,
+    "door_metrics": {
+      "mode": "BALANCED",
+      "sku_counts": {
+        "SKU-01": 1,
+        "SKU-06": 90,
+        "SKU-05": 96,
+        "SKU-07": 120,
+        "SKU-09": 24
+      },
+      "sku_diversity_count": 5,
+      "total_door_placed": 0,
+      "non_door_placed": 331,
+      "door_reserve_requested": 46,
+      "door_reserve_deployed": 0,
+      "door_reserve_remaining": 46,
+      "door_excess_placed_in_main": 0,
+      "door_excess_placed_in_transition": 0,
+      "required_sku_fill_rate_pct": 28.27,
+      "elastic_sku_fill_rate_pct": 0.0,
+      "main_wall_end_x": 11.48,
+      "transition_start_x": 11.132,
+      "door_closure_start_x": 11.632,
+      "transition_reached": true,
+      "door_zone_reached": true,
+      "door_closure_coverage": 0.7634,
+      "largest_door_gap": 0.552,
+      "door_zone_occupancy": 0.2685,
+      "door_wall_flatness": 1.0,
+      "is_door_ready": false,
+      "door_readiness_score": 49.0,
+      "door_clearance_margin_m": 0.552,
+      "rejection_reasons": [
+        "Excessive longitudinal door gap: 0.552m > allowable threshold 0.50m",
+        "Door reserve pool was never deployed into door closure (reserve_deployed=0)"
+      ]
+    },
+    "telemetry": {
+      "runtime_ms": 50758.49,
+      "candidates_generated": 3436,
+      "candidates_evaluated": 16365,
+      "candidates_rejected_by_reason": {
+        "INSUFFICIENT_SUPPORT": 40,
+        "COLLISION": 2405
+      },
+      "anchors_generated_by_type": {
+        "FLOOR_FRONTIER": 269,
+        "SUPPORTED_FRONTIER": 739,
+        "WALL_FRONTIER": 28,
+        "EMS_CORNER": 12,
+        "EXTREME_POINT": 1484,
+        "TOP_SURFACE": 739,
+        "GAP_FILL": 0,
+        "EXPLORATION": 1549
+      },
+      "anchors_sampled_by_type": {},
+      "candidates_generated_by_anchor_type": {},
+      "candidates_valid_by_anchor_type": {},
+      "floor_frontier_count": 269,
+      "supported_frontier_count": 739,
+      "wall_frontier_count": 28,
+      "no_candidate_reason": "",
+      "phase_termination_reason": {
+        "MultiStart": "Completed run with strategy LARGEST_VOLUME_FIRST, placed=331"
+      },
+      "ems_peak": 0,
+      "extreme_points_peak": 0,
+      "steps_committed": 331,
+      "phases_completed": [
+        "MultiStart_LARGEST_VOLUME_FIRST",
+        "SearchCompleted(runs=1,best=LARGEST_VOLUME_FIRST)"
+      ],
+      "door_readiness": {
+        "is_door_ready": false,
+        "door_clearance_margin_m": 0.552,
+        "door_zone_occupancy": 0.2685,
+        "door_closure_coverage": 0.7634,
+        "largest_door_gap": 0.552,
+        "door_wall_flatness": 1.0,
+        "anti_toppling_stable_ratio": 1.0,
+        "door_readiness_score": 49.0,
+        "reached_transition_zone": true,
+        "reached_door_closure_zone": true,
+        "reserve_deployed": 0,
+        "rejection_reasons": [
+          "Excessive longitudinal door gap: 0.552m > allowable threshold 0.50m",
+          "Door reserve pool was never deployed into door closure (reserve_deployed=0)"
+        ]
+      }
+    }
+  },
+  "HierarchicalSearch (OPTIMIZE)": {
+    "placed_count": 307,
+    "unplaced_count": 1538,
+    "volume_utilization_pct": 35.46,
+    "total_weight_kg": 2841.8,
+    "is_valid": true,
+    "overlap_pair_count": 0,
+    "penetration_volume_m3": 0.0,
+    "out_of_bounds_count": 0,
+    "hard_constraint_violations": 0,
+    "door_metrics": {
+      "mode": "OPTIMIZE",
+      "sku_counts": {
+        "SKU-01": 1,
+        "SKU-06": 90,
+        "SKU-07": 120,
+        "SKU-05": 96
+      },
+      "sku_diversity_count": 4,
+      "total_door_placed": 0,
+      "non_door_placed": 307,
+      "door_reserve_requested": 46,
+      "door_reserve_deployed": 0,
+      "door_reserve_remaining": 46,
+      "door_excess_placed_in_main": 0,
+      "door_excess_placed_in_transition": 0,
+      "required_sku_fill_rate_pct": 26.22,
+      "elastic_sku_fill_rate_pct": 0.0,
+      "main_wall_end_x": 11.48,
+      "transition_start_x": 11.132,
+      "door_closure_start_x": 11.632,
+      "transition_reached": true,
+      "door_zone_reached": true,
+      "door_closure_coverage": 0.3074,
+      "largest_door_gap": 0.552,
+      "door_zone_occupancy": 0.2134,
+      "door_wall_flatness": 1.0,
+      "is_door_ready": false,
+      "door_readiness_score": 49.0,
+      "door_clearance_margin_m": 0.552,
+      "rejection_reasons": [
+        "Excessive longitudinal door gap: 0.552m > allowable threshold 0.50m",
+        "Door reserve pool was never deployed into door closure (reserve_deployed=0)"
+      ]
+    },
+    "telemetry": {
+      "runtime_ms": 87419.87,
+      "candidates_generated": 5957,
+      "candidates_evaluated": 26244,
+      "candidates_rejected_by_reason": {
+        "INSUFFICIENT_SUPPORT": 175,
+        "COLLISION": 4290
+      },
+      "anchors_generated_by_type": {
+        "FLOOR_FRONTIER": 238,
+        "SUPPORTED_FRONTIER": 655,
+        "WALL_FRONTIER": 23,
+        "EMS_CORNER": 9,
+        "EXTREME_POINT": 1239,
+        "TOP_SURFACE": 655,
+        "GAP_FILL": 0,
+        "EXPLORATION": 1299
+      },
+      "anchors_sampled_by_type": {},
+      "candidates_generated_by_anchor_type": {},
+      "candidates_valid_by_anchor_type": {},
+      "floor_frontier_count": 238,
+      "supported_frontier_count": 655,
+      "wall_frontier_count": 23,
+      "no_candidate_reason": "",
+      "phase_termination_reason": {
+        "MultiStart": "Completed run with strategy LARGEST_VOLUME_FIRST, placed=307"
+      },
+      "ems_peak": 0,
+      "extreme_points_peak": 0,
+      "steps_committed": 307,
+      "phases_completed": [
+        "MultiStart_LARGEST_VOLUME_FIRST",
+        "SearchCompleted(runs=1,best=LARGEST_VOLUME_FIRST)"
+      ],
+      "door_readiness": {
+        "is_door_ready": false,
+        "door_clearance_margin_m": 0.552,
+        "door_zone_occupancy": 0.2134,
+        "door_closure_coverage": 0.3074,
+        "largest_door_gap": 0.552,
+        "door_wall_flatness": 1.0,
+        "anti_toppling_stable_ratio": 1.0,
+        "door_readiness_score": 49.0,
+        "reached_transition_zone": true,
+        "reached_door_closure_zone": true,
+        "reserve_deployed": 0,
+        "rejection_reasons": [
+          "Excessive longitudinal door gap: 0.552m > allowable threshold 0.50m",
+          "Door reserve pool was never deployed into door closure (reserve_deployed=0)"
+        ]
+      }
+    }
+  }
+}

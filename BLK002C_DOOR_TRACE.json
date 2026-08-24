@@ -1,0 +1,370 @@
+{
+  "diagnostic_goal": "BLK-002C Door Reserve Deployment & Boundary Unification Trace",
+  "timestamp": "2026-08-22T10:31:48Z",
+  "container": {
+    "Lx": 12.032,
+    "Ly": 2.352,
+    "Lz": 2.698,
+    "volume_m3": 76.35141427199999
+  },
+  "authoritative_boundaries": {
+    "transition_start_x": 11.132,
+    "door_closure_start_x": 11.632,
+    "latest_safe_main_x": 11.832,
+    "minimum_closure_depth": 0.2,
+    "preferred_closure_depth": 0.4,
+    "boundary_source": "ElasticDoorFrontier"
+  },
+  "door_reserve_allocations": {
+    "SKU-02": {
+      "total_qty": 500,
+      "reserved_qty": 14,
+      "excess_qty": 486,
+      "unit_depth_m": 0.08,
+      "layer_capacity": 28,
+      "estimated_coverage_pct": 43.31
+    },
+    "SKU-03": {
+      "total_qty": 90,
+      "reserved_qty": 6,
+      "excess_qty": 84,
+      "unit_depth_m": 0.188,
+      "layer_capacity": 10,
+      "estimated_coverage_pct": 45.13
+    },
+    "SKU-04": {
+      "total_qty": 100,
+      "reserved_qty": 10,
+      "excess_qty": 90,
+      "unit_depth_m": 0.122,
+      "layer_capacity": 18,
+      "estimated_coverage_pct": 47.15
+    },
+    "SKU-14": {
+      "total_qty": 674,
+      "reserved_qty": 16,
+      "excess_qty": 658,
+      "unit_depth_m": 0.08,
+      "layer_capacity": 32,
+      "estimated_coverage_pct": 41.34
+    }
+  },
+  "mode_door_traces": {
+    "BaselineGreedySolver": {
+      "door_phase_started": false,
+      "door_phase_start_x": 2.915,
+      "door_anchor_count": 0,
+      "door_candidates_generated": 0,
+      "door_candidates_valid": 0,
+      "door_candidates_rejected_by_reason": {},
+      "door_placements_count": 0,
+      "reserve_deployed_by_sku": {
+        "SKU-02": 0,
+        "SKU-03": 0,
+        "SKU-04": 0,
+        "SKU-14": 0
+      },
+      "reserve_remaining_by_sku": {
+        "SKU-02": 499,
+        "SKU-03": 90,
+        "SKU-04": 100,
+        "SKU-14": 674
+      },
+      "reserve_deployed": 0,
+      "reserve_remaining": 46,
+      "closure_before": 0.2865,
+      "closure_after": 0.2865,
+      "largest_gap_before": 9.117,
+      "largest_gap_after": 9.117,
+      "door_occupancy_before": 0.0,
+      "door_occupancy_after": 0.0,
+      "authoritative_transition_start_x": 11.132,
+      "authoritative_door_start_x": 11.632,
+      "boundary_source": "ElasticDoorFrontier"
+    },
+    "HierarchicalSearch (FAST)": {
+      "door_phase_started": false,
+      "door_phase_start_x": 8.948,
+      "door_anchor_count": 0,
+      "door_candidates_generated": 0,
+      "door_candidates_valid": 0,
+      "door_candidates_rejected_by_reason": {},
+      "door_placements_count": 0,
+      "reserve_deployed_by_sku": {
+        "SKU-02": 0,
+        "SKU-03": 0,
+        "SKU-04": 0,
+        "SKU-14": 0
+      },
+      "reserve_remaining_by_sku": {
+        "SKU-02": 500,
+        "SKU-03": 90,
+        "SKU-04": 100,
+        "SKU-14": 674
+      },
+      "reserve_deployed": 0,
+      "reserve_remaining": 46,
+      "closure_before": 0.3074,
+      "closure_after": 0.3074,
+      "largest_gap_before": 3.084,
+      "largest_gap_after": 3.084,
+      "door_occupancy_before": 0.0,
+      "door_occupancy_after": 0.0,
+      "authoritative_transition_start_x": 11.132,
+      "authoritative_door_start_x": 11.632,
+      "boundary_source": "ElasticDoorFrontier"
+    },
+    "HierarchicalSearch (BALANCED)": {
+      "door_phase_started": true,
+      "door_phase_start_x": 11.48,
+      "door_anchor_count": 159,
+      "door_candidates_generated": 6648,
+      "door_candidates_valid": 363,
+      "door_candidates_rejected_by_reason": {
+        "COLLISION": 3204,
+        "OUT_OF_BOUNDS": 2339,
+        "INSUFFICIENT_SUPPORT": 613,
+        "ANTI_TOPPLING": 129
+      },
+      "door_placements_count": 6,
+      "reserve_deployed_by_sku": {
+        "SKU-02": 0,
+        "SKU-03": 4,
+        "SKU-04": 2,
+        "SKU-14": 0
+      },
+      "reserve_remaining_by_sku": {
+        "SKU-02": 14,
+        "SKU-03": 2,
+        "SKU-04": 8,
+        "SKU-14": 16
+      },
+      "reserve_deployed": 6,
+      "reserve_remaining": 40,
+      "closure_before": 0.7634,
+      "closure_after": 0.7769,
+      "largest_gap_before": 0.552,
+      "largest_gap_after": 0.122,
+      "door_occupancy_before": 0.0,
+      "door_occupancy_after": 0.1702,
+      "authoritative_transition_start_x": 11.132,
+      "authoritative_door_start_x": 11.632,
+      "boundary_source": "ElasticDoorFrontier"
+    },
+    "HierarchicalSearch (OPTIMIZE)": {
+      "door_phase_started": true,
+      "door_phase_start_x": 11.48,
+      "door_anchor_count": 69,
+      "door_candidates_generated": 2472,
+      "door_candidates_valid": 261,
+      "door_candidates_rejected_by_reason": {
+        "OUT_OF_BOUNDS": 1448,
+        "INSUFFICIENT_SUPPORT": 391,
+        "COLLISION": 327,
+        "ANTI_TOPPLING": 45
+      },
+      "door_placements_count": 6,
+      "reserve_deployed_by_sku": {
+        "SKU-02": 0,
+        "SKU-03": 4,
+        "SKU-04": 2,
+        "SKU-14": 0
+      },
+      "reserve_remaining_by_sku": {
+        "SKU-02": 14,
+        "SKU-03": 2,
+        "SKU-04": 8,
+        "SKU-14": 16
+      },
+      "reserve_deployed": 6,
+      "reserve_remaining": 40,
+      "closure_before": 0.3074,
+      "closure_after": 0.7025,
+      "largest_gap_before": 0.552,
+      "largest_gap_after": 0.122,
+      "door_occupancy_before": 0.0,
+      "door_occupancy_after": 0.1702,
+      "authoritative_transition_start_x": 11.132,
+      "authoritative_door_start_x": 11.632,
+      "boundary_source": "ElasticDoorFrontier"
+    }
+  },
+  "mode_metrics_summary": {
+    "BaselineGreedySolver": {
+      "placed_count": 42,
+      "utilization_pct": 5.35,
+      "is_valid": true,
+      "door_metrics": {
+        "mode": "BaselineGreedy",
+        "sku_counts": {
+          "SKU-01": 1,
+          "SKU-06": 28,
+          "SKU-11": 7,
+          "SKU-09": 5,
+          "SKU-02": 1
+        },
+        "sku_diversity_count": 5,
+        "total_door_placed": 1,
+        "non_door_placed": 41,
+        "door_reserve_requested": 46,
+        "door_reserve_deployed": 0,
+        "door_reserve_remaining": 46,
+        "door_excess_placed_in_main": 1,
+        "door_excess_placed_in_transition": 0,
+        "required_sku_fill_rate_pct": 3.59,
+        "elastic_sku_fill_rate_pct": 0.0,
+        "main_wall_end_x": 2.915,
+        "transition_start_x": 11.132,
+        "door_closure_start_x": 11.632,
+        "transition_reached": false,
+        "door_zone_reached": false,
+        "door_closure_coverage": 0.2865,
+        "largest_door_gap": 9.117,
+        "door_zone_occupancy": 0.0,
+        "door_wall_flatness": 0.0,
+        "is_door_ready": false,
+        "door_readiness_score": 20.0,
+        "door_clearance_margin_m": 9.117,
+        "authoritative_transition_start_x": 11.132,
+        "authoritative_door_start_x": 11.632,
+        "boundary_source": "ElasticDoorFrontier",
+        "rejection_reasons": [
+          "Cargo failed to reach transition zone: max_x 2.915m < transition start 11.132m",
+          "Cargo failed to reach door closure zone: max_x 2.915m < door zone start 11.632m",
+          "Excessive longitudinal door gap: 9.117m > allowable threshold 0.50m",
+          "Door reserve pool was never deployed into door closure (reserve_deployed=0)"
+        ]
+      }
+    },
+    "HierarchicalSearch (FAST)": {
+      "placed_count": 211,
+      "utilization_pct": 28.35,
+      "is_valid": true,
+      "door_metrics": {
+        "mode": "FAST",
+        "sku_counts": {
+          "SKU-01": 1,
+          "SKU-06": 90,
+          "SKU-05": 96,
+          "SKU-09": 24
+        },
+        "sku_diversity_count": 4,
+        "total_door_placed": 0,
+        "non_door_placed": 211,
+        "door_reserve_requested": 46,
+        "door_reserve_deployed": 0,
+        "door_reserve_remaining": 46,
+        "door_excess_placed_in_main": 0,
+        "door_excess_placed_in_transition": 0,
+        "required_sku_fill_rate_pct": 18.02,
+        "elastic_sku_fill_rate_pct": 0.0,
+        "main_wall_end_x": 8.948,
+        "transition_start_x": 11.132,
+        "door_closure_start_x": 11.632,
+        "transition_reached": false,
+        "door_zone_reached": false,
+        "door_closure_coverage": 0.3074,
+        "largest_door_gap": 3.084,
+        "door_zone_occupancy": 0.0,
+        "door_wall_flatness": 0.0,
+        "is_door_ready": false,
+        "door_readiness_score": 20.0,
+        "door_clearance_margin_m": 3.084,
+        "authoritative_transition_start_x": 11.132,
+        "authoritative_door_start_x": 11.632,
+        "boundary_source": "ElasticDoorFrontier",
+        "rejection_reasons": [
+          "Cargo failed to reach transition zone: max_x 8.948m < transition start 11.132m",
+          "Cargo failed to reach door closure zone: max_x 8.948m < door zone start 11.632m",
+          "Excessive longitudinal door gap: 3.084m > allowable threshold 0.50m",
+          "Door reserve pool was never deployed into door closure (reserve_deployed=0)"
+        ]
+      }
+    },
+    "HierarchicalSearch (BALANCED)": {
+      "placed_count": 337,
+      "utilization_pct": 36.95,
+      "is_valid": true,
+      "door_metrics": {
+        "mode": "BALANCED",
+        "sku_counts": {
+          "SKU-01": 1,
+          "SKU-06": 90,
+          "SKU-05": 96,
+          "SKU-07": 120,
+          "SKU-09": 24,
+          "SKU-03": 4,
+          "SKU-04": 2
+        },
+        "sku_diversity_count": 7,
+        "total_door_placed": 6,
+        "non_door_placed": 331,
+        "door_reserve_requested": 46,
+        "door_reserve_deployed": 6,
+        "door_reserve_remaining": 40,
+        "door_excess_placed_in_main": 0,
+        "door_excess_placed_in_transition": 0,
+        "required_sku_fill_rate_pct": 28.78,
+        "elastic_sku_fill_rate_pct": 0.0,
+        "main_wall_end_x": 11.978,
+        "transition_start_x": 11.132,
+        "door_closure_start_x": 11.632,
+        "transition_reached": true,
+        "door_zone_reached": true,
+        "door_closure_coverage": 0.7769,
+        "largest_door_gap": 0.122,
+        "door_zone_occupancy": 0.1702,
+        "door_wall_flatness": 0.8994,
+        "is_door_ready": true,
+        "door_readiness_score": 72.09,
+        "door_clearance_margin_m": 0.054,
+        "authoritative_transition_start_x": 11.132,
+        "authoritative_door_start_x": 11.632,
+        "boundary_source": "ElasticDoorFrontier",
+        "rejection_reasons": []
+      }
+    },
+    "HierarchicalSearch (OPTIMIZE)": {
+      "placed_count": 313,
+      "utilization_pct": 36.03,
+      "is_valid": true,
+      "door_metrics": {
+        "mode": "OPTIMIZE",
+        "sku_counts": {
+          "SKU-01": 1,
+          "SKU-06": 90,
+          "SKU-07": 120,
+          "SKU-05": 96,
+          "SKU-03": 4,
+          "SKU-04": 2
+        },
+        "sku_diversity_count": 6,
+        "total_door_placed": 6,
+        "non_door_placed": 307,
+        "door_reserve_requested": 46,
+        "door_reserve_deployed": 6,
+        "door_reserve_remaining": 40,
+        "door_excess_placed_in_main": 0,
+        "door_excess_placed_in_transition": 0,
+        "required_sku_fill_rate_pct": 26.73,
+        "elastic_sku_fill_rate_pct": 0.0,
+        "main_wall_end_x": 11.978,
+        "transition_start_x": 11.132,
+        "door_closure_start_x": 11.632,
+        "transition_reached": true,
+        "door_zone_reached": true,
+        "door_closure_coverage": 0.7025,
+        "largest_door_gap": 0.122,
+        "door_zone_occupancy": 0.1702,
+        "door_wall_flatness": 0.8994,
+        "is_door_ready": true,
+        "door_readiness_score": 72.09,
+        "door_clearance_margin_m": 0.054,
+        "authoritative_transition_start_x": 11.132,
+        "authoritative_door_start_x": 11.632,
+        "boundary_source": "ElasticDoorFrontier",
+        "rejection_reasons": []
+      }
+    }
+  }
+}

@@ -1,0 +1,1084 @@
+{
+  "sku_count": 14,
+  "profile_coverage": 14,
+  "all_profiles_explicit": true,
+  "source_counts": {
+    "DEFAULT": 381,
+    "USER_DEFINED": 81
+  },
+  "profiles": [
+    {
+      "sku_id": "SKU-01",
+      "cargo_profile_ref": "REAR_UPRIGHT_DEFAULT",
+      "profile_present": true,
+      "natural_language_requirement_consumed": false,
+      "field_sources": {
+        "geometryPolicy.clearanceM": "DEFAULT",
+        "orientationPolicy.maxFlatLayers": "DEFAULT",
+        "orientationPolicy.rules": "DEFAULT",
+        "placementPolicy.loadPriority": "DEFAULT",
+        "placementPolicy.reductionAllowed": "DEFAULT",
+        "placementPolicy.minimumQuantity": "DEFAULT",
+        "placementPolicy.packingRoles": "USER_DEFINED",
+        "stackPolicy.maxStackLayers": "DEFAULT",
+        "stackPolicy.allowStackingOnTop": "DEFAULT",
+        "stackPolicy.mustBeOnFloor": "DEFAULT",
+        "stackPolicy.stackOnSelf": "DEFAULT",
+        "stackPolicy.allowedAboveCategories": "DEFAULT",
+        "stackPolicy.forbiddenAboveCategories": "DEFAULT",
+        "compressionPolicy.maxTopLoad": "DEFAULT",
+        "compressionPolicy.maxPressureKgM2": "DEFAULT",
+        "stabilityPolicy.antiTipRequired": "DEFAULT",
+        "stabilityPolicy.minSupportRatio": "DEFAULT",
+        "stabilityPolicy.maxUnsupportedSpan": "DEFAULT",
+        "stabilityPolicy.groupStabilityRequired": "DEFAULT",
+        "stabilityPolicy.wallStabilityRequired": "DEFAULT",
+        "topFillPolicy.enabled": "DEFAULT",
+        "topFillPolicy.allowedOrientations": "DEFAULT",
+        "topFillPolicy.conditionalOrientations": "DEFAULT",
+        "topFillPolicy.maxLayers": "DEFAULT",
+        "topFillPolicy.minBaseHeight": "DEFAULT",
+        "topFillPolicy.minSupportRatio": "DEFAULT",
+        "topFillPolicy.residualHeightTarget": "DEFAULT",
+        "zonePolicy.preferred": "USER_DEFINED",
+        "zonePolicy.required": "USER_DEFINED",
+        "zonePolicy.forbidden": "USER_DEFINED",
+        "handlingPolicy.keepUpright": "DEFAULT",
+        "handlingPolicy.fragile": "DEFAULT",
+        "handlingPolicy.specialInstructions": "DEFAULT"
+      },
+      "orientation_rules": [
+        {
+          "orientation": "UPRIGHT",
+          "allowed_regions": [
+            "MAIN_BODY",
+            "TOP_FILL",
+            "DOOR_ZONE"
+          ],
+          "condition": "ALWAYS",
+          "max_top_fill_layers": null,
+          "min_base_height": null
+        }
+      ],
+      "placement": {
+        "load_priority": 0,
+        "reduction_allowed": false,
+        "minimum_quantity": 1
+      },
+      "zone": {
+        "preferred": [],
+        "required": [
+          "REAR"
+        ],
+        "forbidden": []
+      },
+      "top_fill": {
+        "enabled": false,
+        "allowed_orientations": [],
+        "conditional_orientations": [],
+        "max_layers": 0,
+        "min_base_height": 0.0,
+        "min_support_ratio": 0.7
+      }
+    },
+    {
+      "sku_id": "SKU-02",
+      "cargo_profile_ref": "DISPLAY_DOOR_UPRIGHT_PLUS_CONDITIONAL_FLAT",
+      "profile_present": true,
+      "natural_language_requirement_consumed": false,
+      "field_sources": {
+        "geometryPolicy.clearanceM": "DEFAULT",
+        "orientationPolicy.maxFlatLayers": "USER_DEFINED",
+        "orientationPolicy.rules": "USER_DEFINED",
+        "placementPolicy.loadPriority": "DEFAULT",
+        "placementPolicy.reductionAllowed": "DEFAULT",
+        "placementPolicy.minimumQuantity": "DEFAULT",
+        "placementPolicy.packingRoles": "USER_DEFINED",
+        "stackPolicy.maxStackLayers": "DEFAULT",
+        "stackPolicy.allowStackingOnTop": "DEFAULT",
+        "stackPolicy.mustBeOnFloor": "DEFAULT",
+        "stackPolicy.stackOnSelf": "DEFAULT",
+        "stackPolicy.allowedAboveCategories": "DEFAULT",
+        "stackPolicy.forbiddenAboveCategories": "DEFAULT",
+        "compressionPolicy.maxTopLoad": "DEFAULT",
+        "compressionPolicy.maxPressureKgM2": "DEFAULT",
+        "stabilityPolicy.antiTipRequired": "DEFAULT",
+        "stabilityPolicy.minSupportRatio": "DEFAULT",
+        "stabilityPolicy.maxUnsupportedSpan": "DEFAULT",
+        "stabilityPolicy.groupStabilityRequired": "DEFAULT",
+        "stabilityPolicy.wallStabilityRequired": "DEFAULT",
+        "topFillPolicy.enabled": "USER_DEFINED",
+        "topFillPolicy.allowedOrientations": "USER_DEFINED",
+        "topFillPolicy.conditionalOrientations": "USER_DEFINED",
+        "topFillPolicy.maxLayers": "USER_DEFINED",
+        "topFillPolicy.minBaseHeight": "USER_DEFINED",
+        "topFillPolicy.minSupportRatio": "USER_DEFINED",
+        "topFillPolicy.residualHeightTarget": "USER_DEFINED",
+        "zonePolicy.preferred": "USER_DEFINED",
+        "zonePolicy.required": "USER_DEFINED",
+        "zonePolicy.forbidden": "USER_DEFINED",
+        "handlingPolicy.keepUpright": "USER_DEFINED",
+        "handlingPolicy.fragile": "USER_DEFINED",
+        "handlingPolicy.specialInstructions": "USER_DEFINED"
+      },
+      "orientation_rules": [
+        {
+          "orientation": "UPRIGHT",
+          "allowed_regions": [
+            "MAIN_BODY",
+            "DOOR_ZONE"
+          ],
+          "condition": "ALWAYS",
+          "max_top_fill_layers": null,
+          "min_base_height": null
+        },
+        {
+          "orientation": "UPRIGHT",
+          "allowed_regions": [
+            "TOP_FILL"
+          ],
+          "condition": "ALWAYS",
+          "max_top_fill_layers": null,
+          "min_base_height": 2.5
+        },
+        {
+          "orientation": "FLAT",
+          "allowed_regions": [
+            "TOP_FILL"
+          ],
+          "condition": "CONDITIONAL_TOP_FILL",
+          "max_top_fill_layers": 3,
+          "min_base_height": 2.5
+        }
+      ],
+      "placement": {
+        "load_priority": 0,
+        "reduction_allowed": false,
+        "minimum_quantity": 0
+      },
+      "zone": {
+        "preferred": [],
+        "required": [
+          "DOOR"
+        ],
+        "forbidden": []
+      },
+      "top_fill": {
+        "enabled": true,
+        "allowed_orientations": [
+          "UPRIGHT"
+        ],
+        "conditional_orientations": [
+          "FLAT"
+        ],
+        "max_layers": 3,
+        "min_base_height": 2.5,
+        "min_support_ratio": 0.7
+      }
+    },
+    {
+      "sku_id": "SKU-03",
+      "cargo_profile_ref": "DOOR_UPRIGHT_DEFAULT",
+      "profile_present": true,
+      "natural_language_requirement_consumed": false,
+      "field_sources": {
+        "geometryPolicy.clearanceM": "DEFAULT",
+        "orientationPolicy.maxFlatLayers": "DEFAULT",
+        "orientationPolicy.rules": "DEFAULT",
+        "placementPolicy.loadPriority": "DEFAULT",
+        "placementPolicy.reductionAllowed": "DEFAULT",
+        "placementPolicy.minimumQuantity": "DEFAULT",
+        "placementPolicy.packingRoles": "USER_DEFINED",
+        "stackPolicy.maxStackLayers": "DEFAULT",
+        "stackPolicy.allowStackingOnTop": "DEFAULT",
+        "stackPolicy.mustBeOnFloor": "DEFAULT",
+        "stackPolicy.stackOnSelf": "DEFAULT",
+        "stackPolicy.allowedAboveCategories": "DEFAULT",
+        "stackPolicy.forbiddenAboveCategories": "DEFAULT",
+        "compressionPolicy.maxTopLoad": "DEFAULT",
+        "compressionPolicy.maxPressureKgM2": "DEFAULT",
+        "stabilityPolicy.antiTipRequired": "DEFAULT",
+        "stabilityPolicy.minSupportRatio": "DEFAULT",
+        "stabilityPolicy.maxUnsupportedSpan": "DEFAULT",
+        "stabilityPolicy.groupStabilityRequired": "DEFAULT",
+        "stabilityPolicy.wallStabilityRequired": "DEFAULT",
+        "topFillPolicy.enabled": "DEFAULT",
+        "topFillPolicy.allowedOrientations": "DEFAULT",
+        "topFillPolicy.conditionalOrientations": "DEFAULT",
+        "topFillPolicy.maxLayers": "DEFAULT",
+        "topFillPolicy.minBaseHeight": "DEFAULT",
+        "topFillPolicy.minSupportRatio": "DEFAULT",
+        "topFillPolicy.residualHeightTarget": "DEFAULT",
+        "zonePolicy.preferred": "USER_DEFINED",
+        "zonePolicy.required": "USER_DEFINED",
+        "zonePolicy.forbidden": "USER_DEFINED",
+        "handlingPolicy.keepUpright": "DEFAULT",
+        "handlingPolicy.fragile": "DEFAULT",
+        "handlingPolicy.specialInstructions": "DEFAULT"
+      },
+      "orientation_rules": [
+        {
+          "orientation": "UPRIGHT",
+          "allowed_regions": [
+            "MAIN_BODY",
+            "TOP_FILL",
+            "DOOR_ZONE"
+          ],
+          "condition": "ALWAYS",
+          "max_top_fill_layers": null,
+          "min_base_height": null
+        }
+      ],
+      "placement": {
+        "load_priority": 0,
+        "reduction_allowed": false,
+        "minimum_quantity": 0
+      },
+      "zone": {
+        "preferred": [],
+        "required": [
+          "DOOR"
+        ],
+        "forbidden": []
+      },
+      "top_fill": {
+        "enabled": false,
+        "allowed_orientations": [],
+        "conditional_orientations": [],
+        "max_layers": 0,
+        "min_base_height": 0.0,
+        "min_support_ratio": 0.7
+      }
+    },
+    {
+      "sku_id": "SKU-04",
+      "cargo_profile_ref": "DOOR_UPRIGHT_DEFAULT",
+      "profile_present": true,
+      "natural_language_requirement_consumed": false,
+      "field_sources": {
+        "geometryPolicy.clearanceM": "DEFAULT",
+        "orientationPolicy.maxFlatLayers": "DEFAULT",
+        "orientationPolicy.rules": "DEFAULT",
+        "placementPolicy.loadPriority": "DEFAULT",
+        "placementPolicy.reductionAllowed": "DEFAULT",
+        "placementPolicy.minimumQuantity": "DEFAULT",
+        "placementPolicy.packingRoles": "USER_DEFINED",
+        "stackPolicy.maxStackLayers": "DEFAULT",
+        "stackPolicy.allowStackingOnTop": "DEFAULT",
+        "stackPolicy.mustBeOnFloor": "DEFAULT",
+        "stackPolicy.stackOnSelf": "DEFAULT",
+        "stackPolicy.allowedAboveCategories": "DEFAULT",
+        "stackPolicy.forbiddenAboveCategories": "DEFAULT",
+        "compressionPolicy.maxTopLoad": "DEFAULT",
+        "compressionPolicy.maxPressureKgM2": "DEFAULT",
+        "stabilityPolicy.antiTipRequired": "DEFAULT",
+        "stabilityPolicy.minSupportRatio": "DEFAULT",
+        "stabilityPolicy.maxUnsupportedSpan": "DEFAULT",
+        "stabilityPolicy.groupStabilityRequired": "DEFAULT",
+        "stabilityPolicy.wallStabilityRequired": "DEFAULT",
+        "topFillPolicy.enabled": "DEFAULT",
+        "topFillPolicy.allowedOrientations": "DEFAULT",
+        "topFillPolicy.conditionalOrientations": "DEFAULT",
+        "topFillPolicy.maxLayers": "DEFAULT",
+        "topFillPolicy.minBaseHeight": "DEFAULT",
+        "topFillPolicy.minSupportRatio": "DEFAULT",
+        "topFillPolicy.residualHeightTarget": "DEFAULT",
+        "zonePolicy.preferred": "USER_DEFINED",
+        "zonePolicy.required": "USER_DEFINED",
+        "zonePolicy.forbidden": "USER_DEFINED",
+        "handlingPolicy.keepUpright": "DEFAULT",
+        "handlingPolicy.fragile": "DEFAULT",
+        "handlingPolicy.specialInstructions": "DEFAULT"
+      },
+      "orientation_rules": [
+        {
+          "orientation": "UPRIGHT",
+          "allowed_regions": [
+            "MAIN_BODY",
+            "TOP_FILL",
+            "DOOR_ZONE"
+          ],
+          "condition": "ALWAYS",
+          "max_top_fill_layers": null,
+          "min_base_height": null
+        }
+      ],
+      "placement": {
+        "load_priority": 0,
+        "reduction_allowed": false,
+        "minimum_quantity": 0
+      },
+      "zone": {
+        "preferred": [],
+        "required": [
+          "DOOR"
+        ],
+        "forbidden": []
+      },
+      "top_fill": {
+        "enabled": false,
+        "allowed_orientations": [],
+        "conditional_orientations": [],
+        "max_layers": 0,
+        "min_base_height": 0.0,
+        "min_support_ratio": 0.7
+      }
+    },
+    {
+      "sku_id": "SKU-05",
+      "cargo_profile_ref": "MIDDLE_UPRIGHT_DEFAULT",
+      "profile_present": true,
+      "natural_language_requirement_consumed": false,
+      "field_sources": {
+        "geometryPolicy.clearanceM": "DEFAULT",
+        "orientationPolicy.maxFlatLayers": "DEFAULT",
+        "orientationPolicy.rules": "DEFAULT",
+        "placementPolicy.loadPriority": "DEFAULT",
+        "placementPolicy.reductionAllowed": "DEFAULT",
+        "placementPolicy.minimumQuantity": "DEFAULT",
+        "placementPolicy.packingRoles": "USER_DEFINED",
+        "stackPolicy.maxStackLayers": "DEFAULT",
+        "stackPolicy.allowStackingOnTop": "DEFAULT",
+        "stackPolicy.mustBeOnFloor": "DEFAULT",
+        "stackPolicy.stackOnSelf": "DEFAULT",
+        "stackPolicy.allowedAboveCategories": "DEFAULT",
+        "stackPolicy.forbiddenAboveCategories": "DEFAULT",
+        "compressionPolicy.maxTopLoad": "DEFAULT",
+        "compressionPolicy.maxPressureKgM2": "DEFAULT",
+        "stabilityPolicy.antiTipRequired": "DEFAULT",
+        "stabilityPolicy.minSupportRatio": "DEFAULT",
+        "stabilityPolicy.maxUnsupportedSpan": "DEFAULT",
+        "stabilityPolicy.groupStabilityRequired": "DEFAULT",
+        "stabilityPolicy.wallStabilityRequired": "DEFAULT",
+        "topFillPolicy.enabled": "DEFAULT",
+        "topFillPolicy.allowedOrientations": "DEFAULT",
+        "topFillPolicy.conditionalOrientations": "DEFAULT",
+        "topFillPolicy.maxLayers": "DEFAULT",
+        "topFillPolicy.minBaseHeight": "DEFAULT",
+        "topFillPolicy.minSupportRatio": "DEFAULT",
+        "topFillPolicy.residualHeightTarget": "DEFAULT",
+        "zonePolicy.preferred": "USER_DEFINED",
+        "zonePolicy.required": "USER_DEFINED",
+        "zonePolicy.forbidden": "USER_DEFINED",
+        "handlingPolicy.keepUpright": "DEFAULT",
+        "handlingPolicy.fragile": "DEFAULT",
+        "handlingPolicy.specialInstructions": "DEFAULT"
+      },
+      "orientation_rules": [
+        {
+          "orientation": "UPRIGHT",
+          "allowed_regions": [
+            "MAIN_BODY",
+            "TOP_FILL",
+            "DOOR_ZONE"
+          ],
+          "condition": "ALWAYS",
+          "max_top_fill_layers": null,
+          "min_base_height": null
+        }
+      ],
+      "placement": {
+        "load_priority": 0,
+        "reduction_allowed": false,
+        "minimum_quantity": 0
+      },
+      "zone": {
+        "preferred": [
+          "MIDDLE"
+        ],
+        "required": [],
+        "forbidden": []
+      },
+      "top_fill": {
+        "enabled": false,
+        "allowed_orientations": [],
+        "conditional_orientations": [],
+        "max_layers": 0,
+        "min_base_height": 0.0,
+        "min_support_ratio": 0.7
+      }
+    },
+    {
+      "sku_id": "SKU-06",
+      "cargo_profile_ref": "MIDDLE_UPRIGHT_DEFAULT",
+      "profile_present": true,
+      "natural_language_requirement_consumed": false,
+      "field_sources": {
+        "geometryPolicy.clearanceM": "DEFAULT",
+        "orientationPolicy.maxFlatLayers": "DEFAULT",
+        "orientationPolicy.rules": "DEFAULT",
+        "placementPolicy.loadPriority": "DEFAULT",
+        "placementPolicy.reductionAllowed": "DEFAULT",
+        "placementPolicy.minimumQuantity": "DEFAULT",
+        "placementPolicy.packingRoles": "USER_DEFINED",
+        "stackPolicy.maxStackLayers": "DEFAULT",
+        "stackPolicy.allowStackingOnTop": "DEFAULT",
+        "stackPolicy.mustBeOnFloor": "DEFAULT",
+        "stackPolicy.stackOnSelf": "DEFAULT",
+        "stackPolicy.allowedAboveCategories": "DEFAULT",
+        "stackPolicy.forbiddenAboveCategories": "DEFAULT",
+        "compressionPolicy.maxTopLoad": "DEFAULT",
+        "compressionPolicy.maxPressureKgM2": "DEFAULT",
+        "stabilityPolicy.antiTipRequired": "DEFAULT",
+        "stabilityPolicy.minSupportRatio": "DEFAULT",
+        "stabilityPolicy.maxUnsupportedSpan": "DEFAULT",
+        "stabilityPolicy.groupStabilityRequired": "DEFAULT",
+        "stabilityPolicy.wallStabilityRequired": "DEFAULT",
+        "topFillPolicy.enabled": "DEFAULT",
+        "topFillPolicy.allowedOrientations": "DEFAULT",
+        "topFillPolicy.conditionalOrientations": "DEFAULT",
+        "topFillPolicy.maxLayers": "DEFAULT",
+        "topFillPolicy.minBaseHeight": "DEFAULT",
+        "topFillPolicy.minSupportRatio": "DEFAULT",
+        "topFillPolicy.residualHeightTarget": "DEFAULT",
+        "zonePolicy.preferred": "USER_DEFINED",
+        "zonePolicy.required": "USER_DEFINED",
+        "zonePolicy.forbidden": "USER_DEFINED",
+        "handlingPolicy.keepUpright": "DEFAULT",
+        "handlingPolicy.fragile": "DEFAULT",
+        "handlingPolicy.specialInstructions": "DEFAULT"
+      },
+      "orientation_rules": [
+        {
+          "orientation": "UPRIGHT",
+          "allowed_regions": [
+            "MAIN_BODY",
+            "TOP_FILL",
+            "DOOR_ZONE"
+          ],
+          "condition": "ALWAYS",
+          "max_top_fill_layers": null,
+          "min_base_height": null
+        }
+      ],
+      "placement": {
+        "load_priority": 0,
+        "reduction_allowed": false,
+        "minimum_quantity": 0
+      },
+      "zone": {
+        "preferred": [
+          "MIDDLE"
+        ],
+        "required": [],
+        "forbidden": []
+      },
+      "top_fill": {
+        "enabled": false,
+        "allowed_orientations": [],
+        "conditional_orientations": [],
+        "max_layers": 0,
+        "min_base_height": 0.0,
+        "min_support_ratio": 0.7
+      }
+    },
+    {
+      "sku_id": "SKU-07",
+      "cargo_profile_ref": "MIDDLE_UPRIGHT_DEFAULT",
+      "profile_present": true,
+      "natural_language_requirement_consumed": false,
+      "field_sources": {
+        "geometryPolicy.clearanceM": "DEFAULT",
+        "orientationPolicy.maxFlatLayers": "DEFAULT",
+        "orientationPolicy.rules": "DEFAULT",
+        "placementPolicy.loadPriority": "DEFAULT",
+        "placementPolicy.reductionAllowed": "DEFAULT",
+        "placementPolicy.minimumQuantity": "DEFAULT",
+        "placementPolicy.packingRoles": "USER_DEFINED",
+        "stackPolicy.maxStackLayers": "DEFAULT",
+        "stackPolicy.allowStackingOnTop": "DEFAULT",
+        "stackPolicy.mustBeOnFloor": "DEFAULT",
+        "stackPolicy.stackOnSelf": "DEFAULT",
+        "stackPolicy.allowedAboveCategories": "DEFAULT",
+        "stackPolicy.forbiddenAboveCategories": "DEFAULT",
+        "compressionPolicy.maxTopLoad": "DEFAULT",
+        "compressionPolicy.maxPressureKgM2": "DEFAULT",
+        "stabilityPolicy.antiTipRequired": "DEFAULT",
+        "stabilityPolicy.minSupportRatio": "DEFAULT",
+        "stabilityPolicy.maxUnsupportedSpan": "DEFAULT",
+        "stabilityPolicy.groupStabilityRequired": "DEFAULT",
+        "stabilityPolicy.wallStabilityRequired": "DEFAULT",
+        "topFillPolicy.enabled": "DEFAULT",
+        "topFillPolicy.allowedOrientations": "DEFAULT",
+        "topFillPolicy.conditionalOrientations": "DEFAULT",
+        "topFillPolicy.maxLayers": "DEFAULT",
+        "topFillPolicy.minBaseHeight": "DEFAULT",
+        "topFillPolicy.minSupportRatio": "DEFAULT",
+        "topFillPolicy.residualHeightTarget": "DEFAULT",
+        "zonePolicy.preferred": "USER_DEFINED",
+        "zonePolicy.required": "USER_DEFINED",
+        "zonePolicy.forbidden": "USER_DEFINED",
+        "handlingPolicy.keepUpright": "DEFAULT",
+        "handlingPolicy.fragile": "DEFAULT",
+        "handlingPolicy.specialInstructions": "DEFAULT"
+      },
+      "orientation_rules": [
+        {
+          "orientation": "UPRIGHT",
+          "allowed_regions": [
+            "MAIN_BODY",
+            "TOP_FILL",
+            "DOOR_ZONE"
+          ],
+          "condition": "ALWAYS",
+          "max_top_fill_layers": null,
+          "min_base_height": null
+        }
+      ],
+      "placement": {
+        "load_priority": 0,
+        "reduction_allowed": false,
+        "minimum_quantity": 0
+      },
+      "zone": {
+        "preferred": [
+          "MIDDLE"
+        ],
+        "required": [],
+        "forbidden": []
+      },
+      "top_fill": {
+        "enabled": false,
+        "allowed_orientations": [],
+        "conditional_orientations": [],
+        "max_layers": 0,
+        "min_base_height": 0.0,
+        "min_support_ratio": 0.7
+      }
+    },
+    {
+      "sku_id": "SKU-08",
+      "cargo_profile_ref": "MIDDLE_UPRIGHT_DEFAULT",
+      "profile_present": true,
+      "natural_language_requirement_consumed": false,
+      "field_sources": {
+        "geometryPolicy.clearanceM": "DEFAULT",
+        "orientationPolicy.maxFlatLayers": "DEFAULT",
+        "orientationPolicy.rules": "DEFAULT",
+        "placementPolicy.loadPriority": "DEFAULT",
+        "placementPolicy.reductionAllowed": "DEFAULT",
+        "placementPolicy.minimumQuantity": "DEFAULT",
+        "placementPolicy.packingRoles": "USER_DEFINED",
+        "stackPolicy.maxStackLayers": "DEFAULT",
+        "stackPolicy.allowStackingOnTop": "DEFAULT",
+        "stackPolicy.mustBeOnFloor": "DEFAULT",
+        "stackPolicy.stackOnSelf": "DEFAULT",
+        "stackPolicy.allowedAboveCategories": "DEFAULT",
+        "stackPolicy.forbiddenAboveCategories": "DEFAULT",
+        "compressionPolicy.maxTopLoad": "DEFAULT",
+        "compressionPolicy.maxPressureKgM2": "DEFAULT",
+        "stabilityPolicy.antiTipRequired": "DEFAULT",
+        "stabilityPolicy.minSupportRatio": "DEFAULT",
+        "stabilityPolicy.maxUnsupportedSpan": "DEFAULT",
+        "stabilityPolicy.groupStabilityRequired": "DEFAULT",
+        "stabilityPolicy.wallStabilityRequired": "DEFAULT",
+        "topFillPolicy.enabled": "DEFAULT",
+        "topFillPolicy.allowedOrientations": "DEFAULT",
+        "topFillPolicy.conditionalOrientations": "DEFAULT",
+        "topFillPolicy.maxLayers": "DEFAULT",
+        "topFillPolicy.minBaseHeight": "DEFAULT",
+        "topFillPolicy.minSupportRatio": "DEFAULT",
+        "topFillPolicy.residualHeightTarget": "DEFAULT",
+        "zonePolicy.preferred": "USER_DEFINED",
+        "zonePolicy.required": "USER_DEFINED",
+        "zonePolicy.forbidden": "USER_DEFINED",
+        "handlingPolicy.keepUpright": "DEFAULT",
+        "handlingPolicy.fragile": "DEFAULT",
+        "handlingPolicy.specialInstructions": "DEFAULT"
+      },
+      "orientation_rules": [
+        {
+          "orientation": "UPRIGHT",
+          "allowed_regions": [
+            "MAIN_BODY",
+            "TOP_FILL",
+            "DOOR_ZONE"
+          ],
+          "condition": "ALWAYS",
+          "max_top_fill_layers": null,
+          "min_base_height": null
+        }
+      ],
+      "placement": {
+        "load_priority": 0,
+        "reduction_allowed": false,
+        "minimum_quantity": 0
+      },
+      "zone": {
+        "preferred": [
+          "MIDDLE"
+        ],
+        "required": [],
+        "forbidden": []
+      },
+      "top_fill": {
+        "enabled": false,
+        "allowed_orientations": [],
+        "conditional_orientations": [],
+        "max_layers": 0,
+        "min_base_height": 0.0,
+        "min_support_ratio": 0.7
+      }
+    },
+    {
+      "sku_id": "SKU-09",
+      "cargo_profile_ref": "MIDDLE_UPRIGHT_DEFAULT",
+      "profile_present": true,
+      "natural_language_requirement_consumed": false,
+      "field_sources": {
+        "geometryPolicy.clearanceM": "DEFAULT",
+        "orientationPolicy.maxFlatLayers": "DEFAULT",
+        "orientationPolicy.rules": "DEFAULT",
+        "placementPolicy.loadPriority": "DEFAULT",
+        "placementPolicy.reductionAllowed": "DEFAULT",
+        "placementPolicy.minimumQuantity": "DEFAULT",
+        "placementPolicy.packingRoles": "USER_DEFINED",
+        "stackPolicy.maxStackLayers": "DEFAULT",
+        "stackPolicy.allowStackingOnTop": "DEFAULT",
+        "stackPolicy.mustBeOnFloor": "DEFAULT",
+        "stackPolicy.stackOnSelf": "DEFAULT",
+        "stackPolicy.allowedAboveCategories": "DEFAULT",
+        "stackPolicy.forbiddenAboveCategories": "DEFAULT",
+        "compressionPolicy.maxTopLoad": "DEFAULT",
+        "compressionPolicy.maxPressureKgM2": "DEFAULT",
+        "stabilityPolicy.antiTipRequired": "DEFAULT",
+        "stabilityPolicy.minSupportRatio": "DEFAULT",
+        "stabilityPolicy.maxUnsupportedSpan": "DEFAULT",
+        "stabilityPolicy.groupStabilityRequired": "DEFAULT",
+        "stabilityPolicy.wallStabilityRequired": "DEFAULT",
+        "topFillPolicy.enabled": "DEFAULT",
+        "topFillPolicy.allowedOrientations": "DEFAULT",
+        "topFillPolicy.conditionalOrientations": "DEFAULT",
+        "topFillPolicy.maxLayers": "DEFAULT",
+        "topFillPolicy.minBaseHeight": "DEFAULT",
+        "topFillPolicy.minSupportRatio": "DEFAULT",
+        "topFillPolicy.residualHeightTarget": "DEFAULT",
+        "zonePolicy.preferred": "USER_DEFINED",
+        "zonePolicy.required": "USER_DEFINED",
+        "zonePolicy.forbidden": "USER_DEFINED",
+        "handlingPolicy.keepUpright": "DEFAULT",
+        "handlingPolicy.fragile": "DEFAULT",
+        "handlingPolicy.specialInstructions": "DEFAULT"
+      },
+      "orientation_rules": [
+        {
+          "orientation": "UPRIGHT",
+          "allowed_regions": [
+            "MAIN_BODY",
+            "TOP_FILL",
+            "DOOR_ZONE"
+          ],
+          "condition": "ALWAYS",
+          "max_top_fill_layers": null,
+          "min_base_height": null
+        }
+      ],
+      "placement": {
+        "load_priority": 0,
+        "reduction_allowed": false,
+        "minimum_quantity": 0
+      },
+      "zone": {
+        "preferred": [
+          "MIDDLE"
+        ],
+        "required": [],
+        "forbidden": []
+      },
+      "top_fill": {
+        "enabled": false,
+        "allowed_orientations": [],
+        "conditional_orientations": [],
+        "max_layers": 0,
+        "min_base_height": 0.0,
+        "min_support_ratio": 0.7
+      }
+    },
+    {
+      "sku_id": "SKU-10",
+      "cargo_profile_ref": "MIDDLE_UPRIGHT_DEFAULT",
+      "profile_present": true,
+      "natural_language_requirement_consumed": false,
+      "field_sources": {
+        "geometryPolicy.clearanceM": "DEFAULT",
+        "orientationPolicy.maxFlatLayers": "DEFAULT",
+        "orientationPolicy.rules": "DEFAULT",
+        "placementPolicy.loadPriority": "DEFAULT",
+        "placementPolicy.reductionAllowed": "DEFAULT",
+        "placementPolicy.minimumQuantity": "DEFAULT",
+        "placementPolicy.packingRoles": "USER_DEFINED",
+        "stackPolicy.maxStackLayers": "DEFAULT",
+        "stackPolicy.allowStackingOnTop": "DEFAULT",
+        "stackPolicy.mustBeOnFloor": "DEFAULT",
+        "stackPolicy.stackOnSelf": "DEFAULT",
+        "stackPolicy.allowedAboveCategories": "DEFAULT",
+        "stackPolicy.forbiddenAboveCategories": "DEFAULT",
+        "compressionPolicy.maxTopLoad": "DEFAULT",
+        "compressionPolicy.maxPressureKgM2": "DEFAULT",
+        "stabilityPolicy.antiTipRequired": "DEFAULT",
+        "stabilityPolicy.minSupportRatio": "DEFAULT",
+        "stabilityPolicy.maxUnsupportedSpan": "DEFAULT",
+        "stabilityPolicy.groupStabilityRequired": "DEFAULT",
+        "stabilityPolicy.wallStabilityRequired": "DEFAULT",
+        "topFillPolicy.enabled": "DEFAULT",
+        "topFillPolicy.allowedOrientations": "DEFAULT",
+        "topFillPolicy.conditionalOrientations": "DEFAULT",
+        "topFillPolicy.maxLayers": "DEFAULT",
+        "topFillPolicy.minBaseHeight": "DEFAULT",
+        "topFillPolicy.minSupportRatio": "DEFAULT",
+        "topFillPolicy.residualHeightTarget": "DEFAULT",
+        "zonePolicy.preferred": "USER_DEFINED",
+        "zonePolicy.required": "USER_DEFINED",
+        "zonePolicy.forbidden": "USER_DEFINED",
+        "handlingPolicy.keepUpright": "DEFAULT",
+        "handlingPolicy.fragile": "DEFAULT",
+        "handlingPolicy.specialInstructions": "DEFAULT"
+      },
+      "orientation_rules": [
+        {
+          "orientation": "UPRIGHT",
+          "allowed_regions": [
+            "MAIN_BODY",
+            "TOP_FILL",
+            "DOOR_ZONE"
+          ],
+          "condition": "ALWAYS",
+          "max_top_fill_layers": null,
+          "min_base_height": null
+        }
+      ],
+      "placement": {
+        "load_priority": 0,
+        "reduction_allowed": false,
+        "minimum_quantity": 0
+      },
+      "zone": {
+        "preferred": [
+          "MIDDLE"
+        ],
+        "required": [],
+        "forbidden": []
+      },
+      "top_fill": {
+        "enabled": false,
+        "allowed_orientations": [],
+        "conditional_orientations": [],
+        "max_layers": 0,
+        "min_base_height": 0.0,
+        "min_support_ratio": 0.7
+      }
+    },
+    {
+      "sku_id": "SKU-11",
+      "cargo_profile_ref": "MIDDLE_UPRIGHT_DEFAULT",
+      "profile_present": true,
+      "natural_language_requirement_consumed": false,
+      "field_sources": {
+        "geometryPolicy.clearanceM": "DEFAULT",
+        "orientationPolicy.maxFlatLayers": "DEFAULT",
+        "orientationPolicy.rules": "DEFAULT",
+        "placementPolicy.loadPriority": "DEFAULT",
+        "placementPolicy.reductionAllowed": "DEFAULT",
+        "placementPolicy.minimumQuantity": "DEFAULT",
+        "placementPolicy.packingRoles": "USER_DEFINED",
+        "stackPolicy.maxStackLayers": "DEFAULT",
+        "stackPolicy.allowStackingOnTop": "DEFAULT",
+        "stackPolicy.mustBeOnFloor": "DEFAULT",
+        "stackPolicy.stackOnSelf": "DEFAULT",
+        "stackPolicy.allowedAboveCategories": "DEFAULT",
+        "stackPolicy.forbiddenAboveCategories": "DEFAULT",
+        "compressionPolicy.maxTopLoad": "DEFAULT",
+        "compressionPolicy.maxPressureKgM2": "DEFAULT",
+        "stabilityPolicy.antiTipRequired": "DEFAULT",
+        "stabilityPolicy.minSupportRatio": "DEFAULT",
+        "stabilityPolicy.maxUnsupportedSpan": "DEFAULT",
+        "stabilityPolicy.groupStabilityRequired": "DEFAULT",
+        "stabilityPolicy.wallStabilityRequired": "DEFAULT",
+        "topFillPolicy.enabled": "DEFAULT",
+        "topFillPolicy.allowedOrientations": "DEFAULT",
+        "topFillPolicy.conditionalOrientations": "DEFAULT",
+        "topFillPolicy.maxLayers": "DEFAULT",
+        "topFillPolicy.minBaseHeight": "DEFAULT",
+        "topFillPolicy.minSupportRatio": "DEFAULT",
+        "topFillPolicy.residualHeightTarget": "DEFAULT",
+        "zonePolicy.preferred": "USER_DEFINED",
+        "zonePolicy.required": "USER_DEFINED",
+        "zonePolicy.forbidden": "USER_DEFINED",
+        "handlingPolicy.keepUpright": "DEFAULT",
+        "handlingPolicy.fragile": "DEFAULT",
+        "handlingPolicy.specialInstructions": "DEFAULT"
+      },
+      "orientation_rules": [
+        {
+          "orientation": "UPRIGHT",
+          "allowed_regions": [
+            "MAIN_BODY",
+            "TOP_FILL",
+            "DOOR_ZONE"
+          ],
+          "condition": "ALWAYS",
+          "max_top_fill_layers": null,
+          "min_base_height": null
+        }
+      ],
+      "placement": {
+        "load_priority": 0,
+        "reduction_allowed": false,
+        "minimum_quantity": 0
+      },
+      "zone": {
+        "preferred": [
+          "MIDDLE"
+        ],
+        "required": [],
+        "forbidden": []
+      },
+      "top_fill": {
+        "enabled": false,
+        "allowed_orientations": [],
+        "conditional_orientations": [],
+        "max_layers": 0,
+        "min_base_height": 0.0,
+        "min_support_ratio": 0.7
+      }
+    },
+    {
+      "sku_id": "SKU-12",
+      "cargo_profile_ref": "MIDDLE_UPRIGHT_DEFAULT",
+      "profile_present": true,
+      "natural_language_requirement_consumed": false,
+      "field_sources": {
+        "geometryPolicy.clearanceM": "DEFAULT",
+        "orientationPolicy.maxFlatLayers": "DEFAULT",
+        "orientationPolicy.rules": "DEFAULT",
+        "placementPolicy.loadPriority": "DEFAULT",
+        "placementPolicy.reductionAllowed": "DEFAULT",
+        "placementPolicy.minimumQuantity": "DEFAULT",
+        "placementPolicy.packingRoles": "USER_DEFINED",
+        "stackPolicy.maxStackLayers": "DEFAULT",
+        "stackPolicy.allowStackingOnTop": "DEFAULT",
+        "stackPolicy.mustBeOnFloor": "DEFAULT",
+        "stackPolicy.stackOnSelf": "DEFAULT",
+        "stackPolicy.allowedAboveCategories": "DEFAULT",
+        "stackPolicy.forbiddenAboveCategories": "DEFAULT",
+        "compressionPolicy.maxTopLoad": "DEFAULT",
+        "compressionPolicy.maxPressureKgM2": "DEFAULT",
+        "stabilityPolicy.antiTipRequired": "DEFAULT",
+        "stabilityPolicy.minSupportRatio": "DEFAULT",
+        "stabilityPolicy.maxUnsupportedSpan": "DEFAULT",
+        "stabilityPolicy.groupStabilityRequired": "DEFAULT",
+        "stabilityPolicy.wallStabilityRequired": "DEFAULT",
+        "topFillPolicy.enabled": "DEFAULT",
+        "topFillPolicy.allowedOrientations": "DEFAULT",
+        "topFillPolicy.conditionalOrientations": "DEFAULT",
+        "topFillPolicy.maxLayers": "DEFAULT",
+        "topFillPolicy.minBaseHeight": "DEFAULT",
+        "topFillPolicy.minSupportRatio": "DEFAULT",
+        "topFillPolicy.residualHeightTarget": "DEFAULT",
+        "zonePolicy.preferred": "USER_DEFINED",
+        "zonePolicy.required": "USER_DEFINED",
+        "zonePolicy.forbidden": "USER_DEFINED",
+        "handlingPolicy.keepUpright": "DEFAULT",
+        "handlingPolicy.fragile": "DEFAULT",
+        "handlingPolicy.specialInstructions": "DEFAULT"
+      },
+      "orientation_rules": [
+        {
+          "orientation": "UPRIGHT",
+          "allowed_regions": [
+            "MAIN_BODY",
+            "TOP_FILL",
+            "DOOR_ZONE"
+          ],
+          "condition": "ALWAYS",
+          "max_top_fill_layers": null,
+          "min_base_height": null
+        }
+      ],
+      "placement": {
+        "load_priority": 0,
+        "reduction_allowed": false,
+        "minimum_quantity": 0
+      },
+      "zone": {
+        "preferred": [
+          "MIDDLE"
+        ],
+        "required": [],
+        "forbidden": []
+      },
+      "top_fill": {
+        "enabled": false,
+        "allowed_orientations": [],
+        "conditional_orientations": [],
+        "max_layers": 0,
+        "min_base_height": 0.0,
+        "min_support_ratio": 0.7
+      }
+    },
+    {
+      "sku_id": "SKU-13",
+      "cargo_profile_ref": "MIDDLE_UPRIGHT_DEFAULT",
+      "profile_present": true,
+      "natural_language_requirement_consumed": false,
+      "field_sources": {
+        "geometryPolicy.clearanceM": "DEFAULT",
+        "orientationPolicy.maxFlatLayers": "DEFAULT",
+        "orientationPolicy.rules": "DEFAULT",
+        "placementPolicy.loadPriority": "DEFAULT",
+        "placementPolicy.reductionAllowed": "DEFAULT",
+        "placementPolicy.minimumQuantity": "DEFAULT",
+        "placementPolicy.packingRoles": "USER_DEFINED",
+        "stackPolicy.maxStackLayers": "DEFAULT",
+        "stackPolicy.allowStackingOnTop": "DEFAULT",
+        "stackPolicy.mustBeOnFloor": "DEFAULT",
+        "stackPolicy.stackOnSelf": "DEFAULT",
+        "stackPolicy.allowedAboveCategories": "DEFAULT",
+        "stackPolicy.forbiddenAboveCategories": "DEFAULT",
+        "compressionPolicy.maxTopLoad": "DEFAULT",
+        "compressionPolicy.maxPressureKgM2": "DEFAULT",
+        "stabilityPolicy.antiTipRequired": "DEFAULT",
+        "stabilityPolicy.minSupportRatio": "DEFAULT",
+        "stabilityPolicy.maxUnsupportedSpan": "DEFAULT",
+        "stabilityPolicy.groupStabilityRequired": "DEFAULT",
+        "stabilityPolicy.wallStabilityRequired": "DEFAULT",
+        "topFillPolicy.enabled": "DEFAULT",
+        "topFillPolicy.allowedOrientations": "DEFAULT",
+        "topFillPolicy.conditionalOrientations": "DEFAULT",
+        "topFillPolicy.maxLayers": "DEFAULT",
+        "topFillPolicy.minBaseHeight": "DEFAULT",
+        "topFillPolicy.minSupportRatio": "DEFAULT",
+        "topFillPolicy.residualHeightTarget": "DEFAULT",
+        "zonePolicy.preferred": "USER_DEFINED",
+        "zonePolicy.required": "USER_DEFINED",
+        "zonePolicy.forbidden": "USER_DEFINED",
+        "handlingPolicy.keepUpright": "DEFAULT",
+        "handlingPolicy.fragile": "DEFAULT",
+        "handlingPolicy.specialInstructions": "DEFAULT"
+      },
+      "orientation_rules": [
+        {
+          "orientation": "UPRIGHT",
+          "allowed_regions": [
+            "MAIN_BODY",
+            "TOP_FILL",
+            "DOOR_ZONE"
+          ],
+          "condition": "ALWAYS",
+          "max_top_fill_layers": null,
+          "min_base_height": null
+        }
+      ],
+      "placement": {
+        "load_priority": 0,
+        "reduction_allowed": false,
+        "minimum_quantity": 0
+      },
+      "zone": {
+        "preferred": [
+          "MIDDLE"
+        ],
+        "required": [],
+        "forbidden": []
+      },
+      "top_fill": {
+        "enabled": false,
+        "allowed_orientations": [],
+        "conditional_orientations": [],
+        "max_layers": 0,
+        "min_base_height": 0.0,
+        "min_support_ratio": 0.7
+      }
+    },
+    {
+      "sku_id": "SKU-14",
+      "cargo_profile_ref": "DISPLAY_DOOR_TOP_CONDITIONAL_FLAT",
+      "profile_present": true,
+      "natural_language_requirement_consumed": false,
+      "field_sources": {
+        "geometryPolicy.clearanceM": "DEFAULT",
+        "orientationPolicy.maxFlatLayers": "USER_DEFINED",
+        "orientationPolicy.rules": "USER_DEFINED",
+        "placementPolicy.loadPriority": "DEFAULT",
+        "placementPolicy.reductionAllowed": "USER_DEFINED",
+        "placementPolicy.minimumQuantity": "DEFAULT",
+        "placementPolicy.packingRoles": "USER_DEFINED",
+        "stackPolicy.maxStackLayers": "DEFAULT",
+        "stackPolicy.allowStackingOnTop": "DEFAULT",
+        "stackPolicy.mustBeOnFloor": "DEFAULT",
+        "stackPolicy.stackOnSelf": "DEFAULT",
+        "stackPolicy.allowedAboveCategories": "DEFAULT",
+        "stackPolicy.forbiddenAboveCategories": "DEFAULT",
+        "compressionPolicy.maxTopLoad": "DEFAULT",
+        "compressionPolicy.maxPressureKgM2": "DEFAULT",
+        "stabilityPolicy.antiTipRequired": "DEFAULT",
+        "stabilityPolicy.minSupportRatio": "DEFAULT",
+        "stabilityPolicy.maxUnsupportedSpan": "DEFAULT",
+        "stabilityPolicy.groupStabilityRequired": "DEFAULT",
+        "stabilityPolicy.wallStabilityRequired": "DEFAULT",
+        "topFillPolicy.enabled": "USER_DEFINED",
+        "topFillPolicy.allowedOrientations": "USER_DEFINED",
+        "topFillPolicy.conditionalOrientations": "USER_DEFINED",
+        "topFillPolicy.maxLayers": "USER_DEFINED",
+        "topFillPolicy.minBaseHeight": "USER_DEFINED",
+        "topFillPolicy.minSupportRatio": "USER_DEFINED",
+        "topFillPolicy.residualHeightTarget": "USER_DEFINED",
+        "zonePolicy.preferred": "USER_DEFINED",
+        "zonePolicy.required": "USER_DEFINED",
+        "zonePolicy.forbidden": "USER_DEFINED",
+        "handlingPolicy.keepUpright": "USER_DEFINED",
+        "handlingPolicy.fragile": "USER_DEFINED",
+        "handlingPolicy.specialInstructions": "USER_DEFINED"
+      },
+      "orientation_rules": [
+        {
+          "orientation": "UPRIGHT",
+          "allowed_regions": [
+            "MAIN_BODY",
+            "DOOR_ZONE"
+          ],
+          "condition": "ALWAYS",
+          "max_top_fill_layers": null,
+          "min_base_height": null
+        },
+        {
+          "orientation": "FLAT",
+          "allowed_regions": [
+            "TOP_FILL"
+          ],
+          "condition": "CONDITIONAL_TOP_FILL",
+          "max_top_fill_layers": 3,
+          "min_base_height": 1.3
+        }
+      ],
+      "placement": {
+        "load_priority": 0,
+        "reduction_allowed": true,
+        "minimum_quantity": 0
+      },
+      "zone": {
+        "preferred": [],
+        "required": [
+          "DOOR"
+        ],
+        "forbidden": []
+      },
+      "top_fill": {
+        "enabled": true,
+        "allowed_orientations": [],
+        "conditional_orientations": [
+          "FLAT"
+        ],
+        "max_layers": 3,
+        "min_base_height": 1.3,
+        "min_support_ratio": 0.7
+      }
+    }
+  ],
+  "inference_audit": {
+    "sku_name_inference": false,
+    "dimension_based_business_rule_inference": false,
+    "requirement_text_used_for_profile_items": false,
+    "legacy_free_text_adapter_path_retained_for_non_profile_inputs": true
+  }
+}

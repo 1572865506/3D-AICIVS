@@ -1,0 +1,972 @@
+{
+  "diagnostic_goal": "Diagnose why placement stopped after item 285 in BALANCED mode",
+  "total_placed": 285,
+  "state_at_284": {
+    "step_placed_count": 284,
+    "active_phase": "MAIN_WALL",
+    "door_zone_length_m": 4.8128,
+    "max_allowed_x_in_main_wall": 7.2192,
+    "current_bounding_box": {
+      "max_x": 6.482,
+      "max_y": 2.3,
+      "max_z": 1.64
+    },
+    "remaining_skus_count": 12,
+    "remaining_skus": [
+      {
+        "sku_id": "SKU-02",
+        "name": "21.5寸 显示器 BG (DA)",
+        "dim": [
+          0.553,
+          0.08,
+          0.355
+        ],
+        "remaining_qty": 500,
+        "roles": [
+          "DOOR_SEAL"
+        ],
+        "target_zone": "ZoneType.DOOR"
+      },
+      {
+        "sku_id": "SKU-04",
+        "name": "27寸显示器 2886A (DA)",
+        "dim": [
+          0.68,
+          0.122,
+          0.44
+        ],
+        "remaining_qty": 100,
+        "roles": [
+          "DOOR_SEAL"
+        ],
+        "target_zone": "ZoneType.DOOR"
+      },
+      {
+        "sku_id": "SKU-05",
+        "name": "32寸智能显示器 (DA)",
+        "dim": [
+          0.833,
+          0.53,
+          0.23
+        ],
+        "remaining_qty": 100,
+        "roles": [
+          "MAIN_WALL"
+        ],
+        "target_zone": "ZoneType.MIDDLE"
+      },
+      {
+        "sku_id": "SKU-03",
+        "name": "34寸显示器 MX340 (DA)",
+        "dim": [
+          0.978,
+          0.188,
+          0.488
+        ],
+        "remaining_qty": 90,
+        "roles": [
+          "DOOR_SEAL"
+        ],
+        "target_zone": "ZoneType.DOOR"
+      },
+      {
+        "sku_id": "SKU-08",
+        "name": "21.5寸一体机整机 带键盘鼠标",
+        "dim": [
+          0.56,
+          0.145,
+          0.41
+        ],
+        "remaining_qty": 53,
+        "roles": [
+          "MAIN_WALL"
+        ],
+        "target_zone": "ZoneType.MIDDLE"
+      },
+      {
+        "sku_id": "SKU-10",
+        "name": "19寸液晶屏 / 19寸液晶屏玻璃",
+        "dim": [
+          0.49,
+          0.28,
+          0.35
+        ],
+        "remaining_qty": 22,
+        "roles": [
+          "MAIN_WALL"
+        ],
+        "target_zone": "ZoneType.MIDDLE"
+      },
+      {
+        "sku_id": "SKU-11",
+        "name": "电源线",
+        "dim": [
+          0.48,
+          0.31,
+          0.34
+        ],
+        "remaining_qty": 10,
+        "roles": [
+          "MAIN_WALL"
+        ],
+        "target_zone": "ZoneType.MIDDLE"
+      },
+      {
+        "sku_id": "SKU-06",
+        "name": "15.6寸便携显示器 (14/箱)",
+        "dim": [
+          0.575,
+          0.46,
+          0.465
+        ],
+        "remaining_qty": 5,
+        "roles": [
+          "MAIN_WALL"
+        ],
+        "target_zone": "ZoneType.MIDDLE"
+      },
+      {
+        "sku_id": "SKU-07",
+        "name": "15.6寸 双屏便携屏",
+        "dim": [
+          0.431,
+          0.422,
+          0.281
+        ],
+        "remaining_qty": 5,
+        "roles": [
+          "MAIN_WALL"
+        ],
+        "target_zone": "ZoneType.MIDDLE"
+      },
+      {
+        "sku_id": "SKU-09",
+        "name": "19寸一体机整机",
+        "dim": [
+          0.495,
+          0.145,
+          0.41
+        ],
+        "remaining_qty": 1,
+        "roles": [
+          "MAIN_WALL"
+        ],
+        "target_zone": "ZoneType.MIDDLE"
+      },
+      {
+        "sku_id": "SKU-12",
+        "name": "电源线 (小箱)",
+        "dim": [
+          0.18,
+          0.18,
+          0.34
+        ],
+        "remaining_qty": 1,
+        "roles": [
+          "MAIN_WALL"
+        ],
+        "target_zone": "ZoneType.MIDDLE"
+      },
+      {
+        "sku_id": "SKU-14",
+        "name": "19寸 显示器 BG (DA)",
+        "dim": [
+          0.488,
+          0.08,
+          0.336
+        ],
+        "remaining_qty": 674,
+        "roles": [
+          "DOOR_SEAL"
+        ],
+        "target_zone": "ZoneType.DOOR"
+      }
+    ],
+    "anchor_counts": {
+      "FLOOR_FRONTIER": 161,
+      "SUPPORTED_FRONTIER": 766,
+      "WALL_FRONTIER": 22,
+      "EMS_CORNER": 14,
+      "EXTREME_POINT": 1111,
+      "TOP_SURFACE": 766,
+      "GAP_FILL": 0,
+      "EXPLORATION": 1200
+    },
+    "floor_anchors_sample": [
+      [
+        0.0,
+        0.41,
+        0.0
+      ],
+      [
+        0.0,
+        0.431,
+        0.0
+      ],
+      [
+        0.0,
+        0.46,
+        0.0
+      ],
+      [
+        0.0,
+        0.5,
+        0.0
+      ],
+      [
+        0.0,
+        0.645,
+        0.0
+      ],
+      [
+        0.0,
+        0.79,
+        0.0
+      ],
+      [
+        0.0,
+        0.82,
+        0.0
+      ],
+      [
+        0.0,
+        0.862,
+        0.0
+      ],
+      [
+        0.0,
+        0.92,
+        0.0
+      ],
+      [
+        0.0,
+        0.935,
+        0.0
+      ]
+    ],
+    "supported_anchors_sample": [
+      [
+        0.0,
+        0.5,
+        0.41
+      ],
+      [
+        0.0,
+        0.645,
+        0.41
+      ],
+      [
+        0.0,
+        0.79,
+        0.41
+      ],
+      [
+        0.0,
+        0.82,
+        0.41
+      ],
+      [
+        0.0,
+        0.862,
+        0.41
+      ],
+      [
+        0.0,
+        0.92,
+        0.41
+      ],
+      [
+        0.0,
+        0.935,
+        0.41
+      ],
+      [
+        0.0,
+        1.08,
+        0.41
+      ],
+      [
+        0.0,
+        1.225,
+        0.41
+      ],
+      [
+        0.0,
+        1.37,
+        0.41
+      ]
+    ],
+    "candidates_generated_count": 1057,
+    "candidates_valid_count": 172,
+    "candidates_rejected_reasons": {
+      "Candidate collides with 5 existing items": 54,
+      "Candidate collides with 7 existing items": 36,
+      "Candidate collides with 11 existing items": 22,
+      "Candidate collides with 8 existing items": 65,
+      "Candidate collides with 10 existing items": 34,
+      "Candidate collides with 13 existing items": 13,
+      "Candidate collides with 6 existing items": 33,
+      "Candidate collides with 3 existing items": 135,
+      "Candidate collides with 4 existing items": 222,
+      "Candidate collides with 9 existing items": 19,
+      "Candidate collides with 2 existing items": 104,
+      "Candidate collides with 1 existing items": 66,
+      "Candidate collides with 12 existing items": 19,
+      "Candidate collides with 14 existing items": 12,
+      "Candidate collides with 16 existing items": 4,
+      "Spatial reservation conflict: Candidate encroaches on reservation 'DOOR_ZONE_RESERVATION' reserved for DOOR_SEAL": 4,
+      "Insufficient support ratio (9.6% < 70.0%)": 4,
+      "Insufficient support ratio (26.5% < 70.0%)": 3,
+      "Insufficient support ratio (48.9% < 70.0%)": 3,
+      "Insufficient support ratio (10.7% < 70.0%)": 3,
+      "Insufficient support ratio (13.0% < 70.0%)": 3,
+      "Insufficient support ratio (3.4% < 70.0%)": 1,
+      "Insufficient support ratio (37.3% < 70.0%)": 1,
+      "Insufficient support ratio (26.2% < 70.0%)": 1,
+      "Insufficient support ratio (21.3% < 70.0%)": 1,
+      "Insufficient support ratio (14.8% < 70.0%)": 1,
+      "Insufficient support ratio (25.9% < 70.0%)": 1,
+      "Insufficient support ratio (51.8% < 70.0%)": 1,
+      "Insufficient support ratio (29.6% < 70.0%)": 1,
+      "Insufficient support ratio (46.8% < 70.0%)": 1,
+      "Insufficient support ratio (30.2% < 70.0%)": 1,
+      "Insufficient support ratio (25.2% < 70.0%)": 1,
+      "Insufficient support ratio (34.4% < 70.0%)": 1,
+      "Insufficient support ratio (33.6% < 70.0%)": 1,
+      "Insufficient support ratio (29.3% < 70.0%)": 1,
+      "Insufficient support ratio (29.7% < 70.0%)": 1,
+      "Insufficient support ratio (40.0% < 70.0%)": 1,
+      "Insufficient support ratio (5.6% < 70.0%)": 1,
+      "Insufficient support ratio (22.8% < 70.0%)": 1,
+      "Insufficient support ratio (27.3% < 70.0%)": 1,
+      "Insufficient support ratio (7.8% < 70.0%)": 1,
+      "Insufficient support ratio (30.9% < 70.0%)": 1,
+      "Insufficient support ratio (43.8% < 70.0%)": 1,
+      "Insufficient support ratio (54.1% < 70.0%)": 1,
+      "Insufficient support ratio (27.9% < 70.0%)": 1,
+      "Insufficient support ratio (60.9% < 70.0%)": 1,
+      "Insufficient support ratio (31.8% < 70.0%)": 1,
+      "Candidate collides with 15 existing items": 1
+    },
+    "rejections_by_sku": {
+      "SKU-02": {
+        "Candidate collides with 5 existing items": 14,
+        "Candidate collides with 4 existing items": 38,
+        "Candidate collides with 3 existing items": 13,
+        "Candidate collides with 2 existing items": 5,
+        "Candidate collides with 1 existing items": 2,
+        "Candidate collides with 7 existing items": 1,
+        "Candidate collides with 6 existing items": 1,
+        "Insufficient support ratio (9.6% < 70.0%)": 4,
+        "Insufficient support ratio (26.2% < 70.0%)": 1,
+        "Insufficient support ratio (30.9% < 70.0%)": 1
+      },
+      "SKU-04": {
+        "Candidate collides with 7 existing items": 10,
+        "Candidate collides with 11 existing items": 6,
+        "Candidate collides with 5 existing items": 14,
+        "Candidate collides with 4 existing items": 10,
+        "Candidate collides with 10 existing items": 8,
+        "Candidate collides with 6 existing items": 7,
+        "Candidate collides with 8 existing items": 12,
+        "Candidate collides with 2 existing items": 2,
+        "Candidate collides with 3 existing items": 4,
+        "Candidate collides with 9 existing items": 3,
+        "Insufficient support ratio (26.5% < 70.0%)": 3,
+        "Insufficient support ratio (21.3% < 70.0%)": 1,
+        "Insufficient support ratio (22.8% < 70.0%)": 1,
+        "Candidate collides with 1 existing items": 1,
+        "Insufficient support ratio (43.8% < 70.0%)": 1
+      },
+      "SKU-05": {
+        "Candidate collides with 8 existing items": 17,
+        "Candidate collides with 10 existing items": 13,
+        "Candidate collides with 7 existing items": 12,
+        "Candidate collides with 9 existing items": 7,
+        "Candidate collides with 6 existing items": 11,
+        "Candidate collides with 5 existing items": 3,
+        "Candidate collides with 4 existing items": 2,
+        "Candidate collides with 2 existing items": 4,
+        "Candidate collides with 12 existing items": 3,
+        "Candidate collides with 11 existing items": 7,
+        "Spatial reservation conflict: Candidate encroaches on reservation 'DOOR_ZONE_RESERVATION' reserved for DOOR_SEAL": 4,
+        "Candidate collides with 1 existing items": 1,
+        "Candidate collides with 3 existing items": 1,
+        "Insufficient support ratio (3.4% < 70.0%)": 1,
+        "Insufficient support ratio (37.3% < 70.0%)": 1,
+        "Insufficient support ratio (40.0% < 70.0%)": 1,
+        "Insufficient support ratio (5.6% < 70.0%)": 1,
+        "Insufficient support ratio (54.1% < 70.0%)": 1,
+        "Insufficient support ratio (27.9% < 70.0%)": 1,
+        "Candidate collides with 13 existing items": 1
+      },
+      "SKU-03": {
+        "Candidate collides with 11 existing items": 6,
+        "Candidate collides with 13 existing items": 6,
+        "Candidate collides with 7 existing items": 5,
+        "Candidate collides with 9 existing items": 3,
+        "Candidate collides with 8 existing items": 16,
+        "Candidate collides with 12 existing items": 8,
+        "Candidate collides with 10 existing items": 11,
+        "Candidate collides with 6 existing items": 5,
+        "Candidate collides with 4 existing items": 3,
+        "Candidate collides with 16 existing items": 3,
+        "Candidate collides with 14 existing items": 2,
+        "Candidate collides with 2 existing items": 2,
+        "Insufficient support ratio (48.9% < 70.0%)": 3,
+        "Insufficient support ratio (14.8% < 70.0%)": 1,
+        "Insufficient support ratio (27.3% < 70.0%)": 1,
+        "Insufficient support ratio (60.9% < 70.0%)": 1,
+        "Candidate collides with 5 existing items": 5,
+        "Candidate collides with 3 existing items": 1,
+        "Candidate collides with 15 existing items": 1
+      },
+      "SKU-08": {
+        "Candidate collides with 6 existing items": 5,
+        "Candidate collides with 5 existing items": 11,
+        "Candidate collides with 4 existing items": 38,
+        "Candidate collides with 3 existing items": 14,
+        "Candidate collides with 2 existing items": 4,
+        "Candidate collides with 1 existing items": 2,
+        "Candidate collides with 7 existing items": 2,
+        "Insufficient support ratio (10.7% < 70.0%)": 3,
+        "Insufficient support ratio (25.9% < 70.0%)": 1,
+        "Insufficient support ratio (7.8% < 70.0%)": 1,
+        "Insufficient support ratio (31.8% < 70.0%)": 1
+      },
+      "SKU-10": {
+        "Candidate collides with 3 existing items": 22,
+        "Candidate collides with 4 existing items": 24,
+        "Candidate collides with 5 existing items": 2,
+        "Candidate collides with 2 existing items": 20,
+        "Candidate collides with 1 existing items": 3,
+        "Insufficient support ratio (51.8% < 70.0%)": 1,
+        "Insufficient support ratio (29.6% < 70.0%)": 1
+      },
+      "SKU-11": {
+        "Candidate collides with 3 existing items": 31,
+        "Candidate collides with 4 existing items": 27,
+        "Candidate collides with 5 existing items": 2,
+        "Candidate collides with 2 existing items": 8,
+        "Candidate collides with 1 existing items": 3,
+        "Insufficient support ratio (46.8% < 70.0%)": 1,
+        "Insufficient support ratio (30.2% < 70.0%)": 1
+      },
+      "SKU-06": {
+        "Candidate collides with 13 existing items": 6,
+        "Candidate collides with 9 existing items": 6,
+        "Candidate collides with 11 existing items": 3,
+        "Candidate collides with 12 existing items": 8,
+        "Candidate collides with 8 existing items": 20,
+        "Candidate collides with 10 existing items": 2,
+        "Candidate collides with 6 existing items": 4,
+        "Candidate collides with 4 existing items": 5,
+        "Candidate collides with 14 existing items": 10,
+        "Candidate collides with 2 existing items": 3,
+        "Candidate collides with 7 existing items": 6,
+        "Insufficient support ratio (13.0% < 70.0%)": 3,
+        "Insufficient support ratio (25.2% < 70.0%)": 1,
+        "Candidate collides with 1 existing items": 1,
+        "Candidate collides with 5 existing items": 1,
+        "Candidate collides with 16 existing items": 1
+      },
+      "SKU-07": {
+        "Candidate collides with 4 existing items": 31,
+        "Candidate collides with 3 existing items": 32,
+        "Candidate collides with 2 existing items": 4,
+        "Candidate collides with 1 existing items": 4,
+        "Insufficient support ratio (34.4% < 70.0%)": 1,
+        "Insufficient support ratio (33.6% < 70.0%)": 1
+      },
+      "SKU-09": {
+        "Candidate collides with 2 existing items": 16,
+        "Candidate collides with 4 existing items": 22,
+        "Candidate collides with 5 existing items": 1,
+        "Candidate collides with 1 existing items": 21,
+        "Candidate collides with 3 existing items": 7,
+        "Insufficient support ratio (29.3% < 70.0%)": 1
+      },
+      "SKU-12": {
+        "Candidate collides with 2 existing items": 25,
+        "Candidate collides with 3 existing items": 3,
+        "Candidate collides with 1 existing items": 5
+      },
+      "SKU-14": {
+        "Candidate collides with 1 existing items": 23,
+        "Candidate collides with 4 existing items": 22,
+        "Candidate collides with 2 existing items": 11,
+        "Candidate collides with 5 existing items": 1,
+        "Candidate collides with 3 existing items": 7,
+        "Insufficient support ratio (29.7% < 70.0%)": 1
+      }
+    }
+  },
+  "state_at_285": {
+    "step_placed_count": 285,
+    "active_phase": "MAIN_WALL",
+    "door_zone_length_m": 4.8128,
+    "max_allowed_x_in_main_wall": 7.2192,
+    "current_bounding_box": {
+      "max_x": 6.482,
+      "max_y": 2.3,
+      "max_z": 1.64
+    },
+    "remaining_skus_count": 11,
+    "remaining_skus": [
+      {
+        "sku_id": "SKU-02",
+        "name": "21.5寸 显示器 BG (DA)",
+        "dim": [
+          0.553,
+          0.08,
+          0.355
+        ],
+        "remaining_qty": 500,
+        "roles": [
+          "DOOR_SEAL"
+        ],
+        "target_zone": "ZoneType.DOOR"
+      },
+      {
+        "sku_id": "SKU-04",
+        "name": "27寸显示器 2886A (DA)",
+        "dim": [
+          0.68,
+          0.122,
+          0.44
+        ],
+        "remaining_qty": 100,
+        "roles": [
+          "DOOR_SEAL"
+        ],
+        "target_zone": "ZoneType.DOOR"
+      },
+      {
+        "sku_id": "SKU-05",
+        "name": "32寸智能显示器 (DA)",
+        "dim": [
+          0.833,
+          0.53,
+          0.23
+        ],
+        "remaining_qty": 100,
+        "roles": [
+          "MAIN_WALL"
+        ],
+        "target_zone": "ZoneType.MIDDLE"
+      },
+      {
+        "sku_id": "SKU-03",
+        "name": "34寸显示器 MX340 (DA)",
+        "dim": [
+          0.978,
+          0.188,
+          0.488
+        ],
+        "remaining_qty": 90,
+        "roles": [
+          "DOOR_SEAL"
+        ],
+        "target_zone": "ZoneType.DOOR"
+      },
+      {
+        "sku_id": "SKU-08",
+        "name": "21.5寸一体机整机 带键盘鼠标",
+        "dim": [
+          0.56,
+          0.145,
+          0.41
+        ],
+        "remaining_qty": 53,
+        "roles": [
+          "MAIN_WALL"
+        ],
+        "target_zone": "ZoneType.MIDDLE"
+      },
+      {
+        "sku_id": "SKU-10",
+        "name": "19寸液晶屏 / 19寸液晶屏玻璃",
+        "dim": [
+          0.49,
+          0.28,
+          0.35
+        ],
+        "remaining_qty": 22,
+        "roles": [
+          "MAIN_WALL"
+        ],
+        "target_zone": "ZoneType.MIDDLE"
+      },
+      {
+        "sku_id": "SKU-11",
+        "name": "电源线",
+        "dim": [
+          0.48,
+          0.31,
+          0.34
+        ],
+        "remaining_qty": 10,
+        "roles": [
+          "MAIN_WALL"
+        ],
+        "target_zone": "ZoneType.MIDDLE"
+      },
+      {
+        "sku_id": "SKU-06",
+        "name": "15.6寸便携显示器 (14/箱)",
+        "dim": [
+          0.575,
+          0.46,
+          0.465
+        ],
+        "remaining_qty": 5,
+        "roles": [
+          "MAIN_WALL"
+        ],
+        "target_zone": "ZoneType.MIDDLE"
+      },
+      {
+        "sku_id": "SKU-07",
+        "name": "15.6寸 双屏便携屏",
+        "dim": [
+          0.431,
+          0.422,
+          0.281
+        ],
+        "remaining_qty": 5,
+        "roles": [
+          "MAIN_WALL"
+        ],
+        "target_zone": "ZoneType.MIDDLE"
+      },
+      {
+        "sku_id": "SKU-12",
+        "name": "电源线 (小箱)",
+        "dim": [
+          0.18,
+          0.18,
+          0.34
+        ],
+        "remaining_qty": 1,
+        "roles": [
+          "MAIN_WALL"
+        ],
+        "target_zone": "ZoneType.MIDDLE"
+      },
+      {
+        "sku_id": "SKU-14",
+        "name": "19寸 显示器 BG (DA)",
+        "dim": [
+          0.488,
+          0.08,
+          0.336
+        ],
+        "remaining_qty": 674,
+        "roles": [
+          "DOOR_SEAL"
+        ],
+        "target_zone": "ZoneType.DOOR"
+      }
+    ],
+    "anchor_counts": {
+      "FLOOR_FRONTIER": 161,
+      "SUPPORTED_FRONTIER": 769,
+      "WALL_FRONTIER": 22,
+      "EMS_CORNER": 13,
+      "EXTREME_POINT": 1118,
+      "TOP_SURFACE": 769,
+      "GAP_FILL": 0,
+      "EXPLORATION": 1206
+    },
+    "floor_anchors_sample": [
+      [
+        0.0,
+        0.41,
+        0.0
+      ],
+      [
+        0.0,
+        0.431,
+        0.0
+      ],
+      [
+        0.0,
+        0.46,
+        0.0
+      ],
+      [
+        0.0,
+        0.5,
+        0.0
+      ],
+      [
+        0.0,
+        0.645,
+        0.0
+      ],
+      [
+        0.0,
+        0.79,
+        0.0
+      ],
+      [
+        0.0,
+        0.82,
+        0.0
+      ],
+      [
+        0.0,
+        0.862,
+        0.0
+      ],
+      [
+        0.0,
+        0.92,
+        0.0
+      ],
+      [
+        0.0,
+        0.935,
+        0.0
+      ]
+    ],
+    "supported_anchors_sample": [
+      [
+        0.0,
+        0.5,
+        0.41
+      ],
+      [
+        0.0,
+        0.645,
+        0.41
+      ],
+      [
+        0.0,
+        0.79,
+        0.41
+      ],
+      [
+        0.0,
+        0.82,
+        0.41
+      ],
+      [
+        0.0,
+        0.862,
+        0.41
+      ],
+      [
+        0.0,
+        0.92,
+        0.41
+      ],
+      [
+        0.0,
+        0.935,
+        0.41
+      ],
+      [
+        0.0,
+        1.08,
+        0.41
+      ],
+      [
+        0.0,
+        1.225,
+        0.41
+      ],
+      [
+        0.0,
+        1.37,
+        0.41
+      ]
+    ],
+    "candidates_generated_count": 1027,
+    "candidates_valid_count": 151,
+    "candidates_rejected_reasons": {
+      "Candidate collides with 5 existing items": 50,
+      "Candidate collides with 7 existing items": 28,
+      "Candidate collides with 11 existing items": 15,
+      "Candidate collides with 8 existing items": 82,
+      "Candidate collides with 10 existing items": 40,
+      "Candidate collides with 13 existing items": 10,
+      "Candidate collides with 6 existing items": 39,
+      "Candidate collides with 3 existing items": 127,
+      "Candidate collides with 4 existing items": 216,
+      "Candidate collides with 9 existing items": 18,
+      "Candidate collides with 2 existing items": 106,
+      "Candidate collides with 1 existing items": 57,
+      "Candidate collides with 12 existing items": 27,
+      "Candidate collides with 14 existing items": 15,
+      "Candidate collides with 16 existing items": 4,
+      "Candidate collides with 15 existing items": 2,
+      "Spatial reservation conflict: Candidate encroaches on reservation 'DOOR_ZONE_RESERVATION' reserved for DOOR_SEAL": 4,
+      "Insufficient support ratio (9.6% < 70.0%)": 4,
+      "Insufficient support ratio (26.5% < 70.0%)": 3,
+      "Insufficient support ratio (48.9% < 70.0%)": 3,
+      "Insufficient support ratio (10.7% < 70.0%)": 3,
+      "Insufficient support ratio (13.0% < 70.0%)": 3,
+      "Insufficient support ratio (3.4% < 70.0%)": 1,
+      "Insufficient support ratio (37.3% < 70.0%)": 1,
+      "Insufficient support ratio (40.0% < 70.0%)": 1,
+      "Insufficient support ratio (4.6% < 70.0%)": 1,
+      "Insufficient support ratio (22.8% < 70.0%)": 1,
+      "Insufficient support ratio (27.3% < 70.0%)": 1,
+      "Insufficient support ratio (7.8% < 70.0%)": 1,
+      "Insufficient support ratio (30.9% < 70.0%)": 1,
+      "Insufficient support ratio (43.8% < 70.0%)": 1,
+      "Insufficient support ratio (54.1% < 70.0%)": 1,
+      "Insufficient support ratio (27.9% < 70.0%)": 1,
+      "Insufficient support ratio (60.9% < 70.0%)": 1,
+      "Insufficient support ratio (31.8% < 70.0%)": 1,
+      "Insufficient support ratio (22.0% < 70.0%)": 1,
+      "Insufficient support ratio (20.4% < 70.0%)": 1,
+      "Insufficient support ratio (33.6% < 70.0%)": 1,
+      "Insufficient support ratio (17.0% < 70.0%)": 1,
+      "Insufficient support ratio (11.4% < 70.0%)": 1,
+      "Insufficient support ratio (9.5% < 70.0%)": 1,
+      "Insufficient support ratio (21.7% < 70.0%)": 1
+    },
+    "rejections_by_sku": {
+      "SKU-02": {
+        "Candidate collides with 5 existing items": 14,
+        "Candidate collides with 4 existing items": 41,
+        "Candidate collides with 3 existing items": 14,
+        "Candidate collides with 2 existing items": 5,
+        "Candidate collides with 1 existing items": 3,
+        "Candidate collides with 7 existing items": 2,
+        "Candidate collides with 6 existing items": 1,
+        "Insufficient support ratio (9.6% < 70.0%)": 4,
+        "Insufficient support ratio (30.9% < 70.0%)": 1
+      },
+      "SKU-04": {
+        "Candidate collides with 7 existing items": 6,
+        "Candidate collides with 11 existing items": 6,
+        "Candidate collides with 5 existing items": 14,
+        "Candidate collides with 4 existing items": 11,
+        "Candidate collides with 10 existing items": 10,
+        "Candidate collides with 6 existing items": 9,
+        "Candidate collides with 8 existing items": 17,
+        "Candidate collides with 2 existing items": 3,
+        "Candidate collides with 3 existing items": 3,
+        "Candidate collides with 9 existing items": 2,
+        "Insufficient support ratio (26.5% < 70.0%)": 3,
+        "Insufficient support ratio (22.8% < 70.0%)": 1,
+        "Candidate collides with 1 existing items": 1,
+        "Insufficient support ratio (43.8% < 70.0%)": 1
+      },
+      "SKU-05": {
+        "Candidate collides with 8 existing items": 18,
+        "Candidate collides with 10 existing items": 14,
+        "Candidate collides with 7 existing items": 14,
+        "Candidate collides with 9 existing items": 7,
+        "Candidate collides with 6 existing items": 10,
+        "Candidate collides with 5 existing items": 3,
+        "Candidate collides with 4 existing items": 3,
+        "Candidate collides with 2 existing items": 4,
+        "Candidate collides with 12 existing items": 5,
+        "Candidate collides with 11 existing items": 5,
+        "Spatial reservation conflict: Candidate encroaches on reservation 'DOOR_ZONE_RESERVATION' reserved for DOOR_SEAL": 4,
+        "Candidate collides with 1 existing items": 1,
+        "Candidate collides with 3 existing items": 1,
+        "Insufficient support ratio (3.4% < 70.0%)": 1,
+        "Insufficient support ratio (37.3% < 70.0%)": 1,
+        "Insufficient support ratio (40.0% < 70.0%)": 1,
+        "Insufficient support ratio (4.6% < 70.0%)": 1,
+        "Insufficient support ratio (54.1% < 70.0%)": 1,
+        "Insufficient support ratio (27.9% < 70.0%)": 1,
+        "Candidate collides with 13 existing items": 1
+      },
+      "SKU-03": {
+        "Candidate collides with 11 existing items": 2,
+        "Candidate collides with 13 existing items": 6,
+        "Candidate collides with 7 existing items": 1,
+        "Candidate collides with 9 existing items": 2,
+        "Candidate collides with 8 existing items": 19,
+        "Candidate collides with 12 existing items": 13,
+        "Candidate collides with 10 existing items": 13,
+        "Candidate collides with 6 existing items": 10,
+        "Candidate collides with 4 existing items": 4,
+        "Candidate collides with 16 existing items": 3,
+        "Candidate collides with 14 existing items": 3,
+        "Candidate collides with 2 existing items": 3,
+        "Insufficient support ratio (48.9% < 70.0%)": 3,
+        "Insufficient support ratio (27.3% < 70.0%)": 1,
+        "Insufficient support ratio (60.9% < 70.0%)": 1,
+        "Candidate collides with 15 existing items": 1,
+        "Candidate collides with 5 existing items": 2
+      },
+      "SKU-08": {
+        "Candidate collides with 6 existing items": 5,
+        "Candidate collides with 5 existing items": 11,
+        "Candidate collides with 4 existing items": 40,
+        "Candidate collides with 3 existing items": 14,
+        "Candidate collides with 2 existing items": 5,
+        "Candidate collides with 1 existing items": 3,
+        "Candidate collides with 7 existing items": 3,
+        "Insufficient support ratio (10.7% < 70.0%)": 3,
+        "Insufficient support ratio (7.8% < 70.0%)": 1,
+        "Insufficient support ratio (31.8% < 70.0%)": 1
+      },
+      "SKU-10": {
+        "Candidate collides with 3 existing items": 22,
+        "Candidate collides with 4 existing items": 25,
+        "Candidate collides with 5 existing items": 2,
+        "Candidate collides with 2 existing items": 22,
+        "Candidate collides with 8 existing items": 1,
+        "Candidate collides with 1 existing items": 5,
+        "Insufficient support ratio (22.0% < 70.0%)": 1
+      },
+      "SKU-11": {
+        "Candidate collides with 3 existing items": 31,
+        "Candidate collides with 4 existing items": 28,
+        "Candidate collides with 5 existing items": 2,
+        "Candidate collides with 2 existing items": 10,
+        "Candidate collides with 8 existing items": 1,
+        "Candidate collides with 1 existing items": 5,
+        "Insufficient support ratio (20.4% < 70.0%)": 1
+      },
+      "SKU-06": {
+        "Candidate collides with 13 existing items": 3,
+        "Candidate collides with 9 existing items": 7,
+        "Candidate collides with 11 existing items": 2,
+        "Candidate collides with 12 existing items": 9,
+        "Candidate collides with 8 existing items": 26,
+        "Candidate collides with 10 existing items": 3,
+        "Candidate collides with 6 existing items": 4,
+        "Candidate collides with 4 existing items": 6,
+        "Candidate collides with 14 existing items": 12,
+        "Candidate collides with 2 existing items": 4,
+        "Candidate collides with 15 existing items": 1,
+        "Insufficient support ratio (13.0% < 70.0%)": 3,
+        "Candidate collides with 1 existing items": 1,
+        "Insufficient support ratio (33.6% < 70.0%)": 1,
+        "Insufficient support ratio (17.0% < 70.0%)": 1,
+        "Candidate collides with 16 existing items": 1,
+        "Candidate collides with 7 existing items": 2
+      },
+      "SKU-07": {
+        "Candidate collides with 4 existing items": 32,
+        "Candidate collides with 3 existing items": 32,
+        "Candidate collides with 2 existing items": 8,
+        "Candidate collides with 1 existing items": 6,
+        "Insufficient support ratio (11.4% < 70.0%)": 1,
+        "Insufficient support ratio (9.5% < 70.0%)": 1
+      },
+      "SKU-12": {
+        "Candidate collides with 2 existing items": 29,
+        "Candidate collides with 3 existing items": 3,
+        "Candidate collides with 1 existing items": 6
+      },
+      "SKU-14": {
+        "Candidate collides with 1 existing items": 26,
+        "Candidate collides with 4 existing items": 26,
+        "Candidate collides with 2 existing items": 13,
+        "Candidate collides with 5 existing items": 2,
+        "Candidate collides with 3 existing items": 7,
+        "Insufficient support ratio (21.7% < 70.0%)": 1
+      }
+    }
+  }
+}

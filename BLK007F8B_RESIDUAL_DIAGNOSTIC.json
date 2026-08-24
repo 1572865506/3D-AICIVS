@@ -1,0 +1,28 @@
+{
+  "block": "BLK-007F-8B",
+  "status": "PASS",
+  "coordinate_mapping": {
+    "ui_zero": "DOOR",
+    "ui_12m": "DEEPEST_INTERIOR",
+    "canonical_x": "INTERIOR_TO_DOOR",
+    "ui_x_formula": "container_length - canonical_x"
+  },
+  "candidate_funnel": {
+    "attempted": 57401,
+    "accepted": 33,
+    "rejected": {
+      "collision": 41747,
+      "rear_zone": 12361,
+      "bounds_or_door_zone": 3126,
+      "support_or_stack_policy": 52,
+      "collision_after_ranking": 77,
+      "inventory": 5
+    }
+  },
+  "accepted_by_source": {"FLOOR_RESIDUAL": 7, "EXPOSED_TOP_SURFACE": 26},
+  "accepted_by_sku": {"SKU-03": 8, "SKU-04": 21, "SKU-14": 4},
+  "ui_7_to_11m": {"accepted": 17, "floor": 3, "top": 14},
+  "support": {"minimum": 0.705882, "average": 0.968676},
+  "orientation": {"all_upright": true, "auto_flat_added": 0},
+  "global_validator": "VALID"
+}

@@ -1,0 +1,113 @@
+{
+  "generated_at": "2026-08-22T16:45:51Z",
+  "schema": "BLK006D_CACHE_V1",
+  "runs": {
+    "optimized_default": {
+      "TopFillEstimateCache": {
+        "cache_hits": 0,
+        "cache_misses": 25,
+        "hit_rate": 0.0,
+        "saved_estimated_ms": 0.0
+      },
+      "CandidateGeometryCache": {
+        "cache_hits": 3133,
+        "cache_misses": 50,
+        "hit_rate": 0.984292,
+        "saved_estimated_ms": 201.021243
+      }
+    },
+    "beam_1": {
+      "TopFillEstimateCache": {
+        "cache_hits": 0,
+        "cache_misses": 15,
+        "hit_rate": 0.0,
+        "saved_estimated_ms": 0.0
+      },
+      "CandidateGeometryCache": {
+        "cache_hits": 2019,
+        "cache_misses": 48,
+        "hit_rate": 0.976778,
+        "saved_estimated_ms": 133.974041
+      }
+    },
+    "beam_4": {
+      "TopFillEstimateCache": {
+        "cache_hits": 0,
+        "cache_misses": 40,
+        "hit_rate": 0.0,
+        "saved_estimated_ms": 0.0
+      },
+      "CandidateGeometryCache": {
+        "cache_hits": 4710,
+        "cache_misses": 51,
+        "hit_rate": 0.989288,
+        "saved_estimated_ms": 484.447581
+      }
+    },
+    "cap_4": {
+      "TopFillEstimateCache": {
+        "cache_hits": 0,
+        "cache_misses": 25,
+        "hit_rate": 0.0,
+        "saved_estimated_ms": 0.0
+      },
+      "CandidateGeometryCache": {
+        "cache_hits": 3133,
+        "cache_misses": 50,
+        "hit_rate": 0.984292,
+        "saved_estimated_ms": 419.902574
+      }
+    },
+    "cap_8": {
+      "TopFillEstimateCache": {
+        "cache_hits": 0,
+        "cache_misses": 35,
+        "hit_rate": 0.0,
+        "saved_estimated_ms": 0.0
+      },
+      "CandidateGeometryCache": {
+        "cache_hits": 3050,
+        "cache_misses": 48,
+        "hit_rate": 0.984506,
+        "saved_estimated_ms": 193.240836
+      }
+    },
+    "depth_5": {
+      "TopFillEstimateCache": {
+        "cache_hits": 0,
+        "cache_misses": 29,
+        "hit_rate": 0.0,
+        "saved_estimated_ms": 0.0
+      },
+      "CandidateGeometryCache": {
+        "cache_hits": 3539,
+        "cache_misses": 53,
+        "hit_rate": 0.985245,
+        "saved_estimated_ms": 260.627238
+      }
+    },
+    "depth_6": {
+      "TopFillEstimateCache": {
+        "cache_hits": 0,
+        "cache_misses": 29,
+        "hit_rate": 0.0,
+        "saved_estimated_ms": 0.0
+      },
+      "CandidateGeometryCache": {
+        "cache_hits": 3539,
+        "cache_misses": 53,
+        "hit_rate": 0.985245,
+        "saved_estimated_ms": 224.515156
+      }
+    }
+  },
+  "implemented": [
+    "CandidateGeometryCache",
+    "TopFillEstimateCache"
+  ],
+  "not_implemented": {
+    "AggregatePatternCache": "candidate enumeration is no longer a Top-3 runtime hotspot and exact world keys showed low reuse",
+    "ValidationSubproblemCache": "context-complete keys showed negligible reuse; unsafe SKU-only reuse is forbidden",
+    "AdmissionCache": "admission cost is outside the measured expansion hotspot"
+  }
+}

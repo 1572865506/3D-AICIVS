@@ -1,0 +1,74 @@
+{
+  "block": "BLK-007F-5",
+  "status": "READY",
+  "axis_strategy": {
+    "loading_axis": "X",
+    "door_axis": "-X",
+    "rear_axis": "+X",
+    "vertical_axis": "+Z",
+    "canonical_x": "rear_to_door(+X)",
+    "loading_vector": "door_to_rear(-X)",
+    "coordinate_contract_changed": false
+  },
+  "strategy": {
+    "mode": "PREFERRED_THEN_SIMULATED",
+    "hard_override": false,
+    "cargo_profile_forbidden_rules_override_strategy": true,
+    "weights": {
+      "transportSafety": 0.30,
+      "wallContinuity": 0.25,
+      "spaceEfficiency": 0.20,
+      "doorSafety": 0.15,
+      "layerCompatibility": 0.10
+    }
+  },
+  "projections": {
+    "cargo_wall": "preferredFacing",
+    "solver": "orientationPriority",
+    "topfill": "PROFILE_GATED_TOP_FLAT"
+  },
+  "display_strategy": {
+    "preferred_facing": "SHORT_EDGE_FORWARD",
+    "reason": "DISPLAY_WALL_STABILITY",
+    "non_top_actual_count": 856,
+    "short_edge_forward_count": 856,
+    "long_edge_forward_count": 0,
+    "direction_valid": true
+  },
+  "door_strategy": {
+    "display_fragile_preferred": "SHORT_EDGE_FORWARD",
+    "display_fragile_forbidden": "LONG_EDGE_FORWARD",
+    "door_wall_count": 28,
+    "door_wall_direction_valid": true,
+    "longitudinal_seal_coverage_pct": 99.75
+  },
+  "topfill_strategy": {
+    "rule": "TOP_FLAT_ONLY_WHEN_EXPLICIT_PROFILE_ALLOWS",
+    "top_flat_count": 129,
+    "main_body_flat_count": 0
+  },
+  "transport_example": {
+    "sku": "SKU-02",
+    "short_edge_forward": {
+      "forward_depth_m": 0.08,
+      "wall_width_m": 0.553,
+      "transport_score": 80.6908,
+      "risk": 19.3092,
+      "direction_score": 91.7763
+    },
+    "long_edge_forward": {
+      "forward_depth_m": 0.553,
+      "wall_width_m": 0.08,
+      "transport_score": 62.7288,
+      "risk": 37.2712,
+      "direction_score": 43.7348
+    },
+    "winner": "SHORT_EDGE_FORWARD"
+  },
+  "actual_validation": {
+    "wall_fingerprint_unchanged": true,
+    "display_direction_violations": [],
+    "global_validator": "VALID",
+    "utilization_pct": 71.5044
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "sequence_feasible_count": 11,
+  "sequence_infeasible_count": 1,
+  "feasibility_rate": 0.9166666666666666,
+  "benchmarks": [
+    {
+      "benchmark": "BENCH-001",
+      "placement_count": 380,
+      "static_feasible": true,
+      "sequence_feasible": false,
+      "failure_reason": "TEMPORARY_INSTABILITY",
+      "deterministic_replay": "PASS",
+      "topfill_unreachable": false,
+      "door_seal_too_early": false,
+      "runtime_sec": 0.3778143753297627
+    },
+    {
+      "benchmark": "BENCH-002",
+      "placement_count": 45,
+      "static_feasible": true,
+      "sequence_feasible": true,
+      "failure_reason": null,
+      "deterministic_replay": "PASS",
+      "topfill_unreachable": false,
+      "door_seal_too_early": false,
+      "runtime_sec": 0.012289375066757202
+    },
+    {
+      "benchmark": "BENCH-003",
+      "placement_count": 50,
+      "static_feasible": true,
+      "sequence_feasible": true,
+      "failure_reason": null,
+      "deterministic_replay": "PASS",
+      "topfill_unreachable": false,
+      "door_seal_too_early": false,
+      "runtime_sec": 0.013427957892417908
+    },
+    {
+      "benchmark": "BENCH-004",
+      "placement_count": 68,
+      "static_feasible": true,
+      "sequence_feasible": true,
+      "failure_reason": null,
+      "deterministic_replay": "PASS",
+      "topfill_unreachable": false,
+      "door_seal_too_early": false,
+      "runtime_sec": 0.017762667033821344
+    },
+    {
+      "benchmark": "BENCH-005",
+      "placement_count": 18,
+      "static_feasible": true,
+      "sequence_feasible": true,
+      "failure_reason": null,
+      "deterministic_replay": "PASS",
+      "topfill_unreachable": false,
+      "door_seal_too_early": false,
+      "runtime_sec": 0.004383040592074394
+    },
+    {
+      "benchmark": "BENCH-006",
+      "placement_count": 16,
+      "static_feasible": true,
+      "sequence_feasible": true,
+      "failure_reason": null,
+      "deterministic_replay": "PASS",
+      "topfill_unreachable": false,
+      "door_seal_too_early": false,
+      "runtime_sec": 0.0034890840761363506
+    },
+    {
+      "benchmark": "BENCH-007",
+      "placement_count": 36,
+      "static_feasible": true,
+      "sequence_feasible": true,
+      "failure_reason": null,
+      "deterministic_replay": "PASS",
+      "topfill_unreachable": false,
+      "door_seal_too_early": false,
+      "runtime_sec": 0.009143874980509281
+    },
+    {
+      "benchmark": "BENCH-008",
+      "placement_count": 48,
+      "static_feasible": true,
+      "sequence_feasible": true,
+      "failure_reason": null,
+      "deterministic_replay": "PASS",
+      "topfill_unreachable": false,
+      "door_seal_too_early": false,
+      "runtime_sec": 0.012468250002712011
+    },
+    {
+      "benchmark": "BENCH-009",
+      "placement_count": 46,
+      "static_feasible": true,
+      "sequence_feasible": true,
+      "failure_reason": null,
+      "deterministic_replay": "PASS",
+      "topfill_unreachable": false,
+      "door_seal_too_early": false,
+      "runtime_sec": 0.012782708741724491
+    },
+    {
+      "benchmark": "BENCH-010",
+      "placement_count": 20,
+      "static_feasible": true,
+      "sequence_feasible": true,
+      "failure_reason": null,
+      "deterministic_replay": "PASS",
+      "topfill_unreachable": false,
+      "door_seal_too_early": false,
+      "runtime_sec": 0.004845874849706888
+    },
+    {
+      "benchmark": "BENCH-011",
+      "placement_count": 42,
+      "static_feasible": true,
+      "sequence_feasible": true,
+      "failure_reason": null,
+      "deterministic_replay": "PASS",
+      "topfill_unreachable": false,
+      "door_seal_too_early": false,
+      "runtime_sec": 0.011108959093689919
+    },
+    {
+      "benchmark": "BENCH-012",
+      "placement_count": 7,
+      "static_feasible": true,
+      "sequence_feasible": true,
+      "failure_reason": null,
+      "deterministic_replay": "PASS",
+      "topfill_unreachable": false,
+      "door_seal_too_early": false,
+      "runtime_sec": 0.002113583032041788
+    }
+  ]
+}

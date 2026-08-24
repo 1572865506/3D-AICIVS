@@ -1,0 +1,25 @@
+{
+  "block": "BLK-007F-5",
+  "matrix": [
+    {"sku":"SKU-01","category":"NORMAL_BOX","preferredFacing":"SHORT_EDGE_FORWARD","orientationPriority":["UPRIGHT_NORMAL"],"source":"INFERRED"},
+    {"sku":"SKU-02","category":"DISPLAY","preferredFacing":"SHORT_EDGE_FORWARD","orientationPriority":["UPRIGHT_ROTATED","UPRIGHT_NORMAL"],"topDirectionRule":"PROFILE_GATED_TOP_FLAT","source":"USER_DEFINED"},
+    {"sku":"SKU-03","category":"DISPLAY","preferredFacing":"SHORT_EDGE_FORWARD","orientationPriority":["UPRIGHT_ROTATED","UPRIGHT_NORMAL"],"topDirectionRule":"PRESERVE_UPRIGHT","source":"USER_DEFINED"},
+    {"sku":"SKU-04","category":"DISPLAY","preferredFacing":"SHORT_EDGE_FORWARD","orientationPriority":["UPRIGHT_ROTATED","UPRIGHT_NORMAL"],"source":"INFERRED"},
+    {"sku":"SKU-05","category":"HEAVY","preferredFacing":"SHORT_EDGE_FORWARD","orientationPriority":["UPRIGHT_ROTATED","UPRIGHT_NORMAL"],"source":"INFERRED"},
+    {"sku":"SKU-06","category":"FRAGILE","preferredFacing":"SHORT_EDGE_FORWARD","orientationPriority":["UPRIGHT_ROTATED","UPRIGHT_NORMAL"],"source":"INFERRED"},
+    {"sku":"SKU-07","category":"FRAGILE","preferredFacing":"SHORT_EDGE_FORWARD","orientationPriority":["UPRIGHT_ROTATED","UPRIGHT_NORMAL"],"source":"INFERRED"},
+    {"sku":"SKU-08","category":"NORMAL_BOX","preferredFacing":"SHORT_EDGE_FORWARD","orientationPriority":["UPRIGHT_ROTATED","UPRIGHT_NORMAL"],"source":"INFERRED"},
+    {"sku":"SKU-09","category":"NORMAL_BOX","preferredFacing":"SHORT_EDGE_FORWARD","orientationPriority":["UPRIGHT_ROTATED","UPRIGHT_NORMAL"],"source":"INFERRED"},
+    {"sku":"SKU-10","category":"NORMAL_BOX","preferredFacing":"SHORT_EDGE_FORWARD","orientationPriority":["UPRIGHT_ROTATED","UPRIGHT_NORMAL"],"source":"INFERRED"},
+    {"sku":"SKU-11","category":"HEAVY","preferredFacing":"SHORT_EDGE_FORWARD","orientationPriority":["UPRIGHT_ROTATED","UPRIGHT_NORMAL"],"source":"INFERRED"},
+    {"sku":"SKU-12","category":"ELECTRONIC","preferredFacing":"SHORT_EDGE_FORWARD","orientationPriority":["UPRIGHT_NORMAL"],"source":"INFERRED"},
+    {"sku":"SKU-13","category":"NORMAL_BOX","preferredFacing":"SHORT_EDGE_FORWARD","orientationPriority":["UPRIGHT_ROTATED","UPRIGHT_NORMAL"],"source":"INFERRED"},
+    {"sku":"SKU-14","category":"DISPLAY","preferredFacing":"SHORT_EDGE_FORWARD","orientationPriority":["UPRIGHT_ROTATED","UPRIGHT_NORMAL"],"topDirectionRule":"PROFILE_GATED_TOP_FLAT","source":"USER_DEFINED"}
+  ],
+  "facing_types": ["SHORT_EDGE_FORWARD","LONG_EDGE_FORWARD","FACE_DOOR","FACE_REAR","STACK_HORIZONTAL","TOP_FLAT"],
+  "policy": {
+    "main_wall": "preference_not_hard_lock",
+    "door_display_fragile": "LONG_EDGE_FORWARD_FORBIDDEN",
+    "topfill": "existing_orientation_policy_remains_authoritative"
+  }
+}

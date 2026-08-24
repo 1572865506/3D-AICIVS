@@ -1,0 +1,1130 @@
+{
+  "generated_at": "2026-08-22T16:45:51Z",
+  "schema": "BLK006D_QUALITY_V1",
+  "GLOBAL_BEATS_INCUMBENT": false,
+  "incumbent_utilization_pct": 41.745603090536,
+  "best_global_run": "depth_5",
+  "best_global_utilization_pct": 40.52141545116862,
+  "remaining_quality_gap_percentage_points": 1.2241876393673792,
+  "likely_cause": "Top Fill conversion loss",
+  "recommended_blk006e_repair_target": "terminal Top Fill plan selection around residual continuous top regions; preserve all hard gates",
+  "incumbent_decomposition": {
+    "placed_volume_m3": 31.873358355999972,
+    "main_body_volume_m3": 27.07548523999996,
+    "topfill_volume_m3": 4.3659657880000005,
+    "door_volume_m3": 0.431907328,
+    "unused_container_volume_m3": 44.47805591600002,
+    "residual_top_volume_m3": 36.26064,
+    "door_residual_volume_m3": 2.251459328,
+    "utilization_pct": 41.745603090536
+  },
+  "global_decomposition": {
+    "status": "COMPLETE_LEGAL",
+    "utilization_pct": 40.52141545116862,
+    "placed_volume_m3": 30.938673779999963,
+    "door_ready": true,
+    "main_body_volume_m3": 26.77839310399997,
+    "topfill_volume_m3": 3.6219268840000005,
+    "topfill_usable_volume_m3": 38.21117052799999,
+    "topfill_utilization": 0.09478712203662963,
+    "door_volume_m3": 0.538353792,
+    "unused_container_volume_m3": 45.412740492000026,
+    "residual_top_volume_m3": 34.58924364399999,
+    "max_x": 12.018,
+    "door_residual_volume_m3": 1.778978064
+  },
+  "delta_incumbent_minus_global_m3": {
+    "placed_volume_m3": 0.9346845760000093,
+    "main_body_volume_m3": 0.2970921359999892,
+    "topfill_volume_m3": 0.744038904,
+    "unused_container_volume_m3": -0.9346845760000093,
+    "residual_top_volume_m3": 1.6713963560000096,
+    "door_residual_volume_m3": 0.47248126400000023
+  },
+  "intermediate_score_descendant_observations": [
+    {
+      "depth": 2,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4",
+      "intermediate_score": 7786.896394355068,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 6.133061039999991,
+        "topfill_packable_m3": 5.904969686508519,
+        "residual_usable_area_m2": 3.7515690511489956,
+        "compactness_ratio": 0.9999999999999987,
+        "inventory_fit_ratio": 0.96,
+        "fragmentation": 0.3124536693847298,
+        "unstable_geometry": 4.440892098500626e-16,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.08032675096431241,
+        "topfill_estimate": 0.0773393622477275,
+        "residual_quality": 0.13256772512348716,
+        "compactness": 0.9999999999999987,
+        "inventory_fit": 0.96,
+        "fragmentation_penalty": 0.3124536693847298,
+        "unstable_geometry_penalty": 4.440892098500626e-16,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 6133.061039999991,
+        "topfill_estimate": 1476.2424216271297,
+        "residual_quality": 93.7892262787249,
+        "compactness": 79.99999999999989,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": -24.996293550778383,
+        "unstable_geometry_penalty": -4.440892098500626e-14,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 3,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086",
+      "intermediate_score": 10502.401488139358,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 9.839399999999996,
+        "topfill_packable_m3": 2.1409284877687167,
+        "residual_usable_area_m2": 2.554807264640474,
+        "compactness_ratio": 0.9999999999999997,
+        "inventory_fit_ratio": 0.8421052631578947,
+        "fragmentation": 0.5170496664195701,
+        "unstable_geometry": 6.661338147750939e-16,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.12886991149826488,
+        "topfill_estimate": 0.028040456200872886,
+        "residual_quality": 0.0902782229474404,
+        "compactness": 0.9999999999999997,
+        "inventory_fit": 0.8421052631578947,
+        "fragmentation_penalty": 0.5170496664195701,
+        "unstable_geometry_penalty": 6.661338147750939e-16,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 9839.399999999996,
+        "topfill_estimate": 535.2321219421792,
+        "residual_quality": 63.87018161601185,
+        "compactness": 79.99999999999997,
+        "inventory_fit": 25.263157894736842,
+        "fragmentation_penalty": -41.36397331356561,
+        "unstable_geometry_penalty": -6.661338147750939e-14,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 4,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086/agg_SKU-05_0.000_0.000_0.000_6x4x4_FX5.961",
+      "intermediate_score": 13538.891903691632,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 9.74809920000001,
+        "topfill_packable_m3": 14.021214473773167,
+        "residual_usable_area_m2": 7.885947398072647,
+        "compactness_ratio": 1.0,
+        "inventory_fit_ratio": 0.96,
+        "fragmentation": 0.25574499629355074,
+        "unstable_geometry": 0.0,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.12767411439521803,
+        "topfill_estimate": 0.1836405338062625,
+        "residual_quality": 0.278662632288693,
+        "compactness": 1.0,
+        "inventory_fit": 0.96,
+        "fragmentation_penalty": 0.25574499629355074,
+        "unstable_geometry_penalty": 0.0,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 9748.09920000001,
+        "topfill_estimate": 3505.3036184432917,
+        "residual_quality": 197.14868495181616,
+        "compactness": 80.0,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": -20.45959970348406,
+        "unstable_geometry_penalty": -0.0,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 5,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086/agg_SKU-05_0.000_0.000_0.000_6x4x4_FX5.961/agg_SKU-09_0.000_0.000_0.000_1x6x4_FX10.959",
+      "intermediate_score": 847.6300551890282,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 0.7062659999999996,
+        "topfill_packable_m3": 0.24791010511489955,
+        "residual_usable_area_m2": 0.23431957005188994,
+        "compactness_ratio": 1.0,
+        "inventory_fit_ratio": 1.0,
+        "fragmentation": 0.4558932542624166,
+        "unstable_geometry": 1.7763568394002505e-15,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.009250201934491283,
+        "topfill_estimate": 0.00324696153278479,
+        "residual_quality": 0.008280058804776336,
+        "compactness": 1.0,
+        "inventory_fit": 1.0,
+        "fragmentation_penalty": 0.4558932542624166,
+        "unstable_geometry_penalty": 1.7763568394002505e-15,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 706.2659999999996,
+        "topfill_estimate": 61.97752627872489,
+        "residual_quality": 5.857989251297249,
+        "compactness": 80.0,
+        "inventory_fit": 30.0,
+        "fragmentation_penalty": -36.47146034099333,
+        "unstable_geometry_penalty": -1.7763568394002505e-13,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 2,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4",
+      "intermediate_score": 7786.896394355068,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 6.133061039999991,
+        "topfill_packable_m3": 5.904969686508519,
+        "residual_usable_area_m2": 3.7515690511489956,
+        "compactness_ratio": 0.9999999999999987,
+        "inventory_fit_ratio": 0.96,
+        "fragmentation": 0.3124536693847298,
+        "unstable_geometry": 4.440892098500626e-16,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.08032675096431241,
+        "topfill_estimate": 0.0773393622477275,
+        "residual_quality": 0.13256772512348716,
+        "compactness": 0.9999999999999987,
+        "inventory_fit": 0.96,
+        "fragmentation_penalty": 0.3124536693847298,
+        "unstable_geometry_penalty": 4.440892098500626e-16,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 6133.061039999991,
+        "topfill_estimate": 1476.2424216271297,
+        "residual_quality": 93.7892262787249,
+        "compactness": 79.99999999999989,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": -24.996293550778383,
+        "unstable_geometry_penalty": -4.440892098500626e-14,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 3,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086",
+      "intermediate_score": 10502.401488139358,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 9.839399999999996,
+        "topfill_packable_m3": 2.1409284877687167,
+        "residual_usable_area_m2": 2.554807264640474,
+        "compactness_ratio": 0.9999999999999997,
+        "inventory_fit_ratio": 0.8421052631578947,
+        "fragmentation": 0.5170496664195701,
+        "unstable_geometry": 6.661338147750939e-16,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.12886991149826488,
+        "topfill_estimate": 0.028040456200872886,
+        "residual_quality": 0.0902782229474404,
+        "compactness": 0.9999999999999997,
+        "inventory_fit": 0.8421052631578947,
+        "fragmentation_penalty": 0.5170496664195701,
+        "unstable_geometry_penalty": 6.661338147750939e-16,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 9839.399999999996,
+        "topfill_estimate": 535.2321219421792,
+        "residual_quality": 63.87018161601185,
+        "compactness": 79.99999999999997,
+        "inventory_fit": 25.263157894736842,
+        "fragmentation_penalty": -41.36397331356561,
+        "unstable_geometry_penalty": -6.661338147750939e-14,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 4,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086/agg_SKU-05_0.000_0.000_0.000_6x4x4_FX5.961",
+      "intermediate_score": 13538.891903691632,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 9.74809920000001,
+        "topfill_packable_m3": 14.021214473773167,
+        "residual_usable_area_m2": 7.885947398072647,
+        "compactness_ratio": 1.0,
+        "inventory_fit_ratio": 0.96,
+        "fragmentation": 0.25574499629355074,
+        "unstable_geometry": 0.0,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.12767411439521803,
+        "topfill_estimate": 0.1836405338062625,
+        "residual_quality": 0.278662632288693,
+        "compactness": 1.0,
+        "inventory_fit": 0.96,
+        "fragmentation_penalty": 0.25574499629355074,
+        "unstable_geometry_penalty": 0.0,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 9748.09920000001,
+        "topfill_estimate": 3505.3036184432917,
+        "residual_quality": 197.14868495181616,
+        "compactness": 80.0,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": -20.45959970348406,
+        "unstable_geometry_penalty": -0.0,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 5,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086/agg_SKU-05_0.000_0.000_0.000_6x4x4_FX5.961/agg_SKU-09_0.000_0.000_0.000_1x6x4_FX10.959",
+      "intermediate_score": 847.6300551890282,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 0.7062659999999996,
+        "topfill_packable_m3": 0.24791010511489955,
+        "residual_usable_area_m2": 0.23431957005188994,
+        "compactness_ratio": 1.0,
+        "inventory_fit_ratio": 1.0,
+        "fragmentation": 0.4558932542624166,
+        "unstable_geometry": 1.7763568394002505e-15,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.009250201934491283,
+        "topfill_estimate": 0.00324696153278479,
+        "residual_quality": 0.008280058804776336,
+        "compactness": 1.0,
+        "inventory_fit": 1.0,
+        "fragmentation_penalty": 0.4558932542624166,
+        "unstable_geometry_penalty": 1.7763568394002505e-15,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 706.2659999999996,
+        "topfill_estimate": 61.97752627872489,
+        "residual_quality": 5.857989251297249,
+        "compactness": 80.0,
+        "inventory_fit": 30.0,
+        "fragmentation_penalty": -36.47146034099333,
+        "unstable_geometry_penalty": -1.7763568394002505e-13,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 2,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4",
+      "intermediate_score": 7786.896394355068,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 6.133061039999991,
+        "topfill_packable_m3": 5.904969686508519,
+        "residual_usable_area_m2": 3.7515690511489956,
+        "compactness_ratio": 0.9999999999999987,
+        "inventory_fit_ratio": 0.96,
+        "fragmentation": 0.3124536693847298,
+        "unstable_geometry": 4.440892098500626e-16,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.08032675096431241,
+        "topfill_estimate": 0.0773393622477275,
+        "residual_quality": 0.13256772512348716,
+        "compactness": 0.9999999999999987,
+        "inventory_fit": 0.96,
+        "fragmentation_penalty": 0.3124536693847298,
+        "unstable_geometry_penalty": 4.440892098500626e-16,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 6133.061039999991,
+        "topfill_estimate": 1476.2424216271297,
+        "residual_quality": 93.7892262787249,
+        "compactness": 79.99999999999989,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": -24.996293550778383,
+        "unstable_geometry_penalty": -4.440892098500626e-14,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 3,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086",
+      "intermediate_score": 10502.401488139358,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 9.839399999999996,
+        "topfill_packable_m3": 2.1409284877687167,
+        "residual_usable_area_m2": 2.554807264640474,
+        "compactness_ratio": 0.9999999999999997,
+        "inventory_fit_ratio": 0.8421052631578947,
+        "fragmentation": 0.5170496664195701,
+        "unstable_geometry": 6.661338147750939e-16,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.12886991149826488,
+        "topfill_estimate": 0.028040456200872886,
+        "residual_quality": 0.0902782229474404,
+        "compactness": 0.9999999999999997,
+        "inventory_fit": 0.8421052631578947,
+        "fragmentation_penalty": 0.5170496664195701,
+        "unstable_geometry_penalty": 6.661338147750939e-16,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 9839.399999999996,
+        "topfill_estimate": 535.2321219421792,
+        "residual_quality": 63.87018161601185,
+        "compactness": 79.99999999999997,
+        "inventory_fit": 25.263157894736842,
+        "fragmentation_penalty": -41.36397331356561,
+        "unstable_geometry_penalty": -6.661338147750939e-14,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 4,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086/agg_SKU-05_0.000_0.000_0.000_6x4x4_FX5.961",
+      "intermediate_score": 13538.891903691632,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 9.74809920000001,
+        "topfill_packable_m3": 14.021214473773167,
+        "residual_usable_area_m2": 7.885947398072647,
+        "compactness_ratio": 1.0,
+        "inventory_fit_ratio": 0.96,
+        "fragmentation": 0.25574499629355074,
+        "unstable_geometry": 0.0,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.12767411439521803,
+        "topfill_estimate": 0.1836405338062625,
+        "residual_quality": 0.278662632288693,
+        "compactness": 1.0,
+        "inventory_fit": 0.96,
+        "fragmentation_penalty": 0.25574499629355074,
+        "unstable_geometry_penalty": 0.0,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 9748.09920000001,
+        "topfill_estimate": 3505.3036184432917,
+        "residual_quality": 197.14868495181616,
+        "compactness": 80.0,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": -20.45959970348406,
+        "unstable_geometry_penalty": -0.0,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 5,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086/agg_SKU-05_0.000_0.000_0.000_6x4x4_FX5.961/agg_SKU-09_0.000_0.000_0.000_1x6x4_FX10.959",
+      "intermediate_score": 847.6300551890282,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 0.7062659999999996,
+        "topfill_packable_m3": 0.24791010511489955,
+        "residual_usable_area_m2": 0.23431957005188994,
+        "compactness_ratio": 1.0,
+        "inventory_fit_ratio": 1.0,
+        "fragmentation": 0.4558932542624166,
+        "unstable_geometry": 1.7763568394002505e-15,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.009250201934491283,
+        "topfill_estimate": 0.00324696153278479,
+        "residual_quality": 0.008280058804776336,
+        "compactness": 1.0,
+        "inventory_fit": 1.0,
+        "fragmentation_penalty": 0.4558932542624166,
+        "unstable_geometry_penalty": 1.7763568394002505e-15,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 706.2659999999996,
+        "topfill_estimate": 61.97752627872489,
+        "residual_quality": 5.857989251297249,
+        "compactness": 80.0,
+        "inventory_fit": 30.0,
+        "fragmentation_penalty": -36.47146034099333,
+        "unstable_geometry_penalty": -1.7763568394002505e-13,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 2,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4",
+      "intermediate_score": 7786.896394355068,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 6.133061039999991,
+        "topfill_packable_m3": 5.904969686508519,
+        "residual_usable_area_m2": 3.7515690511489956,
+        "compactness_ratio": 0.9999999999999987,
+        "inventory_fit_ratio": 0.96,
+        "fragmentation": 0.3124536693847298,
+        "unstable_geometry": 4.440892098500626e-16,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.08032675096431241,
+        "topfill_estimate": 0.0773393622477275,
+        "residual_quality": 0.13256772512348716,
+        "compactness": 0.9999999999999987,
+        "inventory_fit": 0.96,
+        "fragmentation_penalty": 0.3124536693847298,
+        "unstable_geometry_penalty": 4.440892098500626e-16,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 6133.061039999991,
+        "topfill_estimate": 1476.2424216271297,
+        "residual_quality": 93.7892262787249,
+        "compactness": 79.99999999999989,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": -24.996293550778383,
+        "unstable_geometry_penalty": -4.440892098500626e-14,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 3,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086",
+      "intermediate_score": 10502.401488139358,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 9.839399999999996,
+        "topfill_packable_m3": 2.1409284877687167,
+        "residual_usable_area_m2": 2.554807264640474,
+        "compactness_ratio": 0.9999999999999997,
+        "inventory_fit_ratio": 0.8421052631578947,
+        "fragmentation": 0.5170496664195701,
+        "unstable_geometry": 6.661338147750939e-16,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.12886991149826488,
+        "topfill_estimate": 0.028040456200872886,
+        "residual_quality": 0.0902782229474404,
+        "compactness": 0.9999999999999997,
+        "inventory_fit": 0.8421052631578947,
+        "fragmentation_penalty": 0.5170496664195701,
+        "unstable_geometry_penalty": 6.661338147750939e-16,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 9839.399999999996,
+        "topfill_estimate": 535.2321219421792,
+        "residual_quality": 63.87018161601185,
+        "compactness": 79.99999999999997,
+        "inventory_fit": 25.263157894736842,
+        "fragmentation_penalty": -41.36397331356561,
+        "unstable_geometry_penalty": -6.661338147750939e-14,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 4,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086/agg_SKU-05_0.000_0.000_0.000_6x4x4_FX5.961",
+      "intermediate_score": 13538.891903691632,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 9.74809920000001,
+        "topfill_packable_m3": 14.021214473773167,
+        "residual_usable_area_m2": 7.885947398072647,
+        "compactness_ratio": 1.0,
+        "inventory_fit_ratio": 0.96,
+        "fragmentation": 0.25574499629355074,
+        "unstable_geometry": 0.0,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.12767411439521803,
+        "topfill_estimate": 0.1836405338062625,
+        "residual_quality": 0.278662632288693,
+        "compactness": 1.0,
+        "inventory_fit": 0.96,
+        "fragmentation_penalty": 0.25574499629355074,
+        "unstable_geometry_penalty": 0.0,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 9748.09920000001,
+        "topfill_estimate": 3505.3036184432917,
+        "residual_quality": 197.14868495181616,
+        "compactness": 80.0,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": -20.45959970348406,
+        "unstable_geometry_penalty": -0.0,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 5,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086/agg_SKU-05_0.000_0.000_0.000_6x4x4_FX5.961/agg_SKU-09_0.000_0.000_0.000_1x6x4_FX10.959",
+      "intermediate_score": 847.6300551890282,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 0.7062659999999996,
+        "topfill_packable_m3": 0.24791010511489955,
+        "residual_usable_area_m2": 0.23431957005188994,
+        "compactness_ratio": 1.0,
+        "inventory_fit_ratio": 1.0,
+        "fragmentation": 0.4558932542624166,
+        "unstable_geometry": 1.7763568394002505e-15,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.009250201934491283,
+        "topfill_estimate": 0.00324696153278479,
+        "residual_quality": 0.008280058804776336,
+        "compactness": 1.0,
+        "inventory_fit": 1.0,
+        "fragmentation_penalty": 0.4558932542624166,
+        "unstable_geometry_penalty": 1.7763568394002505e-15,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 706.2659999999996,
+        "topfill_estimate": 61.97752627872489,
+        "residual_quality": 5.857989251297249,
+        "compactness": 80.0,
+        "inventory_fit": 30.0,
+        "fragmentation_penalty": -36.47146034099333,
+        "unstable_geometry_penalty": -1.7763568394002505e-13,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 2,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4",
+      "intermediate_score": 7786.896394355068,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 6.133061039999991,
+        "topfill_packable_m3": 5.904969686508519,
+        "residual_usable_area_m2": 3.7515690511489956,
+        "compactness_ratio": 0.9999999999999987,
+        "inventory_fit_ratio": 0.96,
+        "fragmentation": 0.3124536693847298,
+        "unstable_geometry": 4.440892098500626e-16,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.08032675096431241,
+        "topfill_estimate": 0.0773393622477275,
+        "residual_quality": 0.13256772512348716,
+        "compactness": 0.9999999999999987,
+        "inventory_fit": 0.96,
+        "fragmentation_penalty": 0.3124536693847298,
+        "unstable_geometry_penalty": 4.440892098500626e-16,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 6133.061039999991,
+        "topfill_estimate": 1476.2424216271297,
+        "residual_quality": 93.7892262787249,
+        "compactness": 79.99999999999989,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": -24.996293550778383,
+        "unstable_geometry_penalty": -4.440892098500626e-14,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 3,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086",
+      "intermediate_score": 10502.401488139358,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 9.839399999999996,
+        "topfill_packable_m3": 2.1409284877687167,
+        "residual_usable_area_m2": 2.554807264640474,
+        "compactness_ratio": 0.9999999999999997,
+        "inventory_fit_ratio": 0.8421052631578947,
+        "fragmentation": 0.5170496664195701,
+        "unstable_geometry": 6.661338147750939e-16,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.12886991149826488,
+        "topfill_estimate": 0.028040456200872886,
+        "residual_quality": 0.0902782229474404,
+        "compactness": 0.9999999999999997,
+        "inventory_fit": 0.8421052631578947,
+        "fragmentation_penalty": 0.5170496664195701,
+        "unstable_geometry_penalty": 6.661338147750939e-16,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 9839.399999999996,
+        "topfill_estimate": 535.2321219421792,
+        "residual_quality": 63.87018161601185,
+        "compactness": 79.99999999999997,
+        "inventory_fit": 25.263157894736842,
+        "fragmentation_penalty": -41.36397331356561,
+        "unstable_geometry_penalty": -6.661338147750939e-14,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 4,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086/agg_SKU-05_0.000_0.000_0.000_6x4x4_FX5.961",
+      "intermediate_score": 13538.891903691632,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 9.74809920000001,
+        "topfill_packable_m3": 14.021214473773167,
+        "residual_usable_area_m2": 7.885947398072647,
+        "compactness_ratio": 1.0,
+        "inventory_fit_ratio": 0.96,
+        "fragmentation": 0.25574499629355074,
+        "unstable_geometry": 0.0,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.12767411439521803,
+        "topfill_estimate": 0.1836405338062625,
+        "residual_quality": 0.278662632288693,
+        "compactness": 1.0,
+        "inventory_fit": 0.96,
+        "fragmentation_penalty": 0.25574499629355074,
+        "unstable_geometry_penalty": 0.0,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 9748.09920000001,
+        "topfill_estimate": 3505.3036184432917,
+        "residual_quality": 197.14868495181616,
+        "compactness": 80.0,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": -20.45959970348406,
+        "unstable_geometry_penalty": -0.0,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 5,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086/agg_SKU-05_0.000_0.000_0.000_6x4x4_FX5.961/agg_SKU-09_0.000_0.000_0.000_1x6x4_FX10.959",
+      "intermediate_score": 847.6300551890282,
+      "final_descendant_utilization": 40.22467325436679,
+      "raw_component_value": {
+        "main_body_gain_m3": 0.7062659999999996,
+        "topfill_packable_m3": 0.24791010511489955,
+        "residual_usable_area_m2": 0.23431957005188994,
+        "compactness_ratio": 1.0,
+        "inventory_fit_ratio": 1.0,
+        "fragmentation": 0.4558932542624166,
+        "unstable_geometry": 1.7763568394002505e-15,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.009250201934491283,
+        "topfill_estimate": 0.00324696153278479,
+        "residual_quality": 0.008280058804776336,
+        "compactness": 1.0,
+        "inventory_fit": 1.0,
+        "fragmentation_penalty": 0.4558932542624166,
+        "unstable_geometry_penalty": 1.7763568394002505e-15,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 706.2659999999996,
+        "topfill_estimate": 61.97752627872489,
+        "residual_quality": 5.857989251297249,
+        "compactness": 80.0,
+        "inventory_fit": 30.0,
+        "fragmentation_penalty": -36.47146034099333,
+        "unstable_geometry_penalty": -1.7763568394002505e-13,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 2,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4",
+      "intermediate_score": 7786.896394355068,
+      "final_descendant_utilization": 40.52141545116862,
+      "raw_component_value": {
+        "main_body_gain_m3": 6.133061039999991,
+        "topfill_packable_m3": 5.904969686508519,
+        "residual_usable_area_m2": 3.7515690511489956,
+        "compactness_ratio": 0.9999999999999987,
+        "inventory_fit_ratio": 0.96,
+        "fragmentation": 0.3124536693847298,
+        "unstable_geometry": 4.440892098500626e-16,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.08032675096431241,
+        "topfill_estimate": 0.0773393622477275,
+        "residual_quality": 0.13256772512348716,
+        "compactness": 0.9999999999999987,
+        "inventory_fit": 0.96,
+        "fragmentation_penalty": 0.3124536693847298,
+        "unstable_geometry_penalty": 4.440892098500626e-16,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 6133.061039999991,
+        "topfill_estimate": 1476.2424216271297,
+        "residual_quality": 93.7892262787249,
+        "compactness": 79.99999999999989,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": -24.996293550778383,
+        "unstable_geometry_penalty": -4.440892098500626e-14,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 3,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086",
+      "intermediate_score": 10502.401488139358,
+      "final_descendant_utilization": 40.52141545116862,
+      "raw_component_value": {
+        "main_body_gain_m3": 9.839399999999996,
+        "topfill_packable_m3": 2.1409284877687167,
+        "residual_usable_area_m2": 2.554807264640474,
+        "compactness_ratio": 0.9999999999999997,
+        "inventory_fit_ratio": 0.8421052631578947,
+        "fragmentation": 0.5170496664195701,
+        "unstable_geometry": 6.661338147750939e-16,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.12886991149826488,
+        "topfill_estimate": 0.028040456200872886,
+        "residual_quality": 0.0902782229474404,
+        "compactness": 0.9999999999999997,
+        "inventory_fit": 0.8421052631578947,
+        "fragmentation_penalty": 0.5170496664195701,
+        "unstable_geometry_penalty": 6.661338147750939e-16,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 9839.399999999996,
+        "topfill_estimate": 535.2321219421792,
+        "residual_quality": 63.87018161601185,
+        "compactness": 79.99999999999997,
+        "inventory_fit": 25.263157894736842,
+        "fragmentation_penalty": -41.36397331356561,
+        "unstable_geometry_penalty": -6.661338147750939e-14,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 4,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086/agg_SKU-05_0.000_0.000_0.000_6x4x4_FX5.961",
+      "intermediate_score": 13538.891903691632,
+      "final_descendant_utilization": 40.52141545116862,
+      "raw_component_value": {
+        "main_body_gain_m3": 9.74809920000001,
+        "topfill_packable_m3": 14.021214473773167,
+        "residual_usable_area_m2": 7.885947398072647,
+        "compactness_ratio": 1.0,
+        "inventory_fit_ratio": 0.96,
+        "fragmentation": 0.25574499629355074,
+        "unstable_geometry": 0.0,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.12767411439521803,
+        "topfill_estimate": 0.1836405338062625,
+        "residual_quality": 0.278662632288693,
+        "compactness": 1.0,
+        "inventory_fit": 0.96,
+        "fragmentation_penalty": 0.25574499629355074,
+        "unstable_geometry_penalty": 0.0,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 9748.09920000001,
+        "topfill_estimate": 3505.3036184432917,
+        "residual_quality": 197.14868495181616,
+        "compactness": 80.0,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": -20.45959970348406,
+        "unstable_geometry_penalty": -0.0,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 5,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086/agg_SKU-05_0.000_0.000_0.000_6x4x4_FX5.961/agg_SKU-09_0.000_0.000_0.000_1x6x4_FX10.959",
+      "intermediate_score": 847.6300551890282,
+      "final_descendant_utilization": 40.52141545116862,
+      "raw_component_value": {
+        "main_body_gain_m3": 0.7062659999999996,
+        "topfill_packable_m3": 0.24791010511489955,
+        "residual_usable_area_m2": 0.23431957005188994,
+        "compactness_ratio": 1.0,
+        "inventory_fit_ratio": 1.0,
+        "fragmentation": 0.4558932542624166,
+        "unstable_geometry": 1.7763568394002505e-15,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.009250201934491283,
+        "topfill_estimate": 0.00324696153278479,
+        "residual_quality": 0.008280058804776336,
+        "compactness": 1.0,
+        "inventory_fit": 1.0,
+        "fragmentation_penalty": 0.4558932542624166,
+        "unstable_geometry_penalty": 1.7763568394002505e-15,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 706.2659999999996,
+        "topfill_estimate": 61.97752627872489,
+        "residual_quality": 5.857989251297249,
+        "compactness": 80.0,
+        "inventory_fit": 30.0,
+        "fragmentation_penalty": -36.47146034099333,
+        "unstable_geometry_penalty": -1.7763568394002505e-13,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 6,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086/agg_SKU-05_0.000_0.000_0.000_6x4x4_FX5.961/agg_SKU-09_0.000_0.000_0.000_1x6x4_FX10.959/mixed_row_SKU-02_UPRIGHT_NORMAL__SKU-03_UPRIGHT_ROTATED_11.454",
+      "intermediate_score": 164.033023905884,
+      "final_descendant_utilization": 40.52141545116862,
+      "raw_component_value": {
+        "main_body_gain_m3": 0.226566864,
+        "topfill_packable_m3": 0.20602510109271485,
+        "residual_usable_area_m2": 0.09322402764376238,
+        "compactness_ratio": 0.3823130339362189,
+        "inventory_fit_ratio": 0.008771929824561403,
+        "fragmentation": 0.7464864583502959,
+        "unstable_geometry": 0.0,
+        "door_risk_m": 0.17499999999999893
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.002967421968018317,
+        "topfill_estimate": 0.0026983796313026455,
+        "residual_quality": 0.003294220925454541,
+        "compactness": 0.3823130339362189,
+        "inventory_fit": 0.008771929824561403,
+        "fragmentation_penalty": 0.7464864583502959,
+        "unstable_geometry_penalty": 0.0,
+        "door_penalty": 0.014544547872340337
+      },
+      "weighted_component_value": {
+        "main_body_gain": 226.566864,
+        "topfill_estimate": 51.506275273178716,
+        "residual_quality": 2.3306006910940593,
+        "compactness": 30.58504271489751,
+        "inventory_fit": 0.2631578947368421,
+        "fragmentation_penalty": -59.718916668023674,
+        "unstable_geometry_penalty": -0.0,
+        "door_penalty": -87.49999999999946
+      }
+    },
+    {
+      "depth": 2,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4",
+      "intermediate_score": 7786.896394355068,
+      "final_descendant_utilization": 40.52141545116862,
+      "raw_component_value": {
+        "main_body_gain_m3": 6.133061039999991,
+        "topfill_packable_m3": 5.904969686508519,
+        "residual_usable_area_m2": 3.7515690511489956,
+        "compactness_ratio": 0.9999999999999987,
+        "inventory_fit_ratio": 0.96,
+        "fragmentation": 0.3124536693847298,
+        "unstable_geometry": 4.440892098500626e-16,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.08032675096431241,
+        "topfill_estimate": 0.0773393622477275,
+        "residual_quality": 0.13256772512348716,
+        "compactness": 0.9999999999999987,
+        "inventory_fit": 0.96,
+        "fragmentation_penalty": 0.3124536693847298,
+        "unstable_geometry_penalty": 4.440892098500626e-16,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 6133.061039999991,
+        "topfill_estimate": 1476.2424216271297,
+        "residual_quality": 93.7892262787249,
+        "compactness": 79.99999999999989,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": -24.996293550778383,
+        "unstable_geometry_penalty": -4.440892098500626e-14,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 3,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086",
+      "intermediate_score": 10502.401488139358,
+      "final_descendant_utilization": 40.52141545116862,
+      "raw_component_value": {
+        "main_body_gain_m3": 9.839399999999996,
+        "topfill_packable_m3": 2.1409284877687167,
+        "residual_usable_area_m2": 2.554807264640474,
+        "compactness_ratio": 0.9999999999999997,
+        "inventory_fit_ratio": 0.8421052631578947,
+        "fragmentation": 0.5170496664195701,
+        "unstable_geometry": 6.661338147750939e-16,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.12886991149826488,
+        "topfill_estimate": 0.028040456200872886,
+        "residual_quality": 0.0902782229474404,
+        "compactness": 0.9999999999999997,
+        "inventory_fit": 0.8421052631578947,
+        "fragmentation_penalty": 0.5170496664195701,
+        "unstable_geometry_penalty": 6.661338147750939e-16,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 9839.399999999996,
+        "topfill_estimate": 535.2321219421792,
+        "residual_quality": 63.87018161601185,
+        "compactness": 79.99999999999997,
+        "inventory_fit": 25.263157894736842,
+        "fragmentation_penalty": -41.36397331356561,
+        "unstable_geometry_penalty": -6.661338147750939e-14,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 4,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086/agg_SKU-05_0.000_0.000_0.000_6x4x4_FX5.961",
+      "intermediate_score": 13538.891903691632,
+      "final_descendant_utilization": 40.52141545116862,
+      "raw_component_value": {
+        "main_body_gain_m3": 9.74809920000001,
+        "topfill_packable_m3": 14.021214473773167,
+        "residual_usable_area_m2": 7.885947398072647,
+        "compactness_ratio": 1.0,
+        "inventory_fit_ratio": 0.96,
+        "fragmentation": 0.25574499629355074,
+        "unstable_geometry": 0.0,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.12767411439521803,
+        "topfill_estimate": 0.1836405338062625,
+        "residual_quality": 0.278662632288693,
+        "compactness": 1.0,
+        "inventory_fit": 0.96,
+        "fragmentation_penalty": 0.25574499629355074,
+        "unstable_geometry_penalty": 0.0,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 9748.09920000001,
+        "topfill_estimate": 3505.3036184432917,
+        "residual_quality": 197.14868495181616,
+        "compactness": 80.0,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": -20.45959970348406,
+        "unstable_geometry_penalty": -0.0,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 5,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086/agg_SKU-05_0.000_0.000_0.000_6x4x4_FX5.961/agg_SKU-09_0.000_0.000_0.000_1x6x4_FX10.959",
+      "intermediate_score": 847.6300551890282,
+      "final_descendant_utilization": 40.52141545116862,
+      "raw_component_value": {
+        "main_body_gain_m3": 0.7062659999999996,
+        "topfill_packable_m3": 0.24791010511489955,
+        "residual_usable_area_m2": 0.23431957005188994,
+        "compactness_ratio": 1.0,
+        "inventory_fit_ratio": 1.0,
+        "fragmentation": 0.4558932542624166,
+        "unstable_geometry": 1.7763568394002505e-15,
+        "door_risk_m": 0.0
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.009250201934491283,
+        "topfill_estimate": 0.00324696153278479,
+        "residual_quality": 0.008280058804776336,
+        "compactness": 1.0,
+        "inventory_fit": 1.0,
+        "fragmentation_penalty": 0.4558932542624166,
+        "unstable_geometry_penalty": 1.7763568394002505e-15,
+        "door_penalty": 0.0
+      },
+      "weighted_component_value": {
+        "main_body_gain": 706.2659999999996,
+        "topfill_estimate": 61.97752627872489,
+        "residual_quality": 5.857989251297249,
+        "compactness": 80.0,
+        "inventory_fit": 30.0,
+        "fragmentation_penalty": -36.47146034099333,
+        "unstable_geometry_penalty": -1.7763568394002505e-13,
+        "door_penalty": -0.0
+      }
+    },
+    {
+      "depth": 6,
+      "state_id": "root/FOUNDATION_single_SKU-01_0.000_0.000_0.000_0.500_0.500_0.500/agg_SKU-07_0.500_0.200_0.000_6x5x4/agg_SKU-06_0.000_0.000_0.000_5x4x4_FX3.086/agg_SKU-05_0.000_0.000_0.000_6x4x4_FX5.961/agg_SKU-09_0.000_0.000_0.000_1x6x4_FX10.959/mixed_row_SKU-02_UPRIGHT_NORMAL__SKU-03_UPRIGHT_ROTATED_11.454",
+      "intermediate_score": 164.033023905884,
+      "final_descendant_utilization": 40.52141545116862,
+      "raw_component_value": {
+        "main_body_gain_m3": 0.226566864,
+        "topfill_packable_m3": 0.20602510109271485,
+        "residual_usable_area_m2": 0.09322402764376238,
+        "compactness_ratio": 0.3823130339362189,
+        "inventory_fit_ratio": 0.008771929824561403,
+        "fragmentation": 0.7464864583502959,
+        "unstable_geometry": 0.0,
+        "door_risk_m": 0.17499999999999893
+      },
+      "normalized_component_value": {
+        "main_body_gain": 0.002967421968018317,
+        "topfill_estimate": 0.0026983796313026455,
+        "residual_quality": 0.003294220925454541,
+        "compactness": 0.3823130339362189,
+        "inventory_fit": 0.008771929824561403,
+        "fragmentation_penalty": 0.7464864583502959,
+        "unstable_geometry_penalty": 0.0,
+        "door_penalty": 0.014544547872340337
+      },
+      "weighted_component_value": {
+        "main_body_gain": 226.566864,
+        "topfill_estimate": 51.506275273178716,
+        "residual_quality": 2.3306006910940593,
+        "compactness": 30.58504271489751,
+        "inventory_fit": 0.2631578947368421,
+        "fragmentation_penalty": -59.718916668023674,
+        "unstable_geometry_penalty": -0.0,
+        "door_penalty": -87.49999999999946
+      }
+    }
+  ],
+  "weight_calibration_decision": "UNCHANGED_GENERIC_WEIGHTS",
+  "weight_calibration_reason": "controlled matrix did not establish a robust cross-run causal improvement; no benchmark-specific tuning",
+  "intermediate_final_score_pearson": -0.15239,
+  "score_quality_conclusion": "The controlled trace does not support changing generic weights; depth, not weight tuning, produced the only quality gain."
+}

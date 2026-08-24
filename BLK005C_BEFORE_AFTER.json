@@ -1,0 +1,213 @@
+{
+  "generated_at": "2026-08-22T13:49:59Z",
+  "before": {
+    "BALANCED": {
+      "top_fill_region_count": 28,
+      "top_fill_usable_volume": 39.43731,
+      "top_fill_placed_count": 12,
+      "top_fill_placed_volume": 1.07671,
+      "top_fill_utilization": 0.027302,
+      "auto_topfill_placed_count": 12,
+      "auto_topfill_placed_by_sku": {
+        "SKU-03": 12
+      },
+      "auto_flat_placed_count": 0,
+      "main_body_conditional_flat_count": 0
+    },
+    "OPTIMIZE": {
+      "top_fill_region_count": 27,
+      "top_fill_usable_volume": 39.208,
+      "top_fill_placed_count": 16,
+      "top_fill_placed_volume": 1.43561,
+      "top_fill_utilization": 0.036615,
+      "auto_topfill_placed_count": 16,
+      "auto_topfill_placed_by_sku": {
+        "SKU-03": 16
+      },
+      "auto_flat_placed_count": 0,
+      "main_body_conditional_flat_count": 0
+    }
+  },
+  "after": {
+    "BALANCED": {
+      "mode": "BALANCED",
+      "placed_count": 373,
+      "utilization_pct": 41.4627,
+      "max_x": 11.978,
+      "door_ready": true,
+      "overlap": 0,
+      "penetration": 0.0,
+      "out_of_bounds": 0,
+      "hard_violations": 0,
+      "enclosed_cavity": 0,
+      "bridge_void": 0,
+      "top_fill_region_count": 28,
+      "top_fill_usable_volume": 39.43731,
+      "top_fill_placed_count": 36,
+      "top_fill_placed_volume": 3.44373,
+      "top_fill_utilization": 0.087321,
+      "top_fill_by_sku": {
+        "SKU-06": 5,
+        "SKU-05": 4,
+        "SKU-03": 27
+      },
+      "top_fill_by_orientation": {
+        "UPRIGHT_NORMAL": 6,
+        "UPRIGHT_ROTATED": 30
+      },
+      "top_fill_layer_distribution": {
+        "1": 18,
+        "2": 13,
+        "3": 5
+      },
+      "rejected_insufficient_support": 0,
+      "rejected_compression": 0,
+      "rejected_orientation_context": 0,
+      "rejected_max_layers": 0,
+      "rejected_stability": 0,
+      "residual_top_volume": 35.62028,
+      "residual_top_fragmentation": {
+        "fragment_count": 0,
+        "fragment_volume": 0,
+        "fragment_ratio": 0.0
+      },
+      "top_fill_sku_diversity": 3,
+      "auto_topfill_placed_count": 36,
+      "auto_topfill_placed_by_sku": {
+        "SKU-06": 5,
+        "SKU-05": 4,
+        "SKU-03": 27
+      },
+      "auto_flat_placed_count": 0,
+      "main_body_conditional_flat_count": 0,
+      "deployment_funnel": {
+        "NOT_GENERATED": 82,
+        "PRUNED": 211,
+        "RANKED_OUT": 914,
+        "ATTEMPT_FAILED": 0,
+        "COLLISION": 0,
+        "SUPPORT": 0,
+        "STABILITY": 0,
+        "LAYER_LIMIT": 0,
+        "INVENTORY": 0,
+        "REGION_EXHAUSTED": 0,
+        "COMMITTED": 36,
+        "admitted_candidate_count": 222,
+        "generated_candidate_count": 1346,
+        "ranked_candidate_count": 1346,
+        "attempted_candidate_count": 36,
+        "committed_candidate_count": 36
+      },
+      "regions_diagnosed": 26,
+      "multi_sku_region_count": 2,
+      "multi_layer_region_count": 9
+    },
+    "OPTIMIZE": {
+      "mode": "OPTIMIZE",
+      "placed_count": 361,
+      "utilization_pct": 41.7456,
+      "max_x": 11.978,
+      "door_ready": true,
+      "overlap": 0,
+      "penetration": 0.0,
+      "out_of_bounds": 0,
+      "hard_violations": 0,
+      "enclosed_cavity": 0,
+      "bridge_void": 0,
+      "top_fill_region_count": 27,
+      "top_fill_usable_volume": 39.208,
+      "top_fill_placed_count": 48,
+      "top_fill_placed_volume": 4.36597,
+      "top_fill_utilization": 0.111354,
+      "top_fill_by_sku": {
+        "SKU-06": 5,
+        "SKU-05": 4,
+        "SKU-03": 35,
+        "SKU-07": 4
+      },
+      "top_fill_by_orientation": {
+        "UPRIGHT_NORMAL": 13,
+        "UPRIGHT_ROTATED": 35
+      },
+      "top_fill_layer_distribution": {
+        "1": 23,
+        "2": 17,
+        "3": 6,
+        "4": 2
+      },
+      "rejected_insufficient_support": 2,
+      "rejected_compression": 0,
+      "rejected_orientation_context": 0,
+      "rejected_max_layers": 0,
+      "rejected_stability": 0,
+      "residual_top_volume": 35.48675,
+      "residual_top_fragmentation": {
+        "fragment_count": 0,
+        "fragment_volume": 0,
+        "fragment_ratio": 0.0
+      },
+      "top_fill_sku_diversity": 4,
+      "auto_topfill_placed_count": 48,
+      "auto_topfill_placed_by_sku": {
+        "SKU-06": 5,
+        "SKU-05": 4,
+        "SKU-03": 35,
+        "SKU-07": 4
+      },
+      "auto_flat_placed_count": 0,
+      "main_body_conditional_flat_count": 0,
+      "deployment_funnel": {
+        "NOT_GENERATED": 61,
+        "PRUNED": 220,
+        "RANKED_OUT": 1336,
+        "ATTEMPT_FAILED": 0,
+        "COLLISION": 0,
+        "SUPPORT": 2,
+        "STABILITY": 0,
+        "LAYER_LIMIT": 0,
+        "INVENTORY": 0,
+        "REGION_EXHAUSTED": 0,
+        "COMMITTED": 48,
+        "admitted_candidate_count": 232,
+        "generated_candidate_count": 1912,
+        "ranked_candidate_count": 1912,
+        "attempted_candidate_count": 50,
+        "committed_candidate_count": 48
+      },
+      "regions_diagnosed": 25,
+      "multi_sku_region_count": 2,
+      "multi_layer_region_count": 10
+    }
+  },
+  "acceptance": {
+    "candidate_funnel_no_unexpected_collapse": true,
+    "sku_diversity_improved_in_at_least_one_mode": true,
+    "placed_volume_improved_in_at_least_one_mode": true,
+    "topfill_utilization_improved_in_at_least_one_mode": true,
+    "auto_flat_zero": true,
+    "user_defined_rules_unchanged": true,
+    "safety_regression": true,
+    "full_suite": true
+  },
+  "regression_tests": {
+    "TOP_001_012": "PASS",
+    "WALL_001_010": "PASS",
+    "BLK005B_AUTO_ADMISSION": "PASS",
+    "BLK005C_REGION_PACKING": "PASS",
+    "focused_tests_run": 35,
+    "full_suite": "PASS",
+    "full_tests_run": 146,
+    "full_failures": 0,
+    "full_errors": 0,
+    "full_duration_sec": 96.388
+  },
+  "user_defined_fingerprint_unchanged": true,
+  "mutations": {
+    "cargo_profile": 0,
+    "safe_admission": 0,
+    "global_search_objective": 0,
+    "global_beam_search": 0,
+    "global_local_search": 0,
+    "hard_constraints": 0
+  }
+}

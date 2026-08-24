@@ -1,0 +1,1169 @@
+{
+  "version": "BLK008A",
+  "summary": {
+    "elapsed_sec": 1.9876894997432828,
+    "status": "SUCCESS",
+    "placed": 1459,
+    "utilization": 71.35743680648564,
+    "valid": true,
+    "reasons": [],
+    "metrics": {
+      "is_valid": true,
+      "placed_count": 1459,
+      "total_cargo_weight_kg": 10669.45,
+      "max_payload_kg": 26500.0,
+      "container_volume": 76.351414,
+      "cargo_volume": 54.482412,
+      "volume_utilization_pct": 71.3574,
+      "out_of_bounds_count": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "overlap_pairs": [],
+      "enclosed_cavity_count": 0,
+      "enclosed_cavity_volume": 0.0,
+      "reachable_residual_volume": 18.444191,
+      "dead_space_volume": 0.0,
+      "sliver_volume": 0.0,
+      "fragmentation_score": 0.0
+    },
+    "category_counts": {
+      "NORMAL_BOX": 3,
+      "DISPLAY": 4,
+      "HEAVY": 2,
+      "FRAGILE": 3,
+      "ELECTRONIC": 2
+    },
+    "fragility_counts": {
+      "LOW": 5,
+      "HIGH": 7,
+      "MEDIUM": 2
+    },
+    "manual_profiles": 3,
+    "inferred_profiles": 11,
+    "solver_constraints_mutated": false,
+    "top_fill_count": 129,
+    "door_count": 28,
+    "sequence_feasible": true,
+    "enhanced_cargo_fields": true,
+    "diagnostics": {
+      "door_wall_committed": true,
+      "door_wall_count": 28,
+      "door_zone_reserved": true,
+      "door_orientation_valid": true,
+      "locked_count": 28,
+      "support_links": 0,
+      "main_solver_max_x": 10.829,
+      "solver_commit_sequence": [
+        "CREATE_CONTAINER",
+        "INJECT_DOOR_WALL",
+        "PLAN_CARGO_WALLS",
+        "RESERVE_WALL_REGIONS",
+        "RUN_FROZEN_SOLVER",
+        "FULL_GLOBAL_VALIDATION"
+      ],
+      "physical_sequence_policy": "MAIN_CARGO_THEN_DOOR_WALL_BUILD (BLK007A door-access safety)",
+      "cargo_wall_count": 17,
+      "cargo_wall_placements": 474,
+      "cargo_wall_end_x": 7.227,
+      "transition_wall_count": 34,
+      "optimized_wall_end_x": 10.829,
+      "wall_chain_valid": true,
+      "top_fill_placements": 129,
+      "top_fill_volume": 1.69215,
+      "top_fill_max_layers": 3,
+      "cargo_intelligence_ready": true
+    }
+  },
+  "profiles": {
+    "SKU-01": {
+      "sku": "SKU-01",
+      "category": "NORMAL_BOX",
+      "category_confidence": 0.65,
+      "fragility": "LOW",
+      "orientationPolicy": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ],
+        "source": "INFERRED"
+      },
+      "stackPolicy": {
+        "base_max_layers": null,
+        "top_max_layers": 1,
+        "top_allowed": false,
+        "stack_on_self": true,
+        "source": "INFERRED"
+      },
+      "compressionPolicy": {
+        "max_load_kg": 100.0,
+        "compression_class": "MEDIUM",
+        "allow_as_support": true,
+        "source": "INFERRED"
+      },
+      "loadingPriority": {
+        "door_priority": 3,
+        "main_priority": 5,
+        "top_priority": 3,
+        "loading_reason": "CARGO_INTELLIGENCE_POLICY",
+        "source": "INFERRED"
+      },
+      "specialRules": [],
+      "source": "INFERRED"
+    },
+    "SKU-02": {
+      "sku": "SKU-02",
+      "category": "DISPLAY",
+      "category_confidence": 1.0,
+      "fragility": "HIGH",
+      "orientationPolicy": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL",
+          "FLAT_HORIZONTAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ],
+        "source": "USER_DEFINED"
+      },
+      "stackPolicy": {
+        "base_max_layers": 7,
+        "top_max_layers": 3,
+        "top_allowed": true,
+        "stack_on_self": true,
+        "source": "USER_DEFINED"
+      },
+      "compressionPolicy": {
+        "max_load_kg": 60.0,
+        "compression_class": "LOW",
+        "allow_as_support": true,
+        "source": "USER_DEFINED"
+      },
+      "loadingPriority": {
+        "door_priority": 10,
+        "main_priority": 8,
+        "top_priority": 5,
+        "loading_reason": "DISPLAY_DOOR_AND_CONDITIONAL_TOP_POLICY",
+        "source": "USER_DEFINED"
+      },
+      "specialRules": [
+        "NEIGHBOR_SUPPORT_REQUIRED",
+        "NO_SIDE_ORIENTATION"
+      ],
+      "source": "USER_DEFINED"
+    },
+    "SKU-03": {
+      "sku": "SKU-03",
+      "category": "DISPLAY",
+      "category_confidence": 1.0,
+      "fragility": "HIGH",
+      "orientationPolicy": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE",
+          "FLAT_HORIZONTAL"
+        ],
+        "source": "USER_DEFINED"
+      },
+      "stackPolicy": {
+        "base_max_layers": 5,
+        "top_max_layers": 1,
+        "top_allowed": false,
+        "stack_on_self": true,
+        "source": "USER_DEFINED"
+      },
+      "compressionPolicy": {
+        "max_load_kg": 40.0,
+        "compression_class": "LOW",
+        "allow_as_support": true,
+        "source": "USER_DEFINED"
+      },
+      "loadingPriority": {
+        "door_priority": 9,
+        "main_priority": 7,
+        "top_priority": 2,
+        "loading_reason": "DISPLAY_VERTICAL_DOOR_POLICY",
+        "source": "USER_DEFINED"
+      },
+      "specialRules": [
+        "NEIGHBOR_SUPPORT_REQUIRED",
+        "NO_SIDE_ORIENTATION"
+      ],
+      "source": "USER_DEFINED"
+    },
+    "SKU-04": {
+      "sku": "SKU-04",
+      "category": "DISPLAY",
+      "category_confidence": 0.96,
+      "fragility": "HIGH",
+      "orientationPolicy": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE",
+          "HORIZONTAL",
+          "FLAT"
+        ],
+        "source": "INFERRED"
+      },
+      "stackPolicy": {
+        "base_max_layers": null,
+        "top_max_layers": 3,
+        "top_allowed": true,
+        "stack_on_self": true,
+        "source": "INFERRED"
+      },
+      "compressionPolicy": {
+        "max_load_kg": 25.0,
+        "compression_class": "LOW",
+        "allow_as_support": true,
+        "source": "INFERRED"
+      },
+      "loadingPriority": {
+        "door_priority": 10,
+        "main_priority": 8,
+        "top_priority": 5,
+        "loading_reason": "CARGO_INTELLIGENCE_POLICY",
+        "source": "INFERRED"
+      },
+      "specialRules": [],
+      "source": "INFERRED"
+    },
+    "SKU-05": {
+      "sku": "SKU-05",
+      "category": "HEAVY",
+      "category_confidence": 0.9,
+      "fragility": "MEDIUM",
+      "orientationPolicy": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ],
+        "source": "INFERRED"
+      },
+      "stackPolicy": {
+        "base_max_layers": null,
+        "top_max_layers": 1,
+        "top_allowed": false,
+        "stack_on_self": true,
+        "source": "INFERRED"
+      },
+      "compressionPolicy": {
+        "max_load_kg": 100.0,
+        "compression_class": "MEDIUM",
+        "allow_as_support": true,
+        "source": "INFERRED"
+      },
+      "loadingPriority": {
+        "door_priority": 3,
+        "main_priority": 5,
+        "top_priority": 3,
+        "loading_reason": "CARGO_INTELLIGENCE_POLICY",
+        "source": "INFERRED"
+      },
+      "specialRules": [],
+      "source": "INFERRED"
+    },
+    "SKU-06": {
+      "sku": "SKU-06",
+      "category": "FRAGILE",
+      "category_confidence": 0.78,
+      "fragility": "HIGH",
+      "orientationPolicy": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ],
+        "source": "INFERRED"
+      },
+      "stackPolicy": {
+        "base_max_layers": null,
+        "top_max_layers": 1,
+        "top_allowed": false,
+        "stack_on_self": true,
+        "source": "INFERRED"
+      },
+      "compressionPolicy": {
+        "max_load_kg": 25.0,
+        "compression_class": "LOW",
+        "allow_as_support": true,
+        "source": "INFERRED"
+      },
+      "loadingPriority": {
+        "door_priority": 3,
+        "main_priority": 5,
+        "top_priority": 3,
+        "loading_reason": "CARGO_INTELLIGENCE_POLICY",
+        "source": "INFERRED"
+      },
+      "specialRules": [],
+      "source": "INFERRED"
+    },
+    "SKU-07": {
+      "sku": "SKU-07",
+      "category": "FRAGILE",
+      "category_confidence": 0.78,
+      "fragility": "HIGH",
+      "orientationPolicy": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ],
+        "source": "INFERRED"
+      },
+      "stackPolicy": {
+        "base_max_layers": null,
+        "top_max_layers": 1,
+        "top_allowed": false,
+        "stack_on_self": true,
+        "source": "INFERRED"
+      },
+      "compressionPolicy": {
+        "max_load_kg": 25.0,
+        "compression_class": "LOW",
+        "allow_as_support": true,
+        "source": "INFERRED"
+      },
+      "loadingPriority": {
+        "door_priority": 3,
+        "main_priority": 5,
+        "top_priority": 3,
+        "loading_reason": "CARGO_INTELLIGENCE_POLICY",
+        "source": "INFERRED"
+      },
+      "specialRules": [],
+      "source": "INFERRED"
+    },
+    "SKU-08": {
+      "sku": "SKU-08",
+      "category": "NORMAL_BOX",
+      "category_confidence": 0.65,
+      "fragility": "LOW",
+      "orientationPolicy": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ],
+        "source": "INFERRED"
+      },
+      "stackPolicy": {
+        "base_max_layers": null,
+        "top_max_layers": 1,
+        "top_allowed": false,
+        "stack_on_self": true,
+        "source": "INFERRED"
+      },
+      "compressionPolicy": {
+        "max_load_kg": 100.0,
+        "compression_class": "MEDIUM",
+        "allow_as_support": true,
+        "source": "INFERRED"
+      },
+      "loadingPriority": {
+        "door_priority": 3,
+        "main_priority": 5,
+        "top_priority": 3,
+        "loading_reason": "CARGO_INTELLIGENCE_POLICY",
+        "source": "INFERRED"
+      },
+      "specialRules": [],
+      "source": "INFERRED"
+    },
+    "SKU-09": {
+      "sku": "SKU-09",
+      "category": "NORMAL_BOX",
+      "category_confidence": 0.65,
+      "fragility": "LOW",
+      "orientationPolicy": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ],
+        "source": "INFERRED"
+      },
+      "stackPolicy": {
+        "base_max_layers": null,
+        "top_max_layers": 1,
+        "top_allowed": false,
+        "stack_on_self": true,
+        "source": "INFERRED"
+      },
+      "compressionPolicy": {
+        "max_load_kg": 100.0,
+        "compression_class": "MEDIUM",
+        "allow_as_support": true,
+        "source": "INFERRED"
+      },
+      "loadingPriority": {
+        "door_priority": 3,
+        "main_priority": 5,
+        "top_priority": 3,
+        "loading_reason": "CARGO_INTELLIGENCE_POLICY",
+        "source": "INFERRED"
+      },
+      "specialRules": [],
+      "source": "INFERRED"
+    },
+    "SKU-10": {
+      "sku": "SKU-10",
+      "category": "FRAGILE",
+      "category_confidence": 0.78,
+      "fragility": "HIGH",
+      "orientationPolicy": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ],
+        "source": "INFERRED"
+      },
+      "stackPolicy": {
+        "base_max_layers": null,
+        "top_max_layers": 1,
+        "top_allowed": false,
+        "stack_on_self": true,
+        "source": "INFERRED"
+      },
+      "compressionPolicy": {
+        "max_load_kg": 25.0,
+        "compression_class": "LOW",
+        "allow_as_support": true,
+        "source": "INFERRED"
+      },
+      "loadingPriority": {
+        "door_priority": 3,
+        "main_priority": 5,
+        "top_priority": 3,
+        "loading_reason": "CARGO_INTELLIGENCE_POLICY",
+        "source": "INFERRED"
+      },
+      "specialRules": [],
+      "source": "INFERRED"
+    },
+    "SKU-11": {
+      "sku": "SKU-11",
+      "category": "HEAVY",
+      "category_confidence": 0.9,
+      "fragility": "MEDIUM",
+      "orientationPolicy": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ],
+        "source": "INFERRED"
+      },
+      "stackPolicy": {
+        "base_max_layers": null,
+        "top_max_layers": 1,
+        "top_allowed": false,
+        "stack_on_self": true,
+        "source": "INFERRED"
+      },
+      "compressionPolicy": {
+        "max_load_kg": 100.0,
+        "compression_class": "MEDIUM",
+        "allow_as_support": true,
+        "source": "INFERRED"
+      },
+      "loadingPriority": {
+        "door_priority": 3,
+        "main_priority": 5,
+        "top_priority": 3,
+        "loading_reason": "CARGO_INTELLIGENCE_POLICY",
+        "source": "INFERRED"
+      },
+      "specialRules": [],
+      "source": "INFERRED"
+    },
+    "SKU-12": {
+      "sku": "SKU-12",
+      "category": "ELECTRONIC",
+      "category_confidence": 0.82,
+      "fragility": "LOW",
+      "orientationPolicy": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ],
+        "source": "INFERRED"
+      },
+      "stackPolicy": {
+        "base_max_layers": null,
+        "top_max_layers": 1,
+        "top_allowed": false,
+        "stack_on_self": true,
+        "source": "INFERRED"
+      },
+      "compressionPolicy": {
+        "max_load_kg": 100.0,
+        "compression_class": "MEDIUM",
+        "allow_as_support": true,
+        "source": "INFERRED"
+      },
+      "loadingPriority": {
+        "door_priority": 3,
+        "main_priority": 5,
+        "top_priority": 3,
+        "loading_reason": "CARGO_INTELLIGENCE_POLICY",
+        "source": "INFERRED"
+      },
+      "specialRules": [],
+      "source": "INFERRED"
+    },
+    "SKU-13": {
+      "sku": "SKU-13",
+      "category": "ELECTRONIC",
+      "category_confidence": 0.82,
+      "fragility": "LOW",
+      "orientationPolicy": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ],
+        "source": "INFERRED"
+      },
+      "stackPolicy": {
+        "base_max_layers": null,
+        "top_max_layers": 1,
+        "top_allowed": false,
+        "stack_on_self": true,
+        "source": "INFERRED"
+      },
+      "compressionPolicy": {
+        "max_load_kg": 100.0,
+        "compression_class": "MEDIUM",
+        "allow_as_support": true,
+        "source": "INFERRED"
+      },
+      "loadingPriority": {
+        "door_priority": 3,
+        "main_priority": 5,
+        "top_priority": 3,
+        "loading_reason": "CARGO_INTELLIGENCE_POLICY",
+        "source": "INFERRED"
+      },
+      "specialRules": [],
+      "source": "INFERRED"
+    },
+    "SKU-14": {
+      "sku": "SKU-14",
+      "category": "DISPLAY",
+      "category_confidence": 1.0,
+      "fragility": "HIGH",
+      "orientationPolicy": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "FLAT_HORIZONTAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ],
+        "source": "USER_DEFINED"
+      },
+      "stackPolicy": {
+        "base_max_layers": 8,
+        "top_max_layers": 3,
+        "top_allowed": true,
+        "stack_on_self": true,
+        "source": "USER_DEFINED"
+      },
+      "compressionPolicy": {
+        "max_load_kg": 25.0,
+        "compression_class": "LOW",
+        "allow_as_support": true,
+        "source": "USER_DEFINED"
+      },
+      "loadingPriority": {
+        "door_priority": 8,
+        "main_priority": 6,
+        "top_priority": 10,
+        "loading_reason": "LIGHT_DISPLAY_TOP_FILL_POLICY",
+        "source": "USER_DEFINED"
+      },
+      "specialRules": [
+        "NEIGHBOR_SUPPORT_REQUIRED",
+        "NO_SIDE_ORIENTATION",
+        "TOP_FILL_PREFERRED"
+      ],
+      "source": "USER_DEFINED"
+    }
+  },
+  "constraints": {
+    "SKU-01": {
+      "allowedOrientation": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ]
+      },
+      "maxStack": {
+        "base": null,
+        "top": 1
+      },
+      "doorPriority": 3,
+      "topAllowed": false,
+      "compressionLimit": 100.0,
+      "fragility": "LOW",
+      "source": "INFERRED"
+    },
+    "SKU-02": {
+      "allowedOrientation": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL",
+          "FLAT_HORIZONTAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ]
+      },
+      "maxStack": {
+        "base": 7,
+        "top": 3
+      },
+      "doorPriority": 10,
+      "topAllowed": true,
+      "compressionLimit": 60.0,
+      "fragility": "HIGH",
+      "source": "USER_DEFINED"
+    },
+    "SKU-03": {
+      "allowedOrientation": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE",
+          "FLAT_HORIZONTAL"
+        ]
+      },
+      "maxStack": {
+        "base": 5,
+        "top": 1
+      },
+      "doorPriority": 9,
+      "topAllowed": false,
+      "compressionLimit": 40.0,
+      "fragility": "HIGH",
+      "source": "USER_DEFINED"
+    },
+    "SKU-04": {
+      "allowedOrientation": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE",
+          "HORIZONTAL",
+          "FLAT"
+        ]
+      },
+      "maxStack": {
+        "base": null,
+        "top": 3
+      },
+      "doorPriority": 10,
+      "topAllowed": true,
+      "compressionLimit": 25.0,
+      "fragility": "HIGH",
+      "source": "INFERRED"
+    },
+    "SKU-05": {
+      "allowedOrientation": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ]
+      },
+      "maxStack": {
+        "base": null,
+        "top": 1
+      },
+      "doorPriority": 3,
+      "topAllowed": false,
+      "compressionLimit": 100.0,
+      "fragility": "MEDIUM",
+      "source": "INFERRED"
+    },
+    "SKU-06": {
+      "allowedOrientation": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ]
+      },
+      "maxStack": {
+        "base": null,
+        "top": 1
+      },
+      "doorPriority": 3,
+      "topAllowed": false,
+      "compressionLimit": 25.0,
+      "fragility": "HIGH",
+      "source": "INFERRED"
+    },
+    "SKU-07": {
+      "allowedOrientation": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ]
+      },
+      "maxStack": {
+        "base": null,
+        "top": 1
+      },
+      "doorPriority": 3,
+      "topAllowed": false,
+      "compressionLimit": 25.0,
+      "fragility": "HIGH",
+      "source": "INFERRED"
+    },
+    "SKU-08": {
+      "allowedOrientation": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ]
+      },
+      "maxStack": {
+        "base": null,
+        "top": 1
+      },
+      "doorPriority": 3,
+      "topAllowed": false,
+      "compressionLimit": 100.0,
+      "fragility": "LOW",
+      "source": "INFERRED"
+    },
+    "SKU-09": {
+      "allowedOrientation": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ]
+      },
+      "maxStack": {
+        "base": null,
+        "top": 1
+      },
+      "doorPriority": 3,
+      "topAllowed": false,
+      "compressionLimit": 100.0,
+      "fragility": "LOW",
+      "source": "INFERRED"
+    },
+    "SKU-10": {
+      "allowedOrientation": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ]
+      },
+      "maxStack": {
+        "base": null,
+        "top": 1
+      },
+      "doorPriority": 3,
+      "topAllowed": false,
+      "compressionLimit": 25.0,
+      "fragility": "HIGH",
+      "source": "INFERRED"
+    },
+    "SKU-11": {
+      "allowedOrientation": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ]
+      },
+      "maxStack": {
+        "base": null,
+        "top": 1
+      },
+      "doorPriority": 3,
+      "topAllowed": false,
+      "compressionLimit": 100.0,
+      "fragility": "MEDIUM",
+      "source": "INFERRED"
+    },
+    "SKU-12": {
+      "allowedOrientation": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ]
+      },
+      "maxStack": {
+        "base": null,
+        "top": 1
+      },
+      "doorPriority": 3,
+      "topAllowed": false,
+      "compressionLimit": 100.0,
+      "fragility": "LOW",
+      "source": "INFERRED"
+    },
+    "SKU-13": {
+      "allowedOrientation": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "VERTICAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ]
+      },
+      "maxStack": {
+        "base": null,
+        "top": 1
+      },
+      "doorPriority": 3,
+      "topAllowed": false,
+      "compressionLimit": 100.0,
+      "fragility": "LOW",
+      "source": "INFERRED"
+    },
+    "SKU-14": {
+      "allowedOrientation": {
+        "base": [
+          "VERTICAL"
+        ],
+        "top": [
+          "FLAT_HORIZONTAL"
+        ],
+        "door": [
+          "VERTICAL"
+        ],
+        "forbidden": [
+          "SIDE"
+        ]
+      },
+      "maxStack": {
+        "base": 8,
+        "top": 3
+      },
+      "doorPriority": 8,
+      "topAllowed": true,
+      "compressionLimit": 25.0,
+      "fragility": "HIGH",
+      "source": "USER_DEFINED"
+    }
+  },
+  "audit": {
+    "sku_count": 14,
+    "manual_profiles": 3,
+    "inferred_profiles": 11,
+    "solver_constraints_mutated": false,
+    "user_defined_solver_rules_preserved": true,
+    "adapter_mode": "AUDIT_AND_GATE"
+  },
+  "enhanced_cargo_sample": [
+    {
+      "sku": "SKU-02",
+      "role": "DOOR_WALL",
+      "category": "DISPLAY",
+      "fragility": "HIGH",
+      "orientationUsed": "VERTICAL",
+      "stackLayer": "LOGICAL_WALL_063_L01",
+      "loadingReason": "DOOR_SAFETY_ANCHOR"
+    },
+    {
+      "sku": "SKU-03",
+      "role": "TRANSITION_WALL",
+      "category": "DISPLAY",
+      "fragility": "HIGH",
+      "orientationUsed": "VERTICAL",
+      "stackLayer": "LOGICAL_WALL_037_L01",
+      "loadingReason": "WALL_TRANSITION"
+    },
+    {
+      "sku": "SKU-04",
+      "role": "TRANSITION_WALL",
+      "category": "DISPLAY",
+      "fragility": "HIGH",
+      "orientationUsed": "VERTICAL",
+      "stackLayer": "LOGICAL_WALL_044_L01",
+      "loadingReason": "WALL_TRANSITION"
+    },
+    {
+      "sku": "SKU-05",
+      "role": "CARGO_WALL",
+      "category": "HEAVY",
+      "fragility": "MEDIUM",
+      "orientationUsed": "VERTICAL",
+      "stackLayer": "LOGICAL_WALL_007_L01",
+      "loadingReason": "WALL_FORMATION"
+    },
+    {
+      "sku": "SKU-06",
+      "role": "CARGO_WALL",
+      "category": "FRAGILE",
+      "fragility": "HIGH",
+      "orientationUsed": "VERTICAL",
+      "stackLayer": "LOGICAL_WALL_011_L01",
+      "loadingReason": "WALL_FORMATION"
+    },
+    {
+      "sku": "SKU-07",
+      "role": "CARGO_WALL",
+      "category": "FRAGILE",
+      "fragility": "HIGH",
+      "orientationUsed": "VERTICAL",
+      "stackLayer": "LOGICAL_WALL_003_L01",
+      "loadingReason": "WALL_FORMATION"
+    },
+    {
+      "sku": "SKU-08",
+      "role": "CARGO_WALL",
+      "category": "NORMAL_BOX",
+      "fragility": "LOW",
+      "orientationUsed": "VERTICAL",
+      "stackLayer": "LOGICAL_WALL_001_L01",
+      "loadingReason": "WALL_FORMATION"
+    },
+    {
+      "sku": "SKU-09",
+      "role": "CARGO_WALL",
+      "category": "NORMAL_BOX",
+      "fragility": "LOW",
+      "orientationUsed": "VERTICAL",
+      "stackLayer": "LOGICAL_WALL_019_L01",
+      "loadingReason": "WALL_FORMATION"
+    },
+    {
+      "sku": "SKU-10",
+      "role": "CARGO_WALL",
+      "category": "FRAGILE",
+      "fragility": "HIGH",
+      "orientationUsed": "VERTICAL",
+      "stackLayer": "LOGICAL_WALL_024_L01",
+      "loadingReason": "WALL_FORMATION"
+    },
+    {
+      "sku": "SKU-11",
+      "role": "CARGO_WALL",
+      "category": "HEAVY",
+      "fragility": "MEDIUM",
+      "orientationUsed": "VERTICAL",
+      "stackLayer": "LOGICAL_WALL_027_L01",
+      "loadingReason": "WALL_FORMATION"
+    },
+    {
+      "sku": "SKU-13",
+      "role": "CARGO_WALL",
+      "category": "ELECTRONIC",
+      "fragility": "LOW",
+      "orientationUsed": "VERTICAL",
+      "stackLayer": "LOGICAL_WALL_022_L01",
+      "loadingReason": "WALL_FORMATION"
+    },
+    {
+      "sku": "SKU-14",
+      "role": "TRANSITION_WALL",
+      "category": "DISPLAY",
+      "fragility": "HIGH",
+      "orientationUsed": "VERTICAL",
+      "stackLayer": "LOGICAL_WALL_029_L01",
+      "loadingReason": "WALL_TRANSITION"
+    }
+  ]
+}

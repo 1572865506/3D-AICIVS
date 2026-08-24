@@ -1,0 +1,366 @@
+{
+  "id": "demo_loading_job",
+  "container": {
+    "type": "40HQ",
+    "dimension": {
+      "length": 4,
+      "width": 1.2,
+      "height": 1.5,
+      "unit": "m"
+    },
+    "internal": {
+      "length": 4,
+      "width": 1.2,
+      "height": 1.5,
+      "unit": "m"
+    },
+    "door": {
+      "plane_x": 4,
+      "width": 1.2,
+      "height": 1.5,
+      "zone_length": 0.4
+    },
+    "coordinate_system": {
+      "origin": "container_back_bottom_left",
+      "handedness": "right_handed",
+      "axis": {
+        "x": "length_back_to_door",
+        "y": "width_left_to_right",
+        "z": "height_floor_to_roof"
+      },
+      "unit": "m"
+    }
+  },
+  "cargo": [
+    {
+      "id": "demo_a",
+      "sku": "T",
+      "name": "Thin Cargo",
+      "weight_kg": 4,
+      "position": {
+        "x": 0.5,
+        "y": 0.3,
+        "z": 0
+      },
+      "size": {
+        "w": 0.4,
+        "d": 0.12,
+        "h": 0.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "unit": "rad",
+        "orientation": "UPRIGHT"
+      },
+      "material": {
+        "color": "#3B82F6",
+        "opacity": 1.0
+      },
+      "loading": {
+        "wall": "LOGICAL_WALL_001",
+        "layer": "LOGICAL_WALL_001_L01",
+        "row": "LOGICAL_WALL_001_R01",
+        "step": 1,
+        "phase": "MAIN"
+      },
+      "stability": {
+        "group_id": "REPAIR_PAIR_0ee96ac95972"
+      },
+      "context": "MAIN_WALL"
+    },
+    {
+      "id": "demo_b",
+      "sku": "T",
+      "name": "Thin Cargo",
+      "weight_kg": 4,
+      "position": {
+        "x": 0.5,
+        "y": 0.42,
+        "z": 0
+      },
+      "size": {
+        "w": 0.4,
+        "d": 0.12,
+        "h": 0.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "unit": "rad",
+        "orientation": "UPRIGHT"
+      },
+      "material": {
+        "color": "#3B82F6",
+        "opacity": 1.0
+      },
+      "loading": {
+        "wall": "LOGICAL_WALL_001",
+        "layer": "LOGICAL_WALL_001_L01",
+        "row": "LOGICAL_WALL_001_R01",
+        "step": 1,
+        "phase": "MAIN"
+      },
+      "stability": {
+        "group_id": "REPAIR_PAIR_0ee96ac95972"
+      },
+      "context": "MAIN_WALL"
+    }
+  ],
+  "walls": [
+    {
+      "id": "LOGICAL_WALL_001",
+      "type": "MAIN",
+      "bounds": {
+        "x": [
+          0.5,
+          0.9
+        ],
+        "y": [
+          0.3,
+          0.54
+        ],
+        "z": [
+          0,
+          0.8
+        ]
+      },
+      "placements": [
+        "demo_a",
+        "demo_b"
+      ],
+      "row_count": 1,
+      "layer_count": 1
+    }
+  ],
+  "sequence": {
+    "feasible": true,
+    "steps": [
+      {
+        "step": 1,
+        "action": "PLACE_GROUP",
+        "placements": [
+          "demo_a",
+          "demo_b"
+        ],
+        "phase": "REPAIR",
+        "original_phase": "MAIN",
+        "group": {
+          "id": "REPAIR_PAIR_0ee96ac95972",
+          "type": "PAIR",
+          "reason": "resolve temporary thin-cargo instability",
+          "objects": [
+            "demo_a",
+            "demo_b"
+          ]
+        },
+        "wall": "LOGICAL_WALL_001",
+        "row": "LOGICAL_WALL_001_R01",
+        "layer": "LOGICAL_WALL_001_L01"
+      }
+    ],
+    "total_steps": 1,
+    "loading_mode": "MANUAL_CARTON",
+    "deterministic_signature": "3d9941eb88a81996e87fa9a1a9b8a563ce771cc46b1dbf824ece97888ceac54c"
+  },
+  "repair": {
+    "enabled": true,
+    "repaired": true,
+    "groups": [
+      {
+        "id": "REPAIR_PAIR_0ee96ac95972",
+        "type": "PAIR",
+        "objects": [
+          "demo_a",
+          "demo_b"
+        ],
+        "reason": "resolve temporary thin-cargo instability",
+        "created_by": "REPAIR_ENGINE",
+        "temporary_stability_resolved": true
+      }
+    ],
+    "actions": [
+      {
+        "type": "CREATE_PAIR_GROUP",
+        "placements": [
+          "demo_a",
+          "demo_b"
+        ],
+        "group_id": "REPAIR_PAIR_0ee96ac95972",
+        "reason": "resolve temporary thin-cargo instability"
+      }
+    ],
+    "validation": {
+      "sequence_feasible": true,
+      "geometry_changed": false,
+      "dependency_dag": true,
+      "temporary_stability_resolved": true,
+      "full_sequence_replayed": true
+    }
+  },
+  "scene": {
+    "coordinate_space": "solver_canonical_center",
+    "objects": [
+      {
+        "uuid": "demo_a",
+        "type": "CARGO",
+        "position": [
+          0.7,
+          0.36,
+          0.4
+        ],
+        "scale": [
+          0.4,
+          0.12,
+          0.8
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "style": {
+          "color": "#3B82F6",
+          "opacity": 1.0
+        },
+        "metadata": {
+          "sku": "T",
+          "step": 1,
+          "wall": "LOGICAL_WALL_001"
+        }
+      },
+      {
+        "uuid": "demo_b",
+        "type": "CARGO",
+        "position": [
+          0.7,
+          0.48,
+          0.4
+        ],
+        "scale": [
+          0.4,
+          0.12,
+          0.8
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "style": {
+          "color": "#3B82F6",
+          "opacity": 1.0
+        },
+        "metadata": {
+          "sku": "T",
+          "step": 1,
+          "wall": "LOGICAL_WALL_001"
+        }
+      }
+    ],
+    "container_style": {
+      "mode": "xray",
+      "opacity": 0.25,
+      "visible_faces": [
+        "roof",
+        "door",
+        "near_side"
+      ]
+    },
+    "container_bounds": {
+      "min": [
+        0,
+        0,
+        0
+      ],
+      "max": [
+        4,
+        1.2,
+        1.5
+      ]
+    }
+  },
+  "animation": {
+    "frames": [
+      {
+        "step": 1,
+        "objects": [
+          "demo_a",
+          "demo_b"
+        ],
+        "from": [
+          4.2,
+          0.36,
+          0.4
+        ],
+        "to": [
+          0.7,
+          0.36,
+          0.4
+        ],
+        "movements": [
+          {
+            "object": "demo_a",
+            "from": [
+              4.2,
+              0.36,
+              0.4
+            ],
+            "to": [
+              0.7,
+              0.36,
+              0.4
+            ]
+          },
+          {
+            "object": "demo_b",
+            "from": [
+              4.2,
+              0.48,
+              0.4
+            ],
+            "to": [
+              0.7,
+              0.48,
+              0.4
+            ]
+          }
+        ],
+        "duration": 2.0,
+        "coordinate_space": "solver_canonical_center"
+      }
+    ],
+    "total_frames": 1,
+    "playback": "sequential"
+  },
+  "camera": {
+    "view": "isometric",
+    "position": [
+      5.0,
+      3.4000000000000004,
+      3.1
+    ],
+    "target": [
+      2.0,
+      0.6,
+      0.75
+    ],
+    "zoom": 1.2,
+    "up": [
+      0,
+      0,
+      1
+    ],
+    "coordinate_space": "solver_canonical"
+  },
+  "metrics": {
+    "placement_count": 2,
+    "wall_count": 1,
+    "sequence_steps": 1,
+    "sequence_feasible": true,
+    "utilization_pct": 1.0
+  },
+  "version": "BLK007C"
+}

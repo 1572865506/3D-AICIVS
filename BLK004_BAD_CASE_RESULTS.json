@@ -1,0 +1,74 @@
+{
+  "TOP-001": {
+    "test": "test_top_001_upright_fits_do_not_force_flat",
+    "status": "PASS",
+    "failures": [],
+    "errors": []
+  },
+  "TOP-002": {
+    "test": "test_top_002_upright_does_not_fit_flat_one_layer",
+    "status": "PASS",
+    "failures": [],
+    "errors": []
+  },
+  "TOP-003": {
+    "test": "test_top_003_flat_two_layers",
+    "status": "PASS",
+    "failures": [],
+    "errors": []
+  },
+  "TOP-004": {
+    "test": "test_top_004_flat_three_layers",
+    "status": "PASS",
+    "failures": [],
+    "errors": []
+  },
+  "TOP-005": {
+    "test": "test_top_005_exceeds_max_top_fill_layers",
+    "status": "PASS",
+    "failures": [],
+    "errors": []
+  },
+  "TOP-006": {
+    "test": "test_top_006_insufficient_support",
+    "status": "PASS",
+    "failures": [],
+    "errors": []
+  },
+  "TOP-007": {
+    "test": "test_top_007_compression_failure",
+    "status": "PASS",
+    "failures": [],
+    "errors": []
+  },
+  "TOP-008": {
+    "test": "test_top_008_unsupported_span_failure",
+    "status": "PASS",
+    "failures": [],
+    "errors": []
+  },
+  "TOP-009": {
+    "test": "test_top_009_main_body_flat_forbidden",
+    "status": "PASS",
+    "failures": [],
+    "errors": []
+  },
+  "TOP-010": {
+    "test": "test_top_010_mixed_topfill_skus",
+    "status": "PASS",
+    "failures": [],
+    "errors": []
+  },
+  "TOP-011": {
+    "test": "test_top_011_residual_height_optimization",
+    "status": "PASS",
+    "failures": [],
+    "errors": []
+  },
+  "TOP-012": {
+    "test": "test_top_012_irregular_top_surface",
+    "status": "PASS",
+    "failures": [],
+    "errors": []
+  }
+}

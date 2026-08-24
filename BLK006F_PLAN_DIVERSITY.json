@@ -1,0 +1,1660 @@
+{
+  "benchmarks": [
+    {
+      "benchmark": "BENCH-001",
+      "plans_generated": 8,
+      "unique_plan_signatures": 5,
+      "duplicate_plan_signatures": 3,
+      "unique_ratio": 0.625,
+      "signatures": {
+        "VOLUME_FIRST": "77635ff337e2b0e8ef820513ba90fd3c8d3ba998f4962f0fc4944b87ae3bbc07",
+        "HEIGHT_FIRST": "77635ff337e2b0e8ef820513ba90fd3c8d3ba998f4962f0fc4944b87ae3bbc07",
+        "FOOTPRINT_FIRST": "506223243db8b9f5617905797570fd7fd7e2f68997d98e13e7671cd3443410a8",
+        "RESIDUAL_MATCH": "955b7001b2258427df4b6507faef350d557980f3c24ac37bd64604deca6ff525",
+        "LAYER_COMPLETION": "506223243db8b9f5617905797570fd7fd7e2f68997d98e13e7671cd3443410a8",
+        "MIXED_SKU": "342a13f4544884bffcd0d47a0728c681446aec8d27ce26b1d857b1e7a848c060",
+        "ORIENTATION_DIVERSITY": "2543794a689bab6f3370eee3a6e010a3e715e9a2d7b8c904cb179f836ccbf76f",
+        "REGION_FIRST": "342a13f4544884bffcd0d47a0728c681446aec8d27ce26b1d857b1e7a848c060"
+      },
+      "signature_details": {
+        "VOLUME_FIRST": {
+          "sku_composition": {
+            "SKU-03": 8,
+            "SKU-04": 1,
+            "SKU-06": 12,
+            "SKU-07": 1
+          },
+          "orientation_composition": {
+            "UPRIGHT_NORMAL": 6,
+            "UPRIGHT_ROTATED": 16
+          },
+          "region_assignments": [
+            "LOGICAL_WALL_001_TOP_001",
+            "LOGICAL_WALL_001_TOP_002",
+            "LOGICAL_WALL_002_TOP_001",
+            "LOGICAL_WALL_003_TOP_001",
+            "LOGICAL_WALL_004_TOP_001",
+            "LOGICAL_WALL_005_TOP_001",
+            "LOGICAL_WALL_006_TOP_001",
+            "LOGICAL_WALL_007_TOP_001",
+            "LOGICAL_WALL_008_TOP_001",
+            "LOGICAL_WALL_009_TOP_001",
+            "LOGICAL_WALL_010_TOP_001",
+            "LOGICAL_WALL_011_TOP_001",
+            "LOGICAL_WALL_012_TOP_001",
+            "LOGICAL_WALL_013_TOP_001",
+            "LOGICAL_WALL_014_TOP_001",
+            "LOGICAL_WALL_015_TOP_001",
+            "LOGICAL_WALL_016_TOP_001",
+            "LOGICAL_WALL_017_TOP_001",
+            "LOGICAL_WALL_018_TOP_001",
+            "LOGICAL_WALL_018_TOP_002",
+            "LOGICAL_WALL_019_TOP_001",
+            "LOGICAL_WALL_020_TOP_001",
+            "LOGICAL_WALL_020_TOP_002",
+            "LOGICAL_WALL_020_TOP_003",
+            "LOGICAL_WALL_020_TOP_004",
+            "LOGICAL_WALL_021_TOP_001"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_001_TOP_001",
+              7
+            ],
+            [
+              "LOGICAL_WALL_001_TOP_002",
+              3
+            ],
+            [
+              "LOGICAL_WALL_002_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_003_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_004_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_005_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_006_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_007_TOP_001",
+              1
+            ],
+            [
+              "LOGICAL_WALL_008_TOP_001",
+              1
+            ],
+            [
+              "LOGICAL_WALL_009_TOP_001",
+              1
+            ],
+            [
+              "LOGICAL_WALL_010_TOP_001",
+              1
+            ],
+            [
+              "LOGICAL_WALL_011_TOP_001",
+              1
+            ],
+            [
+              "LOGICAL_WALL_012_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_013_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_014_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_015_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_016_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_017_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_018_TOP_001",
+              2
+            ],
+            [
+              "LOGICAL_WALL_018_TOP_002",
+              4
+            ],
+            [
+              "LOGICAL_WALL_019_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_001",
+              4
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_002",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_003",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_004",
+              null
+            ],
+            [
+              "LOGICAL_WALL_021_TOP_001",
+              4
+            ]
+          ],
+          "placement_geometry_fingerprint": "9db916b5ddc8b9519ef1ec42ca6d4a74d1a7aba7297944b5a72b05cdb9d6b1bb"
+        },
+        "HEIGHT_FIRST": {
+          "sku_composition": {
+            "SKU-03": 8,
+            "SKU-04": 1,
+            "SKU-06": 12,
+            "SKU-07": 1
+          },
+          "orientation_composition": {
+            "UPRIGHT_NORMAL": 6,
+            "UPRIGHT_ROTATED": 16
+          },
+          "region_assignments": [
+            "LOGICAL_WALL_001_TOP_001",
+            "LOGICAL_WALL_001_TOP_002",
+            "LOGICAL_WALL_002_TOP_001",
+            "LOGICAL_WALL_003_TOP_001",
+            "LOGICAL_WALL_004_TOP_001",
+            "LOGICAL_WALL_005_TOP_001",
+            "LOGICAL_WALL_006_TOP_001",
+            "LOGICAL_WALL_007_TOP_001",
+            "LOGICAL_WALL_008_TOP_001",
+            "LOGICAL_WALL_009_TOP_001",
+            "LOGICAL_WALL_010_TOP_001",
+            "LOGICAL_WALL_011_TOP_001",
+            "LOGICAL_WALL_012_TOP_001",
+            "LOGICAL_WALL_013_TOP_001",
+            "LOGICAL_WALL_014_TOP_001",
+            "LOGICAL_WALL_015_TOP_001",
+            "LOGICAL_WALL_016_TOP_001",
+            "LOGICAL_WALL_017_TOP_001",
+            "LOGICAL_WALL_018_TOP_001",
+            "LOGICAL_WALL_018_TOP_002",
+            "LOGICAL_WALL_019_TOP_001",
+            "LOGICAL_WALL_020_TOP_001",
+            "LOGICAL_WALL_020_TOP_002",
+            "LOGICAL_WALL_020_TOP_003",
+            "LOGICAL_WALL_020_TOP_004",
+            "LOGICAL_WALL_021_TOP_001"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_001_TOP_001",
+              7
+            ],
+            [
+              "LOGICAL_WALL_001_TOP_002",
+              3
+            ],
+            [
+              "LOGICAL_WALL_002_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_003_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_004_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_005_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_006_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_007_TOP_001",
+              1
+            ],
+            [
+              "LOGICAL_WALL_008_TOP_001",
+              1
+            ],
+            [
+              "LOGICAL_WALL_009_TOP_001",
+              1
+            ],
+            [
+              "LOGICAL_WALL_010_TOP_001",
+              1
+            ],
+            [
+              "LOGICAL_WALL_011_TOP_001",
+              1
+            ],
+            [
+              "LOGICAL_WALL_012_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_013_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_014_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_015_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_016_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_017_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_018_TOP_001",
+              2
+            ],
+            [
+              "LOGICAL_WALL_018_TOP_002",
+              4
+            ],
+            [
+              "LOGICAL_WALL_019_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_001",
+              4
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_002",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_003",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_004",
+              null
+            ],
+            [
+              "LOGICAL_WALL_021_TOP_001",
+              4
+            ]
+          ],
+          "placement_geometry_fingerprint": "9db916b5ddc8b9519ef1ec42ca6d4a74d1a7aba7297944b5a72b05cdb9d6b1bb"
+        },
+        "FOOTPRINT_FIRST": {
+          "sku_composition": {
+            "SKU-03": 8,
+            "SKU-05": 6,
+            "SKU-06": 6,
+            "SKU-07": 1,
+            "SKU-14": 1
+          },
+          "orientation_composition": {
+            "FLAT_XZ": 1,
+            "UPRIGHT_NORMAL": 6,
+            "UPRIGHT_ROTATED": 15
+          },
+          "region_assignments": [
+            "LOGICAL_WALL_001_TOP_001",
+            "LOGICAL_WALL_001_TOP_002",
+            "LOGICAL_WALL_002_TOP_001",
+            "LOGICAL_WALL_003_TOP_001",
+            "LOGICAL_WALL_004_TOP_001",
+            "LOGICAL_WALL_005_TOP_001",
+            "LOGICAL_WALL_006_TOP_001",
+            "LOGICAL_WALL_007_TOP_001",
+            "LOGICAL_WALL_008_TOP_001",
+            "LOGICAL_WALL_009_TOP_001",
+            "LOGICAL_WALL_010_TOP_001",
+            "LOGICAL_WALL_011_TOP_001",
+            "LOGICAL_WALL_012_TOP_001",
+            "LOGICAL_WALL_013_TOP_001",
+            "LOGICAL_WALL_014_TOP_001",
+            "LOGICAL_WALL_015_TOP_001",
+            "LOGICAL_WALL_016_TOP_001",
+            "LOGICAL_WALL_017_TOP_001",
+            "LOGICAL_WALL_018_TOP_001",
+            "LOGICAL_WALL_018_TOP_002",
+            "LOGICAL_WALL_019_TOP_001",
+            "LOGICAL_WALL_020_TOP_001",
+            "LOGICAL_WALL_020_TOP_002",
+            "LOGICAL_WALL_020_TOP_003",
+            "LOGICAL_WALL_020_TOP_004",
+            "LOGICAL_WALL_021_TOP_001"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_001_TOP_001",
+              7
+            ],
+            [
+              "LOGICAL_WALL_001_TOP_002",
+              6
+            ],
+            [
+              "LOGICAL_WALL_002_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_003_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_004_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_005_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_006_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_007_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_008_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_009_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_010_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_011_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_012_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_013_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_014_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_015_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_016_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_017_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_018_TOP_001",
+              13
+            ],
+            [
+              "LOGICAL_WALL_018_TOP_002",
+              4
+            ],
+            [
+              "LOGICAL_WALL_019_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_001",
+              4
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_002",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_003",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_004",
+              null
+            ],
+            [
+              "LOGICAL_WALL_021_TOP_001",
+              4
+            ]
+          ],
+          "placement_geometry_fingerprint": "090f3ac81fc47a9cede0332137546b3b42df7973f65ff836e15883237f7cc770"
+        },
+        "RESIDUAL_MATCH": {
+          "sku_composition": {
+            "SKU-03": 8,
+            "SKU-04": 1,
+            "SKU-05": 6,
+            "SKU-06": 6,
+            "SKU-11": 1
+          },
+          "orientation_composition": {
+            "UPRIGHT_NORMAL": 11,
+            "UPRIGHT_ROTATED": 11
+          },
+          "region_assignments": [
+            "LOGICAL_WALL_001_TOP_001",
+            "LOGICAL_WALL_001_TOP_002",
+            "LOGICAL_WALL_002_TOP_001",
+            "LOGICAL_WALL_003_TOP_001",
+            "LOGICAL_WALL_004_TOP_001",
+            "LOGICAL_WALL_005_TOP_001",
+            "LOGICAL_WALL_006_TOP_001",
+            "LOGICAL_WALL_007_TOP_001",
+            "LOGICAL_WALL_008_TOP_001",
+            "LOGICAL_WALL_009_TOP_001",
+            "LOGICAL_WALL_010_TOP_001",
+            "LOGICAL_WALL_011_TOP_001",
+            "LOGICAL_WALL_012_TOP_001",
+            "LOGICAL_WALL_013_TOP_001",
+            "LOGICAL_WALL_014_TOP_001",
+            "LOGICAL_WALL_015_TOP_001",
+            "LOGICAL_WALL_016_TOP_001",
+            "LOGICAL_WALL_017_TOP_001",
+            "LOGICAL_WALL_018_TOP_001",
+            "LOGICAL_WALL_018_TOP_002",
+            "LOGICAL_WALL_019_TOP_001",
+            "LOGICAL_WALL_020_TOP_001",
+            "LOGICAL_WALL_020_TOP_002",
+            "LOGICAL_WALL_020_TOP_003",
+            "LOGICAL_WALL_020_TOP_004",
+            "LOGICAL_WALL_021_TOP_001"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_001_TOP_001",
+              6
+            ],
+            [
+              "LOGICAL_WALL_001_TOP_002",
+              6
+            ],
+            [
+              "LOGICAL_WALL_002_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_003_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_004_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_005_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_006_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_007_TOP_001",
+              1
+            ],
+            [
+              "LOGICAL_WALL_008_TOP_001",
+              1
+            ],
+            [
+              "LOGICAL_WALL_009_TOP_001",
+              1
+            ],
+            [
+              "LOGICAL_WALL_010_TOP_001",
+              1
+            ],
+            [
+              "LOGICAL_WALL_011_TOP_001",
+              1
+            ],
+            [
+              "LOGICAL_WALL_012_TOP_001",
+              7
+            ],
+            [
+              "LOGICAL_WALL_013_TOP_001",
+              7
+            ],
+            [
+              "LOGICAL_WALL_014_TOP_001",
+              7
+            ],
+            [
+              "LOGICAL_WALL_015_TOP_001",
+              7
+            ],
+            [
+              "LOGICAL_WALL_016_TOP_001",
+              7
+            ],
+            [
+              "LOGICAL_WALL_017_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_018_TOP_001",
+              2
+            ],
+            [
+              "LOGICAL_WALL_018_TOP_002",
+              4
+            ],
+            [
+              "LOGICAL_WALL_019_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_001",
+              4
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_002",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_003",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_004",
+              null
+            ],
+            [
+              "LOGICAL_WALL_021_TOP_001",
+              4
+            ]
+          ],
+          "placement_geometry_fingerprint": "448cf6524b51bcf42d3bc614706c6f553d94111bcae1c8cf4705e6cec81f1d61"
+        },
+        "LAYER_COMPLETION": {
+          "sku_composition": {
+            "SKU-03": 8,
+            "SKU-05": 6,
+            "SKU-06": 6,
+            "SKU-07": 1,
+            "SKU-14": 1
+          },
+          "orientation_composition": {
+            "FLAT_XZ": 1,
+            "UPRIGHT_NORMAL": 6,
+            "UPRIGHT_ROTATED": 15
+          },
+          "region_assignments": [
+            "LOGICAL_WALL_001_TOP_001",
+            "LOGICAL_WALL_001_TOP_002",
+            "LOGICAL_WALL_002_TOP_001",
+            "LOGICAL_WALL_003_TOP_001",
+            "LOGICAL_WALL_004_TOP_001",
+            "LOGICAL_WALL_005_TOP_001",
+            "LOGICAL_WALL_006_TOP_001",
+            "LOGICAL_WALL_007_TOP_001",
+            "LOGICAL_WALL_008_TOP_001",
+            "LOGICAL_WALL_009_TOP_001",
+            "LOGICAL_WALL_010_TOP_001",
+            "LOGICAL_WALL_011_TOP_001",
+            "LOGICAL_WALL_012_TOP_001",
+            "LOGICAL_WALL_013_TOP_001",
+            "LOGICAL_WALL_014_TOP_001",
+            "LOGICAL_WALL_015_TOP_001",
+            "LOGICAL_WALL_016_TOP_001",
+            "LOGICAL_WALL_017_TOP_001",
+            "LOGICAL_WALL_018_TOP_001",
+            "LOGICAL_WALL_018_TOP_002",
+            "LOGICAL_WALL_019_TOP_001",
+            "LOGICAL_WALL_020_TOP_001",
+            "LOGICAL_WALL_020_TOP_002",
+            "LOGICAL_WALL_020_TOP_003",
+            "LOGICAL_WALL_020_TOP_004",
+            "LOGICAL_WALL_021_TOP_001"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_001_TOP_001",
+              7
+            ],
+            [
+              "LOGICAL_WALL_001_TOP_002",
+              6
+            ],
+            [
+              "LOGICAL_WALL_002_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_003_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_004_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_005_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_006_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_007_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_008_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_009_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_010_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_011_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_012_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_013_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_014_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_015_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_016_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_017_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_018_TOP_001",
+              13
+            ],
+            [
+              "LOGICAL_WALL_018_TOP_002",
+              4
+            ],
+            [
+              "LOGICAL_WALL_019_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_001",
+              4
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_002",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_003",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_004",
+              null
+            ],
+            [
+              "LOGICAL_WALL_021_TOP_001",
+              4
+            ]
+          ],
+          "placement_geometry_fingerprint": "090f3ac81fc47a9cede0332137546b3b42df7973f65ff836e15883237f7cc770"
+        },
+        "MIXED_SKU": {
+          "sku_composition": {
+            "SKU-03": 8,
+            "SKU-04": 1,
+            "SKU-05": 5,
+            "SKU-06": 7,
+            "SKU-07": 1
+          },
+          "orientation_composition": {
+            "UPRIGHT_NORMAL": 6,
+            "UPRIGHT_ROTATED": 16
+          },
+          "region_assignments": [
+            "LOGICAL_WALL_001_TOP_001",
+            "LOGICAL_WALL_001_TOP_002",
+            "LOGICAL_WALL_002_TOP_001",
+            "LOGICAL_WALL_003_TOP_001",
+            "LOGICAL_WALL_004_TOP_001",
+            "LOGICAL_WALL_005_TOP_001",
+            "LOGICAL_WALL_006_TOP_001",
+            "LOGICAL_WALL_007_TOP_001",
+            "LOGICAL_WALL_008_TOP_001",
+            "LOGICAL_WALL_009_TOP_001",
+            "LOGICAL_WALL_010_TOP_001",
+            "LOGICAL_WALL_011_TOP_001",
+            "LOGICAL_WALL_012_TOP_001",
+            "LOGICAL_WALL_013_TOP_001",
+            "LOGICAL_WALL_014_TOP_001",
+            "LOGICAL_WALL_015_TOP_001",
+            "LOGICAL_WALL_016_TOP_001",
+            "LOGICAL_WALL_017_TOP_001",
+            "LOGICAL_WALL_018_TOP_001",
+            "LOGICAL_WALL_018_TOP_002",
+            "LOGICAL_WALL_019_TOP_001",
+            "LOGICAL_WALL_020_TOP_001",
+            "LOGICAL_WALL_020_TOP_002",
+            "LOGICAL_WALL_020_TOP_003",
+            "LOGICAL_WALL_020_TOP_004",
+            "LOGICAL_WALL_021_TOP_001"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_001_TOP_001",
+              7
+            ],
+            [
+              "LOGICAL_WALL_001_TOP_002",
+              3
+            ],
+            [
+              "LOGICAL_WALL_002_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_003_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_004_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_005_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_006_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_007_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_008_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_009_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_010_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_011_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_012_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_013_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_014_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_015_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_016_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_017_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_018_TOP_001",
+              2
+            ],
+            [
+              "LOGICAL_WALL_018_TOP_002",
+              4
+            ],
+            [
+              "LOGICAL_WALL_019_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_001",
+              4
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_002",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_003",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_004",
+              null
+            ],
+            [
+              "LOGICAL_WALL_021_TOP_001",
+              4
+            ]
+          ],
+          "placement_geometry_fingerprint": "3468e5eade55266332cbf573f1df38b070328e0a1de04625ab7d229baa84bd25"
+        },
+        "ORIENTATION_DIVERSITY": {
+          "sku_composition": {
+            "SKU-03": 8,
+            "SKU-04": 1,
+            "SKU-05": 5,
+            "SKU-06": 7,
+            "SKU-07": 1
+          },
+          "orientation_composition": {
+            "UPRIGHT_ROTATED": 22
+          },
+          "region_assignments": [
+            "LOGICAL_WALL_001_TOP_001",
+            "LOGICAL_WALL_001_TOP_002",
+            "LOGICAL_WALL_002_TOP_001",
+            "LOGICAL_WALL_003_TOP_001",
+            "LOGICAL_WALL_004_TOP_001",
+            "LOGICAL_WALL_005_TOP_001",
+            "LOGICAL_WALL_006_TOP_001",
+            "LOGICAL_WALL_007_TOP_001",
+            "LOGICAL_WALL_008_TOP_001",
+            "LOGICAL_WALL_009_TOP_001",
+            "LOGICAL_WALL_010_TOP_001",
+            "LOGICAL_WALL_011_TOP_001",
+            "LOGICAL_WALL_012_TOP_001",
+            "LOGICAL_WALL_013_TOP_001",
+            "LOGICAL_WALL_014_TOP_001",
+            "LOGICAL_WALL_015_TOP_001",
+            "LOGICAL_WALL_016_TOP_001",
+            "LOGICAL_WALL_017_TOP_001",
+            "LOGICAL_WALL_018_TOP_001",
+            "LOGICAL_WALL_018_TOP_002",
+            "LOGICAL_WALL_019_TOP_001",
+            "LOGICAL_WALL_020_TOP_001",
+            "LOGICAL_WALL_020_TOP_002",
+            "LOGICAL_WALL_020_TOP_003",
+            "LOGICAL_WALL_020_TOP_004",
+            "LOGICAL_WALL_021_TOP_001"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_001_TOP_001",
+              7
+            ],
+            [
+              "LOGICAL_WALL_001_TOP_002",
+              3
+            ],
+            [
+              "LOGICAL_WALL_002_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_003_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_004_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_005_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_006_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_007_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_008_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_009_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_010_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_011_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_012_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_013_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_014_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_015_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_016_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_017_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_018_TOP_001",
+              2
+            ],
+            [
+              "LOGICAL_WALL_018_TOP_002",
+              4
+            ],
+            [
+              "LOGICAL_WALL_019_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_001",
+              4
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_002",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_003",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_004",
+              null
+            ],
+            [
+              "LOGICAL_WALL_021_TOP_001",
+              4
+            ]
+          ],
+          "placement_geometry_fingerprint": "8b81d36e59f2c50a32711860917fe396a3f353ecc8ad274246d4a1132765e876"
+        },
+        "REGION_FIRST": {
+          "sku_composition": {
+            "SKU-03": 8,
+            "SKU-04": 1,
+            "SKU-05": 5,
+            "SKU-06": 7,
+            "SKU-07": 1
+          },
+          "orientation_composition": {
+            "UPRIGHT_NORMAL": 6,
+            "UPRIGHT_ROTATED": 16
+          },
+          "region_assignments": [
+            "LOGICAL_WALL_001_TOP_001",
+            "LOGICAL_WALL_001_TOP_002",
+            "LOGICAL_WALL_002_TOP_001",
+            "LOGICAL_WALL_003_TOP_001",
+            "LOGICAL_WALL_004_TOP_001",
+            "LOGICAL_WALL_005_TOP_001",
+            "LOGICAL_WALL_006_TOP_001",
+            "LOGICAL_WALL_007_TOP_001",
+            "LOGICAL_WALL_008_TOP_001",
+            "LOGICAL_WALL_009_TOP_001",
+            "LOGICAL_WALL_010_TOP_001",
+            "LOGICAL_WALL_011_TOP_001",
+            "LOGICAL_WALL_012_TOP_001",
+            "LOGICAL_WALL_013_TOP_001",
+            "LOGICAL_WALL_014_TOP_001",
+            "LOGICAL_WALL_015_TOP_001",
+            "LOGICAL_WALL_016_TOP_001",
+            "LOGICAL_WALL_017_TOP_001",
+            "LOGICAL_WALL_018_TOP_001",
+            "LOGICAL_WALL_018_TOP_002",
+            "LOGICAL_WALL_019_TOP_001",
+            "LOGICAL_WALL_020_TOP_001",
+            "LOGICAL_WALL_020_TOP_002",
+            "LOGICAL_WALL_020_TOP_003",
+            "LOGICAL_WALL_020_TOP_004",
+            "LOGICAL_WALL_021_TOP_001"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_001_TOP_001",
+              7
+            ],
+            [
+              "LOGICAL_WALL_001_TOP_002",
+              3
+            ],
+            [
+              "LOGICAL_WALL_002_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_003_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_004_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_005_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_006_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_007_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_008_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_009_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_010_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_011_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_012_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_013_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_014_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_015_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_016_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_017_TOP_001",
+              3
+            ],
+            [
+              "LOGICAL_WALL_018_TOP_001",
+              2
+            ],
+            [
+              "LOGICAL_WALL_018_TOP_002",
+              4
+            ],
+            [
+              "LOGICAL_WALL_019_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_001",
+              4
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_002",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_003",
+              null
+            ],
+            [
+              "LOGICAL_WALL_020_TOP_004",
+              null
+            ],
+            [
+              "LOGICAL_WALL_021_TOP_001",
+              4
+            ]
+          ],
+          "placement_geometry_fingerprint": "3468e5eade55266332cbf573f1df38b070328e0a1de04625ab7d229baa84bd25"
+        }
+      }
+    },
+    {
+      "benchmark": "BENCH-002",
+      "plans_generated": 0,
+      "unique_plan_signatures": 0,
+      "duplicate_plan_signatures": 0,
+      "unique_ratio": 0.0,
+      "signatures": {},
+      "signature_details": {}
+    },
+    {
+      "benchmark": "BENCH-003",
+      "plans_generated": 0,
+      "unique_plan_signatures": 0,
+      "duplicate_plan_signatures": 0,
+      "unique_ratio": 0.0,
+      "signatures": {},
+      "signature_details": {}
+    },
+    {
+      "benchmark": "BENCH-004",
+      "plans_generated": 0,
+      "unique_plan_signatures": 0,
+      "duplicate_plan_signatures": 0,
+      "unique_ratio": 0.0,
+      "signatures": {},
+      "signature_details": {}
+    },
+    {
+      "benchmark": "BENCH-005",
+      "plans_generated": 0,
+      "unique_plan_signatures": 0,
+      "duplicate_plan_signatures": 0,
+      "unique_ratio": 0.0,
+      "signatures": {},
+      "signature_details": {}
+    },
+    {
+      "benchmark": "BENCH-006",
+      "plans_generated": 0,
+      "unique_plan_signatures": 0,
+      "duplicate_plan_signatures": 0,
+      "unique_ratio": 0.0,
+      "signatures": {},
+      "signature_details": {}
+    },
+    {
+      "benchmark": "BENCH-007",
+      "plans_generated": 0,
+      "unique_plan_signatures": 0,
+      "duplicate_plan_signatures": 0,
+      "unique_ratio": 0.0,
+      "signatures": {},
+      "signature_details": {}
+    },
+    {
+      "benchmark": "BENCH-008",
+      "plans_generated": 0,
+      "unique_plan_signatures": 0,
+      "duplicate_plan_signatures": 0,
+      "unique_ratio": 0.0,
+      "signatures": {},
+      "signature_details": {}
+    },
+    {
+      "benchmark": "BENCH-009",
+      "plans_generated": 0,
+      "unique_plan_signatures": 0,
+      "duplicate_plan_signatures": 0,
+      "unique_ratio": 0.0,
+      "signatures": {},
+      "signature_details": {}
+    },
+    {
+      "benchmark": "BENCH-010",
+      "plans_generated": 8,
+      "unique_plan_signatures": 1,
+      "duplicate_plan_signatures": 7,
+      "unique_ratio": 0.125,
+      "signatures": {
+        "VOLUME_FIRST": "1c70884402eb406ae8dc9cea8850920f92036cde220ceaffc33df9357283036d",
+        "HEIGHT_FIRST": "1c70884402eb406ae8dc9cea8850920f92036cde220ceaffc33df9357283036d",
+        "FOOTPRINT_FIRST": "1c70884402eb406ae8dc9cea8850920f92036cde220ceaffc33df9357283036d",
+        "RESIDUAL_MATCH": "1c70884402eb406ae8dc9cea8850920f92036cde220ceaffc33df9357283036d",
+        "LAYER_COMPLETION": "1c70884402eb406ae8dc9cea8850920f92036cde220ceaffc33df9357283036d",
+        "MIXED_SKU": "1c70884402eb406ae8dc9cea8850920f92036cde220ceaffc33df9357283036d",
+        "ORIENTATION_DIVERSITY": "1c70884402eb406ae8dc9cea8850920f92036cde220ceaffc33df9357283036d",
+        "REGION_FIRST": "1c70884402eb406ae8dc9cea8850920f92036cde220ceaffc33df9357283036d"
+      },
+      "signature_details": {
+        "VOLUME_FIRST": {
+          "sku_composition": {},
+          "orientation_composition": {},
+          "region_assignments": [
+            "LOGICAL_WALL_003_TOP_001",
+            "LOGICAL_WALL_004_TOP_001"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_003_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_004_TOP_001",
+              null
+            ]
+          ],
+          "placement_geometry_fingerprint": "50331edfa67df5c5895fceecdd8becb296c4e7c27043c17993bcf4340153c4a7"
+        },
+        "HEIGHT_FIRST": {
+          "sku_composition": {},
+          "orientation_composition": {},
+          "region_assignments": [
+            "LOGICAL_WALL_003_TOP_001",
+            "LOGICAL_WALL_004_TOP_001"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_003_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_004_TOP_001",
+              null
+            ]
+          ],
+          "placement_geometry_fingerprint": "50331edfa67df5c5895fceecdd8becb296c4e7c27043c17993bcf4340153c4a7"
+        },
+        "FOOTPRINT_FIRST": {
+          "sku_composition": {},
+          "orientation_composition": {},
+          "region_assignments": [
+            "LOGICAL_WALL_003_TOP_001",
+            "LOGICAL_WALL_004_TOP_001"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_003_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_004_TOP_001",
+              null
+            ]
+          ],
+          "placement_geometry_fingerprint": "50331edfa67df5c5895fceecdd8becb296c4e7c27043c17993bcf4340153c4a7"
+        },
+        "RESIDUAL_MATCH": {
+          "sku_composition": {},
+          "orientation_composition": {},
+          "region_assignments": [
+            "LOGICAL_WALL_003_TOP_001",
+            "LOGICAL_WALL_004_TOP_001"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_003_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_004_TOP_001",
+              null
+            ]
+          ],
+          "placement_geometry_fingerprint": "50331edfa67df5c5895fceecdd8becb296c4e7c27043c17993bcf4340153c4a7"
+        },
+        "LAYER_COMPLETION": {
+          "sku_composition": {},
+          "orientation_composition": {},
+          "region_assignments": [
+            "LOGICAL_WALL_003_TOP_001",
+            "LOGICAL_WALL_004_TOP_001"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_003_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_004_TOP_001",
+              null
+            ]
+          ],
+          "placement_geometry_fingerprint": "50331edfa67df5c5895fceecdd8becb296c4e7c27043c17993bcf4340153c4a7"
+        },
+        "MIXED_SKU": {
+          "sku_composition": {},
+          "orientation_composition": {},
+          "region_assignments": [
+            "LOGICAL_WALL_003_TOP_001",
+            "LOGICAL_WALL_004_TOP_001"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_003_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_004_TOP_001",
+              null
+            ]
+          ],
+          "placement_geometry_fingerprint": "50331edfa67df5c5895fceecdd8becb296c4e7c27043c17993bcf4340153c4a7"
+        },
+        "ORIENTATION_DIVERSITY": {
+          "sku_composition": {},
+          "orientation_composition": {},
+          "region_assignments": [
+            "LOGICAL_WALL_003_TOP_001",
+            "LOGICAL_WALL_004_TOP_001"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_003_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_004_TOP_001",
+              null
+            ]
+          ],
+          "placement_geometry_fingerprint": "50331edfa67df5c5895fceecdd8becb296c4e7c27043c17993bcf4340153c4a7"
+        },
+        "REGION_FIRST": {
+          "sku_composition": {},
+          "orientation_composition": {},
+          "region_assignments": [
+            "LOGICAL_WALL_003_TOP_001",
+            "LOGICAL_WALL_004_TOP_001"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_003_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_004_TOP_001",
+              null
+            ]
+          ],
+          "placement_geometry_fingerprint": "50331edfa67df5c5895fceecdd8becb296c4e7c27043c17993bcf4340153c4a7"
+        }
+      }
+    },
+    {
+      "benchmark": "BENCH-011",
+      "plans_generated": 0,
+      "unique_plan_signatures": 0,
+      "duplicate_plan_signatures": 0,
+      "unique_ratio": 0.0,
+      "signatures": {},
+      "signature_details": {}
+    },
+    {
+      "benchmark": "BENCH-012",
+      "plans_generated": 8,
+      "unique_plan_signatures": 1,
+      "duplicate_plan_signatures": 7,
+      "unique_ratio": 0.125,
+      "signatures": {
+        "VOLUME_FIRST": "79f2fe1a99ce7b8acab089d93528a8a7ceae3e1992e0774d17f52c238b53ef84",
+        "HEIGHT_FIRST": "79f2fe1a99ce7b8acab089d93528a8a7ceae3e1992e0774d17f52c238b53ef84",
+        "FOOTPRINT_FIRST": "79f2fe1a99ce7b8acab089d93528a8a7ceae3e1992e0774d17f52c238b53ef84",
+        "RESIDUAL_MATCH": "79f2fe1a99ce7b8acab089d93528a8a7ceae3e1992e0774d17f52c238b53ef84",
+        "LAYER_COMPLETION": "79f2fe1a99ce7b8acab089d93528a8a7ceae3e1992e0774d17f52c238b53ef84",
+        "MIXED_SKU": "79f2fe1a99ce7b8acab089d93528a8a7ceae3e1992e0774d17f52c238b53ef84",
+        "ORIENTATION_DIVERSITY": "79f2fe1a99ce7b8acab089d93528a8a7ceae3e1992e0774d17f52c238b53ef84",
+        "REGION_FIRST": "79f2fe1a99ce7b8acab089d93528a8a7ceae3e1992e0774d17f52c238b53ef84"
+      },
+      "signature_details": {
+        "VOLUME_FIRST": {
+          "sku_composition": {},
+          "orientation_composition": {},
+          "region_assignments": [
+            "LOGICAL_WALL_001_TOP_001",
+            "LOGICAL_WALL_001_TOP_002"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_001_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_001_TOP_002",
+              null
+            ]
+          ],
+          "placement_geometry_fingerprint": "66ec400ea07c676100df85bcf5c20b680cae77dfd2a0b9be09684fefc276d6e3"
+        },
+        "HEIGHT_FIRST": {
+          "sku_composition": {},
+          "orientation_composition": {},
+          "region_assignments": [
+            "LOGICAL_WALL_001_TOP_001",
+            "LOGICAL_WALL_001_TOP_002"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_001_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_001_TOP_002",
+              null
+            ]
+          ],
+          "placement_geometry_fingerprint": "66ec400ea07c676100df85bcf5c20b680cae77dfd2a0b9be09684fefc276d6e3"
+        },
+        "FOOTPRINT_FIRST": {
+          "sku_composition": {},
+          "orientation_composition": {},
+          "region_assignments": [
+            "LOGICAL_WALL_001_TOP_001",
+            "LOGICAL_WALL_001_TOP_002"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_001_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_001_TOP_002",
+              null
+            ]
+          ],
+          "placement_geometry_fingerprint": "66ec400ea07c676100df85bcf5c20b680cae77dfd2a0b9be09684fefc276d6e3"
+        },
+        "RESIDUAL_MATCH": {
+          "sku_composition": {},
+          "orientation_composition": {},
+          "region_assignments": [
+            "LOGICAL_WALL_001_TOP_001",
+            "LOGICAL_WALL_001_TOP_002"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_001_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_001_TOP_002",
+              null
+            ]
+          ],
+          "placement_geometry_fingerprint": "66ec400ea07c676100df85bcf5c20b680cae77dfd2a0b9be09684fefc276d6e3"
+        },
+        "LAYER_COMPLETION": {
+          "sku_composition": {},
+          "orientation_composition": {},
+          "region_assignments": [
+            "LOGICAL_WALL_001_TOP_001",
+            "LOGICAL_WALL_001_TOP_002"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_001_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_001_TOP_002",
+              null
+            ]
+          ],
+          "placement_geometry_fingerprint": "66ec400ea07c676100df85bcf5c20b680cae77dfd2a0b9be09684fefc276d6e3"
+        },
+        "MIXED_SKU": {
+          "sku_composition": {},
+          "orientation_composition": {},
+          "region_assignments": [
+            "LOGICAL_WALL_001_TOP_001",
+            "LOGICAL_WALL_001_TOP_002"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_001_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_001_TOP_002",
+              null
+            ]
+          ],
+          "placement_geometry_fingerprint": "66ec400ea07c676100df85bcf5c20b680cae77dfd2a0b9be09684fefc276d6e3"
+        },
+        "ORIENTATION_DIVERSITY": {
+          "sku_composition": {},
+          "orientation_composition": {},
+          "region_assignments": [
+            "LOGICAL_WALL_001_TOP_001",
+            "LOGICAL_WALL_001_TOP_002"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_001_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_001_TOP_002",
+              null
+            ]
+          ],
+          "placement_geometry_fingerprint": "66ec400ea07c676100df85bcf5c20b680cae77dfd2a0b9be09684fefc276d6e3"
+        },
+        "REGION_FIRST": {
+          "sku_composition": {},
+          "orientation_composition": {},
+          "region_assignments": [
+            "LOGICAL_WALL_001_TOP_001",
+            "LOGICAL_WALL_001_TOP_002"
+          ],
+          "layer_structure": [
+            [
+              "LOGICAL_WALL_001_TOP_001",
+              null
+            ],
+            [
+              "LOGICAL_WALL_001_TOP_002",
+              null
+            ]
+          ],
+          "placement_geometry_fingerprint": "66ec400ea07c676100df85bcf5c20b680cae77dfd2a0b9be09684fefc276d6e3"
+        }
+      }
+    }
+  ],
+  "operator_effectiveness": {
+    "STAGE_A": {
+      "activation_count": 9,
+      "accepted_count": 1,
+      "rollback_count": 8,
+      "avg_gain_m3": 0.1412176522222259,
+      "max_gain_m3": 1.2709588700000332,
+      "avg_runtime_sec": 1.8769932036391563,
+      "usefulness": "PROVEN"
+    },
+    "STAGE_B": {
+      "activation_count": 6,
+      "accepted_count": 0,
+      "rollback_count": 6,
+      "avg_gain_m3": 0.0,
+      "max_gain_m3": 0.0,
+      "avg_runtime_sec": 0.0,
+      "usefulness": "NOT_YET_PROVEN_USEFUL"
+    },
+    "STAGE_C": {
+      "activation_count": 3,
+      "accepted_count": 0,
+      "rollback_count": 3,
+      "avg_gain_m3": 0.0,
+      "max_gain_m3": 0.0,
+      "avg_runtime_sec": 0.0,
+      "usefulness": "NOT_YET_PROVEN_USEFUL"
+    }
+  },
+  "suite_unique_signatures": 7,
+  "suite_plans_generated": 24
+}

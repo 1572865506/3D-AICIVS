@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SolverV2Solution",
+  "type": "object",
+  "required": [
+    "solutionId",
+    "version",
+    "placements",
+    "metrics",
+    "telemetry"
+  ],
+  "properties": {
+    "solutionId": {
+      "type": "string"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "placements": {
+      "type": "array"
+    },
+    "unloaded": {
+      "type": "array"
+    },
+    "metrics": {
+      "type": "object"
+    },
+    "telemetry": {
+      "type": "object"
+    },
+    "warnings": {
+      "type": "array"
+    }
+  }
+}

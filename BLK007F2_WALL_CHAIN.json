@@ -1,0 +1,1044 @@
+{
+  "version": "BLK007F2",
+  "chain": {
+    "nodes": [
+      {
+        "id": "CARGO_WALL_001",
+        "role": "CARGO_WALL",
+        "x_start": 0.0,
+        "x_end": 0.145,
+        "coverage": 0.952381
+      },
+      {
+        "id": "CARGO_WALL_002",
+        "role": "CARGO_WALL",
+        "x_start": 0.145,
+        "x_end": 0.29,
+        "coverage": 0.952381
+      },
+      {
+        "id": "CARGO_WALL_003",
+        "role": "CARGO_WALL",
+        "x_start": 0.29,
+        "x_end": 0.712,
+        "coverage": 0.916241
+      },
+      {
+        "id": "CARGO_WALL_004",
+        "role": "CARGO_WALL",
+        "x_start": 0.712,
+        "x_end": 1.134,
+        "coverage": 0.916241
+      },
+      {
+        "id": "CARGO_WALL_005",
+        "role": "CARGO_WALL",
+        "x_start": 1.134,
+        "x_end": 1.9669999999999999,
+        "coverage": 0.901361
+      },
+      {
+        "id": "CARGO_WALL_006",
+        "role": "CARGO_WALL",
+        "x_start": 1.967,
+        "x_end": 2.8,
+        "coverage": 0.901361
+      },
+      {
+        "id": "CARGO_WALL_007",
+        "role": "CARGO_WALL",
+        "x_start": 2.8,
+        "x_end": 3.375,
+        "coverage": 0.977891
+      },
+      {
+        "id": "CARGO_WALL_008",
+        "role": "CARGO_WALL",
+        "x_start": 3.375,
+        "x_end": 3.95,
+        "coverage": 0.977891
+      },
+      {
+        "id": "CARGO_WALL_009",
+        "role": "CARGO_WALL",
+        "x_start": 3.95,
+        "x_end": 4.525,
+        "coverage": 0.977891
+      },
+      {
+        "id": "CARGO_WALL_010",
+        "role": "CARGO_WALL",
+        "x_start": 4.525,
+        "x_end": 4.985,
+        "coverage": 0.977891
+      },
+      {
+        "id": "CARGO_WALL_011",
+        "role": "CARGO_WALL",
+        "x_start": 4.985,
+        "x_end": 5.13,
+        "coverage": 0.841837
+      },
+      {
+        "id": "CARGO_WALL_012",
+        "role": "CARGO_WALL",
+        "x_start": 5.13,
+        "x_end": 5.552,
+        "coverage": 0.916241
+      },
+      {
+        "id": "CARGO_WALL_013",
+        "role": "CARGO_WALL",
+        "x_start": 5.552,
+        "x_end": 5.962,
+        "coverage": 0.914116
+      },
+      {
+        "id": "CARGO_WALL_014",
+        "role": "CARGO_WALL",
+        "x_start": 5.962,
+        "x_end": 6.242,
+        "coverage": 0.833333
+      },
+      {
+        "id": "CARGO_WALL_015",
+        "role": "CARGO_WALL",
+        "x_start": 6.242,
+        "x_end": 6.772,
+        "coverage": 0.708333
+      },
+      {
+        "id": "CARGO_WALL_016",
+        "role": "CARGO_WALL",
+        "x_start": 6.772,
+        "x_end": 7.082,
+        "coverage": 0.816327
+      },
+      {
+        "id": "CARGO_WALL_017",
+        "role": "CARGO_WALL",
+        "x_start": 7.082,
+        "x_end": 7.226999999999999,
+        "coverage": 0.952381
+      },
+      {
+        "id": "TRANSITION_WALL_001",
+        "role": "TRANSITION_WALL",
+        "x_start": 7.226999999999999,
+        "x_end": 7.3069999999999995,
+        "coverage": 0.829932
+      },
+      {
+        "id": "TRANSITION_WALL_002",
+        "role": "TRANSITION_WALL",
+        "x_start": 7.307,
+        "x_end": 7.3870000000000005,
+        "coverage": 0.829932
+      },
+      {
+        "id": "TRANSITION_WALL_003",
+        "role": "TRANSITION_WALL",
+        "x_start": 7.387,
+        "x_end": 7.467,
+        "coverage": 0.829932
+      },
+      {
+        "id": "TRANSITION_WALL_004",
+        "role": "TRANSITION_WALL",
+        "x_start": 7.467,
+        "x_end": 7.547,
+        "coverage": 0.829932
+      },
+      {
+        "id": "TRANSITION_WALL_005",
+        "role": "TRANSITION_WALL",
+        "x_start": 7.547,
+        "x_end": 7.627,
+        "coverage": 0.829932
+      },
+      {
+        "id": "TRANSITION_WALL_006",
+        "role": "TRANSITION_WALL",
+        "x_start": 7.627,
+        "x_end": 7.707,
+        "coverage": 0.829932
+      },
+      {
+        "id": "TRANSITION_WALL_007",
+        "role": "TRANSITION_WALL",
+        "x_start": 7.707,
+        "x_end": 7.787,
+        "coverage": 0.829932
+      },
+      {
+        "id": "TRANSITION_WALL_008",
+        "role": "TRANSITION_WALL",
+        "x_start": 7.787,
+        "x_end": 7.867,
+        "coverage": 0.829932
+      },
+      {
+        "id": "TRANSITION_WALL_009",
+        "role": "TRANSITION_WALL",
+        "x_start": 7.867,
+        "x_end": 8.055,
+        "coverage": 0.831633
+      },
+      {
+        "id": "TRANSITION_WALL_010",
+        "role": "TRANSITION_WALL",
+        "x_start": 8.055,
+        "x_end": 8.243,
+        "coverage": 0.831633
+      },
+      {
+        "id": "TRANSITION_WALL_011",
+        "role": "TRANSITION_WALL",
+        "x_start": 8.243,
+        "x_end": 8.431000000000001,
+        "coverage": 0.831633
+      },
+      {
+        "id": "TRANSITION_WALL_012",
+        "role": "TRANSITION_WALL",
+        "x_start": 8.431,
+        "x_end": 8.619,
+        "coverage": 0.831633
+      },
+      {
+        "id": "TRANSITION_WALL_013",
+        "role": "TRANSITION_WALL",
+        "x_start": 8.619,
+        "x_end": 8.807,
+        "coverage": 0.831633
+      },
+      {
+        "id": "TRANSITION_WALL_014",
+        "role": "TRANSITION_WALL",
+        "x_start": 8.807,
+        "x_end": 8.995000000000001,
+        "coverage": 0.831633
+      },
+      {
+        "id": "TRANSITION_WALL_015",
+        "role": "TRANSITION_WALL",
+        "x_start": 8.995,
+        "x_end": 9.183,
+        "coverage": 0.831633
+      },
+      {
+        "id": "TRANSITION_WALL_016",
+        "role": "TRANSITION_WALL",
+        "x_start": 9.183,
+        "x_end": 9.305,
+        "coverage": 0.867347
+      },
+      {
+        "id": "TRANSITION_WALL_017",
+        "role": "TRANSITION_WALL",
+        "x_start": 9.305,
+        "x_end": 9.427,
+        "coverage": 0.867347
+      },
+      {
+        "id": "TRANSITION_WALL_018",
+        "role": "TRANSITION_WALL",
+        "x_start": 9.427,
+        "x_end": 9.549,
+        "coverage": 0.867347
+      },
+      {
+        "id": "TRANSITION_WALL_019",
+        "role": "TRANSITION_WALL",
+        "x_start": 9.549,
+        "x_end": 9.629,
+        "coverage": 0.940476
+      },
+      {
+        "id": "TRANSITION_WALL_020",
+        "role": "TRANSITION_WALL",
+        "x_start": 9.629,
+        "x_end": 9.709,
+        "coverage": 0.940476
+      },
+      {
+        "id": "TRANSITION_WALL_021",
+        "role": "TRANSITION_WALL",
+        "x_start": 9.709,
+        "x_end": 9.789,
+        "coverage": 0.940476
+      },
+      {
+        "id": "TRANSITION_WALL_022",
+        "role": "TRANSITION_WALL",
+        "x_start": 9.789,
+        "x_end": 9.869,
+        "coverage": 0.940476
+      },
+      {
+        "id": "TRANSITION_WALL_023",
+        "role": "TRANSITION_WALL",
+        "x_start": 9.869,
+        "x_end": 9.949,
+        "coverage": 0.940476
+      },
+      {
+        "id": "TRANSITION_WALL_024",
+        "role": "TRANSITION_WALL",
+        "x_start": 9.949,
+        "x_end": 10.029,
+        "coverage": 0.940476
+      },
+      {
+        "id": "TRANSITION_WALL_025",
+        "role": "TRANSITION_WALL",
+        "x_start": 10.029,
+        "x_end": 10.109,
+        "coverage": 0.940476
+      },
+      {
+        "id": "TRANSITION_WALL_026",
+        "role": "TRANSITION_WALL",
+        "x_start": 10.109,
+        "x_end": 10.189,
+        "coverage": 0.940476
+      },
+      {
+        "id": "TRANSITION_WALL_027",
+        "role": "TRANSITION_WALL",
+        "x_start": 10.189,
+        "x_end": 10.269,
+        "coverage": 0.940476
+      },
+      {
+        "id": "TRANSITION_WALL_028",
+        "role": "TRANSITION_WALL",
+        "x_start": 10.269,
+        "x_end": 10.349,
+        "coverage": 0.940476
+      },
+      {
+        "id": "TRANSITION_WALL_029",
+        "role": "TRANSITION_WALL",
+        "x_start": 10.349,
+        "x_end": 10.429,
+        "coverage": 0.940476
+      },
+      {
+        "id": "TRANSITION_WALL_030",
+        "role": "TRANSITION_WALL",
+        "x_start": 10.429,
+        "x_end": 10.509,
+        "coverage": 0.940476
+      },
+      {
+        "id": "TRANSITION_WALL_031",
+        "role": "TRANSITION_WALL",
+        "x_start": 10.509,
+        "x_end": 10.589,
+        "coverage": 0.940476
+      },
+      {
+        "id": "TRANSITION_WALL_032",
+        "role": "TRANSITION_WALL",
+        "x_start": 10.589,
+        "x_end": 10.669,
+        "coverage": 0.940476
+      },
+      {
+        "id": "TRANSITION_WALL_033",
+        "role": "TRANSITION_WALL",
+        "x_start": 10.669,
+        "x_end": 10.749,
+        "coverage": 0.940476
+      },
+      {
+        "id": "TRANSITION_WALL_034",
+        "role": "TRANSITION_WALL",
+        "x_start": 10.749,
+        "x_end": 10.829,
+        "coverage": 0.940476
+      },
+      {
+        "id": "DOOR_WALL_001",
+        "role": "DOOR_WALL",
+        "x_start": 10.832,
+        "x_end": 10.912,
+        "coverage": 0.866228
+      }
+    ],
+    "connections": [
+      {
+        "source": "CARGO_WALL_001",
+        "target": "CARGO_WALL_002",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.952381,
+        "strength": 95.2381,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "CARGO_WALL_002",
+        "target": "CARGO_WALL_003",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.916241,
+        "strength": 91.6241,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "CARGO_WALL_003",
+        "target": "CARGO_WALL_004",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.916241,
+        "strength": 91.6241,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "CARGO_WALL_004",
+        "target": "CARGO_WALL_005",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.901361,
+        "strength": 90.1361,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "CARGO_WALL_005",
+        "target": "CARGO_WALL_006",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.901361,
+        "strength": 90.1361,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "CARGO_WALL_006",
+        "target": "CARGO_WALL_007",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.901361,
+        "strength": 90.1361,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "CARGO_WALL_007",
+        "target": "CARGO_WALL_008",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.977891,
+        "strength": 97.7891,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "CARGO_WALL_008",
+        "target": "CARGO_WALL_009",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.977891,
+        "strength": 97.7891,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "CARGO_WALL_009",
+        "target": "CARGO_WALL_010",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.977891,
+        "strength": 97.7891,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "CARGO_WALL_010",
+        "target": "CARGO_WALL_011",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.841837,
+        "strength": 84.1837,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "CARGO_WALL_011",
+        "target": "CARGO_WALL_012",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.841837,
+        "strength": 84.1837,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "CARGO_WALL_012",
+        "target": "CARGO_WALL_013",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.914116,
+        "strength": 91.4116,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "CARGO_WALL_013",
+        "target": "CARGO_WALL_014",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.833333,
+        "strength": 83.3333,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "CARGO_WALL_014",
+        "target": "CARGO_WALL_015",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.708333,
+        "strength": 70.8333,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "CARGO_WALL_015",
+        "target": "CARGO_WALL_016",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.708333,
+        "strength": 70.8333,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "CARGO_WALL_016",
+        "target": "CARGO_WALL_017",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.816327,
+        "strength": 81.6327,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "CARGO_WALL_017",
+        "target": "TRANSITION_WALL_001",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.829932,
+        "strength": 82.9932,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_001",
+        "target": "TRANSITION_WALL_002",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.829932,
+        "strength": 82.9932,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_002",
+        "target": "TRANSITION_WALL_003",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.829932,
+        "strength": 82.9932,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_003",
+        "target": "TRANSITION_WALL_004",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.829932,
+        "strength": 82.9932,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_004",
+        "target": "TRANSITION_WALL_005",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.829932,
+        "strength": 82.9932,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_005",
+        "target": "TRANSITION_WALL_006",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.829932,
+        "strength": 82.9932,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_006",
+        "target": "TRANSITION_WALL_007",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.829932,
+        "strength": 82.9932,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_007",
+        "target": "TRANSITION_WALL_008",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.829932,
+        "strength": 82.9932,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_008",
+        "target": "TRANSITION_WALL_009",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.829932,
+        "strength": 82.9932,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_009",
+        "target": "TRANSITION_WALL_010",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.831633,
+        "strength": 83.1633,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_010",
+        "target": "TRANSITION_WALL_011",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.831633,
+        "strength": 83.1633,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_011",
+        "target": "TRANSITION_WALL_012",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.831633,
+        "strength": 83.1633,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_012",
+        "target": "TRANSITION_WALL_013",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.831633,
+        "strength": 83.1633,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_013",
+        "target": "TRANSITION_WALL_014",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.831633,
+        "strength": 83.1633,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_014",
+        "target": "TRANSITION_WALL_015",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.831633,
+        "strength": 83.1633,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_015",
+        "target": "TRANSITION_WALL_016",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.831633,
+        "strength": 83.1633,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_016",
+        "target": "TRANSITION_WALL_017",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.867347,
+        "strength": 86.7347,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_017",
+        "target": "TRANSITION_WALL_018",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.867347,
+        "strength": 86.7347,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_018",
+        "target": "TRANSITION_WALL_019",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.867347,
+        "strength": 86.7347,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_019",
+        "target": "TRANSITION_WALL_020",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.940476,
+        "strength": 94.0476,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_020",
+        "target": "TRANSITION_WALL_021",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.940476,
+        "strength": 94.0476,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_021",
+        "target": "TRANSITION_WALL_022",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.940476,
+        "strength": 94.0476,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_022",
+        "target": "TRANSITION_WALL_023",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.940476,
+        "strength": 94.0476,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_023",
+        "target": "TRANSITION_WALL_024",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.940476,
+        "strength": 94.0476,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_024",
+        "target": "TRANSITION_WALL_025",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.940476,
+        "strength": 94.0476,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_025",
+        "target": "TRANSITION_WALL_026",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.940476,
+        "strength": 94.0476,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_026",
+        "target": "TRANSITION_WALL_027",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.940476,
+        "strength": 94.0476,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_027",
+        "target": "TRANSITION_WALL_028",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.940476,
+        "strength": 94.0476,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_028",
+        "target": "TRANSITION_WALL_029",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.940476,
+        "strength": 94.0476,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_029",
+        "target": "TRANSITION_WALL_030",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.940476,
+        "strength": 94.0476,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_030",
+        "target": "TRANSITION_WALL_031",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.940476,
+        "strength": 94.0476,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_031",
+        "target": "TRANSITION_WALL_032",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.940476,
+        "strength": 94.0476,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_032",
+        "target": "TRANSITION_WALL_033",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.940476,
+        "strength": 94.0476,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_033",
+        "target": "TRANSITION_WALL_034",
+        "gap_m": 0.0,
+        "overlap_ratio": 0.940476,
+        "strength": 94.0476,
+        "connection_type": "SUPPORT_CONNECTION"
+      },
+      {
+        "source": "TRANSITION_WALL_034",
+        "target": "DOOR_WALL_001",
+        "gap_m": 0.003,
+        "overlap_ratio": 0.866228,
+        "strength": 77.9605,
+        "connection_type": "SUPPORT_CONNECTION"
+      }
+    ],
+    "chainLength": 10.912,
+    "weakLinks": [],
+    "brokenPoints": [],
+    "valid": true
+  },
+  "balance": {
+    "leftWeight": 5413.85,
+    "rightWeight": 4978.25,
+    "lateralDifference": 435.6,
+    "balanceScore": 95.8084,
+    "centerOfMassX": 6.581206,
+    "doorBiasRatio": 0.607571
+  },
+  "merged_segments": [
+    {
+      "source_ids": [
+        "CARGO_WALL_001",
+        "CARGO_WALL_002"
+      ],
+      "sku": "SKU-08",
+      "orientation": "UPRIGHT_ROTATED",
+      "x_range": [
+        0.0,
+        0.29
+      ],
+      "role": "CARGO_WALL",
+      "merged_id": "MERGED_WALL_001"
+    },
+    {
+      "source_ids": [
+        "CARGO_WALL_003",
+        "CARGO_WALL_004"
+      ],
+      "sku": "SKU-07",
+      "orientation": "UPRIGHT_ROTATED",
+      "x_range": [
+        0.29,
+        1.134
+      ],
+      "role": "CARGO_WALL",
+      "merged_id": "MERGED_WALL_002"
+    },
+    {
+      "source_ids": [
+        "CARGO_WALL_005",
+        "CARGO_WALL_006"
+      ],
+      "sku": "SKU-05",
+      "orientation": "UPRIGHT_NORMAL",
+      "x_range": [
+        1.134,
+        2.8
+      ],
+      "role": "CARGO_WALL",
+      "merged_id": "MERGED_WALL_003"
+    },
+    {
+      "source_ids": [
+        "CARGO_WALL_007",
+        "CARGO_WALL_008",
+        "CARGO_WALL_009"
+      ],
+      "sku": "SKU-06",
+      "orientation": "UPRIGHT_NORMAL",
+      "x_range": [
+        2.8,
+        4.525
+      ],
+      "role": "CARGO_WALL",
+      "merged_id": "MERGED_WALL_004"
+    },
+    {
+      "source_ids": [
+        "CARGO_WALL_010"
+      ],
+      "sku": "SKU-06",
+      "orientation": "UPRIGHT_ROTATED",
+      "x_range": [
+        4.525,
+        4.985
+      ],
+      "role": "CARGO_WALL",
+      "merged_id": "MERGED_WALL_005"
+    },
+    {
+      "source_ids": [
+        "CARGO_WALL_011"
+      ],
+      "sku": "SKU-09",
+      "orientation": "UPRIGHT_ROTATED",
+      "x_range": [
+        4.985,
+        5.13
+      ],
+      "role": "CARGO_WALL",
+      "merged_id": "MERGED_WALL_006"
+    },
+    {
+      "source_ids": [
+        "CARGO_WALL_012"
+      ],
+      "sku": "SKU-07",
+      "orientation": "UPRIGHT_ROTATED",
+      "x_range": [
+        5.13,
+        5.552
+      ],
+      "role": "CARGO_WALL",
+      "merged_id": "MERGED_WALL_007"
+    },
+    {
+      "source_ids": [
+        "CARGO_WALL_013"
+      ],
+      "sku": "SKU-13",
+      "orientation": "UPRIGHT_ROTATED",
+      "x_range": [
+        5.552,
+        5.962
+      ],
+      "role": "CARGO_WALL",
+      "merged_id": "MERGED_WALL_008"
+    },
+    {
+      "source_ids": [
+        "CARGO_WALL_014"
+      ],
+      "sku": "SKU-10",
+      "orientation": "UPRIGHT_ROTATED",
+      "x_range": [
+        5.962,
+        6.242
+      ],
+      "role": "CARGO_WALL",
+      "merged_id": "MERGED_WALL_009"
+    },
+    {
+      "source_ids": [
+        "CARGO_WALL_015"
+      ],
+      "sku": "SKU-05",
+      "orientation": "UPRIGHT_ROTATED",
+      "x_range": [
+        6.242,
+        6.772
+      ],
+      "role": "CARGO_WALL",
+      "merged_id": "MERGED_WALL_010"
+    },
+    {
+      "source_ids": [
+        "CARGO_WALL_016"
+      ],
+      "sku": "SKU-11",
+      "orientation": "UPRIGHT_ROTATED",
+      "x_range": [
+        6.772,
+        7.082
+      ],
+      "role": "CARGO_WALL",
+      "merged_id": "MERGED_WALL_011"
+    },
+    {
+      "source_ids": [
+        "CARGO_WALL_017"
+      ],
+      "sku": "SKU-08",
+      "orientation": "UPRIGHT_ROTATED",
+      "x_range": [
+        7.082,
+        7.226999999999999
+      ],
+      "role": "CARGO_WALL",
+      "merged_id": "MERGED_WALL_012"
+    },
+    {
+      "source_ids": [
+        "TRANSITION_WALL_001",
+        "TRANSITION_WALL_002",
+        "TRANSITION_WALL_003",
+        "TRANSITION_WALL_004",
+        "TRANSITION_WALL_005",
+        "TRANSITION_WALL_006",
+        "TRANSITION_WALL_007",
+        "TRANSITION_WALL_008"
+      ],
+      "sku": "SKU-14",
+      "orientation": "SHORT_EDGE_FORWARD",
+      "x_range": [
+        7.226999999999999,
+        7.867
+      ],
+      "role": "TRANSITION_WALL",
+      "merged_id": "MERGED_WALL_013"
+    },
+    {
+      "source_ids": [
+        "TRANSITION_WALL_009",
+        "TRANSITION_WALL_010",
+        "TRANSITION_WALL_011",
+        "TRANSITION_WALL_012",
+        "TRANSITION_WALL_013",
+        "TRANSITION_WALL_014",
+        "TRANSITION_WALL_015"
+      ],
+      "sku": "SKU-03",
+      "orientation": "SHORT_EDGE_FORWARD",
+      "x_range": [
+        7.867,
+        9.183
+      ],
+      "role": "TRANSITION_WALL",
+      "merged_id": "MERGED_WALL_014"
+    },
+    {
+      "source_ids": [
+        "TRANSITION_WALL_016",
+        "TRANSITION_WALL_017",
+        "TRANSITION_WALL_018"
+      ],
+      "sku": "SKU-04",
+      "orientation": "SHORT_EDGE_FORWARD",
+      "x_range": [
+        9.183,
+        9.549
+      ],
+      "role": "TRANSITION_WALL",
+      "merged_id": "MERGED_WALL_015"
+    },
+    {
+      "source_ids": [
+        "TRANSITION_WALL_019",
+        "TRANSITION_WALL_020",
+        "TRANSITION_WALL_021",
+        "TRANSITION_WALL_022",
+        "TRANSITION_WALL_023",
+        "TRANSITION_WALL_024",
+        "TRANSITION_WALL_025",
+        "TRANSITION_WALL_026",
+        "TRANSITION_WALL_027",
+        "TRANSITION_WALL_028",
+        "TRANSITION_WALL_029",
+        "TRANSITION_WALL_030",
+        "TRANSITION_WALL_031",
+        "TRANSITION_WALL_032",
+        "TRANSITION_WALL_033",
+        "TRANSITION_WALL_034"
+      ],
+      "sku": "SKU-02",
+      "orientation": "SHORT_EDGE_FORWARD",
+      "x_range": [
+        9.549,
+        10.829
+      ],
+      "role": "TRANSITION_WALL",
+      "merged_id": "MERGED_WALL_016"
+    }
+  ],
+  "fragmentation_before": 51,
+  "fragmentation_after": 16,
+  "optimization_score": {
+    "score": 89.6402,
+    "grade": "B"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "generated_at": "2026-08-22T16:00:22Z",
+  "schema": "BLK006C_PRUNING_V1",
+  "budgets": {
+    "runtime_budget_sec": 90,
+    "max_states_generated": 96,
+    "max_states_expanded": 32
+  },
+  "candidate_cap_per_state": 6,
+  "beam_diversity_per_key": 1,
+  "canonical": {
+    "beam_width_2": {
+      "duplicate_states_removed": 0,
+      "dominated_states_removed": 0,
+      "candidate_cap_pruned": 168,
+      "beam_pruned": 5,
+      "dead_end_states": {
+        "DEPTH_LIMIT_REACHED": 2
+      },
+      "budget_stop_reason": null
+    },
+    "beam_width_4": {
+      "duplicate_states_removed": 0,
+      "dominated_states_removed": 1,
+      "candidate_cap_pruned": 310,
+      "beam_pruned": 26,
+      "dead_end_states": {
+        "DEPTH_LIMIT_REACHED": 2,
+        "RUNTIME_STOP": 1
+      },
+      "budget_stop_reason": "RUNTIME_STOP"
+    }
+  },
+  "controlled_pruning_proof": {
+    "exact_duplicate_input": 2,
+    "exact_duplicate_output": 1,
+    "duplicate_states_removed": 1,
+    "comparable_dominance_input": 2,
+    "comparable_dominance_output": 1,
+    "dominated_states_removed": 1,
+    "winner": "stronger",
+    "conservative_condition": "same phase and exact remaining inventory; all five weak inequalities plus one strict"
+  },
+  "fallback_contract": "No incomplete GLOBAL state is returned; LEGACY_GREEDY is invoked when COMPLETE_LEGAL is absent."
+}

@@ -1,0 +1,29 @@
+{
+  "generated_at": "2026-08-22T14:23:22Z",
+  "schema": "BLK006A_BRANCH_DIAGNOSTIC_V1",
+  "branch_isolation": {
+    "status": "PASS",
+    "mutable_state_shared": false
+  },
+  "deterministic_replay": {
+    "status": "PASS",
+    "seed": 42
+  },
+  "beam_width_2_competition": {
+    "generated": 2,
+    "selected": 1,
+    "rejected": 1,
+    "status": "PASS"
+  },
+  "hard_rejection_semantics": "IMMEDIATE_REJECT_NOT_SCORED",
+  "objective_components": [
+    "main_body_gain",
+    "topfill_estimate",
+    "residual_quality",
+    "compactness",
+    "inventory_fit",
+    "fragmentation_penalty",
+    "unstable_geometry_penalty",
+    "door_penalty"
+  ]
+}

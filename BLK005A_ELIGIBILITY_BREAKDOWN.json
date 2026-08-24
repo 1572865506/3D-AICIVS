@@ -1,0 +1,3309 @@
+{
+  "generated_at": "2026-08-22T13:04:25Z",
+  "audit_only": true,
+  "policy_mutations": 0,
+  "search_objective_mutations": 0,
+  "hard_constraint_mutations": 0,
+  "modes": {
+    "BALANCED": {
+      "mode": "BALANCED",
+      "audit_snapshot": "final solution minus TOP_FILL placements (BLK-004B metric-compatible)",
+      "region_count": 28,
+      "region_sku_pair_count": 392,
+      "top_fill_usable_volume_m3": 39.43731,
+      "policy_exposed_unique_region_volume_m3": 10.26893,
+      "top_fill_placed_count": 12,
+      "top_fill_placed_volume_m3": 0.15741,
+      "policy_compatible_count": 9,
+      "policy_incompatible_count": 383,
+      "eligible_count": 9,
+      "policy_pass_rate": 0.022959,
+      "eligible_pass_rate": 0.022959,
+      "placed_to_policy_exposed_volume_ratio": 0.015329,
+      "reference_match": {
+        "region_count": true,
+        "usable_volume": true,
+        "policy_compatible": true,
+        "eligible": true,
+        "policy_incompatible": true
+      },
+      "rejection_field_counts": {
+        "topFillPolicy.enabled": 336,
+        "topFillPolicy.minBaseHeight": 47
+      },
+      "rejection_source_counts": {
+        "DEFAULT": 336,
+        "USER_DEFINED": 47
+      },
+      "default_rule_blocks_count": 336,
+      "theoretical_additional_eligible_if_default_released": 183,
+      "skus": {
+        "SKU-01": {
+          "remaining_quantity": 0,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 12,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 28,
+          "inventory_available_count": 0,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            }
+          },
+          "default_rule_blocks_count": 28,
+          "theoretical_default_release_count": 0,
+          "theoretical_default_release_volume_m3": 0.0
+        },
+        "SKU-02": {
+          "remaining_quantity": 500,
+          "topfill_enabled": {
+            "value": true,
+            "source": "USER_DEFINED"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "USER_DEFINED"
+            },
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "TOP_FILL"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": 2.5,
+              "max_base_height": null,
+              "source": "USER_DEFINED"
+            },
+            {
+              "orientation": "FLAT",
+              "allowed_regions": [
+                "TOP_FILL"
+              ],
+              "condition": "CONDITIONAL_TOP_FILL",
+              "min_support_ratio": 0.7,
+              "max_top_fill_layers": 3,
+              "min_base_height": 2.5,
+              "max_base_height": null,
+              "source": "USER_DEFINED"
+            }
+          ],
+          "geometry_compatible_count": 27,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 28,
+          "inventory_available_count": 28,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "min_base_height": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 28,
+                "DEFAULT": 0
+              },
+              "fields": {
+                "topFillPolicy.minBaseHeight": 28
+              }
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            }
+          },
+          "default_rule_blocks_count": 0,
+          "theoretical_default_release_count": 0,
+          "theoretical_default_release_volume_m3": 0.0
+        },
+        "SKU-03": {
+          "remaining_quantity": 86,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 19,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 28,
+          "inventory_available_count": 28,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            }
+          },
+          "default_rule_blocks_count": 28,
+          "theoretical_default_release_count": 19,
+          "theoretical_default_release_volume_m3": 36.24041
+        },
+        "SKU-04": {
+          "remaining_quantity": 98,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 20,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 28,
+          "inventory_available_count": 28,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            }
+          },
+          "default_rule_blocks_count": 28,
+          "theoretical_default_release_count": 20,
+          "theoretical_default_release_volume_m3": 36.76487
+        },
+        "SKU-05": {
+          "remaining_quantity": 4,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 18,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 28,
+          "inventory_available_count": 28,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            }
+          },
+          "default_rule_blocks_count": 28,
+          "theoretical_default_release_count": 18,
+          "theoretical_default_release_volume_m3": 35.80081
+        },
+        "SKU-06": {
+          "remaining_quantity": 5,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 12,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 28,
+          "inventory_available_count": 28,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            }
+          },
+          "default_rule_blocks_count": 28,
+          "theoretical_default_release_count": 12,
+          "theoretical_default_release_volume_m3": 27.1683
+        },
+        "SKU-07": {
+          "remaining_quantity": 5,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 19,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 28,
+          "inventory_available_count": 28,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            }
+          },
+          "default_rule_blocks_count": 28,
+          "theoretical_default_release_count": 19,
+          "theoretical_default_release_volume_m3": 36.24041
+        },
+        "SKU-08": {
+          "remaining_quantity": 53,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 20,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 28,
+          "inventory_available_count": 28,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            }
+          },
+          "default_rule_blocks_count": 28,
+          "theoretical_default_release_count": 20,
+          "theoretical_default_release_volume_m3": 36.76487
+        },
+        "SKU-09": {
+          "remaining_quantity": 0,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 20,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 28,
+          "inventory_available_count": 0,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            }
+          },
+          "default_rule_blocks_count": 28,
+          "theoretical_default_release_count": 0,
+          "theoretical_default_release_volume_m3": 0.0
+        },
+        "SKU-10": {
+          "remaining_quantity": 22,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 19,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 28,
+          "inventory_available_count": 28,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            }
+          },
+          "default_rule_blocks_count": 28,
+          "theoretical_default_release_count": 19,
+          "theoretical_default_release_volume_m3": 36.24041
+        },
+        "SKU-11": {
+          "remaining_quantity": 10,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 18,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 28,
+          "inventory_available_count": 28,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            }
+          },
+          "default_rule_blocks_count": 28,
+          "theoretical_default_release_count": 18,
+          "theoretical_default_release_volume_m3": 34.91441
+        },
+        "SKU-12": {
+          "remaining_quantity": 1,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 19,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 28,
+          "inventory_available_count": 28,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            }
+          },
+          "default_rule_blocks_count": 28,
+          "theoretical_default_release_count": 19,
+          "theoretical_default_release_volume_m3": 36.24041
+        },
+        "SKU-13": {
+          "remaining_quantity": 50,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 19,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 28,
+          "inventory_available_count": 28,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 28,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 28
+              },
+              "fields": {
+                "topFillPolicy.enabled": 28
+              }
+            }
+          },
+          "default_rule_blocks_count": 28,
+          "theoretical_default_release_count": 19,
+          "theoretical_default_release_volume_m3": 36.24041
+        },
+        "SKU-14": {
+          "remaining_quantity": 674,
+          "topfill_enabled": {
+            "value": true,
+            "source": "USER_DEFINED"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "USER_DEFINED"
+            },
+            {
+              "orientation": "FLAT",
+              "allowed_regions": [
+                "TOP_FILL"
+              ],
+              "condition": "CONDITIONAL_TOP_FILL",
+              "min_support_ratio": 0.7,
+              "max_top_fill_layers": 3,
+              "min_base_height": 1.3,
+              "max_base_height": null,
+              "source": "USER_DEFINED"
+            }
+          ],
+          "geometry_compatible_count": 27,
+          "policy_compatible_count": 9,
+          "physics_compatible_count": 28,
+          "inventory_available_count": 28,
+          "eligible_count": 9,
+          "eligible_region_usable_volume_m3": 10.26893,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "min_base_height": {
+              "count": 19,
+              "by_source": {
+                "USER_DEFINED": 19,
+                "DEFAULT": 0
+              },
+              "fields": {
+                "topFillPolicy.minBaseHeight": 19
+              }
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            }
+          },
+          "default_rule_blocks_count": 0,
+          "theoretical_default_release_count": 0,
+          "theoretical_default_release_volume_m3": 0.0
+        }
+      },
+      "actual_topfill_filler_ranking": [
+        {
+          "sku_id": "SKU-14",
+          "eligible_count": 9,
+          "remaining_quantity": 674,
+          "eligible_region_usable_volume_m3": 10.26893
+        }
+      ],
+      "counterfactual_default_release_ranking": [
+        {
+          "sku_id": "SKU-04",
+          "actual_eligible_count": 0,
+          "default_release_count": 20,
+          "remaining_quantity": 98,
+          "unit_volume_m3": 0.036502
+        },
+        {
+          "sku_id": "SKU-08",
+          "actual_eligible_count": 0,
+          "default_release_count": 20,
+          "remaining_quantity": 53,
+          "unit_volume_m3": 0.033292
+        },
+        {
+          "sku_id": "SKU-03",
+          "actual_eligible_count": 0,
+          "default_release_count": 19,
+          "remaining_quantity": 86,
+          "unit_volume_m3": 0.089726
+        },
+        {
+          "sku_id": "SKU-13",
+          "actual_eligible_count": 0,
+          "default_release_count": 19,
+          "remaining_quantity": 50,
+          "unit_volume_m3": 0.033497
+        },
+        {
+          "sku_id": "SKU-10",
+          "actual_eligible_count": 0,
+          "default_release_count": 19,
+          "remaining_quantity": 22,
+          "unit_volume_m3": 0.04802
+        },
+        {
+          "sku_id": "SKU-07",
+          "actual_eligible_count": 0,
+          "default_release_count": 19,
+          "remaining_quantity": 5,
+          "unit_volume_m3": 0.051109
+        },
+        {
+          "sku_id": "SKU-12",
+          "actual_eligible_count": 0,
+          "default_release_count": 19,
+          "remaining_quantity": 1,
+          "unit_volume_m3": 0.011016
+        },
+        {
+          "sku_id": "SKU-11",
+          "actual_eligible_count": 0,
+          "default_release_count": 18,
+          "remaining_quantity": 10,
+          "unit_volume_m3": 0.050592
+        },
+        {
+          "sku_id": "SKU-05",
+          "actual_eligible_count": 0,
+          "default_release_count": 18,
+          "remaining_quantity": 4,
+          "unit_volume_m3": 0.101543
+        },
+        {
+          "sku_id": "SKU-06",
+          "actual_eligible_count": 0,
+          "default_release_count": 12,
+          "remaining_quantity": 5,
+          "unit_volume_m3": 0.122993
+        },
+        {
+          "sku_id": "SKU-14",
+          "actual_eligible_count": 9,
+          "default_release_count": 0,
+          "remaining_quantity": 674,
+          "unit_volume_m3": 0.013117
+        },
+        {
+          "sku_id": "SKU-02",
+          "actual_eligible_count": 0,
+          "default_release_count": 0,
+          "remaining_quantity": 500,
+          "unit_volume_m3": 0.015705
+        },
+        {
+          "sku_id": "SKU-01",
+          "actual_eligible_count": 0,
+          "default_release_count": 0,
+          "remaining_quantity": 0,
+          "unit_volume_m3": 0.125
+        },
+        {
+          "sku_id": "SKU-09",
+          "actual_eligible_count": 0,
+          "default_release_count": 0,
+          "remaining_quantity": 0,
+          "unit_volume_m3": 0.029428
+        }
+      ]
+    },
+    "OPTIMIZE": {
+      "mode": "OPTIMIZE",
+      "audit_snapshot": "final solution minus TOP_FILL placements (BLK-004B metric-compatible)",
+      "region_count": 27,
+      "region_sku_pair_count": 378,
+      "top_fill_usable_volume_m3": 39.208,
+      "policy_exposed_unique_region_volume_m3": 10.03962,
+      "top_fill_placed_count": 16,
+      "top_fill_placed_volume_m3": 0.20988,
+      "policy_compatible_count": 8,
+      "policy_incompatible_count": 370,
+      "eligible_count": 8,
+      "policy_pass_rate": 0.021164,
+      "eligible_pass_rate": 0.021164,
+      "placed_to_policy_exposed_volume_ratio": 0.020905,
+      "reference_match": {
+        "region_count": true,
+        "usable_volume": true,
+        "policy_compatible": true,
+        "eligible": true,
+        "policy_incompatible": true
+      },
+      "rejection_field_counts": {
+        "topFillPolicy.enabled": 324,
+        "topFillPolicy.minBaseHeight": 46
+      },
+      "rejection_source_counts": {
+        "DEFAULT": 324,
+        "USER_DEFINED": 46
+      },
+      "default_rule_blocks_count": 324,
+      "theoretical_additional_eligible_if_default_released": 192,
+      "skus": {
+        "SKU-01": {
+          "remaining_quantity": 0,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 11,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 27,
+          "inventory_available_count": 0,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            }
+          },
+          "default_rule_blocks_count": 27,
+          "theoretical_default_release_count": 0,
+          "theoretical_default_release_volume_m3": 0.0
+        },
+        "SKU-02": {
+          "remaining_quantity": 500,
+          "topfill_enabled": {
+            "value": true,
+            "source": "USER_DEFINED"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "USER_DEFINED"
+            },
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "TOP_FILL"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": 2.5,
+              "max_base_height": null,
+              "source": "USER_DEFINED"
+            },
+            {
+              "orientation": "FLAT",
+              "allowed_regions": [
+                "TOP_FILL"
+              ],
+              "condition": "CONDITIONAL_TOP_FILL",
+              "min_support_ratio": 0.7,
+              "max_top_fill_layers": 3,
+              "min_base_height": 2.5,
+              "max_base_height": null,
+              "source": "USER_DEFINED"
+            }
+          ],
+          "geometry_compatible_count": 26,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 27,
+          "inventory_available_count": 27,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "min_base_height": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 27,
+                "DEFAULT": 0
+              },
+              "fields": {
+                "topFillPolicy.minBaseHeight": 27
+              }
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            }
+          },
+          "default_rule_blocks_count": 0,
+          "theoretical_default_release_count": 0,
+          "theoretical_default_release_volume_m3": 0.0
+        },
+        "SKU-03": {
+          "remaining_quantity": 86,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 18,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 27,
+          "inventory_available_count": 27,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            }
+          },
+          "default_rule_blocks_count": 27,
+          "theoretical_default_release_count": 18,
+          "theoretical_default_release_volume_m3": 36.0111
+        },
+        "SKU-04": {
+          "remaining_quantity": 98,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 19,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 27,
+          "inventory_available_count": 27,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            }
+          },
+          "default_rule_blocks_count": 27,
+          "theoretical_default_release_count": 19,
+          "theoretical_default_release_volume_m3": 36.53556
+        },
+        "SKU-05": {
+          "remaining_quantity": 4,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 17,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 27,
+          "inventory_available_count": 27,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            }
+          },
+          "default_rule_blocks_count": 27,
+          "theoretical_default_release_count": 17,
+          "theoretical_default_release_volume_m3": 35.5715
+        },
+        "SKU-06": {
+          "remaining_quantity": 5,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 11,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 27,
+          "inventory_available_count": 27,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            }
+          },
+          "default_rule_blocks_count": 27,
+          "theoretical_default_release_count": 11,
+          "theoretical_default_release_volume_m3": 26.93899
+        },
+        "SKU-07": {
+          "remaining_quantity": 5,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 18,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 27,
+          "inventory_available_count": 27,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            }
+          },
+          "default_rule_blocks_count": 27,
+          "theoretical_default_release_count": 18,
+          "theoretical_default_release_volume_m3": 36.0111
+        },
+        "SKU-08": {
+          "remaining_quantity": 53,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 19,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 27,
+          "inventory_available_count": 27,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            }
+          },
+          "default_rule_blocks_count": 27,
+          "theoretical_default_release_count": 19,
+          "theoretical_default_release_volume_m3": 36.53556
+        },
+        "SKU-09": {
+          "remaining_quantity": 24,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 19,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 27,
+          "inventory_available_count": 27,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            }
+          },
+          "default_rule_blocks_count": 27,
+          "theoretical_default_release_count": 19,
+          "theoretical_default_release_volume_m3": 36.53556
+        },
+        "SKU-10": {
+          "remaining_quantity": 22,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 18,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 27,
+          "inventory_available_count": 27,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            }
+          },
+          "default_rule_blocks_count": 27,
+          "theoretical_default_release_count": 18,
+          "theoretical_default_release_volume_m3": 36.0111
+        },
+        "SKU-11": {
+          "remaining_quantity": 10,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 17,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 27,
+          "inventory_available_count": 27,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            }
+          },
+          "default_rule_blocks_count": 27,
+          "theoretical_default_release_count": 17,
+          "theoretical_default_release_volume_m3": 34.6851
+        },
+        "SKU-12": {
+          "remaining_quantity": 1,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 18,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 27,
+          "inventory_available_count": 27,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            }
+          },
+          "default_rule_blocks_count": 27,
+          "theoretical_default_release_count": 18,
+          "theoretical_default_release_volume_m3": 36.0111
+        },
+        "SKU-13": {
+          "remaining_quantity": 50,
+          "topfill_enabled": {
+            "value": false,
+            "source": "DEFAULT"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "TOP_FILL",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "DEFAULT"
+            }
+          ],
+          "geometry_compatible_count": 18,
+          "policy_compatible_count": 0,
+          "physics_compatible_count": 27,
+          "inventory_available_count": 27,
+          "eligible_count": 0,
+          "eligible_region_usable_volume_m3": 0.0,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            },
+            "min_base_height": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 27,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 27
+              },
+              "fields": {
+                "topFillPolicy.enabled": 27
+              }
+            }
+          },
+          "default_rule_blocks_count": 27,
+          "theoretical_default_release_count": 18,
+          "theoretical_default_release_volume_m3": 36.0111
+        },
+        "SKU-14": {
+          "remaining_quantity": 674,
+          "topfill_enabled": {
+            "value": true,
+            "source": "USER_DEFINED"
+          },
+          "orientation_rules": [
+            {
+              "orientation": "UPRIGHT",
+              "allowed_regions": [
+                "MAIN_BODY",
+                "DOOR_ZONE"
+              ],
+              "condition": "ALWAYS",
+              "min_support_ratio": null,
+              "max_top_fill_layers": null,
+              "min_base_height": null,
+              "max_base_height": null,
+              "source": "USER_DEFINED"
+            },
+            {
+              "orientation": "FLAT",
+              "allowed_regions": [
+                "TOP_FILL"
+              ],
+              "condition": "CONDITIONAL_TOP_FILL",
+              "min_support_ratio": 0.7,
+              "max_top_fill_layers": 3,
+              "min_base_height": 1.3,
+              "max_base_height": null,
+              "source": "USER_DEFINED"
+            }
+          ],
+          "geometry_compatible_count": 26,
+          "policy_compatible_count": 8,
+          "physics_compatible_count": 27,
+          "inventory_available_count": 27,
+          "eligible_count": 8,
+          "eligible_region_usable_volume_m3": 10.03962,
+          "rejected_by": {
+            "orientation_context": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "topfill_disabled": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "min_base_height": {
+              "count": 19,
+              "by_source": {
+                "USER_DEFINED": 19,
+                "DEFAULT": 0
+              },
+              "fields": {
+                "topFillPolicy.minBaseHeight": 19
+              }
+            },
+            "max_layers": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "zone_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "handling_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "stack_policy": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            },
+            "cargo_profile_default": {
+              "count": 0,
+              "by_source": {
+                "USER_DEFINED": 0,
+                "DEFAULT": 0
+              },
+              "fields": {}
+            }
+          },
+          "default_rule_blocks_count": 0,
+          "theoretical_default_release_count": 0,
+          "theoretical_default_release_volume_m3": 0.0
+        }
+      },
+      "actual_topfill_filler_ranking": [
+        {
+          "sku_id": "SKU-14",
+          "eligible_count": 8,
+          "remaining_quantity": 674,
+          "eligible_region_usable_volume_m3": 10.03962
+        }
+      ],
+      "counterfactual_default_release_ranking": [
+        {
+          "sku_id": "SKU-04",
+          "actual_eligible_count": 0,
+          "default_release_count": 19,
+          "remaining_quantity": 98,
+          "unit_volume_m3": 0.036502
+        },
+        {
+          "sku_id": "SKU-08",
+          "actual_eligible_count": 0,
+          "default_release_count": 19,
+          "remaining_quantity": 53,
+          "unit_volume_m3": 0.033292
+        },
+        {
+          "sku_id": "SKU-09",
+          "actual_eligible_count": 0,
+          "default_release_count": 19,
+          "remaining_quantity": 24,
+          "unit_volume_m3": 0.029428
+        },
+        {
+          "sku_id": "SKU-03",
+          "actual_eligible_count": 0,
+          "default_release_count": 18,
+          "remaining_quantity": 86,
+          "unit_volume_m3": 0.089726
+        },
+        {
+          "sku_id": "SKU-13",
+          "actual_eligible_count": 0,
+          "default_release_count": 18,
+          "remaining_quantity": 50,
+          "unit_volume_m3": 0.033497
+        },
+        {
+          "sku_id": "SKU-10",
+          "actual_eligible_count": 0,
+          "default_release_count": 18,
+          "remaining_quantity": 22,
+          "unit_volume_m3": 0.04802
+        },
+        {
+          "sku_id": "SKU-07",
+          "actual_eligible_count": 0,
+          "default_release_count": 18,
+          "remaining_quantity": 5,
+          "unit_volume_m3": 0.051109
+        },
+        {
+          "sku_id": "SKU-12",
+          "actual_eligible_count": 0,
+          "default_release_count": 18,
+          "remaining_quantity": 1,
+          "unit_volume_m3": 0.011016
+        },
+        {
+          "sku_id": "SKU-11",
+          "actual_eligible_count": 0,
+          "default_release_count": 17,
+          "remaining_quantity": 10,
+          "unit_volume_m3": 0.050592
+        },
+        {
+          "sku_id": "SKU-05",
+          "actual_eligible_count": 0,
+          "default_release_count": 17,
+          "remaining_quantity": 4,
+          "unit_volume_m3": 0.101543
+        },
+        {
+          "sku_id": "SKU-06",
+          "actual_eligible_count": 0,
+          "default_release_count": 11,
+          "remaining_quantity": 5,
+          "unit_volume_m3": 0.122993
+        },
+        {
+          "sku_id": "SKU-14",
+          "actual_eligible_count": 8,
+          "default_release_count": 0,
+          "remaining_quantity": 674,
+          "unit_volume_m3": 0.013117
+        },
+        {
+          "sku_id": "SKU-02",
+          "actual_eligible_count": 0,
+          "default_release_count": 0,
+          "remaining_quantity": 500,
+          "unit_volume_m3": 0.015705
+        },
+        {
+          "sku_id": "SKU-01",
+          "actual_eligible_count": 0,
+          "default_release_count": 0,
+          "remaining_quantity": 0,
+          "unit_volume_m3": 0.125
+        }
+      ]
+    }
+  },
+  "cross_mode": {
+    "rejection_field_counts": {
+      "topFillPolicy.enabled": 660,
+      "topFillPolicy.minBaseHeight": 93
+    },
+    "rejection_source_counts": {
+      "DEFAULT": 660,
+      "USER_DEFINED": 93
+    },
+    "default_rule_blocks_count": 660,
+    "theoretical_additional_eligible_if_default_released": 375,
+    "top_rejection_fields": [
+      {
+        "field": "topFillPolicy.enabled",
+        "count": 660
+      },
+      {
+        "field": "topFillPolicy.minBaseHeight",
+        "count": 93
+      }
+    ]
+  },
+  "answers": {
+    "1_primary_bottleneck": "POLICY",
+    "1_reason": "Only 17 of 770 Region×SKU pairs pass policy across both modes; the deployment/search cap is secondary within that narrow exposed set.",
+    "2_largest_rejection_fields": [
+      {
+        "field": "topFillPolicy.enabled",
+        "count": 660
+      },
+      {
+        "field": "topFillPolicy.minBaseHeight",
+        "count": 93
+      }
+    ],
+    "3_user_defined_limits": [
+      "SKU-02 topFillPolicy.minBaseHeight=2.5m and matching TOP_FILL orientation-rule base height",
+      "SKU-14 topFillPolicy.minBaseHeight=1.3m and matching conditional-flat orientation-rule base height"
+    ],
+    "4_conservative_defaults": [
+      "REAR_UPRIGHT_DEFAULT, MIDDLE_UPRIGHT_DEFAULT, and DOOR_UPRIGHT_DEFAULT set topFillPolicy.enabled=false",
+      "Those default profiles also declare maxLayers=0 and no Top Fill orientation list, but primary attribution stops at enabled=false"
+    ],
+    "5_max_additional_eligible_candidates_if_only_defaults_released": 375,
+    "5_unit": "Region×SKU eligibility combinations across BALANCED + OPTIMIZE; upper bound, not a policy recommendation",
+    "6_actual_best_topfill_fillers": [
+      {
+        "sku_id": "SKU-14",
+        "eligible_count_across_modes": 17
+      }
+    ],
+    "6_counterfactual_default_profile_candidates": [
+      {
+        "sku_id": "SKU-04",
+        "releasable_count_across_modes": 39
+      },
+      {
+        "sku_id": "SKU-08",
+        "releasable_count_across_modes": 39
+      },
+      {
+        "sku_id": "SKU-03",
+        "releasable_count_across_modes": 37
+      },
+      {
+        "sku_id": "SKU-13",
+        "releasable_count_across_modes": 37
+      },
+      {
+        "sku_id": "SKU-10",
+        "releasable_count_across_modes": 37
+      },
+      {
+        "sku_id": "SKU-07",
+        "releasable_count_across_modes": 37
+      },
+      {
+        "sku_id": "SKU-12",
+        "releasable_count_across_modes": 37
+      },
+      {
+        "sku_id": "SKU-11",
+        "releasable_count_across_modes": 35
+      },
+      {
+        "sku_id": "SKU-05",
+        "releasable_count_across_modes": 35
+      },
+      {
+        "sku_id": "SKU-06",
+        "releasable_count_across_modes": 23
+      },
+      {
+        "sku_id": "SKU-09",
+        "releasable_count_across_modes": 19
+      }
+    ]
+  }
+}

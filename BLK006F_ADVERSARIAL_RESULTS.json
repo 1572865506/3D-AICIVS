@@ -1,0 +1,150 @@
+{
+  "adversarial": [
+    {
+      "case": "ADV-001",
+      "crashed": false,
+      "legal": true,
+      "placed": 0,
+      "unplaced": 2,
+      "failure_reason": "ORIENTATION",
+      "raw_solver_reason": "NO_CANDIDATES_GENERATED_BY_GENERATOR",
+      "global_validator_valid": true,
+      "door_ready": false,
+      "infeasible": true,
+      "runtime_sec": 0.0010424163192510605
+    },
+    {
+      "case": "ADV-002",
+      "crashed": false,
+      "legal": true,
+      "placed": 0,
+      "unplaced": 100,
+      "failure_reason": "QUANTITY_POLICY",
+      "raw_solver_reason": "ALL_CANDIDATES_REJECTED_BY_VALIDATION",
+      "global_validator_valid": true,
+      "door_ready": false,
+      "infeasible": true,
+      "runtime_sec": 0.0010295421816408634
+    },
+    {
+      "case": "ADV-003",
+      "crashed": false,
+      "legal": true,
+      "placed": 0,
+      "unplaced": 6,
+      "failure_reason": "COMPRESSION",
+      "raw_solver_reason": "ALL_CANDIDATES_REJECTED_BY_VALIDATION",
+      "global_validator_valid": true,
+      "door_ready": false,
+      "infeasible": true,
+      "runtime_sec": 0.0008277916349470615
+    },
+    {
+      "case": "ADV-004",
+      "crashed": false,
+      "legal": true,
+      "placed": 1,
+      "unplaced": 0,
+      "failure_reason": "DOOR",
+      "raw_solver_reason": "ALL_SKUS_COMPLETED",
+      "global_validator_valid": true,
+      "door_ready": false,
+      "infeasible": true,
+      "runtime_sec": 0.002148415893316269
+    },
+    {
+      "case": "ADV-005",
+      "crashed": false,
+      "legal": true,
+      "placed": 0,
+      "unplaced": 2,
+      "failure_reason": "SUPPORT",
+      "raw_solver_reason": "ALL_CANDIDATES_REJECTED_BY_VALIDATION",
+      "global_validator_valid": true,
+      "door_ready": false,
+      "infeasible": true,
+      "runtime_sec": 0.0007088342681527138
+    },
+    {
+      "case": "ADV-006",
+      "crashed": false,
+      "legal": true,
+      "placed": 0,
+      "unplaced": 1,
+      "failure_reason": "BOUNDS",
+      "raw_solver_reason": "NO_CANDIDATES_GENERATED_BY_GENERATOR",
+      "global_validator_valid": true,
+      "door_ready": false,
+      "infeasible": true,
+      "runtime_sec": 0.0004177498631179333
+    }
+  ],
+  "edge_cases": [
+    {
+      "case": "ZERO_CARGO",
+      "stable": true,
+      "no_exception": true,
+      "deterministic": true,
+      "legal": true
+    },
+    {
+      "case": "ONE_CARTON",
+      "stable": true,
+      "no_exception": true,
+      "deterministic": true,
+      "legal": true
+    },
+    {
+      "case": "ONE_SKU_LARGE_QTY",
+      "stable": true,
+      "no_exception": true,
+      "deterministic": true,
+      "legal": true
+    },
+    {
+      "case": "MANY_SKU_QTY_ONE",
+      "stable": true,
+      "no_exception": true,
+      "deterministic": true,
+      "legal": true
+    },
+    {
+      "case": "EXACT_WIDTH",
+      "stable": true,
+      "no_exception": true,
+      "deterministic": true,
+      "legal": true
+    },
+    {
+      "case": "EXACT_HEIGHT",
+      "stable": true,
+      "no_exception": true,
+      "deterministic": true,
+      "legal": true
+    },
+    {
+      "case": "EXACT_DEPTH",
+      "stable": true,
+      "no_exception": true,
+      "deterministic": true,
+      "legal": true
+    }
+  ],
+  "failure_reason_enum": [
+    "GEOMETRY",
+    "COLLISION",
+    "BOUNDS",
+    "ORIENTATION",
+    "ZONE",
+    "SUPPORT",
+    "COMPRESSION",
+    "STACK_LIMIT",
+    "STABILITY",
+    "DOOR",
+    "INVENTORY",
+    "QUANTITY_POLICY",
+    "FRAGMENTATION",
+    "SEARCH_BUDGET",
+    "NO_FEASIBLE_CANDIDATE"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "BLK006E_VOLUME_DECOMPOSITION/v1",
+  "PRODUCTION_INCUMBENT": {
+    "main_body_volume_m3": 27.075485,
+    "topfill_volume_m3": 4.365966,
+    "door_volume_m3": 0.431907,
+    "placed_volume_m3": 31.873358,
+    "utilization_pct": 41.745603,
+    "source": "BLK006D_ACCEPTED_BASELINE"
+  },
+  "LEGACY_REPRODUCTION": {
+    "placed_volume_m3": 31.566041,
+    "main_body_volume_m3": 27.075485,
+    "topfill_volume_m3": 4.058649,
+    "door_volume_m3": 0.431907,
+    "unused_container_volume_m3": 44.785373,
+    "utilization_pct": 41.3431
+  },
+  "GLOBAL_PARENT": {
+    "placed_volume_m3": 30.705805703999975,
+    "main_plus_door_volume_m3": 27.316746895999973,
+    "topfill_volume_m3": 3.3890588079999997
+  },
+  "STAGE_A": {
+    "activated": true,
+    "attempts": 3,
+    "accepted_trials": 1,
+    "gain_m3": 1.2709588700000332,
+    "budget_exhausted": false,
+    "runtime_sec": 16.703015999868512
+  },
+  "STAGE_B": {
+    "activated": false,
+    "reason": "STAGE_A_IMPROVED_OR_PROFILE_DISABLED"
+  },
+  "STAGE_C": {
+    "activated": false,
+    "reason": "STAGE_B_IMPROVED_OR_PROFILE_DISABLED"
+  },
+  "FINAL_RETURNED": {
+    "placed_volume_m3": 31.976765,
+    "main_body_volume_m3": 26.778393,
+    "topfill_volume_m3": 4.660018,
+    "door_volume_m3": 0.538354,
+    "unused_container_volume_m3": 44.37465,
+    "utilization_pct": 41.881038
+  }
+}

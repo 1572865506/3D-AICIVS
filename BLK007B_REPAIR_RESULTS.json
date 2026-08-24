@@ -1,0 +1,222 @@
+{
+  "status": "PASS",
+  "benchmarks": [
+    {
+      "benchmark": "BENCH-001",
+      "placement_count": 380,
+      "original_status": "FAILED",
+      "original_failure": "TEMPORARY_INSTABILITY",
+      "repaired_status": "PASS",
+      "sequence_feasible": true,
+      "actions": [
+        {
+          "type": "CREATE_PAIR_GROUP",
+          "placements": [
+            "p_0325_SKU-02",
+            "p_0324_SKU-03"
+          ],
+          "group_id": "REPAIR_PAIR_bd7bc1bec6d4",
+          "reason": "resolve temporary thin-cargo instability"
+        },
+        {
+          "type": "CREATE_PAIR_GROUP",
+          "placements": [
+            "topfill_0374_SKU-03",
+            "topfill_0373_SKU-03"
+          ],
+          "group_id": "REPAIR_PAIR_6be759b6721e",
+          "reason": "resolve temporary thin-cargo instability"
+        },
+        {
+          "type": "CREATE_PAIR_GROUP",
+          "placements": [
+            "topfill_0378_SKU-03",
+            "topfill_0377_SKU-03"
+          ],
+          "group_id": "REPAIR_PAIR_baea83440b52",
+          "reason": "resolve temporary thin-cargo instability"
+        },
+        {
+          "type": "CREATE_PAIR_GROUP",
+          "placements": [
+            "topfill_0379_SKU-03",
+            "topfill_0378_SKU-03"
+          ],
+          "group_id": "REPAIR_PAIR_4a62b9b7162c",
+          "reason": "resolve temporary thin-cargo instability"
+        }
+      ],
+      "changed_steps": 4,
+      "geometry_changed": false,
+      "dependency_dag": true,
+      "temporary_stability_resolved": true,
+      "repair_deterministic": true,
+      "repair_runtime_sec": 1.4613563753664494
+    },
+    {
+      "benchmark": "BENCH-002",
+      "placement_count": 45,
+      "original_status": "PASS",
+      "original_failure": null,
+      "repaired_status": "PASS",
+      "sequence_feasible": true,
+      "actions": [],
+      "changed_steps": 0,
+      "geometry_changed": false,
+      "dependency_dag": true,
+      "temporary_stability_resolved": true,
+      "repair_deterministic": true,
+      "repair_runtime_sec": 0.0
+    },
+    {
+      "benchmark": "BENCH-003",
+      "placement_count": 50,
+      "original_status": "PASS",
+      "original_failure": null,
+      "repaired_status": "PASS",
+      "sequence_feasible": true,
+      "actions": [],
+      "changed_steps": 0,
+      "geometry_changed": false,
+      "dependency_dag": true,
+      "temporary_stability_resolved": true,
+      "repair_deterministic": true,
+      "repair_runtime_sec": 0.0
+    },
+    {
+      "benchmark": "BENCH-004",
+      "placement_count": 68,
+      "original_status": "PASS",
+      "original_failure": null,
+      "repaired_status": "PASS",
+      "sequence_feasible": true,
+      "actions": [],
+      "changed_steps": 0,
+      "geometry_changed": false,
+      "dependency_dag": true,
+      "temporary_stability_resolved": true,
+      "repair_deterministic": true,
+      "repair_runtime_sec": 0.0
+    },
+    {
+      "benchmark": "BENCH-005",
+      "placement_count": 18,
+      "original_status": "PASS",
+      "original_failure": null,
+      "repaired_status": "PASS",
+      "sequence_feasible": true,
+      "actions": [],
+      "changed_steps": 0,
+      "geometry_changed": false,
+      "dependency_dag": true,
+      "temporary_stability_resolved": true,
+      "repair_deterministic": true,
+      "repair_runtime_sec": 0.0
+    },
+    {
+      "benchmark": "BENCH-006",
+      "placement_count": 16,
+      "original_status": "PASS",
+      "original_failure": null,
+      "repaired_status": "PASS",
+      "sequence_feasible": true,
+      "actions": [],
+      "changed_steps": 0,
+      "geometry_changed": false,
+      "dependency_dag": true,
+      "temporary_stability_resolved": true,
+      "repair_deterministic": true,
+      "repair_runtime_sec": 0.0
+    },
+    {
+      "benchmark": "BENCH-007",
+      "placement_count": 36,
+      "original_status": "PASS",
+      "original_failure": null,
+      "repaired_status": "PASS",
+      "sequence_feasible": true,
+      "actions": [],
+      "changed_steps": 0,
+      "geometry_changed": false,
+      "dependency_dag": true,
+      "temporary_stability_resolved": true,
+      "repair_deterministic": true,
+      "repair_runtime_sec": 0.0
+    },
+    {
+      "benchmark": "BENCH-008",
+      "placement_count": 48,
+      "original_status": "PASS",
+      "original_failure": null,
+      "repaired_status": "PASS",
+      "sequence_feasible": true,
+      "actions": [],
+      "changed_steps": 0,
+      "geometry_changed": false,
+      "dependency_dag": true,
+      "temporary_stability_resolved": true,
+      "repair_deterministic": true,
+      "repair_runtime_sec": 0.0
+    },
+    {
+      "benchmark": "BENCH-009",
+      "placement_count": 46,
+      "original_status": "PASS",
+      "original_failure": null,
+      "repaired_status": "PASS",
+      "sequence_feasible": true,
+      "actions": [],
+      "changed_steps": 0,
+      "geometry_changed": false,
+      "dependency_dag": true,
+      "temporary_stability_resolved": true,
+      "repair_deterministic": true,
+      "repair_runtime_sec": 0.0
+    },
+    {
+      "benchmark": "BENCH-010",
+      "placement_count": 20,
+      "original_status": "PASS",
+      "original_failure": null,
+      "repaired_status": "PASS",
+      "sequence_feasible": true,
+      "actions": [],
+      "changed_steps": 0,
+      "geometry_changed": false,
+      "dependency_dag": true,
+      "temporary_stability_resolved": true,
+      "repair_deterministic": true,
+      "repair_runtime_sec": 0.0
+    },
+    {
+      "benchmark": "BENCH-011",
+      "placement_count": 42,
+      "original_status": "PASS",
+      "original_failure": null,
+      "repaired_status": "PASS",
+      "sequence_feasible": true,
+      "actions": [],
+      "changed_steps": 0,
+      "geometry_changed": false,
+      "dependency_dag": true,
+      "temporary_stability_resolved": true,
+      "repair_deterministic": true,
+      "repair_runtime_sec": 0.0
+    },
+    {
+      "benchmark": "BENCH-012",
+      "placement_count": 7,
+      "original_status": "PASS",
+      "original_failure": null,
+      "repaired_status": "PASS",
+      "sequence_feasible": true,
+      "actions": [],
+      "changed_steps": 0,
+      "geometry_changed": false,
+      "dependency_dag": true,
+      "temporary_stability_resolved": true,
+      "repair_deterministic": true,
+      "repair_runtime_sec": 0.0
+    }
+  ]
+}

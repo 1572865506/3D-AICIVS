@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://3d-aicivs.local/schemas/blk008a-cargo-profile.json",
+  "title": "BLK008A Cargo Intelligence Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sku", "category", "category_confidence", "fragility",
+    "orientationPolicy", "stackPolicy", "compressionPolicy",
+    "loadingPriority", "specialRules", "source"
+  ],
+  "properties": {
+    "sku": {"type": "string", "minLength": 1},
+    "category": {
+      "enum": ["DISPLAY", "ELECTRONIC", "HEAVY", "FRAGILE", "NORMAL_BOX", "TOP_FILL_ONLY", "IRREGULAR"]
+    },
+    "category_confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "fragility": {"enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]},
+    "orientationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["base", "top", "door", "forbidden", "source"],
+      "properties": {
+        "base": {"$ref": "#/$defs/orientationList"},
+        "top": {"$ref": "#/$defs/orientationList"},
+        "door": {"$ref": "#/$defs/orientationList"},
+        "forbidden": {"$ref": "#/$defs/orientationList"},
+        "source": {"$ref": "#/$defs/source"}
+      }
+    },
+    "stackPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["base_max_layers", "top_max_layers", "top_allowed", "stack_on_self", "source"],
+      "properties": {
+        "base_max_layers": {"type": ["integer", "null"], "minimum": 1},
+        "top_max_layers": {"type": "integer", "minimum": 0},
+        "top_allowed": {"type": "boolean"},
+        "stack_on_self": {"type": "boolean"},
+        "source": {"$ref": "#/$defs/source"}
+      }
+    },
+    "compressionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_load_kg", "compression_class", "allow_as_support", "source"],
+      "properties": {
+        "max_load_kg": {"type": ["number", "null"], "minimum": 0},
+        "compression_class": {"enum": ["LOW", "MEDIUM", "HIGH"]},
+        "allow_as_support": {"type": "boolean"},
+        "source": {"$ref": "#/$defs/source"}
+      }
+    },
+    "loadingPriority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["door_priority", "main_priority", "top_priority", "loading_reason", "source"],
+      "properties": {
+        "door_priority": {"type": "integer", "minimum": 1, "maximum": 10},
+        "main_priority": {"type": "integer", "minimum": 1, "maximum": 10},
+        "top_priority": {"type": "integer", "minimum": 1, "maximum": 10},
+        "loading_reason": {"type": "string"},
+        "source": {"$ref": "#/$defs/source"}
+      }
+    },
+    "specialRules": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "source": {"$ref": "#/$defs/source"}
+  },
+  "$defs": {
+    "source": {"enum": ["USER_DEFINED", "INFERRED", "DEFAULT"]},
+    "orientationList": {
+      "type": "array",
+      "items": {"enum": ["VERTICAL", "HORIZONTAL", "SIDE", "FLAT", "FLAT_HORIZONTAL", "ROTATED_90", "ROTATED_180"]},
+      "uniqueItems": true
+    }
+  }
+}

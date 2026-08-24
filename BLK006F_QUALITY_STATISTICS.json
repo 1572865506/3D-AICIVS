@@ -1,0 +1,24 @@
+{
+  "mean_legacy_utilization": 53.67256712885805,
+  "mean_global_utilization": 32.10245584290456,
+  "mean_repaired_utilization": 54.28570520333716,
+  "median_delta_vs_legacy": 0.0,
+  "p25_delta": 0.0,
+  "p75_delta": 0.0,
+  "best_improvement": 7.222222222222214,
+  "worst_regression": 0.0,
+  "catastrophic_regression_count": 0,
+  "catastrophic_benchmarks": [],
+  "global_win_rate": 0.16666666666666666,
+  "repair_win_rate": 0.16666666666666666,
+  "source_counts": {
+    "LEGACY_INCUMBENT": 10,
+    "GLOBAL_SEARCH": 1,
+    "GLOBAL_TOPFILL_REPAIR": 1,
+    "GLOBAL_WALLTAIL_REPAIR": 0
+  },
+  "legacy_wins": 10,
+  "global_raw_wins": 1,
+  "global_repair_wins": 1,
+  "ties": 0
+}

@@ -1,0 +1,36 @@
+{
+  "version": "BLK007F1",
+  "analyzer": "WallVoidAnalyzer",
+  "ready": true,
+  "resolution_m": 0.05,
+  "semantics": {
+    "SMALL_GAP": "bounded internal wall void below 0.02 m3",
+    "STRUCTURAL_VOID": "bounded internal void connected to the wall base",
+    "DEAD_SPACE": "unreachable residual volume outside a usable top region",
+    "BRIDGE_VOID": "bounded internal void with cargo below and above",
+    "FUTURE_FREE_SPACE": "edge/top-connected residual; excluded from wall structural void"
+  },
+  "real_14_sku": {
+    "cargo_wall_count": 17,
+    "cargo_wall_placements": 474,
+    "analyzed_wall_slab_volume_m3": 36.660952,
+    "cargo_volume_in_walls_m3": 33.704599,
+    "void_region_count": 0,
+    "void_volume_m3": 0.0,
+    "void_ratio": 0.0,
+    "by_type": {
+      "SMALL_GAP": 0,
+      "STRUCTURAL_VOID": 0,
+      "DEAD_SPACE": 0,
+      "BRIDGE_VOID": 0
+    },
+    "regions": [],
+    "reachable_residual_volume_m3": 26.341472,
+    "future_free_space_note": "Reachable residual and 17 available top regions are not misclassified as structural wall voids."
+  },
+  "wall_004_bad_case": {
+    "internal_void_detected": true,
+    "region_count": 1,
+    "test": "PASS"
+  }
+}

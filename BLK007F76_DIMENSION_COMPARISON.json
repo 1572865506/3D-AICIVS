@@ -1,0 +1,103 @@
+{
+  "block": "BLK-007F-7.6",
+  "authoritative_after": "BLK-000D",
+  "previous_result_authoritative": false,
+  "sku14": {
+    "previous_ambiguous_projection": {
+      "size": {
+        "w": 0.08,
+        "d": 0.488,
+        "h": 0.336
+      },
+      "semantic_problem": "scene occupied axes could be mistaken for product L/W/H"
+    },
+    "normalized_product_schema": {
+      "dimensions": {
+        "length": 0.488,
+        "width": 0.08,
+        "height": 0.336
+      },
+      "axisDefinition": {
+        "lengthAxis": "X",
+        "widthAxis": "Y",
+        "heightAxis": "Z"
+      },
+      "thicknessAxis": "WIDTH"
+    },
+    "corrected_scene_projection": {
+      "occupied_size": {
+        "w": 0.08,
+        "d": 0.488,
+        "h": 0.336
+      },
+      "product_dimensions": {
+        "length": 0.488,
+        "width": 0.08,
+        "height": 0.336
+      },
+      "axisDefinition": {
+        "lengthAxis": "X",
+        "widthAxis": "Y",
+        "heightAxis": "Z"
+      }
+    },
+    "direction": {
+      "facing": "SHORT_EDGE_FORWARD",
+      "forward_depth": 0.08,
+      "wall_width": 0.488,
+      "orientation": "UPRIGHT_ROTATED",
+      "transport_score": 79.541
+    }
+  },
+  "coordinate_rebuild": {
+    "common_placement_ids": 1461,
+    "changed_coordinates": 126,
+    "changed_ratio": 0.08624229979466119,
+    "fresh_pipeline": true,
+    "previous_coordinates_loaded_by_solver": false
+  },
+  "metrics": {
+    "BLK007F75": {
+      "wall_continuity": 88.0,
+      "display_orientation": {
+        "count": 856,
+        "continuity": 100.0,
+        "same_orientation": 100.0,
+        "valid": true
+      },
+      "door_stability": {
+        "count": 4,
+        "short_edge_forward_pct": 100.0,
+        "stable": true
+      },
+      "layer_balance": 99.661,
+      "utilization": 71.504388897772,
+      "transport_score": 92.0
+    },
+    "BLK007F76": {
+      "wall_continuity": 88.0,
+      "display_orientation": {
+        "count": 856,
+        "continuity": 100.0,
+        "same_orientation": 100.0,
+        "valid": true
+      },
+      "door_stability": {
+        "count": 4,
+        "short_edge_forward_pct": 100.0,
+        "stable": true
+      },
+      "layer_balance": 99.661,
+      "utilization": 71.504388897772,
+      "transport_score": 92.0
+    }
+  },
+  "regenerated": {
+    "cargo_orientation": true,
+    "wall_structure": true,
+    "display_wall": true,
+    "door_adjacent_wall": true,
+    "layer_arrangement": true,
+    "top_fill": true
+  }
+}

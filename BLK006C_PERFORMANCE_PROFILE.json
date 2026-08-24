@@ -1,0 +1,50 @@
+{
+  "generated_at": "2026-08-22T16:00:22Z",
+  "schema": "BLK006C_PERFORMANCE_V1",
+  "beam_width_2": {
+    "avg_candidate_generation_ms": 191.825768,
+    "avg_hard_validation_ms": 73.168236,
+    "avg_state_clone_ms": 1.319641,
+    "avg_objective_ms": 0.024466,
+    "avg_topfill_estimate_ms": 0.078507,
+    "avg_state_expansion_ms": 6103.51806,
+    "total_component_ms": {
+      "candidate_generation_ms": 1342.780374,
+      "hard_validation_ms": 3073.065919,
+      "state_clone_ms": 42.228503,
+      "objective_ms": 0.782915,
+      "topfill_estimate_ms": 2.512208,
+      "state_expansion_ms": 42724.626418,
+      "terminal_door_ms": 926.289833,
+      "terminal_topfill_ms": 15715.067083,
+      "terminal_validation_ms": 256.494333
+    },
+    "primary_instrumented_hotspot": "state_expansion_ms",
+    "solver_runtime_sec": 105.112,
+    "postsolve_evaluation_runtime_sec": 0.652
+  },
+  "beam_width_4": {
+    "avg_candidate_generation_ms": 185.506441,
+    "avg_hard_validation_ms": 55.411681,
+    "avg_state_clone_ms": 1.366477,
+    "avg_objective_ms": 0.022731,
+    "avg_topfill_estimate_ms": 0.081422,
+    "avg_state_expansion_ms": 4812.586496,
+    "total_component_ms": {
+      "candidate_generation_ms": 2226.077292,
+      "hard_validation_ms": 3989.641037,
+      "state_clone_ms": 73.789754,
+      "objective_ms": 1.227458,
+      "topfill_estimate_ms": 4.396792,
+      "state_expansion_ms": 57751.037957,
+      "terminal_door_ms": 929.210416,
+      "terminal_topfill_ms": 16180.725042,
+      "terminal_validation_ms": 258.367916
+    },
+    "primary_instrumented_hotspot": "state_expansion_ms",
+    "solver_runtime_sec": 139.959,
+    "postsolve_evaluation_runtime_sec": 0.665
+  },
+  "depth_1_before_runtime_sec": 311.8,
+  "safety_checks_removed": 0
+}

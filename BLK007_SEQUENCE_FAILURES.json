@@ -1,0 +1,107 @@
+{
+  "benchmark_failures": [
+    {
+      "benchmark": "BENCH-001",
+      "reasons": [
+        {
+          "reason": "TEMPORARY_INSTABILITY",
+          "placement_ids": [
+            "p_0325_SKU-02"
+          ]
+        }
+      ]
+    }
+  ],
+  "failure_counts": {
+    "TEMPORARY_INSTABILITY": 1
+  },
+  "synthetic_cases": [
+    {
+      "case": "SEQ-001",
+      "status": "PASS"
+    },
+    {
+      "case": "SEQ-002",
+      "status": "PASS"
+    },
+    {
+      "case": "SEQ-003",
+      "status": "PASS"
+    },
+    {
+      "case": "SEQ-004",
+      "status": "PASS"
+    },
+    {
+      "case": "SEQ-005",
+      "status": "PASS"
+    },
+    {
+      "case": "SEQ-006",
+      "status": "PASS"
+    },
+    {
+      "case": "SEQ-007",
+      "status": "PASS"
+    },
+    {
+      "case": "SEQ-008",
+      "status": "PASS"
+    },
+    {
+      "case": "SEQ-009",
+      "status": "PASS"
+    },
+    {
+      "case": "SEQ-010",
+      "status": "PASS"
+    },
+    {
+      "case": "SEQ-011",
+      "status": "PASS"
+    },
+    {
+      "case": "SEQ-012",
+      "status": "PASS"
+    }
+  ],
+  "adversarial_cases": [
+    {
+      "case": "ASEQ-001",
+      "status": "PASS",
+      "deterministic": true
+    },
+    {
+      "case": "ASEQ-002",
+      "status": "PASS",
+      "deterministic": true
+    },
+    {
+      "case": "ASEQ-003",
+      "status": "PASS",
+      "deterministic": true
+    },
+    {
+      "case": "ASEQ-004",
+      "status": "PASS",
+      "deterministic": true
+    },
+    {
+      "case": "ASEQ-005",
+      "status": "PASS",
+      "deterministic": true
+    }
+  ],
+  "failure_reason_enum": [
+    "INSERTION_BLOCKED",
+    "INSUFFICIENT_CLEARANCE",
+    "SUPPORT_DEPENDENCY_CYCLE",
+    "BLOCKING_DEPENDENCY_CYCLE",
+    "DEPENDENCY_CYCLE",
+    "TEMPORARY_INSTABILITY",
+    "STABILITY_DEBT_UNRESOLVED",
+    "DOOR_SEAL_TOO_EARLY",
+    "TOP_FILL_UNREACHABLE",
+    "NO_VALID_SEQUENCE"
+  ]
+}

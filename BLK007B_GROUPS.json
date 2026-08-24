@@ -1,0 +1,68 @@
+{
+  "loading_groups": [
+    {
+      "benchmark": "BENCH-001",
+      "id": "REPAIR_PAIR_bd7bc1bec6d4",
+      "placement_ids": [
+        "p_0325_SKU-02",
+        "p_0324_SKU-03"
+      ],
+      "type": "PAIR",
+      "reason": "resolve temporary thin-cargo instability",
+      "created_by": "REPAIR_ENGINE",
+      "temporary_stability_required": true,
+      "stability_before": false,
+      "stability_after": true,
+      "scope": "SAME_ROW",
+      "distance": 0.978
+    },
+    {
+      "benchmark": "BENCH-001",
+      "id": "REPAIR_PAIR_6be759b6721e",
+      "placement_ids": [
+        "topfill_0374_SKU-03",
+        "topfill_0373_SKU-03"
+      ],
+      "type": "PAIR",
+      "reason": "resolve temporary thin-cargo instability",
+      "created_by": "REPAIR_ENGINE",
+      "temporary_stability_required": true,
+      "stability_before": false,
+      "stability_after": true,
+      "scope": "SAME_WALL",
+      "distance": 0.488
+    },
+    {
+      "benchmark": "BENCH-001",
+      "id": "REPAIR_PAIR_baea83440b52",
+      "placement_ids": [
+        "topfill_0378_SKU-03",
+        "topfill_0377_SKU-03"
+      ],
+      "type": "PAIR",
+      "reason": "resolve temporary thin-cargo instability",
+      "created_by": "REPAIR_ENGINE",
+      "temporary_stability_required": true,
+      "stability_before": false,
+      "stability_after": true,
+      "scope": "SAME_WALL",
+      "distance": 0.488
+    },
+    {
+      "benchmark": "BENCH-001",
+      "id": "REPAIR_PAIR_4a62b9b7162c",
+      "placement_ids": [
+        "topfill_0379_SKU-03",
+        "topfill_0378_SKU-03"
+      ],
+      "type": "PAIR",
+      "reason": "resolve temporary thin-cargo instability",
+      "created_by": "REPAIR_ENGINE",
+      "temporary_stability_required": true,
+      "stability_before": false,
+      "stability_after": true,
+      "scope": "SAME_WALL",
+      "distance": 0.488
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "benchmark_14sku": {
+    "solver": "Legacy V1.7",
+    "case_id": "40hq_cleanroom_case_001",
+    "requested_cartons": 1845,
+    "placed_count": 1317,
+    "unplaced_count": 528,
+    "runtime_ms": 1281.2734581530094,
+    "volume_utilization_pct": 72.7746,
+    "is_valid": false,
+    "overlap_pair_count": 0,
+    "penetration_volume": 0.0,
+    "out_of_bounds_count": 0,
+    "summary": {}
+  },
+  "bad_case_001": {
+    "case_name": "BAD_CASE_001",
+    "description": "Wall Hollow + Collision / Dead Space Fragmentation",
+    "tested_solver": "Legacy V1.7",
+    "placed_count": 1317,
+    "unplaced_count": 528,
+    "overlap_pair_count": 0,
+    "penetration_volume": 0.0,
+    "out_of_bounds_count": 0,
+    "notes": [
+      "Legacy solver leaves 496 cartons of SKU-14 unplaced due to rigid column slicing and tail-assembly fragmentation.",
+      "Visual artifacts show dead space and wall hollows in tail sections.",
+      "V2 Acceptance requires overlap_pair_count == 0, penetration_volume == 0, and enclosed cavity detection/mitigation."
+    ]
+  }
+}

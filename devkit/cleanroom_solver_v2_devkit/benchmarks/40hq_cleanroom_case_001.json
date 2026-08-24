@@ -1,0 +1,281 @@
+{
+  "caseId": "40hq_cleanroom_case_001",
+  "skuCount": 14,
+  "requestedCartons": 1845,
+  "containerSeed": {
+    "type": "40HQ",
+    "inner": {
+      "x": 12.032,
+      "y": 2.352,
+      "z": 2.698
+    },
+    "note": "Development seed only; production must provide actual container geometry."
+  },
+  "cargoProfiles": {
+    "REAR_UPRIGHT_DEFAULT": {
+      "geometryPolicy": {"source": "DEFAULT", "clearanceM": 0.0},
+      "orientationPolicy": {"source": "DEFAULT", "maxFlatLayers": 1, "rules": [{"orientation": "UPRIGHT", "allowedRegions": ["MAIN_BODY", "TOP_FILL", "DOOR_ZONE"], "condition": "ALWAYS"}]},
+      "placementPolicy": {"source": "USER_DEFINED", "loadPriority": 0, "reductionAllowed": false, "minimumQuantity": 1, "packingRoles": ["FOUNDATION"], "fieldSources": {"loadPriority": "DEFAULT", "reductionAllowed": "DEFAULT", "minimumQuantity": "DEFAULT", "packingRoles": "USER_DEFINED"}},
+      "stackPolicy": {"source": "DEFAULT", "maxStackLayers": null, "allowStackingOnTop": true, "mustBeOnFloor": false, "stackOnSelf": true, "allowedAboveCategories": [], "forbiddenAboveCategories": []},
+      "compressionPolicy": {"source": "DEFAULT", "maxTopLoad": null, "maxPressureKgM2": null},
+      "stabilityPolicy": {"source": "DEFAULT", "antiTipRequired": true, "minSupportRatio": 0.7, "maxUnsupportedSpan": 0.1, "groupStabilityRequired": true, "wallStabilityRequired": true},
+      "topFillPolicy": {"source": "DEFAULT", "state": "AUTO", "enabled": false, "allowedOrientations": [], "conditionalOrientations": [], "maxLayers": 0, "minBaseHeight": 0.0, "minSupportRatio": 0.7, "residualHeightTarget": null},
+      "zonePolicy": {"source": "USER_DEFINED", "preferred": [], "required": ["REAR"], "forbidden": []},
+      "handlingPolicy": {"source": "DEFAULT", "keepUpright": true, "fragile": false, "specialInstructions": []}
+    },
+    "MIDDLE_UPRIGHT_DEFAULT": {
+      "geometryPolicy": {"source": "DEFAULT", "clearanceM": 0.0},
+      "orientationPolicy": {"source": "DEFAULT", "maxFlatLayers": 1, "rules": [{"orientation": "UPRIGHT", "allowedRegions": ["MAIN_BODY", "TOP_FILL", "DOOR_ZONE"], "condition": "ALWAYS"}]},
+      "placementPolicy": {"source": "USER_DEFINED", "loadPriority": 0, "reductionAllowed": false, "minimumQuantity": 0, "packingRoles": ["MAIN_WALL"], "fieldSources": {"loadPriority": "DEFAULT", "reductionAllowed": "DEFAULT", "minimumQuantity": "DEFAULT", "packingRoles": "USER_DEFINED"}},
+      "stackPolicy": {"source": "DEFAULT", "maxStackLayers": null, "allowStackingOnTop": true, "mustBeOnFloor": false, "stackOnSelf": true, "allowedAboveCategories": [], "forbiddenAboveCategories": []},
+      "compressionPolicy": {"source": "DEFAULT", "maxTopLoad": null, "maxPressureKgM2": null},
+      "stabilityPolicy": {"source": "DEFAULT", "antiTipRequired": true, "minSupportRatio": 0.7, "maxUnsupportedSpan": 0.1, "groupStabilityRequired": true, "wallStabilityRequired": true},
+      "topFillPolicy": {"source": "DEFAULT", "state": "AUTO", "enabled": false, "allowedOrientations": [], "conditionalOrientations": [], "maxLayers": 0, "minBaseHeight": 0.0, "minSupportRatio": 0.7, "residualHeightTarget": null},
+      "zonePolicy": {"source": "USER_DEFINED", "preferred": ["MIDDLE"], "required": [], "forbidden": []},
+      "handlingPolicy": {"source": "DEFAULT", "keepUpright": true, "fragile": false, "specialInstructions": []}
+    },
+    "DOOR_UPRIGHT_DEFAULT": {
+      "geometryPolicy": {"source": "DEFAULT", "clearanceM": 0.0},
+      "orientationPolicy": {"source": "DEFAULT", "maxFlatLayers": 1, "rules": [{"orientation": "UPRIGHT", "allowedRegions": ["MAIN_BODY", "TOP_FILL", "DOOR_ZONE"], "condition": "ALWAYS"}]},
+      "placementPolicy": {"source": "USER_DEFINED", "loadPriority": 0, "reductionAllowed": false, "minimumQuantity": 0, "packingRoles": ["DOOR_SEAL"], "fieldSources": {"loadPriority": "DEFAULT", "reductionAllowed": "DEFAULT", "minimumQuantity": "DEFAULT", "packingRoles": "USER_DEFINED"}},
+      "stackPolicy": {"source": "DEFAULT", "maxStackLayers": null, "allowStackingOnTop": true, "mustBeOnFloor": false, "stackOnSelf": true, "allowedAboveCategories": [], "forbiddenAboveCategories": []},
+      "compressionPolicy": {"source": "DEFAULT", "maxTopLoad": null, "maxPressureKgM2": null},
+      "stabilityPolicy": {"source": "DEFAULT", "antiTipRequired": true, "minSupportRatio": 0.7, "maxUnsupportedSpan": 0.1, "groupStabilityRequired": true, "wallStabilityRequired": true},
+      "topFillPolicy": {"source": "DEFAULT", "state": "AUTO", "enabled": false, "allowedOrientations": [], "conditionalOrientations": [], "maxLayers": 0, "minBaseHeight": 0.0, "minSupportRatio": 0.7, "residualHeightTarget": null},
+      "zonePolicy": {"source": "USER_DEFINED", "preferred": [], "required": ["DOOR"], "forbidden": []},
+      "handlingPolicy": {"source": "DEFAULT", "keepUpright": true, "fragile": false, "specialInstructions": []}
+    },
+    "DISPLAY_DOOR_UPRIGHT_PLUS_CONDITIONAL_FLAT": {
+      "geometryPolicy": {"source": "DEFAULT", "clearanceM": 0.0},
+      "orientationPolicy": {"source": "USER_DEFINED", "maxFlatLayers": 3, "rules": [{"orientation": "UPRIGHT", "allowedRegions": ["MAIN_BODY", "DOOR_ZONE"], "condition": "ALWAYS"}, {"orientation": "UPRIGHT", "allowedRegions": ["TOP_FILL"], "minBaseHeight": 2.5, "condition": "ALWAYS"}, {"orientation": "FLAT", "allowedRegions": ["TOP_FILL"], "minSupportRatio": 0.7, "maxTopFillLayers": 3, "minBaseHeight": 2.5, "condition": "CONDITIONAL_TOP_FILL"}]},
+      "placementPolicy": {"source": "USER_DEFINED", "loadPriority": 0, "reductionAllowed": false, "minimumQuantity": 0, "packingRoles": ["DOOR_SEAL"], "fieldSources": {"loadPriority": "DEFAULT", "reductionAllowed": "DEFAULT", "minimumQuantity": "DEFAULT", "packingRoles": "USER_DEFINED"}},
+      "stackPolicy": {"source": "DEFAULT", "maxStackLayers": null, "allowStackingOnTop": true, "mustBeOnFloor": false, "stackOnSelf": true, "allowedAboveCategories": [], "forbiddenAboveCategories": []},
+      "compressionPolicy": {"source": "DEFAULT", "maxTopLoad": null, "maxPressureKgM2": null},
+      "stabilityPolicy": {"source": "DEFAULT", "antiTipRequired": true, "minSupportRatio": 0.7, "maxUnsupportedSpan": 0.1, "groupStabilityRequired": true, "wallStabilityRequired": true},
+      "topFillPolicy": {"source": "USER_DEFINED", "state": "ALLOW", "enabled": true, "allowedOrientations": ["UPRIGHT"], "conditionalOrientations": ["FLAT"], "maxLayers": 3, "minBaseHeight": 2.5, "minSupportRatio": 0.7, "residualHeightTarget": 0.0},
+      "zonePolicy": {"source": "USER_DEFINED", "preferred": [], "required": ["DOOR"], "forbidden": []},
+      "handlingPolicy": {"source": "USER_DEFINED", "keepUpright": false, "fragile": false, "specialInstructions": []}
+    },
+    "DISPLAY_DOOR_TOP_CONDITIONAL_FLAT": {
+      "geometryPolicy": {"source": "DEFAULT", "clearanceM": 0.0},
+      "orientationPolicy": {"source": "USER_DEFINED", "maxFlatLayers": 3, "rules": [{"orientation": "UPRIGHT", "allowedRegions": ["MAIN_BODY", "DOOR_ZONE"], "condition": "ALWAYS"}, {"orientation": "FLAT", "allowedRegions": ["TOP_FILL"], "minSupportRatio": 0.7, "maxTopFillLayers": 3, "minBaseHeight": 1.3, "condition": "CONDITIONAL_TOP_FILL"}]},
+      "placementPolicy": {"source": "USER_DEFINED", "loadPriority": 0, "reductionAllowed": true, "minimumQuantity": 0, "packingRoles": ["DOOR_SEAL"], "fieldSources": {"loadPriority": "DEFAULT", "reductionAllowed": "USER_DEFINED", "minimumQuantity": "DEFAULT", "packingRoles": "USER_DEFINED"}},
+      "stackPolicy": {"source": "DEFAULT", "maxStackLayers": null, "allowStackingOnTop": true, "mustBeOnFloor": false, "stackOnSelf": true, "allowedAboveCategories": [], "forbiddenAboveCategories": []},
+      "compressionPolicy": {"source": "DEFAULT", "maxTopLoad": null, "maxPressureKgM2": null},
+      "stabilityPolicy": {"source": "DEFAULT", "antiTipRequired": true, "minSupportRatio": 0.7, "maxUnsupportedSpan": 0.1, "groupStabilityRequired": true, "wallStabilityRequired": true},
+      "topFillPolicy": {"source": "USER_DEFINED", "state": "ALLOW", "enabled": true, "allowedOrientations": [], "conditionalOrientations": ["FLAT"], "maxLayers": 3, "minBaseHeight": 1.3, "minSupportRatio": 0.7, "residualHeightTarget": 0.0},
+      "zonePolicy": {"source": "USER_DEFINED", "preferred": [], "required": ["DOOR"], "forbidden": []},
+      "handlingPolicy": {"source": "USER_DEFINED", "keepUpright": false, "fragile": false, "specialInstructions": []}
+    }
+  },
+  "cargo": [
+    {
+      "sku": "SKU-01",
+      "name": "WIFI蓝牙 / WIFI线 / WIFI贴",
+      "cargoProfileRef": "REAR_UPRIGHT_DEFAULT",
+      "source": {
+        "w": 0.5,
+        "d": 0.5,
+        "h": 0.5,
+        "weight": 5.0,
+        "quantity": 1,
+        "requirement": "放柜子最里面"
+      },
+      "status": "BUSINESS_NORMALIZATION_REQUIRED"
+    },
+    {
+      "sku": "SKU-02",
+      "name": "21.5寸 显示器 BG (DA)",
+      "cargoProfileRef": "DISPLAY_DOOR_UPRIGHT_PLUS_CONDITIONAL_FLAT",
+      "source": {
+        "w": 0.553,
+        "d": 0.08,
+        "h": 0.355,
+        "weight": 8.4,
+        "quantity": 500,
+        "requirement": "封柜门"
+      },
+      "status": "BUSINESS_NORMALIZATION_REQUIRED"
+    },
+    {
+      "sku": "SKU-03",
+      "name": "34寸显示器 MX340 (DA)",
+      "cargoProfileRef": "DOOR_UPRIGHT_DEFAULT",
+      "source": {
+        "w": 0.978,
+        "d": 0.188,
+        "h": 0.488,
+        "weight": 4.61,
+        "quantity": 90,
+        "requirement": "封柜门"
+      },
+      "status": "BUSINESS_NORMALIZATION_REQUIRED"
+    },
+    {
+      "sku": "SKU-04",
+      "name": "27寸显示器 2886A (DA)",
+      "cargoProfileRef": "DOOR_UPRIGHT_DEFAULT",
+      "source": {
+        "w": 0.68,
+        "d": 0.122,
+        "h": 0.44,
+        "weight": 6.7,
+        "quantity": 100,
+        "requirement": "封柜门"
+      },
+      "status": "BUSINESS_NORMALIZATION_REQUIRED"
+    },
+    {
+      "sku": "SKU-05",
+      "name": "32寸智能显示器 (DA)",
+      "cargoProfileRef": "MIDDLE_UPRIGHT_DEFAULT",
+      "source": {
+        "w": 0.833,
+        "d": 0.53,
+        "h": 0.23,
+        "weight": 20.8,
+        "quantity": 100,
+        "requirement": "放中间"
+      },
+      "status": "BUSINESS_NORMALIZATION_REQUIRED"
+    },
+    {
+      "sku": "SKU-06",
+      "name": "15.6寸便携显示器 (14/箱)",
+      "cargoProfileRef": "MIDDLE_UPRIGHT_DEFAULT",
+      "source": {
+        "w": 0.575,
+        "d": 0.46,
+        "h": 0.465,
+        "weight": 4.0,
+        "quantity": 95,
+        "requirement": "放中间"
+      },
+      "status": "BUSINESS_NORMALIZATION_REQUIRED"
+    },
+    {
+      "sku": "SKU-07",
+      "name": "15.6寸 双屏便携屏",
+      "cargoProfileRef": "MIDDLE_UPRIGHT_DEFAULT",
+      "source": {
+        "w": 0.431,
+        "d": 0.422,
+        "h": 0.281,
+        "weight": 4.0,
+        "quantity": 125,
+        "requirement": "放中间"
+      },
+      "status": "BUSINESS_NORMALIZATION_REQUIRED"
+    },
+    {
+      "sku": "SKU-08",
+      "name": "21.5寸一体机整机 带键盘鼠标",
+      "cargoProfileRef": "MIDDLE_UPRIGHT_DEFAULT",
+      "source": {
+        "w": 0.56,
+        "d": 0.145,
+        "h": 0.41,
+        "weight": 12.65,
+        "quantity": 53,
+        "requirement": "放中间"
+      },
+      "status": "BUSINESS_NORMALIZATION_REQUIRED"
+    },
+    {
+      "sku": "SKU-09",
+      "name": "19寸一体机整机",
+      "cargoProfileRef": "MIDDLE_UPRIGHT_DEFAULT",
+      "source": {
+        "w": 0.495,
+        "d": 0.145,
+        "h": 0.41,
+        "weight": 10.5,
+        "quantity": 24,
+        "requirement": "放中间"
+      },
+      "status": "BUSINESS_NORMALIZATION_REQUIRED"
+    },
+    {
+      "sku": "SKU-10",
+      "name": "19寸液晶屏 / 19寸液晶屏玻璃",
+      "cargoProfileRef": "MIDDLE_UPRIGHT_DEFAULT",
+      "source": {
+        "w": 0.49,
+        "d": 0.28,
+        "h": 0.35,
+        "weight": 15.5,
+        "quantity": 22,
+        "requirement": "放中间"
+      },
+      "status": "BUSINESS_NORMALIZATION_REQUIRED"
+    },
+    {
+      "sku": "SKU-11",
+      "name": "电源线",
+      "cargoProfileRef": "MIDDLE_UPRIGHT_DEFAULT",
+      "source": {
+        "w": 0.48,
+        "d": 0.31,
+        "h": 0.34,
+        "weight": 25.5,
+        "quantity": 10,
+        "requirement": "放中间"
+      },
+      "status": "BUSINESS_NORMALIZATION_REQUIRED"
+    },
+    {
+      "sku": "SKU-12",
+      "name": "电源线 (小箱)",
+      "cargoProfileRef": "MIDDLE_UPRIGHT_DEFAULT",
+      "source": {
+        "w": 0.18,
+        "d": 0.18,
+        "h": 0.34,
+        "weight": 5.5,
+        "quantity": 1,
+        "requirement": "放中间"
+      },
+      "status": "BUSINESS_NORMALIZATION_REQUIRED"
+    },
+    {
+      "sku": "SKU-13",
+      "name": "电源",
+      "cargoProfileRef": "MIDDLE_UPRIGHT_DEFAULT",
+      "source": {
+        "w": 0.43,
+        "d": 0.41,
+        "h": 0.19,
+        "weight": 15.5,
+        "quantity": 50,
+        "requirement": "放中间"
+      },
+      "status": "BUSINESS_NORMALIZATION_REQUIRED"
+    },
+    {
+      "sku": "SKU-14",
+      "name": "19寸 显示器 BG (DA)",
+      "cargoProfileRef": "DISPLAY_DOOR_TOP_CONDITIONAL_FLAT",
+      "source": {
+        "w": 0.488,
+        "d": 0.08,
+        "h": 0.336,
+        "weight": 2.15,
+        "quantity": 674,
+        "requirement": "封柜门; 可以减少点"
+      },
+      "status": "BUSINESS_NORMALIZATION_REQUIRED"
+    }
+  ],
+  "openQuestions": [
+    "SKU-14 minimum quantity",
+    "orientation policy per display SKU",
+    "TOP_FILL flat face and max layers",
+    "compression/top-load limits",
+    "stack limits",
+    "minimum support ratio",
+    "maximum unsupported span",
+    "meaning of 封柜门",
+    "physical tolerances and gaps",
+    "job-specific 40HQ dimensions"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "SOLVER_V1_CORE_FROZEN": true,
+  "blockers": [],
+  "freeze_gates": {
+    "all_safety_tests_pass": true,
+    "catastrophic_regression_count_zero": true,
+    "median_delta_nonnegative": true,
+    "deterministic_replay_pass": true,
+    "inventory_conservation_pass": true,
+    "utilization_metric_audit_pass": true,
+    "door_audit_pass": true,
+    "no_illegal_orientation": true,
+    "no_collision_bounds_hard": true,
+    "no_benchmark_specific_code": true,
+    "no_sku_specific_score": true,
+    "runtime_stable": true,
+    "adversarial_no_crash": true,
+    "edge_cases_stable": true,
+    "full_suite_pass": true
+  },
+  "git_branch": "feature/v2-cleanroom-solver",
+  "git_commit": "05586dbe1e56a490b2dd761ce4c792c6cef2f66e",
+  "worktree_solver_manifest_sha256": "2dced693b65d976e4f72eee70474e2c81b6e8c1009716b009aff05f860231f53",
+  "benchmark_suite_version": "BLK006F-v1",
+  "cargo_profile_schema_version": "BLK004B-v1",
+  "solver_config_version": "BLK006D/006E-v1",
+  "tests_run": 173,
+  "tests_pass": true,
+  "recommended_local_tag": "solver-v1-core-blk006f",
+  "tag_created": false,
+  "tag_not_created_reason": "Dirty mixed worktree; HEAD does not contain the untracked Solver V2 baseline."
+}

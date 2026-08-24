@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SolverV2Problem",
+  "type": "object",
+  "required": [
+    "container",
+    "cargo"
+  ],
+  "properties": {
+    "container": {
+      "type": "object"
+    },
+    "cargo": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "options": {
+      "type": "object"
+    }
+  }
+}

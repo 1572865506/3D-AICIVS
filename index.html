@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="loading-api-base" content="/api/v1">
   <title>3D 智能货柜装载填充系统 | 零穿模精密结构、全功能专业调优控制台与纯净边缘锚点坞</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1619,6 +1620,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/three@0.128.0/build/three.min.js';"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" onerror="this.onerror=null;this.src='https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js';"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js';"></script>
+  <script src="/frontend/src/backendSwitch.js"></script>
 </head>
 <body>
   <div id="webgl-container"></div>
@@ -1673,9 +1675,9 @@
             </span>
           </div>
           <div class="kpi-item" style="padding: 4px 10px;">
-            <span class="cache-status-badge" id="hud-cache-badge" title="已从本地空间坐标缓存极速秒开">
+            <span class="cache-status-badge" id="hud-cache-badge" title="BLK007D Backend Mode">
               <span class="cache-pulse-dot" id="cache-dot"></span>
-              <span id="txt-cache-badge">坐标缓存秒开</span>
+              <span id="txt-cache-badge">🟡 后端状态检测中</span>
             </span>
           </div>
         </div>
@@ -2363,8 +2365,12 @@
 
     <div class="tooltip-grid">
       <div class="tooltip-grid-item">
-        <span class="tooltip-grid-label">📦 规格尺寸 (长×宽×高)</span>
+        <span class="tooltip-grid-label">📦 规格尺寸(长×宽×高)</span>
         <span class="tooltip-grid-val" id="tt-dim">600×400×450mm</span>
+      </div>
+      <div class="tooltip-grid-item">
+        <span class="tooltip-grid-label">📐 占用空间</span>
+        <span class="tooltip-grid-val" id="tt-occupied-dim">600×400×450mm</span>
       </div>
       <div class="tooltip-grid-item">
         <span class="tooltip-grid-label">⚖️ 单箱毛重</span>
@@ -2450,6 +2456,8 @@
 
     // --- 2. INDUSTRIAL SMART CONTAINER PACKING KERNEL (PERFECTED 6-MODULE SYSTEM) ---
     // --- 2. INDUSTRIAL SMART CONTAINER PACKING KERNEL (TRI-AXIS EVALUATOR & ROW-FIRST HIERARCHY) ---
+    // @deprecated BLK-007D: retained only for historical/offline source compatibility.
+    // It is not reachable from BACKEND or explicit MOCK mode.
     class IndustrialSmartContainerPacker {
       constructor(containerDim, options = {}) {
         this.L = containerDim.length || containerDim.L;
@@ -3854,7 +3862,7 @@
       rebuildContainerModel();
       renderManifestUI();
       renderAnchorRibbon();
-      runSmartPackingAlgorithm(true);
+      // rebuildContainerModel already starts the authoritative BLK007D request.
 
       raycaster = new THREE.Raycaster();
       mouse = new THREE.Vector2();
@@ -4426,6 +4434,266 @@
       dynamicDoorComponents.push(lever);
     }
 
+    // =========================================================================
+    // Agent 10: Cleanroom Solver V2 — Centralized Coordinate & Version Adapter
+    // =========================================================================
+    let currentSolutionEpoch = 0;
+    let authoritativeSolutionVersion = 0;
+
+    /**
+     * Centralized Coordinate Transformation (contracts/COORDINATES.md)
+     * Canonical V2 Frame:
+     *   x: longitudinal [0, Lx] (far inner wall -> doors)
+     *   y: lateral / width [0, Ly] (left -> right)
+     *   z: vertical / height [0, Lz] (floor -> roof)
+     * Three.js Scene Frame (Container Centered):
+     *   posX = (Lx / 2) - x - (dx / 2)
+     *   posY = (-Lz / 2) + z + (dz / 2)
+     *   posZ = (-Ly / 2) + y + (dy / 2)
+     */
+    function convertCanonicalToThree(x, y, z, dx, dy, dz, usableDim) {
+      const halfIntL = usableDim.length / 2;
+      const startY = -usableDim.height / 2;
+      const startZ = -usableDim.width / 2;
+
+      return {
+        posX: halfIntL - x - dx / 2,
+        posY: startY + z + dz / 2,
+        posZ: startZ + y + dy / 2
+      };
+    }
+
+    /**
+     * Centralized solution applier to update Three.js scene, Materials, KPIs and CoG.
+     */
+    function applyPackingSolution(solution, usableDim, activeManifest, currentSpec) {
+      if (!solution) return false;
+
+      // 1. Clear and Rebuild Cargo Group
+      if (cargoGroup && containerGroup) {
+        containerGroup.remove(cargoGroup);
+      }
+      cargoGroup = new THREE.Group();
+      if (containerGroup) {
+        containerGroup.add(cargoGroup);
+      }
+      boxMeshes = [];
+
+      // 2. Pre-build Shared Materials per SKU
+      skuMaterialRegistry.clear();
+      activeManifest.forEach(skuItem => {
+        const texs = getOrCreateFaceTextures(skuItem.color, skuItem.name, skuItem.sku);
+
+        const solidMats = [
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.sideTex,      roughness: 0.48, metalness: 0.05 }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.sideTex,      roughness: 0.48, metalness: 0.05 }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.topTex,       roughness: 0.50, metalness: 0.05 }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.bottomTex,    roughness: 0.52, metalness: 0.05 }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.frontBackTex, roughness: 0.46, metalness: 0.05 }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.frontBackTex, roughness: 0.46, metalness: 0.05 })
+        ];
+
+        const ghostMats = [
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.sideTex,      transparent: true, opacity: 0.10, depthWrite: false }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.sideTex,      transparent: true, opacity: 0.10, depthWrite: false }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.topTex,       transparent: true, opacity: 0.10, depthWrite: false }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.bottomTex,    transparent: true, opacity: 0.10, depthWrite: false }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.frontBackTex, transparent: true, opacity: 0.10, depthWrite: false }),
+          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.frontBackTex, transparent: true, opacity: 0.10, depthWrite: false })
+        ];
+
+        skuMaterialRegistry.set(skuItem.sku, { solidMats, ghostMats });
+      });
+
+      // 3. Batch Create Cargo Meshes using Centralized Coordinate Conversion
+      const placedList = solution.placedBoxes || [];
+      placedList.forEach((item) => {
+        const boxGeo = new THREE.BoxGeometry(item.w - 0.003, item.h - 0.003, item.d - 0.003);
+        const skuMats = skuMaterialRegistry.get(item.sku);
+
+        if (!skuMats) {
+          console.warn('[3D-AICIVS] SKU material not found for:', item.sku, '— skipping box render');
+          return;
+        }
+
+        const boxMesh = new THREE.Mesh(boxGeo, skuMats.solidMats);
+
+        // Coordinates: if canonical is provided use it, otherwise use item (x, z, y, w, d, h)
+        let coords;
+        if (item.canonical) {
+          coords = convertCanonicalToThree(
+            item.canonical.x, item.canonical.y, item.canonical.z,
+            item.canonical.dx, item.canonical.dy, item.canonical.dz,
+            usableDim
+          );
+        } else {
+          // Legacy placedBox coordinate format: item.x (longitudinal), item.z (lateral), item.y (height)
+          coords = convertCanonicalToThree(
+            item.x, item.z, item.y,
+            item.w, item.d, item.h,
+            usableDim
+          );
+        }
+
+        const posX = coords.posX;
+        const posY = coords.posY;
+        const posZ = coords.posZ;
+
+        boxMesh.position.set(posX, posY, posZ);
+        boxMesh.castShadow = true;
+        boxMesh.receiveShadow = false;
+
+        boxMesh.userData = {
+          sku: item.sku,
+          name: item.name,
+          color: item.color,
+          weight: item.weight + ' kg',
+          requirement: item.requirement || '放中间',
+          dimensions: `${Math.round(item.w * 1000)} × ${Math.round(item.d * 1000)} × ${Math.round(item.h * 1000)} mm`,
+          position: `X:${posX.toFixed(2)} Y:${posY.toFixed(2)} Z:${posZ.toFixed(2)}`,
+          originY: posY,
+          skuMaterials: skuMats,
+          isCargoBox: true,
+          rawX: item.x,
+          rawW: item.w,
+          rawY: item.y,
+          rawH: item.h,
+          rawZ: item.z,
+          rawD: item.d,
+          maxX: item.x + item.w
+        };
+
+        cargoGroup.add(boxMesh);
+        boxMeshes.push(boxMesh);
+      });
+
+      // 4. Update 3D CoG visualizer mesh
+      updateCoGIndicatorMesh(solution.cog, usableDim);
+
+      // 5. Update KPI Cards
+      document.getElementById('kpi-util').innerHTML = `${solution.utilization}<span class="kpi-unit">%</span>`;
+      document.getElementById('kpi-vol').innerHTML = `${solution.usedVol}<span class="kpi-unit">/ ${currentSpec.nominalVol}m³</span>`;
+      document.getElementById('kpi-count').innerHTML = `${solution.totalCount}<span class="kpi-unit">箱</span>`;
+      document.getElementById('kpi-weight').innerHTML = `${solution.totalWeightTons}<span class="kpi-unit">T</span>`;
+
+      if (solution.cog) {
+        const latEl = document.getElementById('kpi-cog-lat');
+        const longEl = document.getElementById('kpi-cog-long');
+        if (latEl) {
+          latEl.textContent = `${solution.cog.latOffsetPercent}% ${solution.cog.isLatBalanced ? '✓' : '⚠️'}`;
+          latEl.style.color = solution.cog.isLatBalanced ? '#059669' : '#dc2626';
+        }
+        if (longEl) {
+          longEl.textContent = `${solution.cog.longOffsetPercent}% ${solution.cog.isLongBalanced ? '✓' : '⚠️'}`;
+          longEl.style.color = solution.cog.isLongBalanced ? '#059669' : '#dc2626';
+        }
+      }
+
+      return true;
+    }
+
+    // BLK-007D adapter commit. Layout geometry is authoritative in LoadingResult.scene.objects.
+    function applyBackendLoadingResult(loadingResult, usableDim, activeManifest, currentSpec) {
+      if (!loadingResult || loadingResult.version !== 'BLK007C') return false;
+      if (cargoGroup && containerGroup) containerGroup.remove(cargoGroup);
+      cargoGroup = new THREE.Group();
+      if (containerGroup) containerGroup.add(cargoGroup);
+      boxMeshes = [];
+
+      const cargoById = new Map(loadingResult.cargo.map(item => [item.id, item]));
+      skuMaterialRegistry.clear();
+      activeManifest.forEach(skuItem => {
+        const texs = getOrCreateFaceTextures(skuItem.color, skuItem.name, skuItem.sku);
+        const solidMats = [texs.sideTex, texs.sideTex, texs.topTex, texs.bottomTex, texs.frontBackTex, texs.frontBackTex]
+          .map(map => new THREE.MeshStandardMaterial({ color: skuItem.color, map, roughness: 0.48, metalness: 0.05 }));
+        const ghostMats = [texs.sideTex, texs.sideTex, texs.topTex, texs.bottomTex, texs.frontBackTex, texs.frontBackTex]
+          .map(map => new THREE.MeshStandardMaterial({ color: skuItem.color, map, transparent: true, opacity: 0.10, depthWrite: false }));
+        skuMaterialRegistry.set(skuItem.sku, { solidMats, ghostMats });
+      });
+
+      window.BLK007D.sceneObjects(loadingResult).forEach(object => {
+        const cargo = cargoById.get(object.uuid);
+        if (!cargo) throw new Error(`Scene object has no cargo record: ${object.uuid}`);
+        const skuItem = activeManifest.find(item => item.sku === object.metadata.sku);
+        const registry = skuMaterialRegistry.get(object.metadata.sku);
+        const fallbackMats = Array.from({ length: 6 }, () => new THREE.MeshStandardMaterial({ color: object.material.color, transparent: object.material.opacity < 1, opacity: object.material.opacity }));
+        // Canonical x/y/z maps to the frozen renderer's X/Z/Y axes; values are not repacked or inferred.
+        const geometry = new THREE.BoxGeometry(
+          Math.max(0.001, object.scale[0] - 0.003),
+          Math.max(0.001, object.scale[2] - 0.003),
+          Math.max(0.001, object.scale[1] - 0.003)
+        );
+        const mesh = new THREE.Mesh(geometry, registry ? registry.solidMats : fallbackMats);
+        mesh.name = object.uuid;
+        mesh.position.set(
+          usableDim.length / 2 - object.position[0],
+          -usableDim.height / 2 + object.position[2],
+          -usableDim.width / 2 + object.position[1]
+        );
+        mesh.rotation.set(object.rotation[0], object.rotation[2], object.rotation[1]);
+        mesh.castShadow = true;
+        const rawX = object.position[0] - object.scale[0] / 2;
+        mesh.userData = {
+          objectId: object.uuid,
+          sku: cargo.sku,
+          name: cargo.name,
+          color: skuItem ? skuItem.color : object.material.color,
+          weight: `${cargo.weight_kg} kg`,
+          requirement: cargo.context,
+          productDimensions: `${Math.round(cargo.productDimensions.length * 1000)} × ${Math.round(cargo.productDimensions.width * 1000)} × ${Math.round(cargo.productDimensions.height * 1000)} mm`,
+          occupiedDimensions: `${Math.round(cargo.occupiedDimensions.width * 1000)} × ${Math.round(cargo.occupiedDimensions.depth * 1000)} × ${Math.round(cargo.occupiedDimensions.height * 1000)} mm`,
+          position: `X:${object.position[0].toFixed(2)} Y:${object.position[1].toFixed(2)} Z:${object.position[2].toFixed(2)}`,
+          loadingStep: cargo.loading.step,
+          wall: cargo.loading.wall,
+          layer: cargo.loading.layer,
+          repairGroup: cargo.stability.group_id,
+          originY: mesh.position.y,
+          skuMaterials: registry || { solidMats: fallbackMats, ghostMats: fallbackMats },
+          isCargoBox: true,
+          rawX, rawW: object.scale[0], rawY: object.position[2] - object.scale[2] / 2,
+          rawH: object.scale[2], rawZ: object.position[1] - object.scale[1] / 2,
+          rawD: object.scale[1], maxX: rawX + object.scale[0]
+        };
+        cargoGroup.add(mesh);
+        boxMeshes.push(mesh);
+      });
+
+      const metrics = loadingResult.metrics || {};
+      const utilization = Number(metrics.utilization_pct || 0);
+      const totalWeightKg = Number(metrics.total_weight_kg || loadingResult.cargo.reduce((sum, item) => sum + Number(item.weight_kg || 0), 0));
+      document.getElementById('kpi-util').innerHTML = `${utilization.toFixed(2)}<span class="kpi-unit">%</span>`;
+      document.getElementById('kpi-vol').innerHTML = `—<span class="kpi-unit">后端结果</span>`;
+      document.getElementById('kpi-count').innerHTML = `${loadingResult.cargo.length}<span class="kpi-unit">箱</span>`;
+      document.getElementById('kpi-weight').innerHTML = `${(totalWeightKg / 1000).toFixed(2)}<span class="kpi-unit">T</span>`;
+
+      const skuStats = {};
+      activeManifest.forEach(item => { skuStats[item.sku] = { placed: 0, planned: item.quantity, unplaced: item.quantity }; });
+      loadingResult.cargo.forEach(item => {
+        if (!skuStats[item.sku]) skuStats[item.sku] = { placed: 0, planned: 0, unplaced: 0 };
+        skuStats[item.sku].placed += 1;
+        skuStats[item.sku].unplaced = Math.max(0, skuStats[item.sku].planned - skuStats[item.sku].placed);
+      });
+      activePackingResult = {
+        source: 'BLK007C_LOADING_RESULT', loadingResult, skuStats,
+        totalCount: loadingResult.cargo.length,
+        totalUnplacedCount: Object.values(skuStats).reduce((sum, stat) => sum + stat.unplaced, 0),
+        utilization: utilization.toFixed(2), totalWeightTons: (totalWeightKg / 1000).toFixed(2), elapsedMs: 0
+      };
+      window.activePackingResult = activePackingResult;
+      window.activeLoadingResult = loadingResult;
+      window.activeLoadingJobId = loadingResult.id;
+      if (loadingResult.camera && camera && controls) {
+        const p = loadingResult.camera.position;
+        const t = loadingResult.camera.target;
+        camera.position.set(usableDim.length / 2 - p[0], -usableDim.height / 2 + p[2], -usableDim.width / 2 + p[1]);
+        controls.target.set(usableDim.length / 2 - t[0], -usableDim.height / 2 + t[2], -usableDim.width / 2 + t[1]);
+        camera.zoom = Number(loadingResult.camera.zoom || 1);
+        camera.updateProjectionMatrix();
+        controls.update();
+      }
+      return true;
+    }
+
     // --- 6. SWITCH CONTAINER TYPE ---
     window.switchContainerType = function(typeCode) {
       if (!CONTAINER_SPECS[typeCode]) return;
@@ -4457,6 +4725,26 @@
     function nextPaint() {
       // 让浏览器先把进度卡绘制出来，再进入同步的重计算/渲染，避免 UI 冻住不动
       return new Promise(res => requestAnimationFrame(() => setTimeout(res, 16)));
+    }
+
+    function updateBackendStatus(status, mockMode = false) {
+      const badge = document.getElementById('hud-cache-badge');
+      const text = document.getElementById('txt-cache-badge');
+      const dot = document.getElementById('cache-dot');
+      if (!badge || !text || !dot) return;
+      if (mockMode) {
+        text.textContent = '🟣 Mock Offline Mode'; dot.style.background = '#8b5cf6';
+        badge.style.color = '#7c3aed'; badge.title = '显式 ?mode=mock；未调用后端';
+      } else if (status === 'ONLINE') {
+        text.textContent = '🟢 后端算柜服务在线'; dot.style.background = '#22c55e';
+        badge.style.color = '#059669'; badge.title = 'BLK007D Backend Mode / BLK007C API';
+      } else if (status === 'OFFLINE') {
+        text.textContent = '🔴 后端算柜服务不可用'; dot.style.background = '#ef4444';
+        badge.style.color = '#dc2626'; badge.title = '请检查后端服务、VITE_LOADING_API_URL 和网络连接';
+      } else {
+        text.textContent = '🟡 后端状态检测中'; dot.style.background = '#f59e0b';
+        badge.style.color = '#b45309'; badge.title = '正在请求 /api/v1/loading/health';
+      }
     }
     function createPackingProgress() {
       const runId = ++__packingProgressRunId;
@@ -4533,59 +4821,13 @@
       };
     }
 
-    async function requestPackingFromBackend(spec, manifest, weights) {
-      try {
-        let apiUrl = '/api/v1/pack';
-        // 同源优先：http(s)://host:port 打开时直接请求当前 origin，命中部署该页面的后端端口（如 8081）
-        // 仅 file:// 直开（无后端同源）时回退到默认后端端口 8081
-        if (window.location.protocol === 'file:') {
-          apiUrl = 'http://localhost:8081/api/v1/pack';
-        }
-
-        console.log(`📡 [3D-AICIVS] 发起 Python 后端微服务推演 -> ${apiUrl}`, { spec: spec.code, manifestCount: manifest.length, weights });
-        // 25s 超时：防止后端挂起时界面无限等待（表现为"改了参数没反应"）
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 25000);
-        let response;
-        try {
-          response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              containerSpec: {
-                code: spec.code,
-                usable: spec.usable || { L: spec.intL, W: spec.intW, H: spec.intH },
-                maxPayloadTons: spec.maxPayloadTons || 26.5
-              },
-              manifest: manifest,
-              weights: weights,
-              // v1.5.0 参数贯通：策略 / 货物间距 / 配平开关（与降级内核参数集对齐）
-              strategy: currentStrategy,
-              gap: currentGap,
-              enableCoGBalance: isCoGBalanceEnabled
-            }),
-            signal: controller.signal
-          });
-        } finally {
-          clearTimeout(timeoutId);
-        }
-        if (!response.ok) throw new Error('API server returned status ' + response.status);
-        const result = await response.json();
-        if (result && result.success && result.placedBoxes) {
-          result.isFromBackend = true;
-          console.log(`✅ [3D-AICIVS] Python 后端推演完成！耗时: ${result.elapsedMs}ms, 装载: ${result.totalCount}箱, 利用率: ${result.utilization}%`);
-          return result;
-        }
-      } catch (err) {
-        console.warn('[3D-AICIVS] Python 后端微服务通信失败，自动降级至客户端备用内核:', err);
-      }
-      return null;
-    }
-
     window.runSmartPackingAlgorithm = async function(forceRecompute = true) {
-      console.log('[3D-AICIVS] runSmartPackingAlgorithm called -> 优先 Python 后端 v1.5.0，失败降级纯前端内核');
+      const mode = window.BLK007D.getMode();
+      console.log(`[3D-AICIVS] BLK007D calculation mode: ${mode}`);
 
-      // v1.5.1 进度反馈：全流程可视化，避免"改了参数没反应"的错觉
+      // Increment request epoch for stale update rejection
+      const thisEpoch = ++currentSolutionEpoch;
+
       const prog = createPackingProgress();
       const runBtn = document.getElementById('btn-run-packing');
       const runBtnLabel = runBtn ? runBtn.querySelector('span') : null;
@@ -4598,7 +4840,7 @@
       };
       setRunBusy(true);
       prog.step(1, `策略 ${currentStrategy === 'mec' ? 'MEC 紧凑填充' : '同品聚合'} · 货物间距 ${Math.round(currentGap * 1000)}mm · 配平 ${isCoGBalanceEnabled ? '开' : '关'}`);
-      await nextPaint(); // 先让进度卡绘制出来再进入计算
+      await nextPaint();
 
       const usableDim = {
         length: currentSpec.intL,
@@ -4610,173 +4852,80 @@
       const cacheTxt = document.getElementById('txt-cache-badge');
       const cacheDot = document.getElementById('cache-dot');
 
-      // 优先调用 Python 后端（约束内核 v1.5.0：层优先 + XYZ 审计 + 限层/承重/策略/间距/配平），成功则直接用后端结果渲染
-      let fromBackend = false;
-      prog.step(2, `Python 后端约束内核推演中（${activeManifest.length} 种 SKU · ${currentSpec.code || ''}）…`);
+      prog.step(2, mode === 'MOCK' ? '读取 BLK007C Mock LoadingResult…' : `提交后端算柜任务（${activeManifest.length} 种 SKU · ${currentSpec.code || ''}）…`);
       await nextPaint();
+      let loadingResult;
       try {
-        const backendResult = await requestPackingFromBackend(currentSpec, activeManifest, activeAlgorithmWeights);
-        if (backendResult) {
-          activePackingResult = backendResult;
-          fromBackend = true;
-          prog.note(`后端推演完成：${backendResult.totalCount} 箱 · 利用率 ${backendResult.utilization}% · ${backendResult.elapsedMs}ms`);
+        if (mode === 'BACKEND') {
+          updateBackendStatus('CHECKING');
+          const health = await window.BLK007D.checkHealth();
+          updateBackendStatus(health);
+          if (health !== 'ONLINE') {
+            throw new window.BLK007D.BackendError('NETWORK_ERROR', '后端算柜服务不可用');
+          }
+        } else {
+          updateBackendStatus('OFFLINE', true);
         }
-      } catch (err) {
-        console.warn('[3D-AICIVS] 后端请求异常，降级前端内核:', err);
-      }
-
-      if (!fromBackend) {
-        // 降级：执行纯前端 6 大核心模块装载内核 (成栋成墙、余货队列、朝向隔离、凹面填平)
-        // 提示用户当前处于降级模式（避免误以为"没重算"）
-        const now = Date.now();
-        if (now - (window.__lastFallbackToastTime || 0) > 5000) {
-          window.__lastFallbackToastTime = now;
-          showToast('⚠️ 后端算柜服务不可用，本次已降级为内置内核计算', 'warning');
-        }
-        prog.note('后端不可用，切换内置前端内核计算中…');
-        await nextPaint();
-        try {
-          const packer = new IndustrialSmartContainerPacker(usableDim, {
-            gap: currentGap,
-            strategy: currentStrategy,
-            enableCoGBalance: isCoGBalanceEnabled,
-            weights: activeAlgorithmWeights,
-            maxPayloadTons: currentSpec.maxPayloadTons || 28.6
-          });
-          activePackingResult = packer.pack(activeManifest);
-        } catch (err) {
-          // 内核异常时保留上次结果，明确报错而不是静默失败
-          console.error('[3D-AICIVS] 前端内核计算异常，保留上次结果:', err);
-          showToast('⚠️ 前端内核计算失败: ' + (err.message || err) + '（已保留上次排布结果）', 'warning');
-          prog.finish(false, '前端内核计算失败，已保留上次排布结果');
-          setRunBusy(false);
+        loadingResult = await window.BLK007D.calculate({
+          solverVersion: 'v2',
+          mode: currentStrategy === 'mec' ? 'MAX_COMPACT' : 'BALANCED',
+          timeBudgetSec: 20,
+          randomSeed: 42,
+          container: {
+            code: currentSpec.code,
+            usable: currentSpec.usable || { L: currentSpec.intL, W: currentSpec.intW, H: currentSpec.intH },
+            maxPayloadKg: (currentSpec.maxPayloadTons || 26.5) * 1000,
+            doorZoneLengthM: 1.2,
+            rearZoneLengthM: 1.0
+          },
+          sku: activeManifest
+        });
+        if (thisEpoch < currentSolutionEpoch) {
+          console.warn('[3D-AICIVS] 请求已被后续任务取代，终止渲染');
           return;
         }
+      } catch (err) {
+        console.error('[3D-AICIVS] BLK007D backend request failed:', err);
+        if (mode === 'BACKEND') updateBackendStatus('OFFLINE');
+        const message = '后端算柜服务不可用。请检查：1. 后端服务是否启动 2. API 地址配置 3. 网络连接';
+        showToast(message, 'warning', '后端连接失败');
+        ['kpi-util', 'kpi-vol', 'kpi-count', 'kpi-weight'].forEach(id => {
+          const element = document.getElementById(id);
+          if (element) element.textContent = '—';
+        });
+        activePackingResult = null;
+        window.activePackingResult = null;
+        window.activeLoadingResult = null;
+        prog.finish(false, `${err.type || 'NETWORK_ERROR'}: ${err.message || err}`);
+        setRunBusy(false);
+        return;
       }
-      window.activePackingResult = activePackingResult;
+
+      if (thisEpoch < currentSolutionEpoch) {
+        console.warn('[3D-AICIVS] 渲染前检测到新请求，放弃过时状态提交');
+        return;
+      }
 
       if (cacheBadge && cacheTxt && cacheDot) {
-        if (fromBackend) {
+        if (mode === 'BACKEND') {
           cacheBadge.style.color = '#1d4ed8';
           cacheBadge.style.background = '#eff6ff';
           cacheBadge.style.borderColor = '#93c5fd';
           cacheDot.style.background = '#3b82f6';
-          cacheTxt.textContent = `🧠 Python 后端约束内核 v1.4.1 (${activePackingResult.elapsedMs}ms)`;
+          cacheTxt.textContent = '🟢 后端算柜服务在线';
         } else {
-          cacheBadge.style.color = '#059669';
-          cacheBadge.style.background = '#f0fdf4';
-          cacheBadge.style.borderColor = '#86efac';
-          cacheDot.style.background = '#22c55e';
-          cacheTxt.textContent = `⚡ 纯前端极速内核 (${activePackingResult.elapsedMs}ms)`;
+          cacheBadge.style.color = '#7c3aed';
+          cacheBadge.style.background = '#f5f3ff';
+          cacheBadge.style.borderColor = '#c4b5fd';
+          cacheDot.style.background = '#8b5cf6';
+          cacheTxt.textContent = '🟣 Mock Offline Mode';
         }
       }
 
-      // --- 3D Scene Rebuild ---
-      prog.step(3, `重建 3D 场景与材质（${activePackingResult.totalCount} 箱）…`);
-      await nextPaint(); // 渲染是同步重活，先让"第 3 步"状态绘制出来
+      prog.step(3, `按 LoadingResult.scene.objects 重建 3D 场景（${loadingResult.cargo.length} 箱）…`);
+      await nextPaint();
       try {
-        if (cargoGroup && containerGroup) {
-          containerGroup.remove(cargoGroup);
-        }
-        cargoGroup = new THREE.Group();
-        if (containerGroup) {
-          containerGroup.add(cargoGroup);
-        }
-        boxMeshes = [];
-
-        // Pre-build Shared Materials per SKU
-        skuMaterialRegistry.clear();
-        activeManifest.forEach(skuItem => {
-          const texs = getOrCreateFaceTextures(skuItem.color, skuItem.name, skuItem.sku);
-
-          const solidMats = [
-            new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.sideTex,      roughness: 0.48, metalness: 0.05 }),
-            new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.sideTex,      roughness: 0.48, metalness: 0.05 }),
-            new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.topTex,       roughness: 0.50, metalness: 0.05 }),
-            new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.bottomTex,    roughness: 0.52, metalness: 0.05 }),
-            new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.frontBackTex, roughness: 0.46, metalness: 0.05 }),
-            new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.frontBackTex, roughness: 0.46, metalness: 0.05 })
-          ];
-
-          const ghostMats = [
-            new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.sideTex,      transparent: true, opacity: 0.10, depthWrite: false }),
-            new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.sideTex,      transparent: true, opacity: 0.10, depthWrite: false }),
-            new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.topTex,       transparent: true, opacity: 0.10, depthWrite: false }),
-            new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.bottomTex,    transparent: true, opacity: 0.10, depthWrite: false }),
-            new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.frontBackTex, transparent: true, opacity: 0.10, depthWrite: false }),
-            new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.frontBackTex, transparent: true, opacity: 0.10, depthWrite: false })
-          ];
-
-          skuMaterialRegistry.set(skuItem.sku, { solidMats, ghostMats });
-        });
-
-        const halfIntL = usableDim.length / 2;
-        const startY = -usableDim.height / 2;
-        const startZ = -usableDim.width / 2;
-
-        // Batch Create Cargo Meshes using Shared SKU Materials
-        activePackingResult.placedBoxes.forEach((item) => {
-          const boxGeo = new THREE.BoxGeometry(item.w - 0.003, item.h - 0.003, item.d - 0.003);
-          const skuMats = skuMaterialRegistry.get(item.sku);
-
-          if (!skuMats) {
-            console.warn('[3D-AICIVS] SKU material not found for:', item.sku, '— skipping box render');
-            return; // skip this box, don't crash the whole render
-          }
-
-          const boxMesh = new THREE.Mesh(boxGeo, skuMats.solidMats);
-          const posX = halfIntL - item.x - item.w / 2;
-          const posY = startY + item.y + item.h / 2;
-          const posZ = startZ + item.z + item.d / 2;
-
-          boxMesh.position.set(posX, posY, posZ);
-          boxMesh.castShadow = true;
-          boxMesh.receiveShadow = false;
-
-          boxMesh.userData = {
-            sku: item.sku,
-            name: item.name,
-            color: item.color,
-            weight: item.weight + ' kg',
-            requirement: item.requirement || '放中间',
-            dimensions: `${Math.round(item.w * 1000)} × ${Math.round(item.d * 1000)} × ${Math.round(item.h * 1000)} mm`,
-            position: `X:${posX.toFixed(2)} Y:${posY.toFixed(2)} Z:${posZ.toFixed(2)}`,
-            originY: posY,
-            skuMaterials: skuMats,
-            isCargoBox: true,
-            rawX: item.x,
-            rawW: item.w,
-            rawY: item.y,
-            rawH: item.h,
-            rawZ: item.z,
-            rawD: item.d,
-            maxX: item.x + item.w
-          };
-
-          cargoGroup.add(boxMesh);
-          boxMeshes.push(boxMesh);
-        });
-
-        // Update 3D CoG visualizer mesh
-        updateCoGIndicatorMesh(activePackingResult.cog, usableDim);
-
-        document.getElementById('kpi-util').innerHTML = `${activePackingResult.utilization}<span class="kpi-unit">%</span>`;
-        document.getElementById('kpi-vol').innerHTML = `${activePackingResult.usedVol}<span class="kpi-unit">/ ${currentSpec.nominalVol}m³</span>`;
-        document.getElementById('kpi-count').innerHTML = `${activePackingResult.totalCount}<span class="kpi-unit">箱</span>`;
-        document.getElementById('kpi-weight').innerHTML = `${activePackingResult.totalWeightTons}<span class="kpi-unit">T</span>`;
-
-        if (activePackingResult.cog) {
-          const latEl = document.getElementById('kpi-cog-lat');
-          const longEl = document.getElementById('kpi-cog-long');
-          if (latEl) {
-            latEl.textContent = `${activePackingResult.cog.latOffsetPercent}% ${activePackingResult.cog.isLatBalanced ? '✓' : '⚠️'}`;
-            latEl.style.color = activePackingResult.cog.isLatBalanced ? '#059669' : '#dc2626';
-          }
-          if (longEl) {
-            longEl.textContent = `${activePackingResult.cog.longOffsetPercent}% ${activePackingResult.cog.isLongBalanced ? '✓' : '⚠️'}`;
-            longEl.style.color = activePackingResult.cog.isLongBalanced ? '#059669' : '#dc2626';
-          }
-        }
+        applyBackendLoadingResult(loadingResult, usableDim, activeManifest, currentSpec);
 
         isCameraDirty = true;
         isRaycastDirty = true;
@@ -4787,19 +4936,14 @@
 
         if (forceRecompute) {
           const unplaced = activePackingResult?.totalUnplacedCount || 0;
-          if (unplaced > 0) {
-            showToast(`AI 算柜完成！已装载 ${activePackingResult.totalCount} 箱，利用率 ${activePackingResult.utilization}%（⚠️ 余 ${unplaced} 箱未装下，详见货单）`, 'warning');
-          } else {
-            showToast(`✨ AI 算柜完成！100% 装载全部 ${activePackingResult.totalCount} 箱货物，内腔利用率 ${activePackingResult.utilization}%`, 'success');
-          }
+          showToast(`${mode === 'MOCK' ? 'Mock' : '后端'}算柜结果已加载：${activePackingResult.totalCount} 箱，利用率 ${activePackingResult.utilization}%${unplaced ? `，未装 ${unplaced} 箱` : ''}`, unplaced ? 'warning' : 'success');
         }
 
         console.log('[3D-AICIVS] 3D scene rebuild complete. Boxes:', boxMeshes.length, 'Util:', activePackingResult.utilization + '%');
 
-        // v1.5.1 进度卡收尾：展示最终结果与总耗时，1.3s 后自动淡出
-        prog.finish(true, `${fromBackend ? 'Python 后端内核' : '前端内核'} · 共 ${activePackingResult.totalCount} 箱 · 利用率 ${activePackingResult.utilization}% · 总耗时 ${prog.elapsedSec().toFixed(1)}s`);
+        // 进度卡收尾
+        prog.finish(true, `${mode === 'MOCK' ? 'BLK007C Mock' : 'BLK007C Backend API'} · 共 ${activePackingResult.totalCount} 箱 · 利用率 ${activePackingResult.utilization}% · 总耗时 ${prog.elapsedSec().toFixed(1)}s`);
         setRunBusy(false);
-
       } catch (renderErr) {
         console.error('[3D-AICIVS] 3D 场景渲染异常:', renderErr);
         showToast('⚠️ 3D 渲染异常: ' + renderErr.message, 'warning');
@@ -5553,6 +5697,19 @@
         const clickedBox = intersects[0].object;
         const clickedSKU = clickedBox.userData.sku;
 
+        if (window.activeLoadingResult) {
+          const detail = clickedBox.userData;
+          showToast(
+            `${clickedSKU} · ${detail.position} · Layer ${detail.layer || '-'} · Wall ${detail.wall || '-'} · Loading Step ${detail.loadingStep || '-'} · Repair Group ${detail.repairGroup || '-'}`,
+            'info', 'Backend LoadingResult'
+          );
+          if (window.BLK007D.getMode() === 'BACKEND' && window.activeLoadingJobId) {
+            window.BLK007D.getHighlight(window.activeLoadingJobId, 'object', detail.objectId).catch(err => {
+              console.warn('[BLK007D] highlight request failed:', err);
+            });
+          }
+        }
+
         if (event.shiftKey || event.ctrlKey || event.metaKey) {
           if (selectedSKUs.has(clickedSKU)) selectedSKUs.delete(clickedSKU);
           else selectedSKUs.add(clickedSKU);
@@ -5792,6 +5949,11 @@
 
     window.startPackingAnimation = function() {
       if (isPackingAnimating) return;
+      const loadingResult = window.activeLoadingResult;
+      if (!loadingResult) {
+        showToast('当前没有 BLK007C LoadingResult，无法播放后端装载动画', 'warning');
+        return;
+      }
       isPackingAnimating = true;
 
       const animBtn = document.getElementById('btn-anim-load');
@@ -5799,35 +5961,45 @@
       animBtn.style.opacity = '0.7';
       animText.textContent = '装载演示中...';
 
-      boxMeshes.forEach((box, i) => {
-        const originY = box.userData.originY;
-        box.position.y = originY + 12 + (i % 8) * 1.0;
-        box.scale.set(0.01, 0.01, 0.01);
+      const meshById = new Map(boxMeshes.map(mesh => [mesh.userData.objectId, mesh]));
+      const frames = window.BLK007D.animationFrames(loadingResult);
+      boxMeshes.forEach(mesh => { mesh.visible = false; });
 
-        setTimeout(() => {
-          const startTime = performance.now();
-          const duration = 350;
-
-          function drop(time) {
-            const elapsed = time - startTime;
-            const p = Math.min(elapsed / duration, 1);
-            const ease = 1 - Math.pow(1 - p, 3);
-
-            box.position.y = (originY + 12) * (1 - ease) + originY * ease;
-            box.scale.setScalar(ease);
-
-            if (p < 1) {
-              requestAnimationFrame(drop);
-            } else if (i === boxMeshes.length - 1) {
-              isPackingAnimating = false;
-              animBtn.style.opacity = '1';
-              animText.textContent = '演示装柜';
-              isRaycastDirty = true;
-            }
-          }
-          requestAnimationFrame(drop);
-        }, i * 15);
-      });
+      const canonicalToScene = point => new THREE.Vector3(
+        currentSpec.intL / 2 - point[0],
+        -currentSpec.intH / 2 + point[2],
+        -currentSpec.intW / 2 + point[1]
+      );
+      const playFrame = index => {
+        if (index >= frames.length) {
+          isPackingAnimating = false; animBtn.style.opacity = '1'; animText.textContent = '演示装柜';
+          isRaycastDirty = true; updateBoxVisibilityAndMaterials(); return;
+        }
+        const frame = frames[index];
+        const step = loadingResult.sequence.steps.find(item => item.step === frame.step);
+        if (step && step.action === 'PLACE_GROUP' && step.group) {
+          showToast(`${step.group.type} GROUP · ${step.group.reason}`, 'info', '防倾倒组合');
+        }
+        const movements = frame.movements.length ? frame.movements : frame.objects.map(id => ({ object: id, from: frame.from, to: frame.to }));
+        const durationMs = Math.max(1, Number(frame.duration) * 1000);
+        const startTime = performance.now();
+        movements.forEach(movement => {
+          const mesh = meshById.get(movement.object);
+          if (mesh) { mesh.visible = true; mesh.position.copy(canonicalToScene(movement.from)); }
+        });
+        const animateFrame = time => {
+          const p = Math.min((time - startTime) / durationMs, 1);
+          const ease = 1 - Math.pow(1 - p, 3);
+          movements.forEach(movement => {
+            const mesh = meshById.get(movement.object);
+            if (mesh) mesh.position.lerpVectors(canonicalToScene(movement.from), canonicalToScene(movement.to), ease);
+          });
+          if (p < 1) requestAnimationFrame(animateFrame);
+          else playFrame(index + 1);
+        };
+        requestAnimationFrame(animateFrame);
+      };
+      playFrame(0);
     };
 
     // --- 13. THROTTLED TOPOLOGICAL CUTAWAY & EVENT-DRIVEN RAYCAST HOVER ---
@@ -5923,6 +6095,7 @@
     const ttType = document.getElementById('tt-type');
     const ttStatusBadge = document.getElementById('tt-status-badge');
     const ttDim = document.getElementById('tt-dim');
+    const ttOccupiedDim = document.getElementById('tt-occupied-dim');
     const ttWeight = document.getElementById('tt-weight');
     const ttPos = document.getElementById('tt-pos');
     const ttProgress = document.getElementById('tt-progress');
@@ -5974,14 +6147,17 @@
       }
 
       if (ttDim) {
-        if (boxData && boxData.dimensions) {
-          ttDim.textContent = boxData.dimensions;
+        if (boxData && boxData.productDimensions) {
+          ttDim.textContent = boxData.productDimensions;
         } else {
           const w = (skuData.w * 1000).toFixed(0);
           const d = (skuData.d * 1000).toFixed(0);
           const h = (skuData.h * 1000).toFixed(0);
           ttDim.textContent = `${w}×${d}×${h}mm`;
         }
+      }
+      if (ttOccupiedDim) {
+        ttOccupiedDim.textContent = boxData && boxData.occupiedDimensions ? boxData.occupiedDimensions : '—';
       }
 
       if (ttWeight) {

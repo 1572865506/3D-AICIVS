@@ -1,0 +1,21 @@
+{
+  "block": "BLK-007F-8B",
+  "before": {
+    "placements": 1635,
+    "utilization_pct": 74.26753119725113,
+    "wall_alignment": "PREVIOUS_DEPLOYED_FRONTEND_RESULT",
+    "residual_fill_count": 84
+  },
+  "after": {
+    "placements": 1753,
+    "utilization_pct": 76.3354837755431,
+    "residual_fill_count": 194,
+    "residual_fill_volume_m3": 2.575836,
+    "structured_row_count": 13,
+    "minimum_row_item_count": 4,
+    "minimum_row_coverage": 0.92,
+    "door_open_stable": true,
+    "global_validator": "VALID",
+    "hard_violations": 0
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "block": "BLK-007F-8A-CORRECTION",
+  "valid": true,
+  "coordinate_frame": "CONTAINER_CANONICAL_X_BACK_TO_DOOR",
+  "outward_direction": "+X",
+  "closed_door": {
+    "door_plane_clearance_m": 0.115,
+    "actual_back_anchor_coverage": 0.8643,
+    "axes": {
+      "+X": "PASS_CONTAINER_DOOR_RESTRAINT",
+      "-X": "PASS_MAIN_WALL_ANCHOR",
+      "+Y/-Y": "PASS_NEIGHBOR_AND_SIDE_RESTRAINT",
+      "Z": "PASS_STACK_AND_FLOOR_SUPPORT"
+    }
+  },
+  "door_open": {
+    "valid": true,
+    "perturbation_g": 0.15,
+    "minimum_required_tipping_margin": 1.0,
+    "minimum_actual_tipping_margin": 1.2103,
+    "column_count": 29,
+    "unsafe_shallow_example_margin": 0.308,
+    "unsafe_rejection_reason": "DOOR_OPEN_UNRESTRAINED_TIPPING_RISK"
+  },
+  "rejection_reasons": []
+}

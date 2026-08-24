@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+[LEGACY BASELINE ONLY - DO NOT REUSE IN V2]
+NOTE: This file belongs to Solver V1.x. It is maintained strictly for legacy baseline
+comparison, regression tests, and API backward compatibility.
+Do NOT copy, translate, port, or reuse any packing/placement logic into Solver V2.
+
 v1.7.0 全局规划层(Global Plan Layer)
+"""
 
 设计定位:在单遍贪心构建之前,先解一个"总账"问题--
   给定柜体三围与清单,每个 SKU 用什么朝向,在哪个分区,占多少纵深,装多少箱,

@@ -1,0 +1,2063 @@
+{
+  "generated_at": "2026-08-22T14:53:03Z",
+  "schema": "BLK006B_CANDIDATE_POOL_V1",
+  "root_diagnostics": {
+    "state_id": "root",
+    "proposals_generated": 12,
+    "raw_generated": 567,
+    "duplicates_removed": 493,
+    "cheap_rejected": 30,
+    "cheap_rejection_reasons": {
+      "INVENTORY_IMPOSSIBLE": 30
+    },
+    "hard_rejected": 0,
+    "valid_candidates": 12,
+    "structurally_distinct_valid_candidates": 12,
+    "valid_by_family": {
+      "HOMOGENEOUS_WALL": 2,
+      "ALTERNATE_ORIENTATION_WALL": 2,
+      "ALTERNATE_WIDTH_WALL": 2,
+      "ALTERNATE_HEIGHT_WALL": 2,
+      "MIXED_SKU_WALL": 2,
+      "RESIDUAL_AWARE_WALL": 2
+    },
+    "valid_by_sku": {
+      "SKU-05": 2,
+      "SKU-07": 3,
+      "SKU-06": 3,
+      "SKU-02": 3,
+      "SKU-03": 1,
+      "SKU-13": 1,
+      "SKU-04": 1
+    },
+    "valid_by_orientation": {
+      "UPRIGHT_NORMAL": 11,
+      "UPRIGHT_ROTATED": 1
+    },
+    "valid_by_wall_width_bucket": {
+      "GE_2.0M": 10,
+      "0.5_TO_1.0M": 2
+    },
+    "valid_by_layer_count": {
+      "4": 8,
+      "3": 1,
+      "1": 2,
+      "2": 1
+    },
+    "proposed_by_family": {
+      "HOMOGENEOUS_WALL": 2,
+      "ALTERNATE_ORIENTATION_WALL": 2,
+      "ALTERNATE_WIDTH_WALL": 2,
+      "ALTERNATE_HEIGHT_WALL": 2,
+      "MIXED_SKU_WALL": 2,
+      "RESIDUAL_AWARE_WALL": 2
+    },
+    "valid_signatures": [
+      {
+        "sku_composition": [
+          [
+            "SKU-05",
+            72
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            72
+          ]
+        ],
+        "dimensions": [
+          4.998,
+          1.59,
+          0.92
+        ],
+        "wall_width": 4.998,
+        "layer_structure": [
+          0.0,
+          0.23,
+          0.46,
+          0.69
+        ],
+        "placement_geometry_fingerprint": "758bbdfdaeec60358e5c"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-07",
+            120
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            120
+          ]
+        ],
+        "dimensions": [
+          2.586,
+          2.11,
+          1.124
+        ],
+        "wall_width": 2.586,
+        "layer_structure": [
+          0.0,
+          0.281,
+          0.562,
+          0.843
+        ],
+        "placement_geometry_fingerprint": "4bbf192cbadbd68c5d81"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-06",
+            80
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            80
+          ]
+        ],
+        "dimensions": [
+          2.875,
+          1.84,
+          1.86
+        ],
+        "wall_width": 2.875,
+        "layer_structure": [
+          0.0,
+          0.465,
+          0.93,
+          1.395
+        ],
+        "placement_geometry_fingerprint": "f56c858a3e051743aef4"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-06",
+            90
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            90
+          ]
+        ],
+        "dimensions": [
+          3.45,
+          2.3,
+          1.395
+        ],
+        "wall_width": 3.45,
+        "layer_structure": [
+          0.0,
+          0.465,
+          0.93
+        ],
+        "placement_geometry_fingerprint": "069bafb28d9cf8ea7c3c"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-02",
+            4
+          ],
+          [
+            "SKU-03",
+            4
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            8
+          ]
+        ],
+        "dimensions": [
+          0.978,
+          1.072,
+          0.488
+        ],
+        "wall_width": 0.978,
+        "layer_structure": [
+          0.0
+        ],
+        "placement_geometry_fingerprint": "1f439394778e94a1262d"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-05",
+            96
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            96
+          ]
+        ],
+        "dimensions": [
+          4.998,
+          2.12,
+          0.92
+        ],
+        "wall_width": 4.998,
+        "layer_structure": [
+          0.0,
+          0.23,
+          0.46,
+          0.69
+        ],
+        "placement_geometry_fingerprint": "e0a5dd315ff1f178c7fd"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-02",
+            144
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            144
+          ]
+        ],
+        "dimensions": [
+          3.318,
+          0.48,
+          1.42
+        ],
+        "wall_width": 3.318,
+        "layer_structure": [
+          0.0,
+          0.355,
+          0.71,
+          1.065
+        ],
+        "placement_geometry_fingerprint": "9c3553c91b4151bc778e"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-07",
+            100
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            100
+          ]
+        ],
+        "dimensions": [
+          2.155,
+          2.11,
+          1.124
+        ],
+        "wall_width": 2.155,
+        "layer_structure": [
+          0.0,
+          0.281,
+          0.562,
+          0.843
+        ],
+        "placement_geometry_fingerprint": "297f8052c59109dc4bf9"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-06",
+            80
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            80
+          ]
+        ],
+        "dimensions": [
+          2.3,
+          2.3,
+          1.86
+        ],
+        "wall_width": 2.3,
+        "layer_structure": [
+          0.0,
+          0.465,
+          0.93,
+          1.395
+        ],
+        "placement_geometry_fingerprint": "f7ac9754395e4feef9e5"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-13",
+            50
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            50
+          ]
+        ],
+        "dimensions": [
+          2.15,
+          2.05,
+          0.38
+        ],
+        "wall_width": 2.15,
+        "layer_structure": [
+          0.0,
+          0.19
+        ],
+        "placement_geometry_fingerprint": "d230ab7daf02ae30727d"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-02",
+            4
+          ],
+          [
+            "SKU-04",
+            4
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            8
+          ]
+        ],
+        "dimensions": [
+          0.68,
+          0.808,
+          0.44
+        ],
+        "wall_width": 0.68,
+        "layer_structure": [
+          0.0
+        ],
+        "placement_geometry_fingerprint": "0fbc3d6962b8304f9ed5"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-07",
+            120
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_ROTATED",
+            120
+          ]
+        ],
+        "dimensions": [
+          2.532,
+          2.155,
+          1.124
+        ],
+        "wall_width": 2.532,
+        "layer_structure": [
+          0.0,
+          0.281,
+          0.562,
+          0.843
+        ],
+        "placement_geometry_fingerprint": "12056ac591316d5d47e5"
+      }
+    ],
+    "score_min": 356.1322944324336,
+    "score_max": 13538.891903691632,
+    "score_mean": 7313.2547723452335,
+    "score_std": 4312.211552940531
+  },
+  "valid_candidates": [
+    {
+      "state_id": "root/agg_SKU-05_0.000_0.500_0.000_6x3x4",
+      "parent_state": "root",
+      "selected_candidate": {
+        "candidate_id": "agg_SKU-05_0.000_0.500_0.000_6x3x4",
+        "sku_id": "SKU-05",
+        "orientation_names": [
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL"
+        ],
+        "wall_width": 4.998,
+        "layer_count": 4,
+        "item_count": 72,
+        "volume_gain": 7.311074400000014,
+        "source": "AGGREGATE_GENERATOR"
+      },
+      "candidate_family": "HOMOGENEOUS_WALL",
+      "candidate_signature": {
+        "dimensions": [
+          4.998,
+          1.59,
+          0.92
+        ],
+        "geometry": "758bbdfdaeec60358e5c",
+        "layers": [
+          0.0,
+          0.23,
+          0.46,
+          0.69
+        ],
+        "orientation": [
+          [
+            "UPRIGHT_NORMAL",
+            72
+          ]
+        ],
+        "sku": [
+          [
+            "SKU-05",
+            72
+          ]
+        ],
+        "wall_width": 4.998
+      },
+      "score_breakdown": {
+        "main_body_gain": 7311.074400000014,
+        "topfill_estimate": 2628.9777138324685,
+        "residual_quality": 147.8615137138621,
+        "compactness": 80.0,
+        "inventory_fit": 21.599999999999998,
+        "fragmentation_penalty": 20.45959970348406,
+        "unstable_geometry_penalty": 6.661338147750939e-14,
+        "door_penalty": 0.0,
+        "final_score": 10169.05402784286
+      },
+      "hard_constraint_state": {
+        "is_valid": true,
+        "violations": []
+      },
+      "status": "CANDIDATE_VALID"
+    },
+    {
+      "state_id": "root/agg_SKU-07_0.500_0.200_0.000_6x5x4",
+      "parent_state": "root",
+      "selected_candidate": {
+        "candidate_id": "agg_SKU-07_0.500_0.200_0.000_6x5x4",
+        "sku_id": "SKU-07",
+        "orientation_names": [
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL"
+        ],
+        "wall_width": 2.586,
+        "layer_count": 4,
+        "item_count": 120,
+        "volume_gain": 6.133061039999991,
+        "source": "AGGREGATE_GENERATOR"
+      },
+      "candidate_family": "ALTERNATE_ORIENTATION_WALL",
+      "candidate_signature": {
+        "dimensions": [
+          2.586,
+          2.11,
+          1.124
+        ],
+        "geometry": "4bbf192cbadbd68c5d81",
+        "layers": [
+          0.0,
+          0.281,
+          0.562,
+          0.843
+        ],
+        "orientation": [
+          [
+            "UPRIGHT_NORMAL",
+            120
+          ]
+        ],
+        "sku": [
+          [
+            "SKU-07",
+            120
+          ]
+        ],
+        "wall_width": 2.586
+      },
+      "score_breakdown": {
+        "main_body_gain": 6133.061039999991,
+        "topfill_estimate": 1476.2424216271297,
+        "residual_quality": 93.7892262787249,
+        "compactness": 79.99999999999989,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": 24.996293550778383,
+        "unstable_geometry_penalty": 4.440892098500626e-14,
+        "door_penalty": 0.0,
+        "final_score": 7786.896394355068
+      },
+      "hard_constraint_state": {
+        "is_valid": true,
+        "violations": []
+      },
+      "status": "CANDIDATE_VALID"
+    },
+    {
+      "state_id": "root/agg_SKU-06_0.000_0.500_0.000_5x4x4",
+      "parent_state": "root",
+      "selected_candidate": {
+        "candidate_id": "agg_SKU-06_0.000_0.500_0.000_5x4x4",
+        "sku_id": "SKU-06",
+        "orientation_names": [
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL"
+        ],
+        "wall_width": 2.875,
+        "layer_count": 4,
+        "item_count": 80,
+        "volume_gain": 9.839399999999996,
+        "source": "AGGREGATE_GENERATOR"
+      },
+      "candidate_family": "ALTERNATE_WIDTH_WALL",
+      "candidate_signature": {
+        "dimensions": [
+          2.875,
+          1.84,
+          1.86
+        ],
+        "geometry": "f56c858a3e051743aef4",
+        "layers": [
+          0.0,
+          0.465,
+          0.93,
+          1.395
+        ],
+        "orientation": [
+          [
+            "UPRIGHT_NORMAL",
+            80
+          ]
+        ],
+        "sku": [
+          [
+            "SKU-06",
+            80
+          ]
+        ],
+        "wall_width": 2.875
+      },
+      "score_breakdown": {
+        "main_body_gain": 9839.399999999996,
+        "topfill_estimate": 535.2321219421792,
+        "residual_quality": 63.87018161601185,
+        "compactness": 79.99999999999997,
+        "inventory_fit": 25.263157894736842,
+        "fragmentation_penalty": 41.36397331356561,
+        "unstable_geometry_penalty": 6.661338147750939e-14,
+        "door_penalty": 0.0,
+        "final_score": 10502.401488139358
+      },
+      "hard_constraint_state": {
+        "is_valid": true,
+        "violations": []
+      },
+      "status": "CANDIDATE_VALID"
+    },
+    {
+      "state_id": "root/agg_SKU-06_0.500_0.000_0.000_6x5x3",
+      "parent_state": "root",
+      "selected_candidate": {
+        "candidate_id": "agg_SKU-06_0.500_0.000_0.000_6x5x3",
+        "sku_id": "SKU-06",
+        "orientation_names": [
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL"
+        ],
+        "wall_width": 3.45,
+        "layer_count": 3,
+        "item_count": 90,
+        "volume_gain": 11.069325000000001,
+        "source": "AGGREGATE_GENERATOR"
+      },
+      "candidate_family": "ALTERNATE_HEIGHT_WALL",
+      "candidate_signature": {
+        "dimensions": [
+          3.45,
+          2.3,
+          1.395
+        ],
+        "geometry": "069bafb28d9cf8ea7c3c",
+        "layers": [
+          0.0,
+          0.465,
+          0.93
+        ],
+        "orientation": [
+          [
+            "UPRIGHT_NORMAL",
+            90
+          ]
+        ],
+        "sku": [
+          [
+            "SKU-06",
+            90
+          ]
+        ],
+        "wall_width": 3.45
+      },
+      "score_breakdown": {
+        "main_body_gain": 11069.325,
+        "topfill_estimate": 1693.8372164566338,
+        "residual_quality": 129.9951816160118,
+        "compactness": 79.99999999999999,
+        "inventory_fit": 28.421052631578945,
+        "fragmentation_penalty": 27.575982209043755,
+        "unstable_geometry_penalty": 6.661338147750939e-14,
+        "door_penalty": 0.0,
+        "final_score": 12974.00246849518
+      },
+      "hard_constraint_state": {
+        "is_valid": true,
+        "violations": []
+      },
+      "status": "CANDIDATE_VALID"
+    },
+    {
+      "state_id": "root/mixed_row_SKU-02_UPRIGHT_NORMAL__SKU-03_UPRIGHT_NORMAL_0.000",
+      "parent_state": "root",
+      "selected_candidate": {
+        "candidate_id": "mixed_row_SKU-02_UPRIGHT_NORMAL__SKU-03_UPRIGHT_NORMAL_0.000",
+        "sku_id": "SKU-02+SKU-03",
+        "orientation_names": [
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL"
+        ],
+        "wall_width": 0.978,
+        "layer_count": 1,
+        "item_count": 8,
+        "volume_gain": 0.42172332799999995,
+        "source": "AGGREGATE_GENERATOR"
+      },
+      "candidate_family": "MIXED_SKU_WALL",
+      "candidate_signature": {
+        "dimensions": [
+          0.978,
+          1.072,
+          0.488
+        ],
+        "geometry": "1f439394778e94a1262d",
+        "layers": [
+          0.0
+        ],
+        "orientation": [
+          [
+            "UPRIGHT_NORMAL",
+            8
+          ]
+        ],
+        "sku": [
+          [
+            "SKU-02",
+            4
+          ],
+          [
+            "SKU-03",
+            4
+          ]
+        ],
+        "wall_width": 0.978
+      },
+      "score_breakdown": {
+        "main_body_gain": 421.723328,
+        "topfill_estimate": 265.0132673113307,
+        "residual_quality": 11.991550557073788,
+        "compactness": 65.94230897208615,
+        "inventory_fit": 0.4210526315789474,
+        "fragmentation_penalty": 27.824258986756355,
+        "unstable_geometry_penalty": 0.0,
+        "door_penalty": 0.0,
+        "final_score": 737.2672484853132
+      },
+      "hard_constraint_state": {
+        "is_valid": true,
+        "violations": []
+      },
+      "status": "CANDIDATE_VALID"
+    },
+    {
+      "state_id": "root/agg_SKU-05_0.500_0.000_0.000_6x4x4",
+      "parent_state": "root",
+      "selected_candidate": {
+        "candidate_id": "agg_SKU-05_0.500_0.000_0.000_6x4x4",
+        "sku_id": "SKU-05",
+        "orientation_names": [
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL"
+        ],
+        "wall_width": 4.998,
+        "layer_count": 4,
+        "item_count": 96,
+        "volume_gain": 9.74809920000001,
+        "source": "AGGREGATE_GENERATOR"
+      },
+      "candidate_family": "RESIDUAL_AWARE_WALL",
+      "candidate_signature": {
+        "dimensions": [
+          4.998,
+          2.12,
+          0.92
+        ],
+        "geometry": "e0a5dd315ff1f178c7fd",
+        "layers": [
+          0.0,
+          0.23,
+          0.46,
+          0.69
+        ],
+        "orientation": [
+          [
+            "UPRIGHT_NORMAL",
+            96
+          ]
+        ],
+        "sku": [
+          [
+            "SKU-05",
+            96
+          ]
+        ],
+        "wall_width": 4.998
+      },
+      "score_breakdown": {
+        "main_body_gain": 9748.09920000001,
+        "topfill_estimate": 3505.3036184432917,
+        "residual_quality": 197.14868495181616,
+        "compactness": 80.0,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": 20.45959970348406,
+        "unstable_geometry_penalty": 2.220446049250313e-14,
+        "door_penalty": 0.0,
+        "final_score": 13538.891903691632
+      },
+      "hard_constraint_state": {
+        "is_valid": true,
+        "violations": []
+      },
+      "status": "CANDIDATE_VALID"
+    },
+    {
+      "state_id": "root/agg_SKU-02_0.000_0.500_0.000_6x6x4",
+      "parent_state": "root",
+      "selected_candidate": {
+        "candidate_id": "agg_SKU-02_0.000_0.500_0.000_6x6x4",
+        "sku_id": "SKU-02",
+        "orientation_names": [
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL"
+        ],
+        "wall_width": 3.318,
+        "layer_count": 4,
+        "item_count": 144,
+        "volume_gain": 2.2615488000000004,
+        "source": "AGGREGATE_GENERATOR"
+      },
+      "candidate_family": "HOMOGENEOUS_WALL",
+      "candidate_signature": {
+        "dimensions": [
+          3.318,
+          0.48,
+          1.42
+        ],
+        "geometry": "9c3553c91b4151bc778e",
+        "layers": [
+          0.0,
+          0.355,
+          0.71,
+          1.065
+        ],
+        "orientation": [
+          [
+            "UPRIGHT_NORMAL",
+            144
+          ]
+        ],
+        "sku": [
+          [
+            "SKU-02",
+            144
+          ]
+        ],
+        "wall_width": 3.318
+      },
+      "score_breakdown": {
+        "main_body_gain": 2261.5488000000005,
+        "topfill_estimate": 307.9872378947369,
+        "residual_quality": 24.09915789473684,
+        "compactness": 80.0,
+        "inventory_fit": 8.88888888888889,
+        "fragmentation_penalty": 31.578947368421055,
+        "unstable_geometry_penalty": 6.661338147750939e-14,
+        "door_penalty": 0.0,
+        "final_score": 2650.945137309942
+      },
+      "hard_constraint_state": {
+        "is_valid": true,
+        "violations": []
+      },
+      "status": "CANDIDATE_VALID"
+    },
+    {
+      "state_id": "root/agg_SKU-07_0.500_0.000_0.000_5x5x4",
+      "parent_state": "root",
+      "selected_candidate": {
+        "candidate_id": "agg_SKU-07_0.500_0.000_0.000_5x5x4",
+        "sku_id": "SKU-07",
+        "orientation_names": [
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL"
+        ],
+        "wall_width": 2.1550000000000002,
+        "layer_count": 4,
+        "item_count": 100,
+        "volume_gain": 5.110884199999998,
+        "source": "AGGREGATE_GENERATOR"
+      },
+      "candidate_family": "ALTERNATE_ORIENTATION_WALL",
+      "candidate_signature": {
+        "dimensions": [
+          2.155,
+          2.11,
+          1.124
+        ],
+        "geometry": "297f8052c59109dc4bf9",
+        "layers": [
+          0.0,
+          0.281,
+          0.562,
+          0.843
+        ],
+        "orientation": [
+          [
+            "UPRIGHT_NORMAL",
+            100
+          ]
+        ],
+        "sku": [
+          [
+            "SKU-07",
+            100
+          ]
+        ],
+        "wall_width": 2.155
+      },
+      "score_breakdown": {
+        "main_body_gain": 5110.884199999999,
+        "topfill_estimate": 1230.2020180226077,
+        "residual_quality": 78.15768856560406,
+        "compactness": 79.99999999999996,
+        "inventory_fit": 24.0,
+        "fragmentation_penalty": 24.9962935507784,
+        "unstable_geometry_penalty": 4.440892098500626e-14,
+        "door_penalty": 0.0,
+        "final_score": 6498.2476130374325
+      },
+      "hard_constraint_state": {
+        "is_valid": true,
+        "violations": []
+      },
+      "status": "CANDIDATE_VALID"
+    },
+    {
+      "state_id": "root/agg_SKU-06_0.500_0.000_0.000_4x5x4",
+      "parent_state": "root",
+      "selected_candidate": {
+        "candidate_id": "agg_SKU-06_0.500_0.000_0.000_4x5x4",
+        "sku_id": "SKU-06",
+        "orientation_names": [
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL"
+        ],
+        "wall_width": 2.3,
+        "layer_count": 4,
+        "item_count": 80,
+        "volume_gain": 9.839399999999996,
+        "source": "AGGREGATE_GENERATOR"
+      },
+      "candidate_family": "ALTERNATE_WIDTH_WALL",
+      "candidate_signature": {
+        "dimensions": [
+          2.3,
+          2.3,
+          1.86
+        ],
+        "geometry": "f7ac9754395e4feef9e5",
+        "layers": [
+          0.0,
+          0.465,
+          0.93,
+          1.395
+        ],
+        "orientation": [
+          [
+            "UPRIGHT_NORMAL",
+            80
+          ]
+        ],
+        "sku": [
+          [
+            "SKU-06",
+            80
+          ]
+        ],
+        "wall_width": 2.3
+      },
+      "score_breakdown": {
+        "main_body_gain": 9839.399999999996,
+        "topfill_estimate": 535.2321219421793,
+        "residual_quality": 63.870181616011855,
+        "compactness": 79.99999999999996,
+        "inventory_fit": 25.263157894736842,
+        "fragmentation_penalty": 41.36397331356561,
+        "unstable_geometry_penalty": 6.661338147750939e-14,
+        "door_penalty": 0.0,
+        "final_score": 10502.401488139358
+      },
+      "hard_constraint_state": {
+        "is_valid": true,
+        "violations": []
+      },
+      "status": "CANDIDATE_VALID"
+    },
+    {
+      "state_id": "root/agg_SKU-13_0.500_0.000_0.000_5x5x2",
+      "parent_state": "root",
+      "selected_candidate": {
+        "candidate_id": "agg_SKU-13_0.500_0.000_0.000_5x5x2",
+        "sku_id": "SKU-13",
+        "orientation_names": [
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL"
+        ],
+        "wall_width": 2.15,
+        "layer_count": 2,
+        "item_count": 50,
+        "volume_gain": 1.674850000000002,
+        "source": "AGGREGATE_GENERATOR"
+      },
+      "candidate_family": "ALTERNATE_HEIGHT_WALL",
+      "candidate_signature": {
+        "dimensions": [
+          2.15,
+          2.05,
+          0.38
+        ],
+        "geometry": "d230ab7daf02ae30727d",
+        "layers": [
+          0.0,
+          0.19
+        ],
+        "orientation": [
+          [
+            "UPRIGHT_NORMAL",
+            50
+          ]
+        ],
+        "sku": [
+          [
+            "SKU-13",
+            50
+          ]
+        ],
+        "wall_width": 2.15
+      },
+      "score_breakdown": {
+        "main_body_gain": 1674.850000000002,
+        "topfill_estimate": 2374.2767957746473,
+        "residual_quality": 102.4278169014084,
+        "compactness": 80.0,
+        "inventory_fit": 30.0,
+        "fragmentation_penalty": 5.633802816901427,
+        "unstable_geometry_penalty": 3.3306690738754696e-14,
+        "door_penalty": 0.0,
+        "final_score": 4255.920809859157
+      },
+      "hard_constraint_state": {
+        "is_valid": true,
+        "violations": []
+      },
+      "status": "CANDIDATE_VALID"
+    },
+    {
+      "state_id": "root/mixed_row_SKU-02_UPRIGHT_NORMAL__SKU-04_UPRIGHT_NORMAL_0.000",
+      "parent_state": "root",
+      "selected_candidate": {
+        "candidate_id": "mixed_row_SKU-02_UPRIGHT_NORMAL__SKU-04_UPRIGHT_NORMAL_0.000",
+        "sku_id": "SKU-02+SKU-04",
+        "orientation_names": [
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL",
+          "UPRIGHT_NORMAL"
+        ],
+        "wall_width": 0.68,
+        "layer_count": 1,
+        "item_count": 8,
+        "volume_gain": 0.20883040000000003,
+        "source": "AGGREGATE_GENERATOR"
+      },
+      "candidate_family": "MIXED_SKU_WALL",
+      "candidate_signature": {
+        "dimensions": [
+          0.68,
+          0.808,
+          0.44
+        ],
+        "geometry": "0fbc3d6962b8304f9ed5",
+        "layers": [
+          0.0
+        ],
+        "orientation": [
+          [
+            "UPRIGHT_NORMAL",
+            8
+          ]
+        ],
+        "sku": [
+          [
+            "SKU-02",
+            4
+          ],
+          [
+            "SKU-04",
+            4
+          ]
+        ],
+        "wall_width": 0.68
+      },
+      "score_breakdown": {
+        "main_body_gain": 208.83040000000003,
+        "topfill_estimate": 107.23448544297575,
+        "residual_quality": 4.74909147223099,
+        "compactness": 69.10520463811089,
+        "inventory_fit": 0.41666666666666663,
+        "fragmentation_penalty": 34.20355378755073,
+        "unstable_geometry_penalty": 0.0,
+        "door_penalty": 0.0,
+        "final_score": 356.1322944324336
+      },
+      "hard_constraint_state": {
+        "is_valid": true,
+        "violations": []
+      },
+      "status": "CANDIDATE_VALID"
+    },
+    {
+      "state_id": "root/agg_SKU-07_0.500_0.000_0.000_6x5x4",
+      "parent_state": "root",
+      "selected_candidate": {
+        "candidate_id": "agg_SKU-07_0.500_0.000_0.000_6x5x4",
+        "sku_id": "SKU-07",
+        "orientation_names": [
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED",
+          "UPRIGHT_ROTATED"
+        ],
+        "wall_width": 2.532,
+        "layer_count": 4,
+        "item_count": 120,
+        "volume_gain": 6.133061039999991,
+        "source": "AGGREGATE_GENERATOR"
+      },
+      "candidate_family": "RESIDUAL_AWARE_WALL",
+      "candidate_signature": {
+        "dimensions": [
+          2.532,
+          2.155,
+          1.124
+        ],
+        "geometry": "12056ac591316d5d47e5",
+        "layers": [
+          0.0,
+          0.281,
+          0.562,
+          0.843
+        ],
+        "orientation": [
+          [
+            "UPRIGHT_ROTATED",
+            120
+          ]
+        ],
+        "sku": [
+          [
+            "SKU-07",
+            120
+          ]
+        ],
+        "wall_width": 2.532
+      },
+      "score_breakdown": {
+        "main_body_gain": 6133.061039999991,
+        "topfill_estimate": 1476.2424216271293,
+        "residual_quality": 93.78922627872485,
+        "compactness": 79.99999999999989,
+        "inventory_fit": 28.799999999999997,
+        "fragmentation_penalty": 24.996293550778393,
+        "unstable_geometry_penalty": 4.440892098500626e-14,
+        "door_penalty": 0.0,
+        "final_score": 7786.896394355067
+      },
+      "hard_constraint_state": {
+        "is_valid": true,
+        "violations": []
+      },
+      "status": "CANDIDATE_VALID"
+    }
+  ],
+  "hard_rejected_candidates": []
+}

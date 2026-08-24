@@ -1,0 +1,43 @@
+{
+  "block": "BLK-007F-8B-REPAIR",
+  "status": "PASS",
+  "superseded_result": {
+    "placements": 1626,
+    "utilization_pct": 77.66476128228884,
+    "reason": "OPPORTUNISTIC_SINGLE_CARTON_FILL_CREATED_SCATTERED_CHECKERBOARD_LAYOUT"
+  },
+  "corrected_14_sku_result": {
+    "placements": 1753,
+    "utilization_pct": 76.3354837755431,
+    "global_validator": "VALID",
+    "wall_interface_repair": {
+      "status": "SUCCESS",
+      "moved_columns": 18,
+      "moved_placements": 159,
+      "total_compaction_m": 2.421,
+      "maximum_compaction_m": 0.45,
+      "single_box_frontier_poisoning_removed": 18
+    },
+    "structured_residual": {
+      "committed_rows": 13,
+      "committed_placements": 194,
+      "committed_floor_placements": 0,
+      "committed_top_placements": 194,
+      "sku_mix": {"SKU-14": 182, "SKU-02": 12},
+      "isolated_fill_count": 0,
+      "checkerboard_pattern_count": 0,
+      "reason": "COMPLETE_ROWS_PASSED_92_PERCENT_COVERAGE_AND_MINIMUM_FOUR_ITEMS"
+    }
+  },
+  "synthetic_proofs": {
+    "mixed_sku_top_row": {"placements": 4, "coverage": 1.0, "sku_diversity": 2, "atomic_validation": "PASS"},
+    "single_obstruction_interface": {"shoulder_columns_moved": 3, "blocking_column_moved": false, "global_wall_shifted": false, "validation": "PASS"},
+    "split_floor_regions": {"rows": 2, "placements": 8, "coverage": 1.0, "validation": "PASS"},
+    "union_top_support": {"supporting_cartons": 8, "placements": 4, "coverage": 1.0, "validation": "PASS"},
+    "mixed_sku_stack_limit": {"self_sku_layer_4": "REJECTED", "different_sku_above_layer_3": "PASS"}
+  },
+  "regression": {
+    "python": {"passed": 332, "failed": 0, "runtime_sec": 219.598},
+    "frontend_node": {"passed": 8, "failed": 0}
+  }
+}

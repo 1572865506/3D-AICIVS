@@ -1,0 +1,40 @@
+{
+  "aggregate": {
+    "repair_attempts": 5,
+    "repair_success": 1,
+    "repair_failure": 0,
+    "average_candidates": 5,
+    "average_group_size": 2.0,
+    "dependency_changes": 0,
+    "sequence_improvement": 1,
+    "geometry_changes": 0,
+    "max_repair_runtime_sec": 1.4613563753664494,
+    "performance_target_2s_pass": true,
+    "sequence_feasible_count": 12,
+    "sequence_feasibility_rate": 1.0
+  },
+  "benchmarks": [
+    {
+      "benchmark": "BENCH-001",
+      "repair_attempts": 5,
+      "repair_success": 1,
+      "repair_failure": 0,
+      "candidate_count": 5,
+      "valid_candidate_count": 5,
+      "average_group_size": 2.0,
+      "dependency_changes": 0,
+      "sequence_improvement": 1,
+      "geometry_changes": 0,
+      "changed_steps": 4,
+      "runtime_sec": 1.4613563753664494,
+      "repair_signature": "3e5026d20a34ff49b98951a3c1ee442032db9e5123293721c2049cb3b06e1cf5"
+    }
+  ],
+  "regression": {
+    "repair_tests_run": 9,
+    "repair_tests_pass": true,
+    "full_tests_run": 199,
+    "full_suite_pass": true,
+    "deterministic_repair_pass": true
+  }
+}

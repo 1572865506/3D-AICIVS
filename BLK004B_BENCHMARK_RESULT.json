@@ -1,0 +1,427 @@
+{
+  "generated_at": "2026-08-22T12:50:46Z",
+  "modes": {
+    "BALANCED": {
+      "mode": "BALANCED",
+      "placed_count": 349,
+      "utilization_pct": 37.1585,
+      "max_x": 11.978,
+      "door_ready": true,
+      "overlap": 0,
+      "penetration": 0.0,
+      "out_of_bounds": 0,
+      "hard_violations": 0,
+      "enclosed_cavity": 0,
+      "bridge_void": 0,
+      "top_fill_region_count": 28,
+      "top_fill_usable_volume": 39.43731,
+      "top_fill_placed_count": 12,
+      "top_fill_placed_volume": 0.15741,
+      "top_fill_utilization": 0.003991,
+      "top_fill_by_sku": {
+        "SKU-14": 12
+      },
+      "top_fill_by_orientation": {
+        "FLAT_ZX": 3,
+        "FLAT_XZ": 9
+      },
+      "top_fill_layer_distribution": {
+        "1": 5,
+        "2": 4,
+        "3": 3
+      },
+      "rejected_insufficient_support": 0,
+      "rejected_compression": 0,
+      "rejected_orientation_context": 0,
+      "rejected_max_layers": 0,
+      "rejected_stability": 1,
+      "residual_top_volume": 39.24211,
+      "residual_top_fragmentation": {
+        "fragment_count": 0,
+        "fragment_volume": 0,
+        "fragment_ratio": 0.0
+      },
+      "conditional_flat_count": 12,
+      "main_body_conditional_flat_count": 0,
+      "conditional_flat_by_sku": {
+        "SKU-14": 12
+      },
+      "max_top_fill_layer": 3,
+      "conditional_flat_placements": [
+        {
+          "placement_id": "topfill_0331_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_ZX",
+          "x": 0.0,
+          "y": 0.888,
+          "z": 1.64,
+          "base_z": 1.64,
+          "top_z": 1.72
+        },
+        {
+          "placement_id": "topfill_0332_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_ZX",
+          "x": 0.0,
+          "y": 0.8,
+          "z": 1.72,
+          "base_z": 1.72,
+          "top_z": 1.8
+        },
+        {
+          "placement_id": "topfill_0333_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_ZX",
+          "x": 0.0,
+          "y": 0.8,
+          "z": 1.8,
+          "base_z": 1.8,
+          "top_z": 1.88
+        },
+        {
+          "placement_id": "topfill_0334_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 2.8,
+          "y": 0.0,
+          "z": 1.395,
+          "base_z": 1.395,
+          "top_z": 1.475
+        },
+        {
+          "placement_id": "topfill_0335_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 2.8,
+          "y": 0.0,
+          "z": 1.475,
+          "base_z": 1.475,
+          "top_z": 1.555
+        },
+        {
+          "placement_id": "topfill_0336_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 2.8,
+          "y": 0.0,
+          "z": 1.555,
+          "base_z": 1.555,
+          "top_z": 1.635
+        },
+        {
+          "placement_id": "topfill_0337_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 3.375,
+          "y": 0.0,
+          "z": 1.395,
+          "base_z": 1.395,
+          "top_z": 1.475
+        },
+        {
+          "placement_id": "topfill_0338_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 3.375,
+          "y": 0.0,
+          "z": 1.475,
+          "base_z": 1.475,
+          "top_z": 1.555
+        },
+        {
+          "placement_id": "topfill_0339_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 3.375,
+          "y": 0.0,
+          "z": 1.555,
+          "base_z": 1.555,
+          "top_z": 1.635
+        },
+        {
+          "placement_id": "topfill_0340_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 2.225,
+          "y": 0.0,
+          "z": 1.395,
+          "base_z": 1.395,
+          "top_z": 1.475
+        },
+        {
+          "placement_id": "topfill_0341_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 2.225,
+          "y": 0.0,
+          "z": 1.475,
+          "base_z": 1.475,
+          "top_z": 1.555
+        },
+        {
+          "placement_id": "topfill_0342_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 2.225,
+          "y": 0.0,
+          "z": 1.555,
+          "base_z": 1.555,
+          "top_z": 1.635
+        }
+      ],
+      "region_eligibility": {
+        "stage_true_counts": {
+          "geometrically_compatible": 269,
+          "policy_compatible": 9,
+          "physically_compatible": 392,
+          "inventory_available": 392,
+          "eligible": 9
+        },
+        "rejection_reasons": {
+          "POLICY_INCOMPATIBLE": 383,
+          "GEOMETRY_INCOMPATIBLE": 123
+        }
+      }
+    },
+    "OPTIMIZE": {
+      "mode": "OPTIMIZE",
+      "placed_count": 329,
+      "utilization_pct": 36.3022,
+      "max_x": 11.978,
+      "door_ready": true,
+      "overlap": 0,
+      "penetration": 0.0,
+      "out_of_bounds": 0,
+      "hard_violations": 0,
+      "enclosed_cavity": 0,
+      "bridge_void": 0,
+      "top_fill_region_count": 27,
+      "top_fill_usable_volume": 39.208,
+      "top_fill_placed_count": 16,
+      "top_fill_placed_volume": 0.20988,
+      "top_fill_utilization": 0.005353,
+      "top_fill_by_sku": {
+        "SKU-14": 16
+      },
+      "top_fill_by_orientation": {
+        "FLAT_ZX": 3,
+        "FLAT_XZ": 13
+      },
+      "top_fill_layer_distribution": {
+        "1": 7,
+        "2": 5,
+        "3": 4
+      },
+      "rejected_insufficient_support": 0,
+      "rejected_compression": 0,
+      "rejected_orientation_context": 0,
+      "rejected_max_layers": 0,
+      "rejected_stability": 2,
+      "residual_top_volume": 38.9848,
+      "residual_top_fragmentation": {
+        "fragment_count": 0,
+        "fragment_volume": 0,
+        "fragment_ratio": 0.0
+      },
+      "conditional_flat_count": 16,
+      "main_body_conditional_flat_count": 0,
+      "conditional_flat_by_sku": {
+        "SKU-14": 16
+      },
+      "max_top_fill_layer": 3,
+      "conditional_flat_placements": [
+        {
+          "placement_id": "topfill_0307_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_ZX",
+          "x": 0.4,
+          "y": 0.0,
+          "z": 1.395,
+          "base_z": 1.395,
+          "top_z": 1.475
+        },
+        {
+          "placement_id": "topfill_0308_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_ZX",
+          "x": 0.4,
+          "y": 0.0,
+          "z": 1.475,
+          "base_z": 1.475,
+          "top_z": 1.555
+        },
+        {
+          "placement_id": "topfill_0309_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_ZX",
+          "x": 0.4,
+          "y": 0.0,
+          "z": 1.555,
+          "base_z": 1.555,
+          "top_z": 1.635
+        },
+        {
+          "placement_id": "topfill_0310_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 2.8,
+          "y": 0.0,
+          "z": 1.395,
+          "base_z": 1.395,
+          "top_z": 1.475
+        },
+        {
+          "placement_id": "topfill_0311_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 2.8,
+          "y": 0.0,
+          "z": 1.475,
+          "base_z": 1.475,
+          "top_z": 1.555
+        },
+        {
+          "placement_id": "topfill_0312_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 2.8,
+          "y": 0.0,
+          "z": 1.555,
+          "base_z": 1.555,
+          "top_z": 1.635
+        },
+        {
+          "placement_id": "topfill_0313_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 3.375,
+          "y": 0.0,
+          "z": 1.395,
+          "base_z": 1.395,
+          "top_z": 1.475
+        },
+        {
+          "placement_id": "topfill_0314_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 3.375,
+          "y": 0.0,
+          "z": 1.475,
+          "base_z": 1.475,
+          "top_z": 1.555
+        },
+        {
+          "placement_id": "topfill_0315_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 3.375,
+          "y": 0.0,
+          "z": 1.555,
+          "base_z": 1.555,
+          "top_z": 1.635
+        },
+        {
+          "placement_id": "topfill_0316_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 2.225,
+          "y": 0.0,
+          "z": 1.395,
+          "base_z": 1.395,
+          "top_z": 1.475
+        },
+        {
+          "placement_id": "topfill_0317_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 2.225,
+          "y": 0.0,
+          "z": 1.475,
+          "base_z": 1.475,
+          "top_z": 1.555
+        },
+        {
+          "placement_id": "topfill_0318_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 2.225,
+          "y": 0.0,
+          "z": 1.555,
+          "base_z": 1.555,
+          "top_z": 1.635
+        },
+        {
+          "placement_id": "topfill_0319_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 0.5,
+          "y": 0.672,
+          "z": 1.395,
+          "base_z": 1.395,
+          "top_z": 1.475
+        },
+        {
+          "placement_id": "topfill_0320_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 0.5,
+          "y": 0.6,
+          "z": 1.475,
+          "base_z": 1.475,
+          "top_z": 1.555
+        },
+        {
+          "placement_id": "topfill_0321_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 0.5,
+          "y": 0.6,
+          "z": 1.555,
+          "base_z": 1.555,
+          "top_z": 1.635
+        },
+        {
+          "placement_id": "topfill_0322_SKU-14",
+          "sku_id": "SKU-14",
+          "orientation": "FLAT_XZ",
+          "x": 1.075,
+          "y": 0.0,
+          "z": 1.395,
+          "base_z": 1.395,
+          "top_z": 1.475
+        }
+      ],
+      "region_eligibility": {
+        "stage_true_counts": {
+          "geometrically_compatible": 255,
+          "policy_compatible": 8,
+          "physically_compatible": 378,
+          "inventory_available": 378,
+          "eligible": 8
+        },
+        "rejection_reasons": {
+          "POLICY_INCOMPATIBLE": 370,
+          "GEOMETRY_INCOMPATIBLE": 123
+        }
+      }
+    }
+  },
+  "acceptance": {
+    "conditional_flat_present": true,
+    "two_layer_present": true,
+    "three_layer_verified_when_geometry_allowed": true,
+    "main_body_conditional_flat_zero": true,
+    "regression_gates": true
+  },
+  "regression_tests": {
+    "TOP_001_012": "PASS",
+    "WALL_001_010": "PASS",
+    "CARGO_PROFILE_TESTS": "PASS",
+    "focused_tests_run": 29,
+    "full_suite": "PASS",
+    "full_tests_run": 140,
+    "full_failures": 0,
+    "full_errors": 0,
+    "full_duration_sec": 99.389
+  }
+}

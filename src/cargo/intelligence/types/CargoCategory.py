@@ -1,0 +1,9 @@
+from enum import Enum
+class CargoCategory(str,Enum):
+    DISPLAY="DISPLAY"
+    ELECTRONIC="ELECTRONIC"
+    HEAVY="HEAVY"
+    FRAGILE="FRAGILE"
+    NORMAL_BOX="NORMAL_BOX"
+    TOP_FILL_ONLY="TOP_FILL_ONLY"
+    IRREGULAR="IRREGULAR"

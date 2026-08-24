@@ -1,0 +1,78 @@
+{
+  "block": "BLK-007F-4",
+  "status": "PASS",
+  "policy_semantics": {
+    "dynamic_selection": true,
+    "solver_orientation_policy_required": true,
+    "cargo_intelligence_policy_required": true,
+    "forbidden_orientation_inference": false,
+    "main_body_flat_added": 0
+  },
+  "dynamic_examples": [
+    {
+      "sku": "SKU-14",
+      "context": "MAIN_WALL",
+      "selected_orientation": "VERTICAL",
+      "legal_source": "USER_DEFINED",
+      "reason": "IMPROVE_LAYER_COMPLETION"
+    },
+    {
+      "sku": "SKU-14",
+      "context": "TOP_FILL",
+      "base_z_m": 2.0,
+      "available_height_m": 0.2,
+      "selected_orientation": "FLAT_HORIZONTAL",
+      "concrete_orientation": "FLAT_XZ",
+      "legal_source": "USER_DEFINED",
+      "reason": "IMPROVE_LAYER_COMPLETION"
+    },
+    {
+      "sku": "SKU-02",
+      "context": "MAIN_WALL",
+      "selected_orientation": "VERTICAL",
+      "legal_source": "USER_DEFINED",
+      "reason": "IMPROVE_LAYER_COMPLETION"
+    },
+    {
+      "sku": "SKU-02",
+      "context": "TOP_FILL",
+      "base_z_m": 2.5,
+      "available_height_m": 0.2,
+      "selected_orientation": "FLAT_HORIZONTAL",
+      "legal_source": "USER_DEFINED",
+      "reason": "IMPROVE_LAYER_COMPLETION"
+    }
+  ],
+  "actual_incremental_placements": [
+    {
+      "id": "layer_complete_CARGO_WALL_014_LEFT_SKU-12_0_0",
+      "sku": "SKU-12",
+      "orientation_used": "VERTICAL",
+      "concrete_orientation": "UPRIGHT_NORMAL",
+      "optimization_reason": "LAYER_COMPLETION",
+      "structural_role": "LAYER_COMPLETION"
+    },
+    {
+      "id": "layer_complete_CARGO_WALL_015_LEFT_SKU-11_0_0",
+      "sku": "SKU-11",
+      "orientation_used": "VERTICAL",
+      "concrete_orientation": "UPRIGHT_NORMAL",
+      "optimization_reason": "LAYER_COMPLETION",
+      "structural_role": "LAYER_COMPLETION"
+    },
+    {
+      "id": "layer_complete_CARGO_WALL_015_RIGHT_SKU-11_0_0",
+      "sku": "SKU-11",
+      "orientation_used": "VERTICAL",
+      "concrete_orientation": "UPRIGHT_NORMAL",
+      "optimization_reason": "LAYER_COMPLETION",
+      "structural_role": "LAYER_COMPLETION"
+    }
+  ],
+  "actual_orientation_mix": {
+    "VERTICAL": 3,
+    "FLAT_HORIZONTAL": 0,
+    "SIDE": 0
+  },
+  "structural_lock_preserved": true
+}

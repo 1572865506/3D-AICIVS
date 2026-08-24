@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CargoSKU",
+  "type": "object",
+  "required": [
+    "sku",
+    "name",
+    "box",
+    "weightKg",
+    "quantity",
+    "orientationPolicy"
+  ],
+  "properties": {
+    "sku": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "box": {
+      "type": "object",
+      "required": [
+        "x",
+        "y",
+        "z"
+      ],
+      "properties": {
+        "x": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "y": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "z": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "weightKg": {
+      "type": "number",
+      "minimum": 0
+    },
+    "quantity": {
+      "type": "object"
+    },
+    "orientationPolicy": {
+      "type": "object"
+    },
+    "constraints": {
+      "type": "array"
+    },
+    "cargoClass": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "packingRoles": {
+      "type": "array"
+    },
+    "sourceRequirementText": {
+      "type": "string"
+    }
+  }
+}

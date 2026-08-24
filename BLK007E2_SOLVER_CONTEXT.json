@@ -1,0 +1,40 @@
+{
+  "version": "BLK007E2",
+  "status": "READY",
+  "original_container": {"code": "40HQ", "length": 12.032, "width": 2.35, "height": 2.69},
+  "solver_main_container": {"code": "40HQ-MAIN", "length": 10.832, "width": 2.35, "height": 2.69},
+  "doorZone": {
+    "depth": 1.2,
+    "solver_x_range": [10.832, 12.032],
+    "reserved": true,
+    "priority": "HIGH"
+  },
+  "blockedArea": {"region_id": "DOOR_ZONE_RESERVED", "x1": 10.832, "x2": 12.032},
+  "doorAnchor": {
+    "wall_id": "DOOR_WALL_001",
+    "sku": "SKU-02",
+    "placement_id_range": ["door_pre_SKU-02_000", "door_pre_SKU-02_027"],
+    "placement_count": 28,
+    "orientation_policy": "SHORT_EDGE_FORWARD",
+    "concrete_orientation": "UPRIGHT_ROTATED",
+    "state": "LOCKED_DOOR_WALL",
+    "support_type": "DOOR_WALL_SUPPORT"
+  },
+  "forcedOrientation": {
+    "SKU-02": "SHORT_EDGE_FORWARD",
+    "SKU-03": "SHORT_EDGE_FORWARD",
+    "SKU-04": "SHORT_EDGE_FORWARD",
+    "SKU-14": "SHORT_EDGE_FORWARD"
+  },
+  "priorityCargo": ["SKU-02", "SKU-03", "SKU-04", "SKU-14"],
+  "inventoryReservation": {"SKU-02": 28},
+  "solver_commit_sequence": [
+    "CREATE_CONTAINER",
+    "INJECT_DOOR_WALL",
+    "RESERVE_DOOR_ZONE",
+    "RUN_FROZEN_SOLVER",
+    "FULL_GLOBAL_VALIDATION"
+  ],
+  "physical_loading_sequence_policy": "MAIN_CARGO_THEN_DOOR_WALL_BUILD",
+  "physical_sequence_reason": "The door access path must remain open while main cargo is loaded; BLK007A DOOR_SEAL_LAST remains authoritative."
+}

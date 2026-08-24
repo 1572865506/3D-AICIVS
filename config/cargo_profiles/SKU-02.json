@@ -1,0 +1,17 @@
+{
+  "sku": "SKU-02",
+  "source": "USER_DEFINED",
+  "category": "DISPLAY",
+  "confidence": 1.0,
+  "fragility": "HIGH",
+  "orientation": {
+    "base": ["VERTICAL"],
+    "top": ["VERTICAL", "FLAT_HORIZONTAL"],
+    "door": ["VERTICAL"],
+    "forbidden": ["SIDE"]
+  },
+  "stack": {"baseMaxLayers": 7, "topMaxLayers": 3, "topAllowed": true, "stackOnSelf": true},
+  "compression": {"class": "LOW", "maxLoadKg": 60.0, "allowAsSupport": true},
+  "priority": {"door": 10, "main": 8, "top": 5, "reason": "DISPLAY_DOOR_AND_CONDITIONAL_TOP_POLICY"},
+  "specialRules": ["NEIGHBOR_SUPPORT_REQUIRED", "NO_SIDE_ORIENTATION"]
+}

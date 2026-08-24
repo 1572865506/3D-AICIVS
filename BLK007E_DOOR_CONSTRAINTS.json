@@ -1,0 +1,188 @@
+{
+  "block": "BLK-007E-1",
+  "status": "READY",
+  "config": {
+    "door_zone_depth": 1.2,
+    "thin_ratio_threshold": 0.35,
+    "max_door_unit_weight_kg": 80,
+    "min_wall_coverage": 0.75,
+    "max_wall_gap_m": 0.4,
+    "min_support_ratio": 0.7
+  },
+  "coordinate_semantics": {
+    "door_relative": "start_x=0 at door plane distance coordinate; end_x=depth inward",
+    "solver_canonical": "x=0 container rear; door plane x=Lx",
+    "solver_reserved_range": [
+      10.832,
+      12.032
+    ]
+  },
+  "door_zone": {
+    "depth": 1.2,
+    "start_x": 0,
+    "end_x": 1.2,
+    "solver_start_x": 10.832,
+    "solver_end_x": 12.032,
+    "priority": "HIGH",
+    "reserved": true
+  },
+  "classifications": {
+    "SKU-02": {
+      "sku_id": "SKU-02",
+      "thin": true,
+      "fragile": false,
+      "door_candidate": true,
+      "explicit_door_policy": true,
+      "wall_formable": true,
+      "high_unit_weight": false,
+      "risk_level": "HIGH",
+      "thin_ratio": 0.225352,
+      "rejection_reason": "",
+      "orientation_rule": {
+        "sku": "SKU-02",
+        "allowed_orientation": [
+          "SHORT_EDGE_FORWARD"
+        ],
+        "allowed_concrete_orientation": [
+          "UPRIGHT_ROTATED"
+        ],
+        "forbidden": [
+          "LONG_EDGE_FORWARD"
+        ],
+        "dimensions": {
+          "policy_name": "SHORT_EDGE_FORWARD",
+          "concrete_orientation": "UPRIGHT_ROTATED",
+          "forward_depth": 0.08,
+          "wall_width": 0.553,
+          "height": 0.355
+        },
+        "source": "DOOR_SAFETY_PREPACKING"
+      }
+    },
+    "SKU-03": {
+      "sku_id": "SKU-03",
+      "thin": false,
+      "fragile": false,
+      "door_candidate": true,
+      "explicit_door_policy": true,
+      "wall_formable": true,
+      "high_unit_weight": false,
+      "risk_level": "MEDIUM",
+      "thin_ratio": 0.385246,
+      "rejection_reason": "",
+      "orientation_rule": {
+        "sku": "SKU-03",
+        "allowed_orientation": [
+          "SHORT_EDGE_FORWARD"
+        ],
+        "allowed_concrete_orientation": [
+          "UPRIGHT_ROTATED"
+        ],
+        "forbidden": [
+          "LONG_EDGE_FORWARD"
+        ],
+        "dimensions": {
+          "policy_name": "SHORT_EDGE_FORWARD",
+          "concrete_orientation": "UPRIGHT_ROTATED",
+          "forward_depth": 0.188,
+          "wall_width": 0.978,
+          "height": 0.488
+        },
+        "source": "DOOR_SAFETY_PREPACKING"
+      }
+    },
+    "SKU-04": {
+      "sku_id": "SKU-04",
+      "thin": true,
+      "fragile": false,
+      "door_candidate": true,
+      "explicit_door_policy": true,
+      "wall_formable": true,
+      "high_unit_weight": false,
+      "risk_level": "HIGH",
+      "thin_ratio": 0.277273,
+      "rejection_reason": "",
+      "orientation_rule": {
+        "sku": "SKU-04",
+        "allowed_orientation": [
+          "SHORT_EDGE_FORWARD"
+        ],
+        "allowed_concrete_orientation": [
+          "UPRIGHT_ROTATED"
+        ],
+        "forbidden": [
+          "LONG_EDGE_FORWARD"
+        ],
+        "dimensions": {
+          "policy_name": "SHORT_EDGE_FORWARD",
+          "concrete_orientation": "UPRIGHT_ROTATED",
+          "forward_depth": 0.122,
+          "wall_width": 0.68,
+          "height": 0.44
+        },
+        "source": "DOOR_SAFETY_PREPACKING"
+      }
+    },
+    "SKU-14": {
+      "sku_id": "SKU-14",
+      "thin": true,
+      "fragile": false,
+      "door_candidate": true,
+      "explicit_door_policy": true,
+      "wall_formable": true,
+      "high_unit_weight": false,
+      "risk_level": "HIGH",
+      "thin_ratio": 0.238095,
+      "rejection_reason": "",
+      "orientation_rule": {
+        "sku": "SKU-14",
+        "allowed_orientation": [
+          "SHORT_EDGE_FORWARD"
+        ],
+        "allowed_concrete_orientation": [
+          "UPRIGHT_ROTATED"
+        ],
+        "forbidden": [
+          "LONG_EDGE_FORWARD"
+        ],
+        "dimensions": {
+          "policy_name": "SHORT_EDGE_FORWARD",
+          "concrete_orientation": "UPRIGHT_ROTATED",
+          "forward_depth": 0.08,
+          "wall_width": 0.488,
+          "height": 0.336
+        },
+        "source": "DOOR_SAFETY_PREPACKING"
+      }
+    }
+  },
+  "forced_orientation": {
+    "SKU-02": "SHORT_EDGE_FORWARD",
+    "SKU-03": "SHORT_EDGE_FORWARD",
+    "SKU-04": "SHORT_EDGE_FORWARD",
+    "SKU-14": "SHORT_EDGE_FORWARD"
+  },
+  "priority_cargo": [
+    "SKU-02",
+    "SKU-03",
+    "SKU-04",
+    "SKU-14"
+  ],
+  "blocked_positions": [
+    {
+      "x_start": 10.832,
+      "x_end": 12.032,
+      "door_distance_start": 0,
+      "door_distance_end": 1.2
+    }
+  ],
+  "inventory_reservation": {
+    "SKU-02": 28
+  },
+  "failure_contract": {
+    "status": "FAILED",
+    "reason": "NO_VALID_DOOR_WALL",
+    "detail_example": "orientation conflict, insufficient inventory, or no explicitly eligible cargo",
+    "silent_relaxation": false
+  }
+}

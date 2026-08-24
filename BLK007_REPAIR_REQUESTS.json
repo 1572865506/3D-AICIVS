@@ -1,0 +1,12 @@
+{
+  "requests": [
+    {
+      "benchmark": "BENCH-001",
+      "failure": "TEMPORARY_INSTABILITY",
+      "blocked_placements": [
+        "p_0325_SKU-02"
+      ],
+      "suggested_region": "same-row paired loading"
+    }
+  ]
+}

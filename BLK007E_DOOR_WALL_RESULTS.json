@@ -1,0 +1,589 @@
+{
+  "block": "BLK-007E-1",
+  "status": "READY",
+  "wall": {
+    "wall_id": "DOOR_WALL_001",
+    "zone": "DOOR",
+    "placements": [
+      {
+        "placement_id": "door_pre_SKU-02_000",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 0,
+        "z": 0,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 1,
+        "column": 1,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_001",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 0.553,
+        "z": 0,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 1,
+        "column": 2,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_002",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 1.106,
+        "z": 0,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 1,
+        "column": 3,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_003",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 1.659,
+        "z": 0,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 1,
+        "column": 4,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_004",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 0,
+        "z": 0.355,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 2,
+        "column": 1,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_005",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 0.553,
+        "z": 0.355,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 2,
+        "column": 2,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_006",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 1.106,
+        "z": 0.355,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 2,
+        "column": 3,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_007",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 1.659,
+        "z": 0.355,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 2,
+        "column": 4,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_008",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 0,
+        "z": 0.71,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 3,
+        "column": 1,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_009",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 0.553,
+        "z": 0.71,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 3,
+        "column": 2,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_010",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 1.106,
+        "z": 0.71,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 3,
+        "column": 3,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_011",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 1.659,
+        "z": 0.71,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 3,
+        "column": 4,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_012",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 0,
+        "z": 1.065,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 4,
+        "column": 1,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_013",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 0.553,
+        "z": 1.065,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 4,
+        "column": 2,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_014",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 1.106,
+        "z": 1.065,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 4,
+        "column": 3,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_015",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 1.659,
+        "z": 1.065,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 4,
+        "column": 4,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_016",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 0,
+        "z": 1.42,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 5,
+        "column": 1,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_017",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 0.553,
+        "z": 1.42,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 5,
+        "column": 2,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_018",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 1.106,
+        "z": 1.42,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 5,
+        "column": 3,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_019",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 1.659,
+        "z": 1.42,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 5,
+        "column": 4,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_020",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 0,
+        "z": 1.775,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 6,
+        "column": 1,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_021",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 0.553,
+        "z": 1.775,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 6,
+        "column": 2,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_022",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 1.106,
+        "z": 1.775,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 6,
+        "column": 3,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_023",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 1.659,
+        "z": 1.775,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 6,
+        "column": 4,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_024",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 0,
+        "z": 2.13,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 7,
+        "column": 1,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_025",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 0.553,
+        "z": 2.13,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 7,
+        "column": 2,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_026",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 1.106,
+        "z": 2.13,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 7,
+        "column": 3,
+        "weight_kg": 8.4
+      },
+      {
+        "placement_id": "door_pre_SKU-02_027",
+        "sku_id": "SKU-02",
+        "x": 10.832,
+        "y": 1.659,
+        "z": 2.13,
+        "dx": 0.08,
+        "dy": 0.553,
+        "dz": 0.355,
+        "orientation": "SHORT_EDGE_FORWARD",
+        "layer": 7,
+        "column": 4,
+        "weight_kg": 8.4
+      }
+    ],
+    "orientation": "SHORT_EDGE_FORWARD",
+    "height": 2.485,
+    "coverage": 0.866228,
+    "continuity": {
+      "coverage": 0.866228,
+      "gap_count": 1,
+      "max_gap": 0.14,
+      "continuity_score": 94.0476
+    },
+    "stability": {
+      "stable": true,
+      "risk": "LOW",
+      "individual_stable_ratio": 0,
+      "supported_ratio": 1,
+      "neighbor_contact_ratio": 1,
+      "stack_alignment_ratio": 1,
+      "anchor_required": true,
+      "issues": [
+        "INDIVIDUAL_THIN_CARGO_REQUIRES_WALL_ANCHOR"
+      ]
+    },
+    "sku_mix": {
+      "SKU-02": 28
+    },
+    "anchor_x": 10.832
+  },
+  "validation": {
+    "valid": true,
+    "stable": true,
+    "forbidden_orientation_count": 0,
+    "coverage": 0.866228,
+    "gap_count": 1,
+    "max_gap": 0.14,
+    "support_ratio": 1,
+    "continuity_score": 94.0476,
+    "stability_risk": "LOW",
+    "issues": []
+  },
+  "door_safety_score": {
+    "score": 91.97,
+    "coverage_component": 34.65,
+    "continuity_component": 23.51,
+    "orientation_component": 15,
+    "stability_component": 20,
+    "gap_penalty": 1.19,
+    "issues": []
+  },
+  "targeted_skus": {
+    "SKU-02": {
+      "sku_id": "SKU-02",
+      "thin": true,
+      "fragile": false,
+      "door_candidate": true,
+      "explicit_door_policy": true,
+      "wall_formable": true,
+      "high_unit_weight": false,
+      "risk_level": "HIGH",
+      "thin_ratio": 0.225352,
+      "rejection_reason": "",
+      "orientation_rule": {
+        "sku": "SKU-02",
+        "allowed_orientation": [
+          "SHORT_EDGE_FORWARD"
+        ],
+        "allowed_concrete_orientation": [
+          "UPRIGHT_ROTATED"
+        ],
+        "forbidden": [
+          "LONG_EDGE_FORWARD"
+        ],
+        "dimensions": {
+          "policy_name": "SHORT_EDGE_FORWARD",
+          "concrete_orientation": "UPRIGHT_ROTATED",
+          "forward_depth": 0.08,
+          "wall_width": 0.553,
+          "height": 0.355
+        },
+        "source": "DOOR_SAFETY_PREPACKING"
+      }
+    },
+    "SKU-03": {
+      "sku_id": "SKU-03",
+      "thin": false,
+      "fragile": false,
+      "door_candidate": true,
+      "explicit_door_policy": true,
+      "wall_formable": true,
+      "high_unit_weight": false,
+      "risk_level": "MEDIUM",
+      "thin_ratio": 0.385246,
+      "rejection_reason": "",
+      "orientation_rule": {
+        "sku": "SKU-03",
+        "allowed_orientation": [
+          "SHORT_EDGE_FORWARD"
+        ],
+        "allowed_concrete_orientation": [
+          "UPRIGHT_ROTATED"
+        ],
+        "forbidden": [
+          "LONG_EDGE_FORWARD"
+        ],
+        "dimensions": {
+          "policy_name": "SHORT_EDGE_FORWARD",
+          "concrete_orientation": "UPRIGHT_ROTATED",
+          "forward_depth": 0.188,
+          "wall_width": 0.978,
+          "height": 0.488
+        },
+        "source": "DOOR_SAFETY_PREPACKING"
+      }
+    },
+    "SKU-04": {
+      "sku_id": "SKU-04",
+      "thin": true,
+      "fragile": false,
+      "door_candidate": true,
+      "explicit_door_policy": true,
+      "wall_formable": true,
+      "high_unit_weight": false,
+      "risk_level": "HIGH",
+      "thin_ratio": 0.277273,
+      "rejection_reason": "",
+      "orientation_rule": {
+        "sku": "SKU-04",
+        "allowed_orientation": [
+          "SHORT_EDGE_FORWARD"
+        ],
+        "allowed_concrete_orientation": [
+          "UPRIGHT_ROTATED"
+        ],
+        "forbidden": [
+          "LONG_EDGE_FORWARD"
+        ],
+        "dimensions": {
+          "policy_name": "SHORT_EDGE_FORWARD",
+          "concrete_orientation": "UPRIGHT_ROTATED",
+          "forward_depth": 0.122,
+          "wall_width": 0.68,
+          "height": 0.44
+        },
+        "source": "DOOR_SAFETY_PREPACKING"
+      }
+    },
+    "SKU-14": {
+      "sku_id": "SKU-14",
+      "thin": true,
+      "fragile": false,
+      "door_candidate": true,
+      "explicit_door_policy": true,
+      "wall_formable": true,
+      "high_unit_weight": false,
+      "risk_level": "HIGH",
+      "thin_ratio": 0.238095,
+      "rejection_reason": "",
+      "orientation_rule": {
+        "sku": "SKU-14",
+        "allowed_orientation": [
+          "SHORT_EDGE_FORWARD"
+        ],
+        "allowed_concrete_orientation": [
+          "UPRIGHT_ROTATED"
+        ],
+        "forbidden": [
+          "LONG_EDGE_FORWARD"
+        ],
+        "dimensions": {
+          "policy_name": "SHORT_EDGE_FORWARD",
+          "concrete_orientation": "UPRIGHT_ROTATED",
+          "forward_depth": 0.08,
+          "wall_width": 0.488,
+          "height": 0.336
+        },
+        "source": "DOOR_SAFETY_PREPACKING"
+      }
+    }
+  },
+  "current_case_summary": {
+    "selected_sku_mix": {
+      "SKU-02": 28
+    },
+    "placement_count": 28,
+    "column_count": 4,
+    "layer_count": 7,
+    "orientation_pattern": "|||||||| (SHORT_EDGE_FORWARD)",
+    "long_edge_forward_count": 0,
+    "anchor_required": true
+  }
+}

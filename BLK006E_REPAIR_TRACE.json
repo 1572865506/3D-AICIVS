@@ -1,0 +1,58 @@
+{
+  "schema": "BLK006E_REPAIR_TRACE/v1",
+  "deterministic_seed": 42,
+  "runtime_sec": 56.11,
+  "repair_runtime_sec": 17.90214370796457,
+  "stage_summaries": {
+    "STAGE_A": {
+      "activated": true,
+      "attempts": 3,
+      "accepted_trials": 1,
+      "gain_m3": 1.2709588700000332,
+      "budget_exhausted": false,
+      "runtime_sec": 16.703015999868512
+    },
+    "STAGE_B": {
+      "activated": false,
+      "reason": "STAGE_A_IMPROVED_OR_PROFILE_DISABLED"
+    },
+    "STAGE_C": {
+      "activated": false,
+      "reason": "STAGE_B_IMPROVED_OR_PROFILE_DISABLED"
+    }
+  },
+  "events": [
+    {
+      "stage": "STAGE_A_TOPFILL_REPACK",
+      "operator": "VOLUME_FIRST",
+      "status": "ACCEPTED",
+      "placed_topfill": 48,
+      "candidate_volume_m3": 31.976764574000008,
+      "gain_vs_current_m3": 1.2709588700000332,
+      "complete_legal": true,
+      "rejection_reason": null
+    },
+    {
+      "stage": "STAGE_A_TOPFILL_REPACK",
+      "operator": "HEIGHT_FIRST",
+      "status": "ROLLED_BACK",
+      "placed_topfill": 48,
+      "candidate_volume_m3": 31.976764574000008,
+      "gain_vs_current_m3": 0.0,
+      "complete_legal": true,
+      "rejection_reason": "NON_MONOTONIC"
+    },
+    {
+      "stage": "STAGE_A_TOPFILL_REPACK",
+      "operator": "FOOTPRINT_FIRST",
+      "status": "ROLLED_BACK",
+      "placed_topfill": 48,
+      "candidate_volume_m3": 31.920535942000008,
+      "gain_vs_current_m3": -0.056228631999999834,
+      "complete_legal": true,
+      "rejection_reason": "NON_MONOTONIC"
+    }
+  ],
+  "rollback_preserved": true,
+  "solution_source": "GLOBAL_SEARCH"
+}

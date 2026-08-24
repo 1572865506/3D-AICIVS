@@ -1,0 +1,755 @@
+{
+  "benchmark_dataset": "40hq_cleanroom_case_001.json",
+  "fix_task": "BLK-001 Phase 2 — Frontier Continuity, Valley Filling & Recovery",
+  "timestamp": "2026-08-22T07:13:46Z",
+  "phase1_baseline": {
+    "BaselineGreedySolver": {
+      "total_placed": 85,
+      "volume_utilization_pct": 9.67,
+      "total_weight_kg": 683.7,
+      "runtime_ms": 18402.97,
+      "is_valid": true,
+      "overlap_pair_count": 0,
+      "penetration_volume_m3": 0.0,
+      "out_of_bounds_count": 0
+    },
+    "HierarchicalSearch (FAST)": {
+      "total_placed": 235,
+      "volume_utilization_pct": 23.62,
+      "total_weight_kg": 1097.0,
+      "runtime_ms": 9133.52,
+      "is_valid": true,
+      "overlap_pair_count": 0,
+      "penetration_volume_m3": 0.0,
+      "out_of_bounds_count": 0
+    },
+    "HierarchicalSearch (BALANCED)": {
+      "total_placed": 285,
+      "volume_utilization_pct": 25.81,
+      "total_weight_kg": 1872.0,
+      "runtime_ms": 43419.24,
+      "is_valid": true,
+      "overlap_pair_count": 0,
+      "penetration_volume_m3": 0.0,
+      "out_of_bounds_count": 0
+    },
+    "HierarchicalSearch (OPTIMIZE)": {
+      "total_placed": 261,
+      "volume_utilization_pct": 24.89,
+      "total_weight_kg": 1620.0,
+      "runtime_ms": 72101.2,
+      "is_valid": true,
+      "overlap_pair_count": 0,
+      "penetration_volume_m3": 0.0,
+      "out_of_bounds_count": 0
+    }
+  },
+  "phase2_results": {
+    "BaselineGreedySolver": {
+      "mode": "BaselineGreedySolver",
+      "runtime_ms": 64977.85,
+      "total_requested": 1845,
+      "total_placed": 171,
+      "total_unplaced": 1674,
+      "volume_utilization_pct": 19.5924,
+      "total_weight_kg": 1078.94,
+      "is_valid": true,
+      "overlap_pair_count": 0,
+      "penetration_volume_m3": 0.0,
+      "out_of_bounds_count": 0,
+      "hard_constraint_violations": 0,
+      "sku_breakdown": [
+        {
+          "sku_id": "SKU-01",
+          "name": "WIFI蓝牙 / WIFI线 / WIFI贴",
+          "requested": 1,
+          "placed": 1,
+          "unplaced": 0,
+          "fill_rate_pct": 100.0
+        },
+        {
+          "sku_id": "SKU-02",
+          "name": "21.5寸 显示器 BG (DA)",
+          "requested": 500,
+          "placed": 10,
+          "unplaced": 490,
+          "fill_rate_pct": 2.0
+        },
+        {
+          "sku_id": "SKU-03",
+          "name": "34寸显示器 MX340 (DA)",
+          "requested": 90,
+          "placed": 54,
+          "unplaced": 36,
+          "fill_rate_pct": 60.0
+        },
+        {
+          "sku_id": "SKU-04",
+          "name": "27寸显示器 2886A (DA)",
+          "requested": 100,
+          "placed": 2,
+          "unplaced": 98,
+          "fill_rate_pct": 2.0
+        },
+        {
+          "sku_id": "SKU-05",
+          "name": "32寸智能显示器 (DA)",
+          "requested": 100,
+          "placed": 0,
+          "unplaced": 100,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-06",
+          "name": "15.6寸便携显示器 (14/箱)",
+          "requested": 95,
+          "placed": 67,
+          "unplaced": 28,
+          "fill_rate_pct": 70.53
+        },
+        {
+          "sku_id": "SKU-07",
+          "name": "15.6寸 双屏便携屏",
+          "requested": 125,
+          "placed": 11,
+          "unplaced": 114,
+          "fill_rate_pct": 8.8
+        },
+        {
+          "sku_id": "SKU-08",
+          "name": "21.5寸一体机整机 带键盘鼠标",
+          "requested": 53,
+          "placed": 2,
+          "unplaced": 51,
+          "fill_rate_pct": 3.77
+        },
+        {
+          "sku_id": "SKU-09",
+          "name": "19寸一体机整机",
+          "requested": 24,
+          "placed": 9,
+          "unplaced": 15,
+          "fill_rate_pct": 37.5
+        },
+        {
+          "sku_id": "SKU-10",
+          "name": "19寸液晶屏 / 19寸液晶屏玻璃",
+          "requested": 22,
+          "placed": 1,
+          "unplaced": 21,
+          "fill_rate_pct": 4.55
+        },
+        {
+          "sku_id": "SKU-11",
+          "name": "电源线",
+          "requested": 10,
+          "placed": 10,
+          "unplaced": 0,
+          "fill_rate_pct": 100.0
+        },
+        {
+          "sku_id": "SKU-12",
+          "name": "电源线 (小箱)",
+          "requested": 1,
+          "placed": 1,
+          "unplaced": 0,
+          "fill_rate_pct": 100.0
+        },
+        {
+          "sku_id": "SKU-13",
+          "name": "电源",
+          "requested": 50,
+          "placed": 1,
+          "unplaced": 49,
+          "fill_rate_pct": 2.0
+        },
+        {
+          "sku_id": "SKU-14",
+          "name": "19寸 显示器 BG (DA)",
+          "requested": 674,
+          "placed": 2,
+          "unplaced": 672,
+          "fill_rate_pct": 0.3
+        }
+      ],
+      "telemetry": {
+        "runtime_ms": 64944.27,
+        "candidates_generated": 55099,
+        "candidates_evaluated": 55099,
+        "candidates_rejected_by_reason": {
+          "INSUFFICIENT_SUPPORT": 1267,
+          "COLLISION": 44709,
+          "SPATIAL_RESERVATION": 1621
+        },
+        "anchors_generated_by_type": {
+          "FLOOR_FRONTIER": 87593,
+          "SUPPORTED_FRONTIER": 55658,
+          "WALL_FRONTIER": 975,
+          "EMS_CORNER": 5739,
+          "EXTREME_POINT": 153730,
+          "TOP_SURFACE": 55658,
+          "GAP_FILL": 101206,
+          "EXPLORATION": 173423
+        },
+        "anchors_sampled_by_type": {
+          "FLOOR_FRONTIER": 1210,
+          "SUPPORTED_FRONTIER": 1025,
+          "WALL_FRONTIER": 792,
+          "EMS_CORNER": 1368,
+          "EXTREME_POINT": 647,
+          "TOP_SURFACE": 1321,
+          "GAP_FILL": 44521,
+          "EXPLORATION": 908
+        },
+        "candidates_generated_by_anchor_type": {
+          "FLOOR_FRONTIER": 15589,
+          "SUPPORTED_FRONTIER": 15397,
+          "WALL_FRONTIER": 4146,
+          "EMS_CORNER": 5058,
+          "EXTREME_POINT": 5096,
+          "TOP_SURFACE": 5070,
+          "GAP_FILL": 2205,
+          "EXPLORATION": 2538
+        },
+        "candidates_valid_by_anchor_type": {
+          "FLOOR_FRONTIER": 638,
+          "SUPPORTED_FRONTIER": 568,
+          "WALL_FRONTIER": 3105,
+          "GAP_FILL": 1476,
+          "EMS_CORNER": 1206,
+          "EXTREME_POINT": 106,
+          "EXPLORATION": 85,
+          "TOP_SURFACE": 318
+        },
+        "floor_frontier_count": 1678,
+        "supported_frontier_count": 595,
+        "wall_frontier_count": 14,
+        "no_candidate_reason": "ALL_CANDIDATES_REJECTED_BY_VALIDATION",
+        "phase_termination_reason": {
+          "Phase 1: Foundation (Floor)": "NO_ELIGIBLE_SKUS_FOR_PHASE",
+          "Phase 2: Main Walls (Body)": "NO_VALID_CANDIDATE_FOR_PHASE(tested=330)",
+          "Phase 3: Top Fill (Headspace)": "NO_VALID_CANDIDATE_FOR_PHASE(tested=285)",
+          "Phase 4: Door Seal Closure": "NO_VALID_CANDIDATE_FOR_PHASE(tested=285)"
+        },
+        "ems_peak": 70,
+        "extreme_points_peak": 2356,
+        "steps_committed": 171,
+        "phases_completed": [
+          "Phase 1: Foundation (Floor)",
+          "Phase 2: Main Walls (Body)",
+          "Phase 3: Top Fill (Headspace)",
+          "Phase 4: Door Seal Closure"
+        ]
+      }
+    },
+    "HierarchicalSearch (FAST)": {
+      "mode": "HierarchicalSearch (FAST)",
+      "runtime_ms": 9985.47,
+      "total_requested": 1845,
+      "total_placed": 235,
+      "total_unplaced": 1610,
+      "volume_utilization_pct": 23.6193,
+      "total_weight_kg": 1097.0,
+      "is_valid": true,
+      "overlap_pair_count": 0,
+      "penetration_volume_m3": 0.0,
+      "out_of_bounds_count": 0,
+      "hard_constraint_violations": 0,
+      "sku_breakdown": [
+        {
+          "sku_id": "SKU-01",
+          "name": "WIFI蓝牙 / WIFI线 / WIFI贴",
+          "requested": 1,
+          "placed": 1,
+          "unplaced": 0,
+          "fill_rate_pct": 100.0
+        },
+        {
+          "sku_id": "SKU-02",
+          "name": "21.5寸 显示器 BG (DA)",
+          "requested": 500,
+          "placed": 0,
+          "unplaced": 500,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-03",
+          "name": "34寸显示器 MX340 (DA)",
+          "requested": 90,
+          "placed": 0,
+          "unplaced": 90,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-04",
+          "name": "27寸显示器 2886A (DA)",
+          "requested": 100,
+          "placed": 0,
+          "unplaced": 100,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-05",
+          "name": "32寸智能显示器 (DA)",
+          "requested": 100,
+          "placed": 0,
+          "unplaced": 100,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-06",
+          "name": "15.6寸便携显示器 (14/箱)",
+          "requested": 95,
+          "placed": 90,
+          "unplaced": 5,
+          "fill_rate_pct": 94.74
+        },
+        {
+          "sku_id": "SKU-07",
+          "name": "15.6寸 双屏便携屏",
+          "requested": 125,
+          "placed": 120,
+          "unplaced": 5,
+          "fill_rate_pct": 96.0
+        },
+        {
+          "sku_id": "SKU-08",
+          "name": "21.5寸一体机整机 带键盘鼠标",
+          "requested": 53,
+          "placed": 0,
+          "unplaced": 53,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-09",
+          "name": "19寸一体机整机",
+          "requested": 24,
+          "placed": 24,
+          "unplaced": 0,
+          "fill_rate_pct": 100.0
+        },
+        {
+          "sku_id": "SKU-10",
+          "name": "19寸液晶屏 / 19寸液晶屏玻璃",
+          "requested": 22,
+          "placed": 0,
+          "unplaced": 22,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-11",
+          "name": "电源线",
+          "requested": 10,
+          "placed": 0,
+          "unplaced": 10,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-12",
+          "name": "电源线 (小箱)",
+          "requested": 1,
+          "placed": 0,
+          "unplaced": 1,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-13",
+          "name": "电源",
+          "requested": 50,
+          "placed": 0,
+          "unplaced": 50,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-14",
+          "name": "19寸 显示器 BG (DA)",
+          "requested": 674,
+          "placed": 0,
+          "unplaced": 674,
+          "fill_rate_pct": 0.0
+        }
+      ],
+      "telemetry": {
+        "runtime_ms": 9985.04,
+        "candidates_generated": 0,
+        "candidates_evaluated": 0,
+        "candidates_rejected_by_reason": {},
+        "anchors_generated_by_type": {
+          "FLOOR_FRONTIER": 157,
+          "SUPPORTED_FRONTIER": 453,
+          "WALL_FRONTIER": 22,
+          "EMS_CORNER": 12,
+          "EXTREME_POINT": 806,
+          "TOP_SURFACE": 453,
+          "GAP_FILL": 0,
+          "EXPLORATION": 860
+        },
+        "anchors_sampled_by_type": {},
+        "candidates_generated_by_anchor_type": {},
+        "candidates_valid_by_anchor_type": {},
+        "floor_frontier_count": 157,
+        "supported_frontier_count": 453,
+        "wall_frontier_count": 22,
+        "no_candidate_reason": "",
+        "phase_termination_reason": {
+          "MultiStart": "Completed run with strategy LARGEST_VOLUME_FIRST, placed=235"
+        },
+        "ems_peak": 0,
+        "extreme_points_peak": 0,
+        "steps_committed": 235,
+        "phases_completed": [
+          "MultiStart_LARGEST_VOLUME_FIRST",
+          "SearchCompleted(runs=1,best=LARGEST_VOLUME_FIRST)"
+        ]
+      }
+    },
+    "HierarchicalSearch (BALANCED)": {
+      "mode": "HierarchicalSearch (BALANCED)",
+      "runtime_ms": 41232.47,
+      "total_requested": 1845,
+      "total_placed": 285,
+      "total_unplaced": 1560,
+      "volume_utilization_pct": 25.8129,
+      "total_weight_kg": 1872.0,
+      "is_valid": true,
+      "overlap_pair_count": 0,
+      "penetration_volume_m3": 0.0,
+      "out_of_bounds_count": 0,
+      "hard_constraint_violations": 0,
+      "sku_breakdown": [
+        {
+          "sku_id": "SKU-01",
+          "name": "WIFI蓝牙 / WIFI线 / WIFI贴",
+          "requested": 1,
+          "placed": 1,
+          "unplaced": 0,
+          "fill_rate_pct": 100.0
+        },
+        {
+          "sku_id": "SKU-02",
+          "name": "21.5寸 显示器 BG (DA)",
+          "requested": 500,
+          "placed": 0,
+          "unplaced": 500,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-03",
+          "name": "34寸显示器 MX340 (DA)",
+          "requested": 90,
+          "placed": 0,
+          "unplaced": 90,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-04",
+          "name": "27寸显示器 2886A (DA)",
+          "requested": 100,
+          "placed": 0,
+          "unplaced": 100,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-05",
+          "name": "32寸智能显示器 (DA)",
+          "requested": 100,
+          "placed": 0,
+          "unplaced": 100,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-06",
+          "name": "15.6寸便携显示器 (14/箱)",
+          "requested": 95,
+          "placed": 90,
+          "unplaced": 5,
+          "fill_rate_pct": 94.74
+        },
+        {
+          "sku_id": "SKU-07",
+          "name": "15.6寸 双屏便携屏",
+          "requested": 125,
+          "placed": 120,
+          "unplaced": 5,
+          "fill_rate_pct": 96.0
+        },
+        {
+          "sku_id": "SKU-08",
+          "name": "21.5寸一体机整机 带键盘鼠标",
+          "requested": 53,
+          "placed": 0,
+          "unplaced": 53,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-09",
+          "name": "19寸一体机整机",
+          "requested": 24,
+          "placed": 24,
+          "unplaced": 0,
+          "fill_rate_pct": 100.0
+        },
+        {
+          "sku_id": "SKU-10",
+          "name": "19寸液晶屏 / 19寸液晶屏玻璃",
+          "requested": 22,
+          "placed": 0,
+          "unplaced": 22,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-11",
+          "name": "电源线",
+          "requested": 10,
+          "placed": 0,
+          "unplaced": 10,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-12",
+          "name": "电源线 (小箱)",
+          "requested": 1,
+          "placed": 0,
+          "unplaced": 1,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-13",
+          "name": "电源",
+          "requested": 50,
+          "placed": 50,
+          "unplaced": 0,
+          "fill_rate_pct": 100.0
+        },
+        {
+          "sku_id": "SKU-14",
+          "name": "19寸 显示器 BG (DA)",
+          "requested": 674,
+          "placed": 0,
+          "unplaced": 674,
+          "fill_rate_pct": 0.0
+        }
+      ],
+      "telemetry": {
+        "runtime_ms": 41231.82,
+        "candidates_generated": 0,
+        "candidates_evaluated": 0,
+        "candidates_rejected_by_reason": {},
+        "anchors_generated_by_type": {
+          "FLOOR_FRONTIER": 161,
+          "SUPPORTED_FRONTIER": 769,
+          "WALL_FRONTIER": 22,
+          "EMS_CORNER": 13,
+          "EXTREME_POINT": 1118,
+          "TOP_SURFACE": 769,
+          "GAP_FILL": 0,
+          "EXPLORATION": 1206
+        },
+        "anchors_sampled_by_type": {},
+        "candidates_generated_by_anchor_type": {},
+        "candidates_valid_by_anchor_type": {},
+        "floor_frontier_count": 161,
+        "supported_frontier_count": 769,
+        "wall_frontier_count": 22,
+        "no_candidate_reason": "",
+        "phase_termination_reason": {
+          "MultiStart": "Completed run with strategy LARGEST_VOLUME_FIRST, placed=285"
+        },
+        "ems_peak": 0,
+        "extreme_points_peak": 0,
+        "steps_committed": 285,
+        "phases_completed": [
+          "MultiStart_LARGEST_VOLUME_FIRST",
+          "SearchCompleted(runs=1,best=LARGEST_VOLUME_FIRST)"
+        ]
+      }
+    },
+    "HierarchicalSearch (OPTIMIZE)": {
+      "mode": "HierarchicalSearch (OPTIMIZE)",
+      "runtime_ms": 78835.76,
+      "total_requested": 1845,
+      "total_placed": 261,
+      "total_unplaced": 1584,
+      "volume_utilization_pct": 24.8879,
+      "total_weight_kg": 1620.0,
+      "is_valid": true,
+      "overlap_pair_count": 0,
+      "penetration_volume_m3": 0.0,
+      "out_of_bounds_count": 0,
+      "hard_constraint_violations": 0,
+      "sku_breakdown": [
+        {
+          "sku_id": "SKU-01",
+          "name": "WIFI蓝牙 / WIFI线 / WIFI贴",
+          "requested": 1,
+          "placed": 1,
+          "unplaced": 0,
+          "fill_rate_pct": 100.0
+        },
+        {
+          "sku_id": "SKU-02",
+          "name": "21.5寸 显示器 BG (DA)",
+          "requested": 500,
+          "placed": 0,
+          "unplaced": 500,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-03",
+          "name": "34寸显示器 MX340 (DA)",
+          "requested": 90,
+          "placed": 0,
+          "unplaced": 90,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-04",
+          "name": "27寸显示器 2886A (DA)",
+          "requested": 100,
+          "placed": 0,
+          "unplaced": 100,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-05",
+          "name": "32寸智能显示器 (DA)",
+          "requested": 100,
+          "placed": 0,
+          "unplaced": 100,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-06",
+          "name": "15.6寸便携显示器 (14/箱)",
+          "requested": 95,
+          "placed": 90,
+          "unplaced": 5,
+          "fill_rate_pct": 94.74
+        },
+        {
+          "sku_id": "SKU-07",
+          "name": "15.6寸 双屏便携屏",
+          "requested": 125,
+          "placed": 120,
+          "unplaced": 5,
+          "fill_rate_pct": 96.0
+        },
+        {
+          "sku_id": "SKU-08",
+          "name": "21.5寸一体机整机 带键盘鼠标",
+          "requested": 53,
+          "placed": 0,
+          "unplaced": 53,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-09",
+          "name": "19寸一体机整机",
+          "requested": 24,
+          "placed": 0,
+          "unplaced": 24,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-10",
+          "name": "19寸液晶屏 / 19寸液晶屏玻璃",
+          "requested": 22,
+          "placed": 0,
+          "unplaced": 22,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-11",
+          "name": "电源线",
+          "requested": 10,
+          "placed": 0,
+          "unplaced": 10,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-12",
+          "name": "电源线 (小箱)",
+          "requested": 1,
+          "placed": 0,
+          "unplaced": 1,
+          "fill_rate_pct": 0.0
+        },
+        {
+          "sku_id": "SKU-13",
+          "name": "电源",
+          "requested": 50,
+          "placed": 50,
+          "unplaced": 0,
+          "fill_rate_pct": 100.0
+        },
+        {
+          "sku_id": "SKU-14",
+          "name": "19寸 显示器 BG (DA)",
+          "requested": 674,
+          "placed": 0,
+          "unplaced": 674,
+          "fill_rate_pct": 0.0
+        }
+      ],
+      "telemetry": {
+        "runtime_ms": 78835.19,
+        "candidates_generated": 0,
+        "candidates_evaluated": 0,
+        "candidates_rejected_by_reason": {},
+        "anchors_generated_by_type": {
+          "FLOOR_FRONTIER": 138,
+          "SUPPORTED_FRONTIER": 690,
+          "WALL_FRONTIER": 22,
+          "EMS_CORNER": 10,
+          "EXTREME_POINT": 970,
+          "TOP_SURFACE": 690,
+          "GAP_FILL": 0,
+          "EXPLORATION": 1048
+        },
+        "anchors_sampled_by_type": {},
+        "candidates_generated_by_anchor_type": {},
+        "candidates_valid_by_anchor_type": {},
+        "floor_frontier_count": 138,
+        "supported_frontier_count": 690,
+        "wall_frontier_count": 22,
+        "no_candidate_reason": "",
+        "phase_termination_reason": {
+          "MultiStart": "Completed run with strategy LARGEST_VOLUME_FIRST, placed=261"
+        },
+        "ems_peak": 0,
+        "extreme_points_peak": 0,
+        "steps_committed": 261,
+        "phases_completed": [
+          "MultiStart_LARGEST_VOLUME_FIRST",
+          "SearchCompleted(runs=1,best=LARGEST_VOLUME_FIRST)"
+        ]
+      }
+    }
+  },
+  "comparison_summary": {
+    "BaselineGreedy": {
+      "placed_phase1": 85,
+      "placed_phase2": 171,
+      "util_pct_phase1": 9.67,
+      "util_pct_phase2": 19.5924
+    },
+    "FAST": {
+      "placed_phase1": 235,
+      "placed_phase2": 235,
+      "util_pct_phase1": 23.62,
+      "util_pct_phase2": 23.6193
+    },
+    "BALANCED": {
+      "placed_phase1": 285,
+      "placed_phase2": 285,
+      "util_pct_phase1": 25.81,
+      "util_pct_phase2": 25.8129
+    },
+    "OPTIMIZE": {
+      "placed_phase1": 261,
+      "placed_phase2": 261,
+      "util_pct_phase1": 24.89,
+      "util_pct_phase2": 24.8879
+    }
+  }
+}

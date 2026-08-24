@@ -1,0 +1,218 @@
+{
+  "generated_at": "2026-08-22T16:45:51Z",
+  "schema": "BLK006D_DEEP_PROFILE_V1",
+  "pre_optimization": {
+    "state_reconstruction_ms": 68908.878041,
+    "state_expansion_ms": 41984.044044,
+    "candidate_enumeration_ms": 1336.266541,
+    "terminal_topfill_ms": 15715.067083
+  },
+  "post_optimization": {
+    "bounds_validation_ms": {
+      "exclusive_ms": 0.361493,
+      "inclusive_ms": 0.361493,
+      "call_count": 875,
+      "avg_ms": 0.000413,
+      "p50_ms": 0.000334,
+      "p95_ms": 0.000792,
+      "max_ms": 0.007291
+    },
+    "candidate_enumeration_ms": {
+      "exclusive_ms": 767.805084,
+      "inclusive_ms": 767.805084,
+      "call_count": 7,
+      "avg_ms": 109.686441,
+      "p50_ms": 114.438333,
+      "p95_ms": 190.718917,
+      "max_ms": 190.718917
+    },
+    "candidate_geometry_build_ms": {
+      "exclusive_ms": 366.41871,
+      "inclusive_ms": 366.41871,
+      "call_count": 6,
+      "avg_ms": 61.069785,
+      "p50_ms": 60.732521,
+      "p95_ms": 78.734959,
+      "max_ms": 78.734959
+    },
+    "candidate_ranking_ms": {
+      "exclusive_ms": 0.023834,
+      "inclusive_ms": 0.023834,
+      "call_count": 7,
+      "avg_ms": 0.003405,
+      "p50_ms": 0.002334,
+      "p95_ms": 0.007459,
+      "max_ms": 0.007459
+    },
+    "cluster_stability_ms": {
+      "exclusive_ms": 8.077212,
+      "inclusive_ms": 8.077212,
+      "call_count": 25,
+      "avg_ms": 0.323088,
+      "p50_ms": 0.292666,
+      "p95_ms": 0.518583,
+      "max_ms": 0.758334
+    },
+    "collision_query_ms": {
+      "exclusive_ms": 7.005007,
+      "inclusive_ms": 7.005007,
+      "call_count": 875,
+      "avg_ms": 0.008006,
+      "p50_ms": 0.006958,
+      "p95_ms": 0.013792,
+      "max_ms": 0.140916
+    },
+    "compression_validation_ms": {
+      "exclusive_ms": 5.001628,
+      "inclusive_ms": 5.001628,
+      "call_count": 25,
+      "avg_ms": 0.200065,
+      "p50_ms": 0.187917,
+      "p95_ms": 0.286458,
+      "max_ms": 0.4985
+    },
+    "dominance_check_ms": {
+      "exclusive_ms": 0.008334,
+      "inclusive_ms": 0.008334,
+      "call_count": 4,
+      "avg_ms": 0.002083,
+      "p50_ms": 0.002187,
+      "p95_ms": 0.0035,
+      "max_ms": 0.0035
+    },
+    "handling_validation_ms": {
+      "exclusive_ms": 0.565001,
+      "inclusive_ms": 0.565001,
+      "call_count": 864,
+      "avg_ms": 0.000654,
+      "p50_ms": 0.000583,
+      "p95_ms": 0.001083,
+      "max_ms": 0.011084
+    },
+    "incremental_commit_ms": {
+      "exclusive_ms": 47.467678,
+      "inclusive_ms": 47.467678,
+      "call_count": 864,
+      "avg_ms": 0.054939,
+      "p50_ms": 0.052458,
+      "p95_ms": 0.080625,
+      "max_ms": 0.272458
+    },
+    "inventory_update_ms": {
+      "exclusive_ms": 0.177376,
+      "inclusive_ms": 0.177376,
+      "call_count": 25,
+      "avg_ms": 0.007095,
+      "p50_ms": 0.007,
+      "p95_ms": 0.008541,
+      "max_ms": 0.008708
+    },
+    "load_propagation_ms": {
+      "exclusive_ms": 5.728916,
+      "inclusive_ms": 5.728916,
+      "call_count": 25,
+      "avg_ms": 0.229157,
+      "p50_ms": 0.192292,
+      "p95_ms": 0.353875,
+      "max_ms": 0.949
+    },
+    "residual_space_update_ms": {
+      "exclusive_ms": 40.934331,
+      "inclusive_ms": 40.934331,
+      "call_count": 25,
+      "avg_ms": 1.637373,
+      "p50_ms": 1.455958,
+      "p95_ms": 2.682125,
+      "max_ms": 3.458166
+    },
+    "stability_validation_ms": {
+      "exclusive_ms": 2.47771,
+      "inclusive_ms": 2.47771,
+      "call_count": 25,
+      "avg_ms": 0.099108,
+      "p50_ms": 0.016667,
+      "p95_ms": 0.338292,
+      "max_ms": 0.602834
+    },
+    "state_reconstruction_ms": {
+      "exclusive_ms": 99.961375,
+      "inclusive_ms": 99.961375,
+      "call_count": 10,
+      "avg_ms": 9.996138,
+      "p50_ms": 9.651229,
+      "p95_ms": 18.818292,
+      "max_ms": 18.818292
+    },
+    "state_signature_ms": {
+      "exclusive_ms": 2.70421,
+      "inclusive_ms": 2.70421,
+      "call_count": 11,
+      "avg_ms": 0.245837,
+      "p50_ms": 0.222083,
+      "p95_ms": 0.367625,
+      "max_ms": 0.367625
+    },
+    "support_graph_ms": {
+      "exclusive_ms": 5.092771,
+      "inclusive_ms": 5.092771,
+      "call_count": 588,
+      "avg_ms": 0.008661,
+      "p50_ms": 0.007875,
+      "p95_ms": 0.012375,
+      "max_ms": 0.102875
+    },
+    "top_surface_update_ms": {
+      "exclusive_ms": 3.393752,
+      "inclusive_ms": 3.393752,
+      "call_count": 25,
+      "avg_ms": 0.13575,
+      "p50_ms": 0.109959,
+      "p95_ms": 0.260458,
+      "max_ms": 0.275791
+    },
+    "wall_stability_ms": {
+      "exclusive_ms": 11.480915,
+      "inclusive_ms": 11.480915,
+      "call_count": 25,
+      "avg_ms": 0.459237,
+      "p50_ms": 0.45325,
+      "p95_ms": 0.655625,
+      "max_ms": 0.701041
+    },
+    "zone_validation_ms": {
+      "exclusive_ms": 27.088963,
+      "inclusive_ms": 27.088963,
+      "call_count": 1728,
+      "avg_ms": 0.015676,
+      "p50_ms": 0.007896,
+      "p95_ms": 0.037458,
+      "max_ms": 0.1565
+    },
+    "state_expansion_ms": {
+      "exclusive_ms": 559.603285,
+      "inclusive_ms": 1958.665041,
+      "call_count": 6,
+      "avg_ms": 326.444174,
+      "p50_ms": 319.788375,
+      "p95_ms": 502.66975,
+      "max_ms": 502.66975
+    }
+  },
+  "top_3_hotspots_pre": [
+    "state_reconstruction_ms",
+    "state_expansion_ms",
+    "candidate_enumeration_ms"
+  ],
+  "top_3_hotspots_post": [
+    "state_expansion_ms",
+    "candidate_enumeration_ms",
+    "candidate_geometry_build_ms"
+  ],
+  "double_counting_policy": "leaf stages are exclusive; state_expansion inclusive includes leaves and reports residual exclusive time",
+  "post_optimization_terminal": {
+    "terminal_topfill_ms": 17509.787041693926,
+    "topfill_estimator_calls": 25,
+    "full_topfill_calls": 1,
+    "terminal_policy": "one selected COMPLETE candidate runs full BLK-005C; no redundant terminal candidate calls"
+  }
+}

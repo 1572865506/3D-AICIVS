@@ -1,0 +1,72 @@
+{
+  "schema": "BLK006E_REJECTION_PARETO/v1",
+  "total_rejections": 3133,
+  "reasons": [
+    {
+      "reason": "FRAGMENTATION_OR_RANKING",
+      "count": 3114,
+      "share": 0.993935525055857,
+      "cumulative_share": 0.993935525055857
+    },
+    {
+      "reason": "SUPPORT",
+      "count": 12,
+      "share": 0.003830194701563996,
+      "cumulative_share": 0.997765719757421
+    },
+    {
+      "reason": "REGION_UNREACHABLE",
+      "count": 5,
+      "share": 0.0015959144589849984,
+      "cumulative_share": 0.999361634216406
+    },
+    {
+      "reason": "NO_VOLUME_GAIN",
+      "count": 2,
+      "share": 0.0006383657835939994,
+      "cumulative_share": 1.0
+    },
+    {
+      "reason": "COLLISION",
+      "count": 0,
+      "share": 0.0,
+      "cumulative_share": 1.0
+    },
+    {
+      "reason": "STABILITY",
+      "count": 0,
+      "share": 0.0,
+      "cumulative_share": 1.0
+    },
+    {
+      "reason": "LAYER_LIMIT",
+      "count": 0,
+      "share": 0.0,
+      "cumulative_share": 1.0
+    },
+    {
+      "reason": "INVENTORY",
+      "count": 0,
+      "share": 0.0,
+      "cumulative_share": 1.0
+    },
+    {
+      "reason": "PHYSICS_OR_POLICY",
+      "count": 0,
+      "share": 0.0,
+      "cumulative_share": 1.0
+    },
+    {
+      "reason": "COMPRESSION",
+      "count": 0,
+      "share": 0.0,
+      "cumulative_share": 1.0
+    },
+    {
+      "reason": "ORIENTATION_POLICY",
+      "count": 0,
+      "share": 0.0,
+      "cumulative_share": 1.0
+    }
+  ]
+}

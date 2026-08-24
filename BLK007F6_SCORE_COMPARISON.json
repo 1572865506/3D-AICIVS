@@ -1,0 +1,41 @@
+{
+  "block": "BLK-007F-6",
+  "objective_weights": {
+    "volume_efficiency": 0.2,
+    "wall_continuity": 0.25,
+    "direction_compliance": 0.2,
+    "door_safety": 0.15,
+    "transport_stability": 0.1,
+    "layer_balance": 0.1
+  },
+  "comparison": {
+    "old_layout": "candidate_01",
+    "new_layout": "candidate_04",
+    "old_score": 93.305,
+    "new_score": 93.3176,
+    "score_delta": 0.0126,
+    "utilization_delta_pct_points": 0.0,
+    "wall_order_changed": true,
+    "direction_effective": true
+  },
+  "incumbent_score": {
+    "volume_efficiency": 71.5044,
+    "wall_continuity": 100.0,
+    "direction_compliance": 100.0,
+    "door_safety": 99.75,
+    "transport_stability": 92.0,
+    "layer_balance": 98.4163,
+    "global_score": 93.305
+  },
+  "selected_score": {
+    "volume_efficiency": 71.5044,
+    "wall_continuity": 100.0,
+    "direction_compliance": 100.0,
+    "door_safety": 99.75,
+    "transport_stability": 92.0,
+    "layer_balance": 98.5423,
+    "global_score": 93.3176
+  },
+  "global_validator": "VALID",
+  "utilization_pct": 71.5044
+}

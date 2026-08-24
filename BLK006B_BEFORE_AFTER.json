@@ -1,0 +1,627 @@
+{
+  "generated_at": "2026-08-22T14:53:03Z",
+  "before_root": {
+    "proposals_generated": 2,
+    "valid_candidates": 1,
+    "hard_rejected": 1,
+    "structurally_distinct_valid_candidates": 1
+  },
+  "after_root": {
+    "state_id": "root",
+    "proposals_generated": 12,
+    "raw_generated": 567,
+    "duplicates_removed": 493,
+    "cheap_rejected": 30,
+    "cheap_rejection_reasons": {
+      "INVENTORY_IMPOSSIBLE": 30
+    },
+    "hard_rejected": 0,
+    "valid_candidates": 12,
+    "structurally_distinct_valid_candidates": 12,
+    "valid_by_family": {
+      "HOMOGENEOUS_WALL": 2,
+      "ALTERNATE_ORIENTATION_WALL": 2,
+      "ALTERNATE_WIDTH_WALL": 2,
+      "ALTERNATE_HEIGHT_WALL": 2,
+      "MIXED_SKU_WALL": 2,
+      "RESIDUAL_AWARE_WALL": 2
+    },
+    "valid_by_sku": {
+      "SKU-05": 2,
+      "SKU-07": 3,
+      "SKU-06": 3,
+      "SKU-02": 3,
+      "SKU-03": 1,
+      "SKU-13": 1,
+      "SKU-04": 1
+    },
+    "valid_by_orientation": {
+      "UPRIGHT_NORMAL": 11,
+      "UPRIGHT_ROTATED": 1
+    },
+    "valid_by_wall_width_bucket": {
+      "GE_2.0M": 10,
+      "0.5_TO_1.0M": 2
+    },
+    "valid_by_layer_count": {
+      "4": 8,
+      "3": 1,
+      "1": 2,
+      "2": 1
+    },
+    "proposed_by_family": {
+      "HOMOGENEOUS_WALL": 2,
+      "ALTERNATE_ORIENTATION_WALL": 2,
+      "ALTERNATE_WIDTH_WALL": 2,
+      "ALTERNATE_HEIGHT_WALL": 2,
+      "MIXED_SKU_WALL": 2,
+      "RESIDUAL_AWARE_WALL": 2
+    },
+    "valid_signatures": [
+      {
+        "sku_composition": [
+          [
+            "SKU-05",
+            72
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            72
+          ]
+        ],
+        "dimensions": [
+          4.998,
+          1.59,
+          0.92
+        ],
+        "wall_width": 4.998,
+        "layer_structure": [
+          0.0,
+          0.23,
+          0.46,
+          0.69
+        ],
+        "placement_geometry_fingerprint": "758bbdfdaeec60358e5c"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-07",
+            120
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            120
+          ]
+        ],
+        "dimensions": [
+          2.586,
+          2.11,
+          1.124
+        ],
+        "wall_width": 2.586,
+        "layer_structure": [
+          0.0,
+          0.281,
+          0.562,
+          0.843
+        ],
+        "placement_geometry_fingerprint": "4bbf192cbadbd68c5d81"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-06",
+            80
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            80
+          ]
+        ],
+        "dimensions": [
+          2.875,
+          1.84,
+          1.86
+        ],
+        "wall_width": 2.875,
+        "layer_structure": [
+          0.0,
+          0.465,
+          0.93,
+          1.395
+        ],
+        "placement_geometry_fingerprint": "f56c858a3e051743aef4"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-06",
+            90
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            90
+          ]
+        ],
+        "dimensions": [
+          3.45,
+          2.3,
+          1.395
+        ],
+        "wall_width": 3.45,
+        "layer_structure": [
+          0.0,
+          0.465,
+          0.93
+        ],
+        "placement_geometry_fingerprint": "069bafb28d9cf8ea7c3c"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-02",
+            4
+          ],
+          [
+            "SKU-03",
+            4
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            8
+          ]
+        ],
+        "dimensions": [
+          0.978,
+          1.072,
+          0.488
+        ],
+        "wall_width": 0.978,
+        "layer_structure": [
+          0.0
+        ],
+        "placement_geometry_fingerprint": "1f439394778e94a1262d"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-05",
+            96
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            96
+          ]
+        ],
+        "dimensions": [
+          4.998,
+          2.12,
+          0.92
+        ],
+        "wall_width": 4.998,
+        "layer_structure": [
+          0.0,
+          0.23,
+          0.46,
+          0.69
+        ],
+        "placement_geometry_fingerprint": "e0a5dd315ff1f178c7fd"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-02",
+            144
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            144
+          ]
+        ],
+        "dimensions": [
+          3.318,
+          0.48,
+          1.42
+        ],
+        "wall_width": 3.318,
+        "layer_structure": [
+          0.0,
+          0.355,
+          0.71,
+          1.065
+        ],
+        "placement_geometry_fingerprint": "9c3553c91b4151bc778e"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-07",
+            100
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            100
+          ]
+        ],
+        "dimensions": [
+          2.155,
+          2.11,
+          1.124
+        ],
+        "wall_width": 2.155,
+        "layer_structure": [
+          0.0,
+          0.281,
+          0.562,
+          0.843
+        ],
+        "placement_geometry_fingerprint": "297f8052c59109dc4bf9"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-06",
+            80
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            80
+          ]
+        ],
+        "dimensions": [
+          2.3,
+          2.3,
+          1.86
+        ],
+        "wall_width": 2.3,
+        "layer_structure": [
+          0.0,
+          0.465,
+          0.93,
+          1.395
+        ],
+        "placement_geometry_fingerprint": "f7ac9754395e4feef9e5"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-13",
+            50
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            50
+          ]
+        ],
+        "dimensions": [
+          2.15,
+          2.05,
+          0.38
+        ],
+        "wall_width": 2.15,
+        "layer_structure": [
+          0.0,
+          0.19
+        ],
+        "placement_geometry_fingerprint": "d230ab7daf02ae30727d"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-02",
+            4
+          ],
+          [
+            "SKU-04",
+            4
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_NORMAL",
+            8
+          ]
+        ],
+        "dimensions": [
+          0.68,
+          0.808,
+          0.44
+        ],
+        "wall_width": 0.68,
+        "layer_structure": [
+          0.0
+        ],
+        "placement_geometry_fingerprint": "0fbc3d6962b8304f9ed5"
+      },
+      {
+        "sku_composition": [
+          [
+            "SKU-07",
+            120
+          ]
+        ],
+        "orientation_composition": [
+          [
+            "UPRIGHT_ROTATED",
+            120
+          ]
+        ],
+        "dimensions": [
+          2.532,
+          2.155,
+          1.124
+        ],
+        "wall_width": 2.532,
+        "layer_structure": [
+          0.0,
+          0.281,
+          0.562,
+          0.843
+        ],
+        "placement_geometry_fingerprint": "12056ac591316d5d47e5"
+      }
+    ],
+    "score_min": 356.1322944324336,
+    "score_max": 13538.891903691632,
+    "score_mean": 7313.2547723452335,
+    "score_std": 4312.211552940531
+  },
+  "global_probe_metrics": {
+    "mode": "GLOBAL_SEARCH_BEAM_2",
+    "placed_count": 136,
+    "utilization_pct": 20.6091,
+    "max_x": 3.95,
+    "door_ready": false,
+    "overlap": 0,
+    "penetration": 0.0,
+    "out_of_bounds": 0,
+    "hard_violations": 0,
+    "enclosed_cavity": 0,
+    "bridge_void": 0,
+    "top_fill_region_count": 11,
+    "top_fill_usable_volume": 12.36054,
+    "top_fill_placed_count": 41,
+    "top_fill_placed_volume": 4.15888,
+    "top_fill_utilization": 0.336465,
+    "top_fill_by_sku": {
+      "SKU-06": 2,
+      "SKU-05": 35,
+      "SKU-03": 4
+    },
+    "top_fill_by_orientation": {
+      "UPRIGHT_NORMAL": 2,
+      "UPRIGHT_ROTATED": 39
+    },
+    "top_fill_layer_distribution": {
+      "1": 11,
+      "2": 9,
+      "3": 9,
+      "4": 9,
+      "5": 3
+    },
+    "rejected_insufficient_support": 0,
+    "rejected_compression": 0,
+    "rejected_orientation_context": 0,
+    "rejected_max_layers": 0,
+    "rejected_stability": 0,
+    "residual_top_volume": 7.49855,
+    "residual_top_fragmentation": {
+      "fragment_count": 0,
+      "fragment_volume": 0,
+      "fragment_ratio": 0.0
+    },
+    "runtime_sec": 311.775,
+    "states_generated": 12,
+    "states_expanded": 3,
+    "search_depth": 1,
+    "selected_path": [
+      "agg_SKU-06_0.500_0.000_0.000_6x5x3"
+    ]
+  },
+  "production_incumbent": {
+    "BALANCED": {
+      "mode": "BALANCED",
+      "placed_count": 373,
+      "utilization_pct": 41.4627,
+      "max_x": 11.978,
+      "door_ready": true,
+      "overlap": 0,
+      "penetration": 0.0,
+      "out_of_bounds": 0,
+      "hard_violations": 0,
+      "enclosed_cavity": 0,
+      "bridge_void": 0,
+      "top_fill_region_count": 28,
+      "top_fill_usable_volume": 39.43731,
+      "top_fill_placed_count": 36,
+      "top_fill_placed_volume": 3.44373,
+      "top_fill_utilization": 0.087321,
+      "top_fill_by_sku": {
+        "SKU-06": 5,
+        "SKU-05": 4,
+        "SKU-03": 27
+      },
+      "top_fill_by_orientation": {
+        "UPRIGHT_NORMAL": 6,
+        "UPRIGHT_ROTATED": 30
+      },
+      "top_fill_layer_distribution": {
+        "1": 18,
+        "2": 13,
+        "3": 5
+      },
+      "rejected_insufficient_support": 0,
+      "rejected_compression": 0,
+      "rejected_orientation_context": 0,
+      "rejected_max_layers": 0,
+      "rejected_stability": 0,
+      "residual_top_volume": 35.62028,
+      "residual_top_fragmentation": {
+        "fragment_count": 0,
+        "fragment_volume": 0,
+        "fragment_ratio": 0.0
+      },
+      "top_fill_sku_diversity": 3,
+      "auto_topfill_placed_count": 36,
+      "auto_topfill_placed_by_sku": {
+        "SKU-06": 5,
+        "SKU-05": 4,
+        "SKU-03": 27
+      },
+      "auto_flat_placed_count": 0,
+      "main_body_conditional_flat_count": 0,
+      "deployment_funnel": {
+        "NOT_GENERATED": 82,
+        "PRUNED": 211,
+        "RANKED_OUT": 914,
+        "ATTEMPT_FAILED": 0,
+        "COLLISION": 0,
+        "SUPPORT": 0,
+        "STABILITY": 0,
+        "LAYER_LIMIT": 0,
+        "INVENTORY": 0,
+        "REGION_EXHAUSTED": 0,
+        "COMMITTED": 36,
+        "admitted_candidate_count": 222,
+        "generated_candidate_count": 1346,
+        "ranked_candidate_count": 1346,
+        "attempted_candidate_count": 36,
+        "committed_candidate_count": 36
+      },
+      "regions_diagnosed": 26,
+      "multi_sku_region_count": 2,
+      "multi_layer_region_count": 9
+    },
+    "OPTIMIZE": {
+      "mode": "OPTIMIZE",
+      "placed_count": 361,
+      "utilization_pct": 41.7456,
+      "max_x": 11.978,
+      "door_ready": true,
+      "overlap": 0,
+      "penetration": 0.0,
+      "out_of_bounds": 0,
+      "hard_violations": 0,
+      "enclosed_cavity": 0,
+      "bridge_void": 0,
+      "top_fill_region_count": 27,
+      "top_fill_usable_volume": 39.208,
+      "top_fill_placed_count": 48,
+      "top_fill_placed_volume": 4.36597,
+      "top_fill_utilization": 0.111354,
+      "top_fill_by_sku": {
+        "SKU-06": 5,
+        "SKU-05": 4,
+        "SKU-03": 35,
+        "SKU-07": 4
+      },
+      "top_fill_by_orientation": {
+        "UPRIGHT_NORMAL": 13,
+        "UPRIGHT_ROTATED": 35
+      },
+      "top_fill_layer_distribution": {
+        "1": 23,
+        "2": 17,
+        "3": 6,
+        "4": 2
+      },
+      "rejected_insufficient_support": 2,
+      "rejected_compression": 0,
+      "rejected_orientation_context": 0,
+      "rejected_max_layers": 0,
+      "rejected_stability": 0,
+      "residual_top_volume": 35.48675,
+      "residual_top_fragmentation": {
+        "fragment_count": 0,
+        "fragment_volume": 0,
+        "fragment_ratio": 0.0
+      },
+      "top_fill_sku_diversity": 4,
+      "auto_topfill_placed_count": 48,
+      "auto_topfill_placed_by_sku": {
+        "SKU-06": 5,
+        "SKU-05": 4,
+        "SKU-03": 35,
+        "SKU-07": 4
+      },
+      "auto_flat_placed_count": 0,
+      "main_body_conditional_flat_count": 0,
+      "deployment_funnel": {
+        "NOT_GENERATED": 61,
+        "PRUNED": 220,
+        "RANKED_OUT": 1336,
+        "ATTEMPT_FAILED": 0,
+        "COLLISION": 0,
+        "SUPPORT": 2,
+        "STABILITY": 0,
+        "LAYER_LIMIT": 0,
+        "INVENTORY": 0,
+        "REGION_EXHAUSTED": 0,
+        "COMMITTED": 48,
+        "admitted_candidate_count": 232,
+        "generated_candidate_count": 1912,
+        "ranked_candidate_count": 1912,
+        "attempted_candidate_count": 50,
+        "committed_candidate_count": 48
+      },
+      "regions_diagnosed": 25,
+      "multi_sku_region_count": 2,
+      "multi_layer_region_count": 10
+    }
+  },
+  "acceptance": {
+    "root_generated_gte_8": true,
+    "root_hard_valid_gte_4": true,
+    "root_structurally_distinct_gte_3": true,
+    "all_candidate_families_attempted": true,
+    "valid_vs_valid_objective_competition": true,
+    "deterministic_replay": true,
+    "branch_isolation": true,
+    "candidate_hard_safety": true,
+    "legacy_production_incumbent": true,
+    "global_search_opt_in": true,
+    "user_defined_rules_unchanged": true,
+    "full_suite": true
+  },
+  "regression_tests": {
+    "TOP_001_012": "PASS",
+    "WALL_001_010": "PASS",
+    "BLK005B": "PASS",
+    "BLK005C": "PASS",
+    "BLK006A": "PASS",
+    "BLK006B": "PASS",
+    "focused_tests_run": 41,
+    "full_suite": "PASS",
+    "full_tests_run": 152,
+    "full_failures": 0,
+    "full_errors": 0,
+    "full_duration_sec": 94.884
+  },
+  "mutations": {
+    "beam_width_tuning": 0,
+    "multi_depth_search": 0,
+    "hard_thresholds": 0,
+    "sku_specific_scoring": 0
+  }
+}

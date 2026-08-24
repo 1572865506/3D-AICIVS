@@ -1,4 +1,9 @@
 """
+[LEGACY BASELINE ONLY - DO NOT REUSE IN V2]
+NOTE: This file belongs to Solver V1.x. It is maintained strictly for legacy baseline
+comparison, regression tests, and API backward compatibility.
+Do NOT copy, translate, port, or reuse any packing/placement logic into Solver V2.
+
 3D-AICIVS Industrial Container Packing Engine (Python 3 Kernel)
 Implementation of the 6 Core Modules based on implementation_plan.md:
 1. 物理压强与朝向控制 (Physical Pressure & Matrix Orientation Control)

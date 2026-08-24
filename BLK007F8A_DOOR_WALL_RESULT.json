@@ -1,0 +1,43 @@
+{
+  "block": "BLK-007F-8A-CORRECTION",
+  "status": "PASS",
+  "view_semantics": {
+    "screenshot_1": "SIDE_XZ",
+    "screenshot_2": "AXIAL"
+  },
+  "door_wall": {
+    "wall_id": "DOOR_WALL_001",
+    "anchor_x_m": 11.429,
+    "door_plane_x_m": 12.032,
+    "door_plane_clearance_m": 0.115,
+    "placement_count": 231,
+    "sku_mix": {"SKU-02": 7, "SKU-14": 224},
+    "orientation_policy": "LONG_EDGE_FORWARD",
+    "concrete_orientation": "UPRIGHT_NORMAL",
+    "width_coverage": 0.986395,
+    "height_coverage": 0.996294,
+    "area_coverage": 0.980179,
+    "largest_lateral_gap_m": 0.032,
+    "locked": true,
+    "door_open_stable": true,
+    "minimum_door_open_tipping_margin": 1.2103
+  },
+  "main_cargo_walls": {
+    "wall_count": 15,
+    "placement_count": 480,
+    "mixed_sku_wall_count": 10,
+    "sku_diversity_distribution": {"1": 5, "2": 6, "3": 2, "4": 1, "5": 1},
+    "placement_weighted_continuity": 82.1692,
+    "hard_validation": "VALID"
+  },
+  "full_pipeline": {
+    "placement_count": 1597,
+    "utilization_pct": 75.70374707675484,
+    "top_fill_count": 52,
+    "global_validator": "VALID",
+    "overlap": 0,
+    "penetration": 0,
+    "out_of_bounds": 0,
+    "hard_violations": 0
+  }
+}

@@ -1,0 +1,2626 @@
+{
+  "schema": "BLK006E_BEFORE_AFTER/v1",
+  "before": {
+    "global_utilization_pct": 40.521415,
+    "global_topfill_volume_m3": 3.621927,
+    "legacy_incumbent_utilization_pct": 41.745603
+  },
+  "production_incumbent": {
+    "utilization_pct": 41.745603,
+    "main_body_volume_m3": 27.075485,
+    "topfill_volume_m3": 4.365966,
+    "door_volume_m3": 0.431907,
+    "source": "BLK006D_ACCEPTED_BASELINE"
+  },
+  "legacy_reproduction": {
+    "placed_volume_m3": 31.566041,
+    "main_body_volume_m3": 27.075485,
+    "topfill_volume_m3": 4.058649,
+    "door_volume_m3": 0.431907,
+    "unused_container_volume_m3": 44.785373,
+    "utilization_pct": 41.3431,
+    "runtime_sec": 98.777
+  },
+  "repair": {
+    "accepted": true,
+    "source": "GLOBAL_REPAIRED",
+    "parent_volume_m3": 30.705805703999975,
+    "repaired_volume_m3": 31.976764574000008,
+    "volume_gain_m3": 1.2709588700000332,
+    "parent_main_volume_m3": 27.316746895999973,
+    "parent_topfill_volume_m3": 3.3890588079999997,
+    "repaired_main_volume_m3": 27.316746896000012,
+    "repaired_topfill_volume_m3": 4.6600176780000035,
+    "runtime_sec": 17.90214370796457,
+    "validation": {
+      "complete_legal": true,
+      "global_validator_valid": true,
+      "physics_valid": true,
+      "door_ready": true,
+      "inventory_valid": true,
+      "enclosed_cavity": 0,
+      "bridge_void": 0,
+      "auto_flat": 0,
+      "main_body_conditional_flat": 0,
+      "hard_violation_count": 0
+    },
+    "stage_summaries": {
+      "STAGE_A": {
+        "activated": true,
+        "attempts": 3,
+        "accepted_trials": 1,
+        "gain_m3": 1.2709588700000332,
+        "budget_exhausted": false,
+        "runtime_sec": 16.703015999868512
+      },
+      "STAGE_B": {
+        "activated": false,
+        "reason": "STAGE_A_IMPROVED_OR_PROFILE_DISABLED"
+      },
+      "STAGE_C": {
+        "activated": false,
+        "reason": "STAGE_B_IMPROVED_OR_PROFILE_DISABLED"
+      }
+    },
+    "trace": [
+      {
+        "stage": "STAGE_A_TOPFILL_REPACK",
+        "operator": "VOLUME_FIRST",
+        "status": "ACCEPTED",
+        "placed_topfill": 48,
+        "candidate_volume_m3": 31.976764574000008,
+        "gain_vs_current_m3": 1.2709588700000332,
+        "complete_legal": true,
+        "rejection_reason": null
+      },
+      {
+        "stage": "STAGE_A_TOPFILL_REPACK",
+        "operator": "HEIGHT_FIRST",
+        "status": "ROLLED_BACK",
+        "placed_topfill": 48,
+        "candidate_volume_m3": 31.976764574000008,
+        "gain_vs_current_m3": 0.0,
+        "complete_legal": true,
+        "rejection_reason": "NON_MONOTONIC"
+      },
+      {
+        "stage": "STAGE_A_TOPFILL_REPACK",
+        "operator": "FOOTPRINT_FIRST",
+        "status": "ROLLED_BACK",
+        "placed_topfill": 48,
+        "candidate_volume_m3": 31.920535942000008,
+        "gain_vs_current_m3": -0.056228631999999834,
+        "complete_legal": true,
+        "rejection_reason": "NON_MONOTONIC"
+      }
+    ],
+    "rejection_pareto": {
+      "total_rejections": 3133,
+      "reasons": [
+        {
+          "reason": "FRAGMENTATION_OR_RANKING",
+          "count": 3114,
+          "share": 0.993935525055857,
+          "cumulative_share": 0.993935525055857
+        },
+        {
+          "reason": "SUPPORT",
+          "count": 12,
+          "share": 0.003830194701563996,
+          "cumulative_share": 0.997765719757421
+        },
+        {
+          "reason": "REGION_UNREACHABLE",
+          "count": 5,
+          "share": 0.0015959144589849984,
+          "cumulative_share": 0.999361634216406
+        },
+        {
+          "reason": "NO_VOLUME_GAIN",
+          "count": 2,
+          "share": 0.0006383657835939994,
+          "cumulative_share": 1.0
+        },
+        {
+          "reason": "COLLISION",
+          "count": 0,
+          "share": 0.0,
+          "cumulative_share": 1.0
+        },
+        {
+          "reason": "STABILITY",
+          "count": 0,
+          "share": 0.0,
+          "cumulative_share": 1.0
+        },
+        {
+          "reason": "LAYER_LIMIT",
+          "count": 0,
+          "share": 0.0,
+          "cumulative_share": 1.0
+        },
+        {
+          "reason": "INVENTORY",
+          "count": 0,
+          "share": 0.0,
+          "cumulative_share": 1.0
+        },
+        {
+          "reason": "PHYSICS_OR_POLICY",
+          "count": 0,
+          "share": 0.0,
+          "cumulative_share": 1.0
+        },
+        {
+          "reason": "COMPRESSION",
+          "count": 0,
+          "share": 0.0,
+          "cumulative_share": 1.0
+        },
+        {
+          "reason": "ORIENTATION_POLICY",
+          "count": 0,
+          "share": 0.0,
+          "cumulative_share": 1.0
+        }
+      ]
+    },
+    "region_diagnostics": [
+      {
+        "region_id": "LOGICAL_WALL_012_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_012",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          5.960999999999999,
+          6.794
+        ],
+        "y_range": [
+          0.0,
+          2.2
+        ],
+        "base_z": 0.9199999999999999,
+        "available_height": 1.778,
+        "support_area": 1.8326000000000007,
+        "support_coverage": 1.0,
+        "local_flatness": 0.9999999999999882,
+        "usable_volume": 3.2583628000000013,
+        "neighbor_count": 0,
+        "candidate_count": 18
+      },
+      {
+        "region_id": "LOGICAL_WALL_013_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_013",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          6.794,
+          7.627
+        ],
+        "y_range": [
+          0.0,
+          2.2
+        ],
+        "base_z": 0.9199999999999999,
+        "available_height": 1.778,
+        "support_area": 1.8326000000000007,
+        "support_coverage": 1.0,
+        "local_flatness": 0.9999999999999882,
+        "usable_volume": 3.2583628000000013,
+        "neighbor_count": 0,
+        "candidate_count": 18
+      },
+      {
+        "region_id": "LOGICAL_WALL_014_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_014",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          7.626999999999999,
+          8.459999999999999
+        ],
+        "y_range": [
+          0.0,
+          2.2
+        ],
+        "base_z": 0.9199999999999999,
+        "available_height": 1.778,
+        "support_area": 1.8325999999999985,
+        "support_coverage": 0.9999999999999989,
+        "local_flatness": 0.9999999999999929,
+        "usable_volume": 3.2583627999999973,
+        "neighbor_count": 0,
+        "candidate_count": 18
+      },
+      {
+        "region_id": "LOGICAL_WALL_015_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_015",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          8.459999999999999,
+          9.293
+        ],
+        "y_range": [
+          0.0,
+          2.2
+        ],
+        "base_z": 0.9199999999999999,
+        "available_height": 1.778,
+        "support_area": 1.8325999999999982,
+        "support_coverage": 0.9999999999999988,
+        "local_flatness": 0.999999999999988,
+        "usable_volume": 3.258362799999997,
+        "neighbor_count": 0,
+        "candidate_count": 18
+      },
+      {
+        "region_id": "LOGICAL_WALL_016_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_016",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          9.293,
+          10.126
+        ],
+        "y_range": [
+          0.0,
+          2.2
+        ],
+        "base_z": 0.9199999999999999,
+        "available_height": 1.778,
+        "support_area": 1.8325999999999982,
+        "support_coverage": 0.9999999999999988,
+        "local_flatness": 0.999999999999988,
+        "usable_volume": 3.258362799999997,
+        "neighbor_count": 0,
+        "candidate_count": 18
+      },
+      {
+        "region_id": "LOGICAL_WALL_017_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_017",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          10.126,
+          10.959
+        ],
+        "y_range": [
+          0.0,
+          2.2
+        ],
+        "base_z": 0.9199999999999999,
+        "available_height": 1.778,
+        "support_area": 1.8325999999999982,
+        "support_coverage": 0.9999999999999988,
+        "local_flatness": 0.999999999999988,
+        "usable_volume": 3.258362799999997,
+        "neighbor_count": 0,
+        "candidate_count": 16
+      },
+      {
+        "region_id": "LOGICAL_WALL_021_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_021",
+        "classification": "NARROW_STRIP",
+        "x_range": [
+          11.642,
+          12.018
+        ],
+        "y_range": [
+          0.0,
+          2.2
+        ],
+        "base_z": 0.488,
+        "available_height": 2.21,
+        "support_area": 0.8271999999999996,
+        "support_coverage": 0.9999999999999962,
+        "local_flatness": 0.9999999999999996,
+        "usable_volume": 1.828111999999999,
+        "neighbor_count": 0,
+        "candidate_count": 2
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_002",
+        "logical_wall_id": "LOGICAL_WALL_001",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          0.4,
+          0.931
+        ],
+        "y_range": [
+          0.2,
+          2.352
+        ],
+        "base_z": 1.124,
+        "available_height": 1.5739999999999998,
+        "support_area": 1.1427120000000004,
+        "support_coverage": 1.0,
+        "local_flatness": 0.9999999999999991,
+        "usable_volume": 1.7986286880000004,
+        "neighbor_count": 0,
+        "candidate_count": 14
+      },
+      {
+        "region_id": "LOGICAL_WALL_004_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_004",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          1.793,
+          2.2239999999999998
+        ],
+        "y_range": [
+          0.2,
+          2.352
+        ],
+        "base_z": 1.124,
+        "available_height": 1.5739999999999998,
+        "support_area": 0.9275120000000004,
+        "support_coverage": 1.0,
+        "local_flatness": 0.9999999999999991,
+        "usable_volume": 1.4599038880000006,
+        "neighbor_count": 0,
+        "candidate_count": 10
+      },
+      {
+        "region_id": "LOGICAL_WALL_002_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_002",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          0.931,
+          1.362
+        ],
+        "y_range": [
+          0.2,
+          2.352
+        ],
+        "base_z": 1.124,
+        "available_height": 1.5739999999999998,
+        "support_area": 0.9275120000000004,
+        "support_coverage": 1.0,
+        "local_flatness": 0.9999999999999956,
+        "usable_volume": 1.4599038880000006,
+        "neighbor_count": 0,
+        "candidate_count": 10
+      },
+      {
+        "region_id": "LOGICAL_WALL_003_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_003",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          1.362,
+          1.7930000000000001
+        ],
+        "y_range": [
+          0.2,
+          2.352
+        ],
+        "base_z": 1.124,
+        "available_height": 1.5739999999999998,
+        "support_area": 0.9275120000000004,
+        "support_coverage": 1.0,
+        "local_flatness": 0.9999999999999956,
+        "usable_volume": 1.4599038880000006,
+        "neighbor_count": 0,
+        "candidate_count": 10
+      },
+      {
+        "region_id": "LOGICAL_WALL_005_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_005",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          2.224,
+          2.6550000000000002
+        ],
+        "y_range": [
+          0.2,
+          2.352
+        ],
+        "base_z": 1.124,
+        "available_height": 1.5739999999999998,
+        "support_area": 0.9275120000000004,
+        "support_coverage": 1.0,
+        "local_flatness": 0.9999999999999956,
+        "usable_volume": 1.4599038880000006,
+        "neighbor_count": 0,
+        "candidate_count": 10
+      },
+      {
+        "region_id": "LOGICAL_WALL_006_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_006",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          2.655,
+          3.086
+        ],
+        "y_range": [
+          0.2,
+          2.352
+        ],
+        "base_z": 1.124,
+        "available_height": 1.5739999999999998,
+        "support_area": 0.9275120000000004,
+        "support_coverage": 1.0,
+        "local_flatness": 0.9999999999999956,
+        "usable_volume": 1.4599038880000006,
+        "neighbor_count": 0,
+        "candidate_count": 10
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_020",
+        "classification": "NARROW_STRIP",
+        "x_range": [
+          11.453999999999999,
+          11.653999999999998
+        ],
+        "y_range": [
+          0.0,
+          2.2
+        ],
+        "base_z": 0.488,
+        "available_height": 2.21,
+        "support_area": 0.43999999999999845,
+        "support_coverage": 1.0,
+        "local_flatness": 0.9999999999999989,
+        "usable_volume": 0.9723999999999966,
+        "neighbor_count": 0,
+        "candidate_count": 2
+      },
+      {
+        "region_id": "LOGICAL_WALL_008_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_008",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          3.6609999999999996,
+          4.236
+        ],
+        "y_range": [
+          0.0,
+          1.9000000000000001
+        ],
+        "base_z": 1.86,
+        "available_height": 0.8379999999999999,
+        "support_area": 1.0925000000000014,
+        "support_coverage": 1.0,
+        "local_flatness": 0.9999999999999982,
+        "usable_volume": 0.915515000000001,
+        "neighbor_count": 0,
+        "candidate_count": 18
+      },
+      {
+        "region_id": "LOGICAL_WALL_007_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_007",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          3.086,
+          3.6609999999999996
+        ],
+        "y_range": [
+          0.0,
+          1.9000000000000001
+        ],
+        "base_z": 1.86,
+        "available_height": 0.8379999999999999,
+        "support_area": 1.0924999999999998,
+        "support_coverage": 1.0,
+        "local_flatness": 0.9999999999999987,
+        "usable_volume": 0.9155149999999996,
+        "neighbor_count": 0,
+        "candidate_count": 18
+      },
+      {
+        "region_id": "LOGICAL_WALL_009_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_009",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          4.236,
+          4.811
+        ],
+        "y_range": [
+          0.0,
+          1.9000000000000001
+        ],
+        "base_z": 1.86,
+        "available_height": 0.8379999999999999,
+        "support_area": 1.0924999999999998,
+        "support_coverage": 0.9999999999999994,
+        "local_flatness": 0.9999999999999956,
+        "usable_volume": 0.9155149999999996,
+        "neighbor_count": 0,
+        "candidate_count": 18
+      },
+      {
+        "region_id": "LOGICAL_WALL_010_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_010",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          4.811,
+          5.386
+        ],
+        "y_range": [
+          0.0,
+          1.9000000000000001
+        ],
+        "base_z": 1.86,
+        "available_height": 0.8379999999999999,
+        "support_area": 1.0924999999999998,
+        "support_coverage": 0.9999999999999994,
+        "local_flatness": 0.9999999999999956,
+        "usable_volume": 0.9155149999999996,
+        "neighbor_count": 0,
+        "candidate_count": 18
+      },
+      {
+        "region_id": "LOGICAL_WALL_011_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_011",
+        "classification": "LONG_STRIP",
+        "x_range": [
+          5.385999999999999,
+          5.960999999999999
+        ],
+        "y_range": [
+          0.0,
+          1.9000000000000001
+        ],
+        "base_z": 1.86,
+        "available_height": 0.8379999999999999,
+        "support_area": 1.0924999999999998,
+        "support_coverage": 0.9999999999999994,
+        "local_flatness": 0.9999999999999956,
+        "usable_volume": 0.9155149999999996,
+        "neighbor_count": 0,
+        "candidate_count": 18
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_001",
+        "classification": "MULTI_LEVEL_REGION",
+        "x_range": [
+          0.0,
+          0.5
+        ],
+        "y_range": [
+          0.0,
+          0.5
+        ],
+        "base_z": 0.5,
+        "available_height": 2.198,
+        "support_area": 0.22000000000000008,
+        "support_coverage": 0.8800000000000003,
+        "local_flatness": 1.0,
+        "usable_volume": 0.48356000000000016,
+        "neighbor_count": 0,
+        "candidate_count": 9
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_018",
+        "classification": "MULTI_LEVEL_REGION",
+        "x_range": [
+          10.959,
+          11.453999999999999
+        ],
+        "y_range": [
+          0.0,
+          0.9
+        ],
+        "base_z": 1.64,
+        "available_height": 1.058,
+        "support_area": 0.44549999999999756,
+        "support_coverage": 0.9999999999999961,
+        "local_flatness": 0.999999999999996,
+        "usable_volume": 0.47133899999999745,
+        "neighbor_count": 0,
+        "candidate_count": 3
+      },
+      {
+        "region_id": "LOGICAL_WALL_019_TOP_001",
+        "logical_wall_id": "LOGICAL_WALL_019",
+        "classification": "NARROW_STRIP",
+        "x_range": [
+          11.147,
+          11.335
+        ],
+        "y_range": [
+          0.8,
+          1.9000000000000001
+        ],
+        "base_z": 0.488,
+        "available_height": 2.21,
+        "support_area": 0.20680000000000087,
+        "support_coverage": 1.0,
+        "local_flatness": 0.9999999999999996,
+        "usable_volume": 0.45702800000000193,
+        "neighbor_count": 0,
+        "candidate_count": 0
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_002",
+        "logical_wall_id": "LOGICAL_WALL_018",
+        "classification": "NARROW_STRIP",
+        "x_range": [
+          10.959,
+          11.158999999999999
+        ],
+        "y_range": [
+          0.9,
+          1.9000000000000001
+        ],
+        "base_z": 0.488,
+        "available_height": 2.21,
+        "support_area": 0.19999999999999954,
+        "support_coverage": 1.0,
+        "local_flatness": 0.9999999999999996,
+        "usable_volume": 0.44199999999999895,
+        "neighbor_count": 0,
+        "candidate_count": 2
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_003",
+        "logical_wall_id": "LOGICAL_WALL_020",
+        "classification": "MULTI_LEVEL_REGION",
+        "x_range": [
+          11.653999999999998,
+          12.007
+        ],
+        "y_range": [
+          1.0,
+          1.2000000000000002
+        ],
+        "base_z": 0.355,
+        "available_height": 2.343,
+        "support_area": 0.07060000000000002,
+        "support_coverage": 0.9999999999999951,
+        "local_flatness": 1.0,
+        "usable_volume": 0.16541580000000006,
+        "neighbor_count": 0,
+        "candidate_count": 0
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_004",
+        "logical_wall_id": "LOGICAL_WALL_020",
+        "classification": "SMALL_FRAGMENT",
+        "x_range": [
+          11.653999999999998,
+          12.007
+        ],
+        "y_range": [
+          2.1,
+          2.2
+        ],
+        "base_z": 0.355,
+        "available_height": 2.343,
+        "support_area": 0.03530000000000001,
+        "support_coverage": 0.9999999999999951,
+        "local_flatness": 1.0,
+        "usable_volume": 0.08270790000000003,
+        "neighbor_count": 0,
+        "candidate_count": 0
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_002",
+        "logical_wall_id": "LOGICAL_WALL_020",
+        "classification": "SMALL_FRAGMENT",
+        "x_range": [
+          11.653999999999998,
+          12.007
+        ],
+        "y_range": [
+          0.0,
+          0.1
+        ],
+        "base_z": 0.355,
+        "available_height": 2.343,
+        "support_area": 0.03529999999999998,
+        "support_coverage": 0.9999999999999949,
+        "local_flatness": 1.0,
+        "usable_volume": 0.08270789999999995,
+        "neighbor_count": 0,
+        "candidate_count": 0
+      }
+    ],
+    "plan_diagnostics": [
+      {
+        "region_id": "LOGICAL_WALL_012_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 603.284859,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_012_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 327.187186,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_012_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 316.009874,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_012_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 360.42259,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_012_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 318.896483,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_012_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 331.771109,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_012_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 319.625611,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_012_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 320.383497,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_013_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 603.284859,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_013_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 327.187186,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_013_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 316.009874,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_013_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 360.42259,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_013_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 318.896483,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_013_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 331.771109,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_013_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 319.625611,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_013_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 320.383497,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_014_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 603.284859,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_014_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 327.187186,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_014_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 316.009874,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_014_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 360.42259,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_014_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 318.896483,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_014_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 331.771109,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_014_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 319.625611,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_014_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 320.383497,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_015_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 603.284859,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_015_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 327.187186,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_015_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 316.009874,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_015_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 360.42259,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_015_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 318.896483,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_015_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 331.771109,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_015_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 319.625611,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_015_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 320.383497,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_016_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 603.284859,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_016_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 327.187186,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_016_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 316.009874,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_016_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 360.42259,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_016_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 318.896483,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_016_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 331.771109,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_016_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 319.625611,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_016_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 320.383497,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_017_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 603.284859,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_017_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 327.187186,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_017_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 316.009874,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_017_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 333.41246,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_017_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 318.896483,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_017_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 331.771109,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_017_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 319.625611,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_017_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 320.383497,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_021_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 471.7422,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_021_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 273.925857,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_021_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 278.546302,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_021_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 286.163463,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_021_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 282.991756,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_021_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 282.18608,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_021_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 272.42812,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_021_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 272.522386,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_002",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 614.11067,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_002",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 342.0805,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_002",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 341.324667,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_002",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 366.890715,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_002",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 349.051723,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_002",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 342.59692,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_002",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 331.62942,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_002",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 332.341286,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_004_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 469.815474,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_004_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 282.705968,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_004_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 273.254091,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_004_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 291.062533,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_004_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 277.218762,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_004_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 280.259354,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_004_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 270.501394,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_004_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 267.199694,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_002_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 469.815474,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_002_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 282.705968,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_002_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 273.254091,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_002_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 291.062533,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_002_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 277.218762,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_002_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 280.259354,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_002_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 270.501394,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_002_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 267.199694,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_003_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 469.815474,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_003_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 282.705968,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_003_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 273.254091,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_003_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 291.062533,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_003_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 277.218762,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_003_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 280.259354,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_003_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 270.501394,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_003_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 267.199694,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_005_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 469.815474,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_005_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 282.705968,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_005_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 273.254091,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_005_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 291.062533,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_005_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 277.218762,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_005_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 280.259354,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_005_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 270.501394,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_005_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 267.199694,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_006_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 469.815474,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_006_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 282.705968,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_006_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 273.254091,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_006_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 291.062533,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_006_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 277.218762,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_006_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 280.259354,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_006_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 270.501394,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_006_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 267.199694,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 493.914927,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 296.098585,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 328.103029,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 338.093823,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 336.460483,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 304.358807,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 294.600847,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 306.920265,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_008_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 580.416762,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_008_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 339.522624,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_008_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 344.669821,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_008_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 356.211811,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_008_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 352.752018,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_008_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 310.716794,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_008_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 313.094444,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_008_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 324.085291,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_007_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 580.416762,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_007_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 339.522624,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_007_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 344.669821,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_007_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 356.211811,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_007_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 352.752018,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_007_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 310.716794,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_007_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 313.094444,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_007_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 324.085291,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_009_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 580.416762,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_009_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 339.522624,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_009_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 344.669821,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_009_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 356.211811,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_009_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 352.752018,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_009_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 310.716794,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_009_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 313.094444,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_009_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 324.085291,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_010_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 580.416762,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_010_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 339.522624,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_010_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 344.669821,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_010_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 356.211811,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_010_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 352.752018,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_010_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 310.716794,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_010_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 313.094444,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_010_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 324.085291,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_011_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 580.416762,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_011_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 339.522624,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_011_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 344.669821,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_011_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-06",
+        "seed_orientation": "UPRIGHT_NORMAL",
+        "score": 356.211811,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_011_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 352.752018,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_011_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 310.716794,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_011_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 313.094444,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_011_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-05",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 324.085291,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-07",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 360.812272,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-07",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 248.381387,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-07",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 334.894087,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-11",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 293.406318,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-07",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 349.444647,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-07",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 255.768397,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-07",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 258.040167,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_001_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-07",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 293.176647,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-04",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 247.20889,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-04",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 205.858372,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-14",
+        "seed_orientation": "FLAT_XZ",
+        "score": 186.46288,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-04",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 227.344631,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-14",
+        "seed_orientation": "FLAT_XZ",
+        "score": 193.823958,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-04",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 189.19729,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-04",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 180.95289,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-04",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 172.735665,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_019_TOP_001",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_019_TOP_001",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_019_TOP_001",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_019_TOP_001",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_019_TOP_001",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_019_TOP_001",
+        "plan_family": "MIXED_SKU",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_019_TOP_001",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_019_TOP_001",
+        "plan_family": "REGION_FIRST",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_002",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 544.531494,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_002",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 346.715152,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_002",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 448.922214,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_002",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 374.171687,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_002",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 467.308614,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_002",
+        "plan_family": "MIXED_SKU",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 354.975374,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_002",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 345.217414,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_018_TOP_002",
+        "plan_family": "REGION_FIRST",
+        "feasible": true,
+        "seed_sku": "SKU-03",
+        "seed_orientation": "UPRIGHT_ROTATED",
+        "score": 395.531014,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_003",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_003",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_003",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_003",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_003",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_003",
+        "plan_family": "MIXED_SKU",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_003",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_003",
+        "plan_family": "REGION_FIRST",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_004",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_004",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_004",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_004",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_004",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_004",
+        "plan_family": "MIXED_SKU",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_004",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_004",
+        "plan_family": "REGION_FIRST",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_002",
+        "plan_family": "VOLUME_FIRST",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_002",
+        "plan_family": "HEIGHT_FIRST",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_002",
+        "plan_family": "FOOTPRINT_FIRST",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_002",
+        "plan_family": "RESIDUAL_MATCH",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_002",
+        "plan_family": "LAYER_COMPLETION",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_002",
+        "plan_family": "MIXED_SKU",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_002",
+        "plan_family": "ORIENTATION_DIVERSITY",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      },
+      {
+        "region_id": "LOGICAL_WALL_020_TOP_002",
+        "plan_family": "REGION_FIRST",
+        "feasible": false,
+        "seed_sku": null,
+        "seed_orientation": null,
+        "score": null,
+        "inventory_reconciled_at_commit": true
+      }
+    ]
+  },
+  "best_repaired_global_utilization_pct": 41.88103767152707,
+  "GLOBAL_BEATS_INCUMBENT": true,
+  "remaining_quality_gap_pp": 0.0,
+  "remaining_cause": "NONE_GLOBAL_REPAIRED_SOLUTION_BEATS_INCUMBENT",
+  "recommended_next_operator": "NONE_REQUIRED",
+  "returned_solution_source": "GLOBAL_SEARCH",
+  "final": {
+    "placed_volume_m3": 31.976765,
+    "main_body_volume_m3": 26.778393,
+    "topfill_volume_m3": 4.660018,
+    "door_volume_m3": 0.538354,
+    "unused_container_volume_m3": 44.37465,
+    "utilization_pct": 41.881038,
+    "runtime_sec": 56.11,
+    "topfill_utilization": 0.12195432941750069,
+    "door_ready": true,
+    "auto_flat": 0,
+    "main_body_conditional_flat": 0
+  },
+  "regression_tests": {
+    "TOP_001_012": "PASS",
+    "WALL_001_010": "PASS",
+    "BLK005B": "PASS",
+    "BLK005C": "PASS",
+    "BLK006A": "PASS",
+    "BLK006B": "PASS",
+    "BLK006C": "PASS",
+    "BLK006D": "PASS",
+    "TFR_001_012": "PASS",
+    "focused_tests_run": 61,
+    "full_suite": "PASS",
+    "full_tests_run": 172,
+    "failures": 0,
+    "errors": 0
+  }
+}

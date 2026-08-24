@@ -1,0 +1,127 @@
+{
+  "diagnostic_goal": "BLK-002 Door Closure & Elastic Reservation Diagnostic",
+  "timestamp": "2026-08-22T07:49:01Z",
+  "container": {
+    "Lx": 12.032,
+    "Ly": 2.352,
+    "Lz": 2.698,
+    "volume_m3": 76.35141427199999
+  },
+  "door_reserve_allocations": {
+    "SKU-02": {
+      "total_qty": 500,
+      "reserved_qty": 14,
+      "excess_qty": 486,
+      "unit_depth_m": 0.08,
+      "layer_capacity": 28,
+      "estimated_coverage_pct": 43.31
+    },
+    "SKU-03": {
+      "total_qty": 90,
+      "reserved_qty": 6,
+      "excess_qty": 84,
+      "unit_depth_m": 0.188,
+      "layer_capacity": 10,
+      "estimated_coverage_pct": 45.13
+    },
+    "SKU-04": {
+      "total_qty": 100,
+      "reserved_qty": 10,
+      "excess_qty": 90,
+      "unit_depth_m": 0.122,
+      "layer_capacity": 18,
+      "estimated_coverage_pct": 47.15
+    },
+    "SKU-14": {
+      "total_qty": 674,
+      "reserved_qty": 16,
+      "excess_qty": 658,
+      "unit_depth_m": 0.08,
+      "layer_capacity": 32,
+      "estimated_coverage_pct": 41.34
+    }
+  },
+  "frontier_metrics_initial": {
+    "required_door_volume": 1.3331,
+    "required_door_depth": 0.188,
+    "minimum_closure_depth": 0.2,
+    "preferred_closure_depth": 0.4,
+    "latest_safe_main_x": 11.832,
+    "transition_start_x": 11.132,
+    "door_closure_start_x": 11.632
+  },
+  "mode_diagnostics": {
+    "BaselineGreedySolver": {
+      "sku_02_placed": 16,
+      "sku_03_placed": 84,
+      "sku_04_placed": 86,
+      "sku_14_placed": 37,
+      "total_door_placed": 223,
+      "door_reserve_quantity": 46,
+      "door_excess_placed_in_main": 213,
+      "main_wall_end_x": 10.973,
+      "transition_start_x": 11.132,
+      "door_closure_start_x": 11.632,
+      "door_closure_coverage": 0.4669,
+      "largest_door_gap": 0.454,
+      "door_wall_flatness": 0.8168,
+      "is_door_ready": true,
+      "door_readiness_score": 67.19,
+      "door_clearance_margin_m": 0.018
+    },
+    "HierarchicalSearch (FAST)": {
+      "sku_02_placed": 144,
+      "sku_03_placed": 0,
+      "sku_04_placed": 0,
+      "sku_14_placed": 144,
+      "total_door_placed": 288,
+      "door_reserve_quantity": 46,
+      "door_excess_placed_in_main": 288,
+      "main_wall_end_x": 3.318,
+      "transition_start_x": 11.132,
+      "door_closure_start_x": 11.632,
+      "door_closure_coverage": 0.3165,
+      "largest_door_gap": 8.714,
+      "door_wall_flatness": 0.3699,
+      "is_door_ready": true,
+      "door_readiness_score": 51.1,
+      "door_clearance_margin_m": 8.714
+    },
+    "HierarchicalSearch (BALANCED)": {
+      "sku_02_placed": 432,
+      "sku_03_placed": 0,
+      "sku_04_placed": 0,
+      "sku_14_placed": 0,
+      "total_door_placed": 432,
+      "door_reserve_quantity": 46,
+      "door_excess_placed_in_main": 432,
+      "main_wall_end_x": 3.818,
+      "transition_start_x": 11.132,
+      "door_closure_start_x": 11.632,
+      "door_closure_coverage": 0.4296,
+      "largest_door_gap": 8.214,
+      "door_wall_flatness": 0.6796,
+      "is_door_ready": true,
+      "door_readiness_score": 60.39,
+      "door_clearance_margin_m": 8.214
+    },
+    "HierarchicalSearch (OPTIMIZE)": {
+      "sku_02_placed": 288,
+      "sku_03_placed": 0,
+      "sku_04_placed": 0,
+      "sku_14_placed": 0,
+      "total_door_placed": 288,
+      "door_reserve_quantity": 46,
+      "door_excess_placed_in_main": 288,
+      "main_wall_end_x": 3.818,
+      "transition_start_x": 11.132,
+      "door_closure_start_x": 11.632,
+      "door_closure_coverage": 0.4296,
+      "largest_door_gap": 8.214,
+      "door_wall_flatness": 1.0,
+      "is_door_ready": true,
+      "door_readiness_score": 70.0,
+      "door_clearance_margin_m": 8.214
+    }
+  }
+}

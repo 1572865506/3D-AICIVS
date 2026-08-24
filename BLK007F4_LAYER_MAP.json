@@ -1,0 +1,93 @@
+{
+  "block": "BLK-007F-4",
+  "container_height_m": 2.698,
+  "layer_height_m": 0.5,
+  "grid_resolution_m": 0.2,
+  "layers": [
+    {
+      "layer_id": "LAYER_00",
+      "height_range": [0.0, 0.5],
+      "occupancy_before": 0.874317,
+      "occupancy_after": 0.881148,
+      "void_volume_before_m3": 1.778369,
+      "void_volume_after_m3": 1.681719,
+      "layer_score_before": 89.9454,
+      "layer_score_after": 90.4918,
+      "added_placements": 3
+    },
+    {
+      "layer_id": "LAYER_01",
+      "height_range": [0.5, 1.0],
+      "occupancy_before": 0.868852,
+      "occupancy_after": 0.868852,
+      "void_volume_before_m3": 1.855689,
+      "void_volume_after_m3": 1.855689,
+      "layer_score_before": 89.5082,
+      "layer_score_after": 89.5082,
+      "added_placements": 0
+    },
+    {
+      "layer_id": "LAYER_02",
+      "height_range": [1.0, 1.5],
+      "occupancy_before": 0.84153,
+      "occupancy_after": 0.84153,
+      "void_volume_before_m3": 2.242291,
+      "void_volume_after_m3": 2.242291,
+      "layer_score_before": 87.3224,
+      "layer_score_after": 87.3224,
+      "added_placements": 0
+    },
+    {
+      "layer_id": "LAYER_03",
+      "height_range": [1.5, 2.0],
+      "occupancy_before": 0.814208,
+      "occupancy_after": 0.814208,
+      "void_volume_before_m3": 2.628893,
+      "void_volume_after_m3": 2.628893,
+      "layer_score_before": 85.1366,
+      "layer_score_after": 85.1366,
+      "added_placements": 0
+    },
+    {
+      "layer_id": "LAYER_04",
+      "height_range": [2.0, 2.5],
+      "occupancy_before": 0.717213,
+      "occupancy_after": 0.717213,
+      "void_volume_before_m3": 4.00133,
+      "void_volume_after_m3": 4.00133,
+      "layer_score_before": 77.377,
+      "layer_score_after": 77.377,
+      "added_placements": 0
+    },
+    {
+      "layer_id": "LAYER_05",
+      "height_range": [2.5, 2.698],
+      "occupancy_before": 0.312842,
+      "occupancy_after": 0.312842,
+      "void_volume_before_m3": 3.850324,
+      "void_volume_after_m3": 3.850324,
+      "layer_score_before": 45.0273,
+      "layer_score_after": 45.0273,
+      "added_placements": 0
+    }
+  ],
+  "summary": {
+    "mean_occupancy_before": 0.73816,
+    "mean_occupancy_after": 0.739299,
+    "detected_void_before_m3": 16.356896,
+    "detected_void_after_m3": 16.260246,
+    "detected_void_reduction_m3": 0.09665,
+    "physical_added_volume_m3": 0.1122,
+    "wall_bridge_candidates": 16,
+    "wall_bridge_committed": 0,
+    "bridge_commit_policy": "AUDIT_ONLY_UNLESS_FULL_PHYSICAL_COMMIT_IS_PROVEN"
+  },
+  "door_seal": {
+    "status": "READY",
+    "longitudinal_seal_coverage_pct": 99.75,
+    "target_pct": 95.0,
+    "interface_gap_m": 0.003,
+    "frozen_door_wall_cross_section_coverage_pct": 86.6228,
+    "door_wall_unchanged": true
+  }
+}

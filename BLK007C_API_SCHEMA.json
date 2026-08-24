@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "3d-aicivs/BLK007C_API_SCHEMA.json",
+  "title": "3D-AICIVS LoadingResult",
+  "type": "object",
+  "required": [
+    "id",
+    "container",
+    "cargo",
+    "walls",
+    "sequence",
+    "repair",
+    "scene",
+    "metrics",
+    "version"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "version": {
+      "const": "BLK007C"
+    },
+    "container": {
+      "type": "object",
+      "required": [
+        "type",
+        "dimension",
+        "internal",
+        "door",
+        "coordinate_system"
+      ]
+    },
+    "cargo": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "sku",
+          "position",
+          "size",
+          "rotation",
+          "material",
+          "loading",
+          "stability"
+        ]
+      }
+    },
+    "walls": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "bounds",
+          "placements"
+        ]
+      }
+    },
+    "sequence": {
+      "type": "object",
+      "required": [
+        "feasible",
+        "steps",
+        "total_steps"
+      ]
+    },
+    "repair": {
+      "type": "object",
+      "required": [
+        "enabled",
+        "repaired",
+        "groups",
+        "actions"
+      ]
+    },
+    "scene": {
+      "type": "object",
+      "required": [
+        "coordinate_space",
+        "objects",
+        "container_style"
+      ]
+    },
+    "animation": {
+      "type": "object",
+      "required": [
+        "frames",
+        "total_frames"
+      ]
+    },
+    "camera": {
+      "type": "object",
+      "required": [
+        "view",
+        "position",
+        "target",
+        "zoom"
+      ]
+    },
+    "metrics": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "vector3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "number"
+      }
+    }
+  },
+  "endpoints": [
+    "layout",
+    "container",
+    "cargo",
+    "walls",
+    "sequence",
+    "repair",
+    "scene",
+    "animation",
+    "camera",
+    "highlight",
+    "export"
+  ]
+}
