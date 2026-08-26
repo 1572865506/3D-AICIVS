@@ -31,6 +31,7 @@ class MixedSkuWallBlueprintGenerator:
             wall=[p for p in placements if detector.wall_id(p)==wall_id and p.context.value!="TOP_FILL"]
             if not wall:continue
             wall_min_x=min(p.min_x for p in wall);wall_max_x=max(p.max_x for p in wall);wall_depth=wall_max_x-wall_min_x
+            wall_max_z=max(p.max_z for p in wall)
             gaps=[(0.0,min(p.min_y for p in wall)),(max(p.max_y for p in wall),container.Ly)]
             for gap_start,gap_end in gaps:
                 cursor=gap_start
@@ -40,8 +41,8 @@ class MixedSkuWallBlueprintGenerator:
                         if local_remaining.get(sku.sku_id,0)<=0:continue
                         for candidate in self.orientations.get_candidate_orientations(sku,PlacementContext.MAIN_WALL):
                             orientation=candidate.orientation
-                            if orientation.dy>gap_end-cursor+1e-9 or orientation.dx>wall_depth+.04+1e-9:continue
-                            layers=min(int((container.Lz+1e-9)//orientation.dz),local_remaining[sku.sku_id])
+                            if orientation.dy>gap_end-cursor+1e-9 or orientation.dx>wall_depth+1e-4:continue
+                            layers=min(int((wall_max_z+1e-9)//orientation.dz),local_remaining[sku.sku_id])
                             policy=sku.stacking_policy
                             if policy.max_stack_layers is not None:layers=min(layers,policy.max_stack_layers)
                             if not policy.stack_on_self or not policy.allow_stacking_on_top:layers=min(layers,1)
@@ -86,12 +87,12 @@ class MixedSkuWallBlueprintGenerator:
                 widths=[c[0].orientation.dy for c in columns];total=sum(widths)
                 cursor_y=0.0 if anchor=="LEFT" else container.Ly-total
                 wall_min=min(p.min_x for c in columns for p in c)
-                wall_max=max(p.max_x for c in columns for p in c)
+                wall_thick=max(c[0].orientation.dx for c in columns)
                 target_x=cursor_x if align_x else wall_min
                 for column,width in zip(columns,widths):
                     rebuilt.extend(self._move_column(column,target_x if align_x else None,cursor_y))
                     cursor_y+=width
-                if align_x:cursor_x=round(cursor_x+(wall_max-wall_min),6)
+                if align_x:cursor_x=round(cursor_x+wall_thick,6)
             candidate=outside+tuple(rebuilt)
             selected=[p for p in candidate if detector.wall_id(p) in region.wall_ids and p.context.value!="TOP_FILL"]
             mix=Counter(p.sku_id for p in selected)

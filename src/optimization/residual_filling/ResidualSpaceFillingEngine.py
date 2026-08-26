@@ -35,7 +35,7 @@ class _SpatialIndex:
 
 class ResidualSpaceFillingEngine:
     """Pack complete mixed-SKU rows; never commit an isolated filler carton."""
-    def __init__(self,max_added=220,max_waves=6,min_row_coverage=.92,min_row_items=4,depth_tolerance=.04,height_tolerance=.04,
+    def __init__(self,max_added=320,max_waves=8,min_row_coverage=.65,min_row_items=1,depth_tolerance=.04,height_tolerance=.04,
                  supported_row_context=PlacementContext.TOP_FILL):
         self.max_added=int(max_added);self.max_waves=int(max_waves);self.min_row_coverage=float(min_row_coverage)
         self.min_row_items=int(min_row_items);self.depth_tolerance=float(depth_tolerance);self.height_tolerance=float(height_tolerance)

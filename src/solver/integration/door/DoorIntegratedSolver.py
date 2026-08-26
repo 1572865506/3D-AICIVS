@@ -356,6 +356,14 @@ class DoorIntegratedSolver:
                 placements,residual_prepared=self._accept_structurally_locked_stage(
                     placements,residual_prepared,tuple(placements)+residual_prepared.result.placements,structural_locks,"RESIDUAL_FILLING")
         self.last_residual_prepared=residual_prepared
+        from src.optimization.compaction import CascadeCompactionOptimizer
+        compaction_result = CascadeCompactionOptimizer().optimize(
+            container, prepared.original_cargo, tuple(placements), structural_lock_ids
+        )
+        if compaction_result.status == "SUCCESS":
+            placements = list(compaction_result.placements)
+        self.last_compaction_result = compaction_result
+
         from src.optimization.stepping import SteppedTrailingEdgeOptimizer
         stepping_result = SteppedTrailingEdgeOptimizer().optimize(container, prepared.original_cargo, tuple(placements))
         if stepping_result.status == "SUCCESS":

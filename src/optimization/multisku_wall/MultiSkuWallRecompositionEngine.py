@@ -15,8 +15,8 @@ class MultiSkuWallRecompositionEngine:
     def __init__(self,max_regions=32):
         self.max_regions=int(max_regions);self.detector=WallProblemDetector()
         self.generator=MixedSkuWallBlueprintGenerator();self.scoring=JointWallScoreEngine()
-        self.layer_composer=ResidualSpaceFillingEngine(max_added=160,max_waves=6,min_row_coverage=.85,min_row_items=2,
-            supported_row_context=PlacementContext.MAIN_WALL)
+        self.layer_composer=ResidualSpaceFillingEngine(max_added=320,max_waves=10,min_row_coverage=.60,min_row_items=1,
+            depth_tolerance=0.001,supported_row_context=PlacementContext.MAIN_WALL)
 
     def recompose(self,container,cargo,placements,intelligence=None):
         cargo=tuple(cargo);catalog={s.sku_id:s for s in cargo};current=tuple(placements)
@@ -54,12 +54,9 @@ class MultiSkuWallRecompositionEngine:
                 choice=max(valid,key=lambda c:(c.score.final_score,c.candidate_id));current=choice.placements;selected.append(choice)
                 used=Counter(p.sku_id for p in current)
                 remaining={s.sku_id:max(0,s.quantity.required-used[s.sku_id]) for s in cargo}
-        # Complete supported rows inside detected problem windows. This stage
-        # reuses the existing physical support/compression/global-validation
-        # path and only relaxes the structural row threshold from four cartons
-        # to two; no orientation or hard-constraint rights are added.
-        layer_result=self.layer_composer.fill(container,cargo,current,intelligence,
-            allowed_x_ranges=tuple(region.x_range for region in regions)) if regions else None
+        # Complete supported rows across all exposed surfaces and problem windows.
+        # This reuses the existing physical support/compression/global-validation path.
+        layer_result=self.layer_composer.fill(container,cargo,current,intelligence)
         above_admitted=0;above_rejected=0
         if layer_result and layer_result.status=="SUCCESS" and layer_result.placements:
             wall_extents={wid:(min(p.min_x for p in current if self.detector.wall_id(p)==wid),

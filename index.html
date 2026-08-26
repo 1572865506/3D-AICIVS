@@ -5333,11 +5333,36 @@
       document.getElementById('kpi-weight').innerHTML = `${(totalWeightKg / 1000).toFixed(2)}<span class="kpi-unit">T</span>`;
 
       const skuStats = {};
-      activeManifest.forEach(item => { skuStats[item.sku] = { placed: 0, planned: item.quantity, unplaced: item.quantity }; });
+      activeManifest.forEach(item => {
+        skuStats[item.sku] = {
+          sku: item.sku,
+          name: item.name || '',
+          requirement: item.requirement || '',
+          maxStackLayers: item.maxStackLayers,
+          placed: 0,
+          planned: item.quantity,
+          unplaced: item.quantity,
+          isFullyPlaced: false,
+          isElastic: item.isElastic
+        };
+      });
       loadingResult.cargo.forEach(item => {
-        if (!skuStats[item.sku]) skuStats[item.sku] = { placed: 0, planned: 0, unplaced: 0 };
+        if (!skuStats[item.sku]) {
+          skuStats[item.sku] = {
+            sku: item.sku,
+            name: item.name || '',
+            requirement: item.context || '',
+            maxStackLayers: null,
+            placed: 0,
+            planned: 0,
+            unplaced: 0,
+            isFullyPlaced: true,
+            isElastic: false
+          };
+        }
         skuStats[item.sku].placed += 1;
         skuStats[item.sku].unplaced = Math.max(0, skuStats[item.sku].planned - skuStats[item.sku].placed);
+        skuStats[item.sku].isFullyPlaced = (skuStats[item.sku].unplaced === 0);
       });
       activePackingResult = {
         source: 'BLK007C_LOADING_RESULT', loadingResult, skuStats,
