@@ -1,0 +1,34 @@
+{
+  "block":"BLK-007F-7.9B",
+  "before":{
+    "placement_count":1670,
+    "utilization_pct":77.68934770308941,
+    "incomplete_layers":51,
+    "topfill_placement_count":35
+  },
+  "after":{
+    "placement_count":1687,
+    "utilization_pct":78.1820862693454,
+    "incomplete_layers":51,
+    "topfill_placement_count":52,
+    "topfill_volume_m3":0.682107,
+    "regions_rebuilt":1,
+    "columns_exchanged":2,
+    "existing_placements_moved":12,
+    "raggedness_reduction_m":0.085
+  },
+  "delta":{
+    "placement_count":17,
+    "utilization_percentage_points":0.49273856625599,
+    "incomplete_layers":0,
+    "topfill_placement_count":17
+  },
+  "safety":{
+    "global_validator":"VALID",
+    "overlap":0,
+    "penetration":0,
+    "out_of_bounds":0,
+    "door_transport_valid":true,
+    "door_wall_changed":false
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "strategy": "IMMUTABLE_TEXTURES_SHARED_ORIENTATION_GEOMETRY",
+  "cache_limits": {
+    "package_texture_sets": "sku_count",
+    "orientation_geometry_variants": 6,
+    "orientation_material_arrays": "sku_count_x_legal_orientation_count"
+  },
+  "placement_scaling": {
+    "texture_count_scales_with_placements": false,
+    "geometry_count_scales_with_placements": false,
+    "per_frame_texture_mutation": false,
+    "per_object_canvas_texture": false
+  },
+  "synthetic_placement_probe": {
+    "placements": 500,
+    "skus": 1,
+    "texture_entries": 1,
+    "texture_cache_hits": 500,
+    "geometry_entries_for_all_orientations": 6,
+    "shared_texture_identity": "PASS",
+    "orientation_array_isolation": "PASS"
+  },
+  "assist_mode": {
+    "implementation": "SINGLE_LINE_SEGMENTS_BATCH",
+    "additional_draw_calls": 1,
+    "per_box_arrow_objects": 0
+  }
+}

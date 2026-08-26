@@ -35,9 +35,11 @@ class _SpatialIndex:
 
 class ResidualSpaceFillingEngine:
     """Pack complete mixed-SKU rows; never commit an isolated filler carton."""
-    def __init__(self,max_added=220,max_waves=6,min_row_coverage=.92,min_row_items=4,depth_tolerance=.04,height_tolerance=.04):
+    def __init__(self,max_added=220,max_waves=6,min_row_coverage=.92,min_row_items=4,depth_tolerance=.04,height_tolerance=.04,
+                 supported_row_context=PlacementContext.TOP_FILL):
         self.max_added=int(max_added);self.max_waves=int(max_waves);self.min_row_coverage=float(min_row_coverage)
         self.min_row_items=int(min_row_items);self.depth_tolerance=float(depth_tolerance);self.height_tolerance=float(height_tolerance)
+        self.supported_row_context=supported_row_context
         self.orientations=OrientationEngine()
 
     @staticmethod
@@ -143,7 +145,7 @@ class ResidualSpaceFillingEngine:
         return tuple(specs)
 
     def _build_row(self,region,seed,cargo,catalog,remaining,index,intelligence,serial):
-        context=PlacementContext.TOP_FILL if region.source=="STRUCTURED_TOP_ROW" else PlacementContext.MAIN_WALL
+        context=self.supported_row_context if region.source=="STRUCTURED_TOP_ROW" else PlacementContext.MAIN_WALL
         specs=self._orientation_specs(cargo,context,region.base_z,intelligence,seed)
         if not specs:return None,serial
         local_index=index.clone();local_used=Counter();placements=[];support_values=[];y=region.y_range[0]
@@ -182,7 +184,7 @@ class ResidualSpaceFillingEngine:
                     plan,serial=self._build_row(region,seed,cargo,catalog,remaining,index,intelligence,serial)
                     if plan:plans.append(plan)
                     else:rejected["INCOMPLETE_FLOOR_ROW"]+=1
-        for sku,seed in self._orientation_specs(cargo,PlacementContext.TOP_FILL,0.0,intelligence):
+        for sku,seed in self._orientation_specs(cargo,self.supported_row_context,0.0,intelligence):
             if remaining[sku.sku_id]<=0:continue
             top_x=sorted({round(v,6) for p in placed for v in (p.min_x,p.max_x-seed.dx) if v>=-1e-9 and v+seed.dx<=door_start+1e-9})
             for x in top_x:
@@ -196,12 +198,16 @@ class ResidualSpaceFillingEngine:
         plans.sort(key=lambda plan:(-plan.score,-plan.coverage,plan.plan_id))
         return plans,serial,attempted
 
-    def fill(self,container,cargo,existing,intelligence=None):
+    def fill(self,container,cargo,existing,intelligence=None,allowed_x_ranges=None):
         cargo=tuple(cargo);catalog={sku.sku_id:sku for sku in cargo};placed=list(existing);index=_SpatialIndex(placed)
         used=Counter(p.sku_id for p in placed);door_start=self._door_start(container,placed);accepted=[];selected=[];rejected=Counter();serial=0;attempted=0
         for _wave in range(self.max_waves):
             remaining={sku.sku_id:max(0,sku.quantity.required-used[sku.sku_id]) for sku in cargo}
             plans,serial,generated=self._generate_plans(container,cargo,catalog,placed,remaining,index,intelligence,door_start,serial,rejected);attempted+=generated
+            if allowed_x_ranges:
+                plans=[plan for plan in plans if any(
+                    plan.region.x_range[0]>=left-1e-6 and plan.region.x_range[1]<=right+1e-6
+                    for left,right in allowed_x_ranges)]
             committed=False;batch=[];batch_plans=[];wave_used=Counter();wave_index=index.clone()
             for plan in plans:
                 if len(accepted)+len(batch)+len(plan.placements)>self.max_added:rejected["PLAN_BUDGET"]+=1;continue

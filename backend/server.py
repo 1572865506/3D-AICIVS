@@ -26,6 +26,7 @@ from solver_v2.search.engine import HierarchicalSearchSolver
 from src.solver.integration.door import DoorIntegratedSolver
 from solver_v2.search.config import SearchConfig, SearchProfile
 from backend.api.service import DEFAULT_LOADING_API
+from backend.api.error_response import classify_api_exception
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     """Handle requests in a separate thread."""
@@ -146,7 +147,7 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                         HierarchicalSearchSolver(config=search_cfg),
                         enable_cargo_walls=True,
                         enable_wall_optimization=True,
-                    ).with_direction_strategy(True).with_layer_optimization(True).with_topfill_optimization(True).with_global_rebuild("REBUILD").with_cargo_recomposition(True).with_wall_interface_repair(True).with_dimension_corrected_rebuild(True).with_wall_internal_repack(True).with_residual_filling(True))
+                    ).with_direction_strategy(True).with_layer_optimization(True).with_topfill_optimization(True).with_global_rebuild("REBUILD").with_cargo_recomposition(True).with_multisku_wall_recomposition(True).with_3d_layer_recomposition(True).with_wall_interface_repair(True).with_dimension_corrected_rebuild(True).with_wall_internal_repack(True).with_residual_filling(True))
                     solution = solver.solve(container=container_spec, cargo_list=cargo_skus)
                     elapsed_ms = (time.perf_counter() - t_start) * 1000.0
                     residual = solver.last_residual_prepared.result if solver.last_residual_prepared else None
@@ -228,15 +229,15 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(json.dumps(result, ensure_ascii=False).encode('utf-8'))
             except Exception as e:
-                traceback.print_exc()
-                self.send_response(500)
+                status, err_data = classify_api_exception(e)
+                if status >= 500:
+                    traceback.print_exc()
+                    err_data['traceback'] = traceback.format_exc()
+                else:
+                    print(f"[PACK-V2-INPUT] {err_data['code']}: {err_data['error']}")
+                self.send_response(status)
                 self.send_header('Content-Type', 'application/json; charset=utf-8')
                 self.end_headers()
-                err_data = {
-                    'success': False,
-                    'error': str(e),
-                    'traceback': traceback.format_exc()
-                }
                 self.wfile.write(json.dumps(err_data).encode('utf-8'))
             return
 

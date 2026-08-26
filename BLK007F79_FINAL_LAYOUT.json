@@ -1,0 +1,30 @@
+{
+  "layout_type": "BLK007F79_DIMENSION_NORMALIZED_FINAL_LAYOUT_SUMMARY",
+  "benchmark": "40hq_cleanroom_case_001",
+  "placement_count": 1670,
+  "layout_fingerprint_sha256": "20c99c8491db3289e1065ec6c11b38065d0c4b38914279a64363f63080c8e5d9",
+  "utilization_pct": 77.68934770308941,
+  "cargo_volume_m3": 59.316916,
+  "container_volume_m3": 76.351414,
+  "total_weight_kg": 11594.25,
+  "placed_by_sku": {
+    "SKU-02":500,"SKU-03":80,"SKU-04":100,"SKU-05":100,"SKU-06":95,
+    "SKU-07":125,"SKU-08":53,"SKU-09":24,"SKU-10":22,"SKU-11":10,
+    "SKU-12":1,"SKU-13":50,"SKU-14":510
+  },
+  "selected_joint_wall_blueprints": [
+    "WALL_PROBLEM_001_MIXED_GAP_FILL",
+    "WALL_PROBLEM_005_MIXED_GAP_FILL",
+    "WALL_PROBLEM_007_MIXED_GAP_FILL",
+    "SUPPORTED_MIXED_LAYER_COMPLETION"
+  ],
+  "validation": {
+    "global_validator":"VALID",
+    "out_of_bounds_count":0,
+    "overlap_pair_count":0,
+    "penetration_volume":0.0,
+    "door_transport_valid":true,
+    "door_open_valid":true
+  },
+  "note": "Authoritative per-placement coordinates remain in the runtime LoadingResult; this artifact records the deterministic final-layout fingerprint and aggregate audit."
+}

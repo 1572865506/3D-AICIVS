@@ -9,7 +9,7 @@ export interface SceneObject {
   scale: [number, number, number];
   rotation: [number, number, number];
   style: { color: string; opacity: number };
-  metadata: { sku: string; step: number; wall: string };
+  metadata: { sku: string; step: number; wall: string; orientation?: string };
 }
 
 export interface AnimationFrame {

@@ -14,7 +14,7 @@ class ExpansionResult:
     expanded_end_x:float
     residual_gap_m:float
     @property
-    def coverage_increase(self):return self.expanded_end_x-self.original_end_x
+    def coverage_increase(self):return sum(float(spec["x_range"][1])-float(spec["x_range"][0]) for spec in self.wall_specs)
 
 class WallExpansionEngine:
     """Bounded millimetre-space enumeration over explicitly door-eligible inventory."""
@@ -41,7 +41,16 @@ class WallExpansionEngine:
         # Smooth deterministic longitudinal ordering: lowest unit weight first,
         # ending with cargo closest in weight to the fixed door anchor.
         selected=sorted(((v,n) for v,n in zip(variants,best[1]) if n),key=lambda item:item[0]["sku"].weight_kg)
-        cursor=start;placements=[];specs=[];consumed={};wall_index=0
+        selected_length=sum(n*v["depth"] for v,n in selected)
+        # When inventory cannot bridge the whole longitudinal gap, the useful
+        # structural placement is a real rear-face restraint immediately behind
+        # the door wall.  Appending the same cartons to the remote main wall left
+        # an unrestrained door wall and failed the final transport hard gate.
+        # Preserve the accepted contiguous-chain coordinates when the remaining
+        # gap is already within tolerance. Only sparse manifests switch to the
+        # door-adjacent anchor strategy.
+        anchor_start=start if best[0][0]<=self.max_gap_m+1e-9 else max(start,target_end_x-selected_length)
+        cursor=anchor_start;placements=[];specs=[];consumed={};wall_index=0
         for v,count in selected:
             for _ in range(count):
                 # Side-align incomplete walls so the unused width remains one
@@ -59,4 +68,5 @@ class WallExpansionEngine:
                     "x_range":(cursor,cursor+v["depth"]),"placements":tuple(ps),"coverage":coverage,
                     "orientation":"SHORT_EDGE_FORWARD","weight":v["sku"].weight_kg})
                 placements.extend(ps);consumed[v["sku"].sku_id]=consumed.get(v["sku"].sku_id,0)+len(ps);cursor=round(cursor+v["depth"],6)
-        return ExpansionResult(tuple(placements),tuple(specs),consumed,start,cursor,round(target_end_x-cursor,6))
+        leading_gap=max(0.0,anchor_start-start)
+        return ExpansionResult(tuple(placements),tuple(specs),consumed,start,cursor,round(leading_gap,6))

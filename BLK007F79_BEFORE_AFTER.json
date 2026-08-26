@@ -1,0 +1,46 @@
+{
+  "block": "BLK-007F-7.9",
+  "benchmark": "40hq_cleanroom_case_001",
+  "before": {
+    "placements": 1593,
+    "utilization_pct": 75.65192991478443,
+    "wall_side_gap_m": 0.051,
+    "multi_sku_wall_count": 10,
+    "incomplete_layer_count": 56,
+    "isolated_column_count": 3
+  },
+  "after": {
+    "placements": 1670,
+    "utilization_pct": 77.68934770308941,
+    "wall_side_gap_m": 0.0,
+    "multi_sku_wall_count": 14,
+    "incomplete_layer_count": 51,
+    "isolated_column_count": 0,
+    "problem_regions_detected": 34,
+    "problem_regions_budgeted": 32,
+    "joint_regions_rebuilt": 4,
+    "walls_involved": 46,
+    "added_structural_columns": 5,
+    "added_structural_placements": 77,
+    "mixed_layer_rows": 21,
+    "mixed_layer_placements": 54,
+    "above_cargo_admitted": 43,
+    "above_cargo_rejected": 40
+  },
+  "delta": {
+    "placements": 77,
+    "utilization_percentage_points": 2.03741778830498,
+    "wall_side_gap_m": -0.051,
+    "incomplete_layer_count": -5,
+    "multi_sku_wall_count": 4
+  },
+  "safety": {
+    "global_validator": "VALID",
+    "overlap_pair_count": 0,
+    "penetration_volume": 0.0,
+    "out_of_bounds_count": 0,
+    "door_transport_valid": true,
+    "door_open_valid": true,
+    "locked_door_wall_changed": false
+  }
+}

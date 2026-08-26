@@ -1,0 +1,57 @@
+{
+  "selected_blueprints": [
+    {
+      "blueprint_id":"WALL_PROBLEM_001_MIXED_GAP_FILL",
+      "source_wall_ids":["CARGO_WALL_006","CARGO_WALL_008"],
+      "family":"MIXED_GAP_FILL",
+      "side_anchor":"PRESERVE",
+      "added_sku_mix":{"SKU-14":16},
+      "added_columns":2,
+      "added_layers_per_column":8,
+      "hard_valid":true,
+      "score":69.945
+    },
+    {
+      "blueprint_id":"WALL_PROBLEM_005_MIXED_GAP_FILL",
+      "source_wall_ids":["CARGO_WALL_001","CARGO_WALL_004"],
+      "family":"MIXED_GAP_FILL",
+      "side_anchor":"PRESERVE",
+      "added_sku_mix":{"SKU-14":16},
+      "added_columns":2,
+      "added_layers_per_column":8,
+      "hard_valid":true,
+      "score":70.2865
+    },
+    {
+      "blueprint_id":"WALL_PROBLEM_007_MIXED_GAP_FILL",
+      "source_wall_ids":["CARGO_WALL_005","CARGO_WALL_002"],
+      "family":"MIXED_GAP_FILL",
+      "side_anchor":"PRESERVE",
+      "added_sku_mix":{"SKU-14":8},
+      "added_columns":1,
+      "added_layers_per_column":8,
+      "hard_valid":true,
+      "score":68.8125
+    },
+    {
+      "blueprint_id":"SUPPORTED_MIXED_LAYER_COMPLETION",
+      "source_wall_scope":"0.0-11.424m problem regions",
+      "family":"MIXED_SUPPORTED_LAYER",
+      "side_anchor":"STRUCTURAL_TOP",
+      "row_count":21,
+      "added_placements":54,
+      "above_cargo_admitted":43,
+      "hard_valid":true
+    }
+  ],
+  "generic_families": [
+    "LEFT_ANCHORED",
+    "RIGHT_ANCHORED",
+    "JOINT_INTERFACE_LEFT",
+    "JOINT_INTERFACE_RIGHT",
+    "MIXED_GAP_FILL",
+    "MIXED_SUPPORTED_LAYER"
+  ],
+  "sku_specific_scoring": false,
+  "new_orientation_rights_granted": false
+}

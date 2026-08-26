@@ -1,0 +1,30 @@
+{
+  "problem_regions_detected": 34,
+  "problem_regions_budgeted": 32,
+  "coverage_x_range_m": [0.0, 11.424],
+  "detector_is_geometry_driven": true,
+  "fixed_x_ranges_used": false,
+  "regional_summary": [
+    {"x_range":[0.0,1.105],"problems":["SIDE_EDGE_GAP","INCOMPLETE_LAYER"],"selected":["MIXED_GAP_FILL"]},
+    {"x_range":[1.105,2.165],"problems":["SIDE_EDGE_GAP","ISOLATED_COLUMN","INCOMPLETE_LAYER"],"selected":[],"hard_rejection":"ZONE_VIOLATION"},
+    {"x_range":[2.165,3.22],"problems":["SIDE_EDGE_GAP","INCOMPLETE_LAYER"],"selected":["MIXED_GAP_FILL"]},
+    {"x_range":[3.22,4.275],"problems":["SIDE_EDGE_GAP","INCOMPLETE_LAYER"],"selected":["MIXED_GAP_FILL"]},
+    {"x_range":[4.275,6.99],"problems":["SIDE_EDGE_GAP","INCOMPLETE_LAYER"],"selected":[]},
+    {"x_range":[7.412,8.64],"problems":["SIDE_EDGE_GAP","ISOLATED_COLUMN","INCOMPLETE_LAYER"],"selected":["MIXED_SUPPORTED_LAYER"]},
+    {"x_range":[8.64,9.92],"problems":["SIDE_EDGE_GAP"],"selected":["MIXED_SUPPORTED_LAYER"]},
+    {"x_range":[9.92,11.424],"problems":["SIDE_EDGE_GAP","INCOMPLETE_LAYER"],"selected":["MIXED_SUPPORTED_LAYER"]}
+  ],
+  "result": {
+    "joint_regions_rebuilt": 4,
+    "side_gap_m_before": 0.051,
+    "side_gap_m_after": 0.0,
+    "incomplete_layers_before": 56,
+    "incomplete_layers_after": 51,
+    "multi_sku_walls_before": 10,
+    "multi_sku_walls_after": 14,
+    "mixed_layer_rows_committed": 21,
+    "mixed_layer_placements_committed": 54,
+    "above_cargo_admitted": 43,
+    "above_cargo_rejected": 40
+  }
+}

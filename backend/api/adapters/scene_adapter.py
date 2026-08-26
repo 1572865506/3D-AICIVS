@@ -14,7 +14,8 @@ class SceneAdapter:
                 "position":[p["x"]+s["w"]/2,p["y"]+s["d"]/2,p["z"]+s["h"]/2],
                 "scale":[s["w"],s["d"],s["h"]],"rotation":[0,0,0],
                 "style":{"color":item["material"]["color"],"opacity":1.0},
-                "metadata":{"sku":item["sku"],"step":item["loading"]["step"],"wall":item["loading"]["wall"]}})
+                "metadata":{"sku":item["sku"],"step":item["loading"]["step"],"wall":item["loading"]["wall"],
+                            "orientation":item.get("rotation",{}).get("orientation","UPRIGHT_NORMAL")}})
         return {"coordinate_space":"solver_canonical_center","objects":objects,
                 "container_style":{"mode":"xray","opacity":.25,"visible_faces":["roof","door","near_side"]},
                 "container_bounds":{"min":[0,0,0],"max":[container.Lx,container.Ly,container.Lz]}}

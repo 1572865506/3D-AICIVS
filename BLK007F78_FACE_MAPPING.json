@@ -1,0 +1,47 @@
+{
+  "coordinate_mapping": {
+    "solver_x": "three_x",
+    "solver_y": "three_z",
+    "solver_z": "three_y"
+  },
+  "material_slots": [
+    "POSITIVE_LENGTH",
+    "NEGATIVE_LENGTH",
+    "POSITIVE_HEIGHT_TOP",
+    "NEGATIVE_HEIGHT_BOTTOM",
+    "POSITIVE_WIDTH_LABEL",
+    "NEGATIVE_WIDTH_LABEL"
+  ],
+  "orientations": {
+    "UPRIGHT_NORMAL": {
+      "world_face_material_indices": [0, 1, 2, 3, 4, 5],
+      "uv_quarter_turns": [0, 0, 2, 0, 0, 0],
+      "product_up_three": [0, 1, 0]
+    },
+    "UPRIGHT_ROTATED": {
+      "world_face_material_indices": [4, 5, 2, 3, 1, 0],
+      "uv_quarter_turns": [0, 0, 1, 1, 0, 0],
+      "product_up_three": [0, 1, 0]
+    },
+    "FLAT_XZ": {
+      "world_face_material_indices": [0, 1, 5, 4, 2, 3],
+      "uv_quarter_turns": [3, 1, 2, 0, 2, 2],
+      "product_up_three": [0, 0, 1]
+    },
+    "FLAT_ZX": {
+      "world_face_material_indices": [2, 3, 4, 5, 0, 1],
+      "uv_quarter_turns": [0, 0, 1, 1, 1, 3],
+      "product_up_three": [1, 0, 0]
+    },
+    "SIDE_YZ": {
+      "world_face_material_indices": [4, 5, 0, 1, 2, 3],
+      "uv_quarter_turns": [3, 1, 2, 0, 1, 3],
+      "product_up_three": [0, 0, 1]
+    },
+    "SIDE_ZY": {
+      "world_face_material_indices": [2, 3, 1, 0, 4, 5],
+      "uv_quarter_turns": [3, 1, 1, 1, 1, 3],
+      "product_up_three": [1, 0, 0]
+    }
+  }
+}

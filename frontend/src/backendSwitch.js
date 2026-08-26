@@ -7,13 +7,26 @@
 
   const CalculationMode = Object.freeze({ BACKEND: 'BACKEND', MOCK: 'MOCK' });
   const BackendStatus = Object.freeze({ ONLINE: 'ONLINE', OFFLINE: 'OFFLINE', CHECKING: 'CHECKING' });
+  // The current production pipeline performs the complete wall, recomposition,
+  // Top Fill and GlobalValidator pass before POST /loading/jobs returns.  The
+  // 14-SKU benchmark normally exceeds two minutes, so the transport timeout
+  // must not be shorter than a valid solver run.
+  const LOADING_JOB_TIMEOUT_MS = 300000;
   const ErrorType = Object.freeze({
     NETWORK_ERROR: 'NETWORK_ERROR', TIMEOUT: 'TIMEOUT', SERVER_ERROR: 'SERVER_ERROR',
-    INVALID_RESULT: 'INVALID_RESULT', SCHEMA_ERROR: 'SCHEMA_ERROR'
+    INVALID_RESULT: 'INVALID_RESULT', SCHEMA_ERROR: 'SCHEMA_ERROR',
+    INPUT_CONSTRAINT: 'INPUT_CONSTRAINT'
   });
 
   class BackendError extends Error {
-    constructor(type, message, status) { super(message); this.name = 'BackendError'; this.type = type; this.status = status; }
+    constructor(type, message, status, details) {
+      super(message);
+      this.name = 'BackendError';
+      this.type = type;
+      this.status = status;
+      this.details = details || null;
+      if (details && details.traceback) this.stack = `${this.stack || message}\nBackend traceback:\n${details.traceback}`;
+    }
   }
 
   function getMode(search) {
@@ -62,7 +75,16 @@
         if (error && error.name === 'AbortError') throw new BackendError(ErrorType.TIMEOUT, 'Backend request timed out');
         throw new BackendError(ErrorType.NETWORK_ERROR, error && error.message ? error.message : 'Network request failed');
       }
-      if (!response.ok) throw new BackendError(ErrorType.SERVER_ERROR, `HTTP ${response.status}`, response.status);
+      if (!response.ok) {
+        let details = null;
+        try { details = await response.json(); } catch (_) { /* non-JSON error response */ }
+        const message = details && (details.error || details.message)
+          ? `HTTP ${response.status}: ${details.error || details.message}`
+          : `HTTP ${response.status}`;
+        const type = response.status === 422 || (details && details.category === 'INPUT_CONSTRAINT')
+          ? ErrorType.INPUT_CONSTRAINT : ErrorType.SERVER_ERROR;
+        throw new BackendError(type, message, response.status, details);
+      }
       try { return await response.json(); }
       catch (_) { throw new BackendError(ErrorType.INVALID_RESULT, 'Backend returned non-JSON content'); }
     } finally { clearTimeout(timer); }
@@ -78,7 +100,7 @@
   async function createJob(payload) {
     const result = await requestJson('/loading/jobs', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
-    }, 120000);
+    }, LOADING_JOB_TIMEOUT_MS);
     if (!result || typeof result.job_id !== 'string') throw new BackendError(ErrorType.INVALID_RESULT, 'Create-job response has no job_id');
     return result.job_id;
   }
@@ -106,11 +128,17 @@
   }
 
   function sceneObjects(result) {
-    return validateLoadingResult(result).scene.objects.map(object => ({
-      uuid: object.uuid, position: object.position.slice(), scale: object.scale.slice(),
-      rotation: object.rotation.slice(), material: Object.assign({}, object.style),
-      metadata: Object.assign({}, object.metadata)
-    }));
+    const validated = validateLoadingResult(result);
+    const cargoById = new Map(validated.cargo.map(item => [item.id, item]));
+    return validated.scene.objects.map(object => {
+      const metadata = Object.assign({}, object.metadata);
+      const cargo = cargoById.get(object.uuid);
+      if (!metadata.orientation && cargo && cargo.rotation) metadata.orientation = cargo.rotation.orientation;
+      return {
+        uuid: object.uuid, position: object.position.slice(), scale: object.scale.slice(),
+        rotation: object.rotation.slice(), material: Object.assign({}, object.style), metadata
+      };
+    });
   }
 
   function animationFrames(result) {

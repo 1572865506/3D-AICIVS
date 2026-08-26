@@ -576,6 +576,98 @@
       font-weight: 600;
     }
 
+    /* Developer error log dock: appears only when an error is captured. */
+    .error-log-panel {
+      position: fixed;
+      right: 20px;
+      bottom: 110px;
+      width: 430px;
+      max-width: calc(100vw - 40px);
+      z-index: 110;
+      display: none;
+      color: #f8fafc;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(248, 113, 113, 0.45);
+      border-left: 4px solid #ef4444;
+      border-radius: 13px;
+      box-shadow: 0 18px 44px -10px rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      pointer-events: auto;
+      overflow: hidden;
+    }
+    .error-log-panel.has-errors { display: block; }
+    .error-log-header {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px 8px 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .error-log-status { color: #fca5a5; font-size: 13px; }
+    .error-log-title { flex: 1; font-size: 11.5px; font-weight: 800; }
+    .error-log-latest {
+      color: #cbd5e1;
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      max-width: 195px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .error-log-count {
+      min-width: 19px;
+      height: 19px;
+      padding: 0 5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: #dc2626;
+      color: white;
+      font-size: 9px;
+      font-weight: 900;
+    }
+    .error-log-chevron { color: #94a3b8; transition: transform .18s ease; }
+    .error-log-panel.expanded .error-log-chevron { transform: rotate(180deg); }
+    .error-log-body { display: none; border-top: 1px solid rgba(255,255,255,.1); }
+    .error-log-panel.expanded .error-log-body { display: block; }
+    .error-log-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 10px;
+      background: rgba(255,255,255,.035);
+    }
+    .error-log-help { font-size: 9.5px; color: #94a3b8; }
+    .error-log-actions { display: flex; gap: 6px; }
+    .error-log-action {
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 6px;
+      background: rgba(255,255,255,.08);
+      color: #e2e8f0;
+      padding: 3px 8px;
+      font-size: 9.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .error-log-action:hover { background: rgba(255,255,255,.16); }
+    .error-log-list { max-height: 245px; overflow: auto; padding: 5px 10px 9px; }
+    .error-log-entry { padding: 8px 2px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .error-log-entry:last-child { border-bottom: 0; }
+    .error-log-entry-head { display: flex; gap: 7px; align-items: center; margin-bottom: 4px; }
+    .error-log-type { color: #fca5a5; font: 800 9.5px 'JetBrains Mono', monospace; }
+    .error-log-time { color: #64748b; font: 9px 'JetBrains Mono', monospace; }
+    .error-log-source { color: #93c5fd; font-size: 9px; margin-left: auto; }
+    .error-log-message { color: #f1f5f9; font: 10.5px/1.45 'JetBrains Mono', monospace; overflow-wrap: anywhere; }
+    .error-log-stack { margin-top: 5px; color: #94a3b8; font: 9px/1.35 'JetBrains Mono', monospace; white-space: pre-wrap; max-height: 82px; overflow: auto; }
+    @media (max-width: 720px) {
+      .error-log-panel { right: 12px; bottom: 108px; max-width: calc(100vw - 24px); }
+      .error-log-latest { display: none; }
+    }
+
     .segmented-control {
       display: flex;
       background: var(--slate-100);
@@ -1620,6 +1712,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/three@0.128.0/build/three.min.js';"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" onerror="this.onerror=null;this.src='https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js';"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js';"></script>
+  <script src="/frontend/src/errorLogReporter.js"></script>
+  <script src="/frontend/src/orientationRendering.js"></script>
+  <script src="/frontend/src/manifestWorkflow.js"></script>
   <script src="/frontend/src/backendSwitch.js"></script>
 </head>
 <body>
@@ -1853,8 +1948,11 @@
 
           <button class="btn-island-action primary" id="btn-run-packing" style="width: 100%; justify-content: center; padding: 9px; margin-top: 6px;" onclick="runSmartPackingAlgorithm(true)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            <span>重新执行 AI 算柜装箱</span>
+            <span>开始 AI 算柜</span>
           </button>
+          <div id="calculation-state-note" style="margin-top:6px; padding:6px 8px; border-radius:7px; background:#f8fafc; color:#64748b; font-size:10px; font-weight:700; text-align:center;">
+            请先准备货单，再手动点击开始算柜
+          </div>
         </div>
 
         <!-- 4. Cargo Manifest Presets with Single/Multi-Select Isolation -->
@@ -1883,10 +1981,20 @@
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                   <span>全选</span>
                 </button>
-                <button class="tool-action-btn" onclick="resetSKUSelection()">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                  <span>重置</span>
+                <button class="tool-action-btn" onclick="invertManifestSelection()">
+                  <span>反选</span>
                 </button>
+                <button class="tool-action-btn" id="btn-delete-selected-skus" onclick="deleteSelectedSKUs()" style="color:#dc2626; border-color:#fecaca;">
+                  <span>删除选中</span>
+                </button>
+                <button class="tool-action-btn" onclick="clearManifest()" style="color:#991b1b; border-color:#fecaca; background:#fff7f7;">
+                  <span>清空货单</span>
+                </button>
+                <button class="tool-action-btn" onclick="selectAllSKUs(false)">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                  <span>取消选择</span>
+                </button>
+                <span id="manifest-selection-count" style="font-size:10px; color:#64748b; font-weight:700; align-self:center;">已选 0 / 0</span>
               </div>
               <div style="display:flex; align-items:center; gap:5px;">
                 <span style="font-size:10px; color:var(--slate-500); font-weight:700;">未选模式:</span>
@@ -2053,6 +2161,11 @@
           <span id="anim-text">演示装柜</span>
         </button>
 
+        <button class="btn-island-action" id="btn-orientation-mode" onclick="togglePackageOrientationMode()" title="切换真实包装贴图与产品向上方向辅助线">
+          <span>📦</span>
+          <span id="txt-orientation-mode">真实贴图</span>
+        </button>
+
         <div class="island-divider"></div>
 
         <div class="opacity-pill-ctrl">
@@ -2073,6 +2186,26 @@
         </div>
         <div class="anchor-chips-grid" id="anchor-chips-wrap"></div>
       </div>
+
+      <section class="error-log-panel interactive" id="error-log-panel" aria-live="polite" aria-label="开发错误日志">
+        <div class="error-log-header" id="error-log-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="error-log-status">●</span>
+          <span class="error-log-title">程序错误日志</span>
+          <span class="error-log-latest" id="error-log-latest"></span>
+          <span class="error-log-count" id="error-log-count">0</span>
+          <span class="error-log-chevron">⌃</span>
+        </div>
+        <div class="error-log-body">
+          <div class="error-log-toolbar">
+            <span class="error-log-help">供开发调试使用 · 不记录货单内容</span>
+            <div class="error-log-actions">
+              <button class="error-log-action" id="btn-copy-error-log" type="button">复制报告</button>
+              <button class="error-log-action" id="btn-clear-error-log" type="button">清空</button>
+            </div>
+          </div>
+          <div class="error-log-list" id="error-log-list"></div>
+        </div>
+      </section>
     </footer>
   </div>
 
@@ -2101,6 +2234,7 @@
               <th>单件毛重(kg)</th>
               <th>数量(箱)</th>
               <th>摆放要求</th>
+              <th>详细参数</th>
             </tr>
           </thead>
           <tbody id="modal-preview-tbody"></tbody>
@@ -2110,11 +2244,8 @@
       <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
         <button class="btn-island-action" onclick="closeImportModal()">取消</button>
         <div style="display:flex; gap:8px;">
-          <button class="btn-island-action" onclick="applyImportedManifest(false)" style="color:#2563eb; border-color:#bfdbfe; background:#eff6ff; font-weight:700;">
-            📋 仅导入至货单列表 (手动算柜)
-          </button>
-          <button class="btn-island-action primary" onclick="applyImportedManifest(true)">
-            ⚡ 导入并立即执行算柜
+          <button class="btn-island-action primary" onclick="applyImportedManifest(false)" style="color:white; font-weight:700;">
+            📋 保存为货单草稿（等待手动算柜）
           </button>
         </div>
       </div>
@@ -2233,6 +2364,25 @@
             </div>
           </div>
         </div>
+
+        <div style="margin-top:14px; background:#f8fafc; border:1px solid #dbeafe; border-radius:10px; padding:12px;">
+          <span style="font-size:11px; font-weight:800; color:#1d4ed8; display:block; margin-bottom:8px;">结构化 CargoProfile（保存后标记 USER_DEFINED）</span>
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+            <div><label style="font-size:10px;color:#64748b;">装载优先级</label><input type="number" id="sku-edit-load-priority" class="custom-input" value="0" step="1"></div>
+            <div><label style="font-size:10px;color:#64748b;">最低必装数量</label><input type="number" id="sku-edit-min-qty" class="custom-input" value="0" min="0" step="1"></div>
+            <div><label style="font-size:10px;color:#64748b;">货物上方可继续堆货</label><select id="sku-edit-allow-above" class="custom-select"><option value="true">允许</option><option value="false">禁止</option></select></div>
+            <div><label style="font-size:10px;color:#64748b;">必须放在底层</label><select id="sku-edit-floor-only" class="custom-select"><option value="false">否</option><option value="true">是</option></select></div>
+            <div><label style="font-size:10px;color:#64748b;">最小支撑比例</label><input type="number" id="sku-edit-min-support" class="custom-input" value="0.70" min="0" max="1" step="0.05"></div>
+            <div><label style="font-size:10px;color:#64748b;">最大悬空跨度(m)</label><input type="number" id="sku-edit-max-span" class="custom-input" value="0.10" min="0" step="0.01"></div>
+            <div><label style="font-size:10px;color:#64748b;">Top Fill准入</label><select id="sku-edit-topfill-state" class="custom-select"><option value="AUTO">AUTO安全证明</option><option value="ALLOW">明确允许</option><option value="DENY">明确禁止</option></select></div>
+            <div><label style="font-size:10px;color:#64748b;">Top Fill最大层数</label><input type="number" id="sku-edit-topfill-layers" class="custom-input" value="0" min="0" step="1"></div>
+            <div><label style="font-size:10px;color:#64748b;">Top Fill最低基面(m)</label><input type="number" id="sku-edit-topfill-base" class="custom-input" value="0" min="0" step="0.1"></div>
+            <div><label style="font-size:10px;color:#64748b;">保持直立</label><select id="sku-edit-keep-upright" class="custom-select"><option value="true">是</option><option value="false">否</option></select></div>
+            <div><label style="font-size:10px;color:#64748b;">易碎货物</label><select id="sku-edit-fragile" class="custom-select"><option value="false">否</option><option value="true">是</option></select></div>
+            <div><label style="font-size:10px;color:#64748b;">防倾倒要求</label><select id="sku-edit-anti-tip" class="custom-select"><option value="true">启用</option><option value="false">不额外要求</option></select></div>
+          </div>
+          <div id="sku-profile-source-note" style="font-size:9.5px; color:#64748b; margin-top:7px;">未明确字段继续使用 conservative DEFAULT；本表单保存的字段为 USER_DEFINED。</div>
+        </div>
       </div>
 
       <div class="modal-footer" style="padding:14px 22px; border-top:1px solid #f1f5f9; background:#fafcff; border-radius:0 0 16px 16px; display:flex; justify-content:space-between; align-items:center;">
@@ -2244,7 +2394,7 @@
           <button class="btn-island-action" onclick="closeSKUSettingsModal()">取消</button>
           <button class="btn-island-action primary" onclick="saveSKUSettingsAndRepack()" style="background:var(--primary); color:white; font-weight:700; box-shadow:0 4px 12px rgba(37,99,235,0.25);">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>保存规则并重新算柜</span>
+            <span id="sku-settings-save-label">保存参数（不自动算柜）</span>
           </button>
         </div>
       </div>
@@ -2392,6 +2542,89 @@
   </div>
 
   <script>
+    const appErrorLog = window.ErrorLogReporter.createStore({ maxEntries: 50 });
+    window.appErrorLog = appErrorLog;
+    window.reportAppError = function(error, context = {}) { return appErrorLog.add(error, context); };
+    window.ErrorLogReporter.installGlobalCapture(window, appErrorLog, { captureConsole: true });
+
+    function renderErrorLog(entries) {
+      const panel = document.getElementById('error-log-panel');
+      const count = document.getElementById('error-log-count');
+      const latest = document.getElementById('error-log-latest');
+      const list = document.getElementById('error-log-list');
+      if (!panel || !count || !latest || !list) return;
+      panel.classList.toggle('has-errors', entries.length > 0);
+      count.textContent = String(entries.reduce((sum, entry) => sum + entry.count, 0));
+      latest.textContent = entries[0] ? `${entries[0].type}: ${entries[0].message}` : '';
+      list.replaceChildren();
+      entries.forEach(entry => {
+        const item = document.createElement('article');
+        item.className = 'error-log-entry';
+        const head = document.createElement('div');
+        head.className = 'error-log-entry-head';
+        const type = document.createElement('span');
+        type.className = 'error-log-type';
+        type.textContent = `${entry.type}${entry.status == null ? '' : ` · HTTP ${entry.status}`}${entry.count > 1 ? ` ×${entry.count}` : ''}`;
+        const time = document.createElement('span');
+        time.className = 'error-log-time';
+        time.textContent = new Date(entry.timestamp).toLocaleTimeString('zh-CN', { hour12: false });
+        const source = document.createElement('span');
+        source.className = 'error-log-source';
+        source.textContent = `${entry.source}${entry.operation ? ` / ${entry.operation}` : ''}`;
+        head.append(type, time, source);
+        const message = document.createElement('div');
+        message.className = 'error-log-message';
+        message.textContent = entry.message;
+        item.append(head, message);
+        if (entry.stack) {
+          const stack = document.createElement('details');
+          const summary = document.createElement('summary');
+          summary.textContent = '查看堆栈';
+          const trace = document.createElement('div');
+          trace.className = 'error-log-stack';
+          trace.textContent = entry.stack;
+          stack.append(summary, trace);
+          item.append(stack);
+        }
+        list.append(item);
+      });
+    }
+
+    function initErrorLogPanel() {
+      const panel = document.getElementById('error-log-panel');
+      const header = document.getElementById('error-log-header');
+      const toggle = () => {
+        const expanded = panel.classList.toggle('expanded');
+        header.setAttribute('aria-expanded', String(expanded));
+      };
+      header.addEventListener('click', toggle);
+      header.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggle(); }
+      });
+      document.getElementById('btn-clear-error-log').addEventListener('click', event => {
+        event.stopPropagation();
+        appErrorLog.clear();
+        panel.classList.remove('expanded');
+        header.setAttribute('aria-expanded', 'false');
+      });
+      document.getElementById('btn-copy-error-log').addEventListener('click', async event => {
+        event.stopPropagation();
+        const report = window.ErrorLogReporter.formatReport(appErrorLog.entries(), {
+          url: location.href, userAgent: navigator.userAgent
+        });
+        try {
+          await navigator.clipboard.writeText(report);
+          showToast('错误日志已复制，可直接发送给开发人员。', 'info', '调试报告已复制');
+        } catch (error) {
+          window.reportAppError(error, { source: 'ERROR_LOG_UI', operation: 'COPY_REPORT' });
+        }
+      });
+      appErrorLog.subscribe(renderErrorLog);
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initErrorLogPanel);
+    else initErrorLogPanel();
+
     // --- 1. ISO CONTAINER SPECIFICATIONS ---
     const CONTAINER_SPECS = {
       '40HQ': {
@@ -3172,12 +3405,65 @@
       ]
     };
 
-    let activeManifest = PRODUCTION_CLEANED_MANIFEST;
+    // Fresh sessions start with an empty draft. Presets are explicit user
+    // actions and never start a solver request by themselves.
+    let activeManifest = [];
     let pendingImportManifest = null;
     let activePackingResult = null;
     let currentGap = 0.0;
     let currentStrategy = 'cluster';
     let isCoGBalanceEnabled = true;
+    let calculationStatus = window.ManifestWorkflow.CalculationStatus.EMPTY;
+    let manifestRevision = 0;
+    let calculatedRevision = -1;
+    let selectedManifestSkuIds = new Set();
+    let skuSettingsTarget = { type: 'active', index: -1 };
+
+    function updateCalculationStateUI() {
+      const button = document.getElementById('btn-run-packing');
+      const label = button && button.querySelector('span');
+      const note = document.getElementById('calculation-state-note');
+      if (!button || !label || !note) return;
+      const empty = activeManifest.length === 0;
+      button.disabled = empty || calculationStatus === window.ManifestWorkflow.CalculationStatus.RUNNING;
+      button.style.opacity = button.disabled ? '0.55' : '';
+      button.style.pointerEvents = button.disabled ? 'none' : '';
+      const copy = {
+        EMPTY: ['开始 AI 算柜', '货单为空，请先导入、新增或加载示例货单', '#64748b', '#f8fafc'],
+        DRAFT: ['开始 AI 算柜', '货单草稿已就绪，等待手动算柜', '#b45309', '#fffbeb'],
+        DIRTY: ['应用修改并重新算柜', activePackingResult ? '货单已修改；当前3D为历史结果' : '货单已修改，等待手动算柜', '#b45309', '#fffbeb'],
+        RUNNING: ['算柜推演中…', '正在等待后端完整计算与全局验证', '#2563eb', '#eff6ff'],
+        READY: ['重新执行 AI 算柜', '当前3D结果与货单一致', '#059669', '#ecfdf5'],
+        FAILED: ['重试 AI 算柜', '上一次计算失败；货单草稿仍保留', '#dc2626', '#fef2f2']
+      }[calculationStatus] || ['', '', '#64748b', '#f8fafc'];
+      label.textContent = copy[0];
+      note.textContent = copy[1];
+      note.style.color = copy[2];
+      note.style.background = copy[3];
+    }
+
+    function clearPackingResultAndScene() {
+      if (cargoGroup) cargoGroup.clear();
+      boxMeshes = [];
+      activePackingResult = null;
+      window.activePackingResult = null;
+      window.activeLoadingResult = null;
+      window.activeLoadingJobId = null;
+      ['kpi-util', 'kpi-vol', 'kpi-count', 'kpi-weight'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.innerHTML = '—';
+      });
+    }
+
+    function markManifestDirty(reason, clearResult = false) {
+      manifestRevision += 1;
+      calculationStatus = activeManifest.length
+        ? window.ManifestWorkflow.CalculationStatus.DIRTY
+        : window.ManifestWorkflow.CalculationStatus.EMPTY;
+      if (clearResult || activeManifest.length === 0) clearPackingResultAndScene();
+      updateCalculationStateUI();
+      if (reason) console.log('[3D-AICIVS] Manifest dirty:', reason, 'revision', manifestRevision);
+    }
 
     // --- CLIENT-SIDE SPATIAL COORDINATE CACHE ENGINE ---
     const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V30_TRUE_6MODULES_';
@@ -3383,6 +3669,7 @@
         showImportPreviewModal(parsedItems);
       } catch (err) {
         console.error(err);
+        window.reportAppError(err, { source: 'IMPORT', operation: 'PARSE_CARGO_FILE', type: 'IMPORT_ERROR' });
         alert('解析表格失败: ' + err.message);
       }
     }
@@ -3411,6 +3698,10 @@
           <td>${item.weight} kg</td>
           <td><span style="color:var(--primary); font-weight:700;">${item.quantity} 箱</span></td>
           <td><span class="req-tag ${getReqClass(item.requirement)}">${item.requirement}</span></td>
+          <td>
+            <button class="tool-action-btn" onclick="openPendingImportSKUSettings(${idx})" style="color:#2563eb;">设置规则</button>
+            <span style="display:block;font-size:9px;margin-top:3px;color:${item.cargoProfile ? '#2563eb' : '#64748b'};">${item.cargoProfile ? 'USER_DEFINED' : 'DEFAULT'}</span>
+          </td>
         `;
         tbody.appendChild(tr);
       });
@@ -3430,31 +3721,27 @@
       document.getElementById('excel-file-input').value = '';
     }
 
-    function applyImportedManifest(autoCalculate = true) {
+    function applyImportedManifest(autoCalculate = false) {
       if (!pendingImportManifest) return;
+      const validation = window.ManifestWorkflow.validateManifest(pendingImportManifest);
+      if (!validation.valid) {
+        showToast(validation.errors.slice(0, 4).join('；'), 'warning', '导入货单校验失败');
+        return;
+      }
       activeManifest = pendingImportManifest;
       closeImportModal();
 
       document.querySelectorAll('#left-drawer .chip-grid-2 .btn-chip').forEach(b => b.classList.remove('active'));
       selectedSKUs.clear();
+      selectedManifestSkuIds.clear();
       saveAppState();
       renderManifestUI();
       renderAnchorRibbon();
 
-      if (autoCalculate) {
-        runSmartPackingAlgorithm(true);
-      } else {
-        const cacheBadge = document.getElementById('hud-cache-badge');
-        const cacheTxt = document.getElementById('txt-cache-badge');
-        const cacheDot = document.getElementById('cache-dot');
-        if (cacheBadge && cacheTxt && cacheDot) {
-          cacheBadge.style.color = '#d97706';
-          cacheBadge.style.background = '#fef3c7';
-          cacheBadge.style.borderColor = '#fde68a';
-          cacheDot.style.background = '#f59e0b';
-          cacheTxt.textContent = '货单已更新 (等待算柜)';
-        }
-      }
+      markManifestDirty('IMPORT_COMMITTED', true);
+      const cacheTxt = document.getElementById('txt-cache-badge');
+      if (cacheTxt) cacheTxt.textContent = '货单已更新（等待手动算柜）';
+      showToast(`已导入 ${activeManifest.length} 种 SKU。请检查参数后手动点击开始算柜。`, 'success');
     }
 
     function downloadExactTemplate() {
@@ -3518,6 +3805,10 @@
 
     // SKU Material Registry for Shared Material Batches
     const skuMaterialRegistry = new Map();
+    const orientationGeometryCache = new window.BLK007F78.OrientationGeometryCache(THREE);
+    const orientationMaterialCache = new window.BLK007F78.OrientationMaterialCache();
+    let packageOrientationDisplayMode = window.BLK007F78.DisplayMode.PHYSICAL;
+    let orientationAssistLine = null;
 
     let dynamicWalls = [];
     let dynamicDoorComponents = [];
@@ -3547,6 +3838,70 @@
     const POST_W = 0.09;
     const RAIL_H = 0.09;
     const RAIL_D = 0.11;
+
+    function clearOrientationAssist() {
+      if (!orientationAssistLine) return;
+      if (orientationAssistLine.parent) orientationAssistLine.parent.remove(orientationAssistLine);
+      orientationAssistLine.geometry.dispose();
+      orientationAssistLine.material.dispose();
+      orientationAssistLine = null;
+    }
+
+    function rebuildOrientationAssist() {
+      clearOrientationAssist();
+      if (packageOrientationDisplayMode !== window.BLK007F78.DisplayMode.ASSIST || !scene) return;
+      const positions = [];
+      boxMeshes.filter(box => box.visible).forEach(box => {
+        const raw = box.userData.productUpThree || [0, 1, 0];
+        const up = new THREE.Vector3(raw[0], raw[1], raw[2]).applyQuaternion(box.quaternion).normalize();
+        const minDimension = Math.max(0.08, Math.min(
+          Number(box.userData.rawW || 0.2), Number(box.userData.rawD || 0.2), Number(box.userData.rawH || 0.2)
+        ));
+        const length = Math.max(0.10, Math.min(0.24, minDimension * 0.75));
+        const start = box.position.clone();
+        const end = start.clone().addScaledVector(up, length);
+        let perpendicular = new THREE.Vector3().crossVectors(up, new THREE.Vector3(0, 1, 0));
+        if (perpendicular.lengthSq() < 1e-8) perpendicular = new THREE.Vector3().crossVectors(up, new THREE.Vector3(1, 0, 0));
+        perpendicular.normalize();
+        const headBase = end.clone().addScaledVector(up, -length * 0.30);
+        const headWidth = length * 0.15;
+        const left = headBase.clone().addScaledVector(perpendicular, headWidth);
+        const right = headBase.clone().addScaledVector(perpendicular, -headWidth);
+        [start, end, end, left, end, right].forEach(point => positions.push(point.x, point.y, point.z));
+      });
+      if (!positions.length) return;
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      const material = new THREE.LineBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.92, depthTest: false });
+      orientationAssistLine = new THREE.LineSegments(geometry, material);
+      orientationAssistLine.name = 'PRODUCT_UP_ORIENTATION_ASSIST';
+      orientationAssistLine.renderOrder = 999;
+      scene.add(orientationAssistLine);
+      isCameraDirty = true;
+    }
+
+    window.togglePackageOrientationMode = function() {
+      packageOrientationDisplayMode = packageOrientationDisplayMode === window.BLK007F78.DisplayMode.PHYSICAL
+        ? window.BLK007F78.DisplayMode.ASSIST : window.BLK007F78.DisplayMode.PHYSICAL;
+      const text = document.getElementById('txt-orientation-mode');
+      const button = document.getElementById('btn-orientation-mode');
+      if (text) text.textContent = packageOrientationDisplayMode === window.BLK007F78.DisplayMode.PHYSICAL ? '真实贴图' : '朝向辅助';
+      if (button) button.title = packageOrientationDisplayMode === window.BLK007F78.DisplayMode.PHYSICAL
+        ? '当前显示真实包装标签，点击显示产品向上方向辅助线'
+        : '青色箭头表示产品原始向上方向，点击返回真实贴图';
+      rebuildOrientationAssist();
+    };
+
+    window.getOrientationRenderingDiagnostics = function() {
+      return {
+        mode: packageOrientationDisplayMode,
+        texture_cache: textureCanvasCache.diagnostics(),
+        geometry_cache: orientationGeometryCache.diagnostics(),
+        material_cache: orientationMaterialCache.diagnostics(),
+        placement_count: boxMeshes.length,
+        assist_draw_calls: orientationAssistLine ? 1 : 0
+      };
+    };
 
     function createHighEndStudioEnv() {
       const canvas = document.createElement('canvas');
@@ -3605,7 +3960,9 @@
     }
 
     // --- HIGH-FIDELITY MULTI-FACE CARGO TEXTURE GENERATOR ---
-    const textureCanvasCache = new Map();
+    // One immutable texture set per SKU/color. Orientation is expressed by
+    // shared geometry UV variants, never by mutating these texture objects.
+    const textureCanvasCache = new window.BLK007F78.PackageTextureRegistry();
 
     function getOrCreateFaceTextures(baseColorHex, labelText, skuCode) {
       const cacheId = `${baseColorHex}_${skuCode}`;
@@ -3803,6 +4160,9 @@
 
     function init() {
       restoreAppState();
+      calculationStatus = activeManifest.length
+        ? window.ManifestWorkflow.CalculationStatus.DRAFT
+        : window.ManifestWorkflow.CalculationStatus.EMPTY;
 
       const container = document.getElementById('webgl-container');
       const width = window.innerWidth;
@@ -3860,9 +4220,14 @@
       setupEnvironment();
 
       rebuildContainerModel();
+      clearPackingResultAndScene();
       renderManifestUI();
       renderAnchorRibbon();
-      // rebuildContainerModel already starts the authoritative BLK007D request.
+      updateCalculationStateUI();
+      // Startup intentionally performs health/UI initialization only. The
+      // authoritative BLK007D request is exclusively user-triggered.
+      updateBackendStatus('CHECKING');
+      window.BLK007D.checkHealth().then(updateBackendStatus).catch(() => updateBackendStatus('OFFLINE'));
 
       raycaster = new THREE.Raycaster();
       mouse = new THREE.Vector2();
@@ -4280,7 +4645,7 @@
 
       renderManifestUI();
       renderAnchorRibbon();
-      runSmartPackingAlgorithm(true);
+      updateCalculationStateUI();
     }
 
     function buildFrontDoors(postX, postZ, doorH, hardwareMat) {
@@ -4481,6 +4846,7 @@
 
       // 2. Pre-build Shared Materials per SKU
       skuMaterialRegistry.clear();
+      orientationMaterialCache.clear();
       activeManifest.forEach(skuItem => {
         const texs = getOrCreateFaceTextures(skuItem.color, skuItem.name, skuItem.sku);
 
@@ -4508,7 +4874,6 @@
       // 3. Batch Create Cargo Meshes using Centralized Coordinate Conversion
       const placedList = solution.placedBoxes || [];
       placedList.forEach((item) => {
-        const boxGeo = new THREE.BoxGeometry(item.w - 0.003, item.h - 0.003, item.d - 0.003);
         const skuMats = skuMaterialRegistry.get(item.sku);
 
         if (!skuMats) {
@@ -4516,7 +4881,11 @@
           return;
         }
 
-        const boxMesh = new THREE.Mesh(boxGeo, skuMats.solidMats);
+        const orientationName = window.BLK007F78.normalizeOrientation(item.orientation || item.orientationName);
+        const boxGeo = orientationGeometryCache.get(orientationName);
+        const physicalMats = orientationMaterialCache.get(item.sku, orientationName, skuMats.solidMats);
+        const boxMesh = new THREE.Mesh(boxGeo, physicalMats);
+        boxMesh.scale.set(Math.max(0.001, item.w - 0.003), Math.max(0.001, item.h - 0.003), Math.max(0.001, item.d - 0.003));
 
         // Coordinates: if canonical is provided use it, otherwise use item (x, z, y, w, d, h)
         let coords;
@@ -4553,6 +4922,8 @@
           position: `X:${posX.toFixed(2)} Y:${posY.toFixed(2)} Z:${posZ.toFixed(2)}`,
           originY: posY,
           skuMaterials: skuMats,
+          orientation: orientationName,
+          productUpThree: window.BLK007F78.getFaceMapping(orientationName).productUpThree,
           isCargoBox: true,
           rawX: item.x,
           rawW: item.w,
@@ -4566,6 +4937,8 @@
         cargoGroup.add(boxMesh);
         boxMeshes.push(boxMesh);
       });
+
+      rebuildOrientationAssist();
 
       // 4. Update 3D CoG visualizer mesh
       updateCoGIndicatorMesh(solution.cog, usableDim);
@@ -4602,6 +4975,7 @@
 
       const cargoById = new Map(loadingResult.cargo.map(item => [item.id, item]));
       skuMaterialRegistry.clear();
+      orientationMaterialCache.clear();
       activeManifest.forEach(skuItem => {
         const texs = getOrCreateFaceTextures(skuItem.color, skuItem.name, skuItem.sku);
         const solidMats = [texs.sideTex, texs.sideTex, texs.topTex, texs.bottomTex, texs.frontBackTex, texs.frontBackTex]
@@ -4617,13 +4991,21 @@
         const skuItem = activeManifest.find(item => item.sku === object.metadata.sku);
         const registry = skuMaterialRegistry.get(object.metadata.sku);
         const fallbackMats = Array.from({ length: 6 }, () => new THREE.MeshStandardMaterial({ color: object.material.color, transparent: object.material.opacity < 1, opacity: object.material.opacity }));
-        // Canonical x/y/z maps to the frozen renderer's X/Z/Y axes; values are not repacked or inferred.
-        const geometry = new THREE.BoxGeometry(
+        // Occupied dimensions already encode the solver AABB. Do not rotate
+        // that AABB again: use a unit geometry whose face material indices and
+        // UVs express the package's physical orientation instead.
+        const orientationName = window.BLK007F78.normalizeOrientation(
+          (cargo.rotation && cargo.rotation.orientation) || object.metadata.orientation
+        );
+        const geometry = orientationGeometryCache.get(orientationName);
+        const baseSolidMats = registry ? registry.solidMats : fallbackMats;
+        const physicalMats = orientationMaterialCache.get(object.metadata.sku, orientationName, baseSolidMats);
+        const mesh = new THREE.Mesh(geometry, physicalMats);
+        mesh.scale.set(
           Math.max(0.001, object.scale[0] - 0.003),
           Math.max(0.001, object.scale[2] - 0.003),
           Math.max(0.001, object.scale[1] - 0.003)
         );
-        const mesh = new THREE.Mesh(geometry, registry ? registry.solidMats : fallbackMats);
         mesh.name = object.uuid;
         mesh.position.set(
           usableDim.length / 2 - object.position[0],
@@ -4649,6 +5031,8 @@
           repairGroup: cargo.stability.group_id,
           originY: mesh.position.y,
           skuMaterials: registry || { solidMats: fallbackMats, ghostMats: fallbackMats },
+          orientation: orientationName,
+          productUpThree: window.BLK007F78.getFaceMapping(orientationName).productUpThree,
           isCargoBox: true,
           rawX, rawW: object.scale[0], rawY: object.position[2] - object.scale[2] / 2,
           rawH: object.scale[2], rawZ: object.position[1] - object.scale[1] / 2,
@@ -4657,6 +5041,8 @@
         cargoGroup.add(mesh);
         boxMeshes.push(mesh);
       });
+
+      rebuildOrientationAssist();
 
       const metrics = loadingResult.metrics || {};
       const utilization = Number(metrics.utilization_pct || 0);
@@ -4713,7 +5099,7 @@
       controls.update();
 
       rebuildContainerModel();
-      runSmartPackingAlgorithm(true);
+      markManifestDirty('CONTAINER_CHANGED', true);
     };
 
     // --- 7. HIGH-PERFORMANCE SMART PACKING WITH PYTHON 3 MICROSERVICE & CLIENT CACHE ---
@@ -4822,8 +5208,33 @@
     }
 
     window.runSmartPackingAlgorithm = async function(forceRecompute = true) {
+      const manifestValidation = window.ManifestWorkflow.validateManifest(activeManifest);
+      if (activeManifest.length === 0) {
+        showToast('货单为空，请先导入、新增或加载示例货单。', 'warning', '无法开始算柜');
+        calculationStatus = window.ManifestWorkflow.CalculationStatus.EMPTY;
+        updateCalculationStateUI();
+        return;
+      }
+      if (!manifestValidation.valid) {
+        showToast(manifestValidation.errors.slice(0, 4).join('；'), 'warning', '货单校验失败');
+        calculationStatus = window.ManifestWorkflow.CalculationStatus.DIRTY;
+        updateCalculationStateUI();
+        return;
+      }
       const mode = window.BLK007D.getMode();
+      if (mode === 'BACKEND') {
+        const doorAdmission = window.ManifestWorkflow.validateDoorWallAdmission(activeManifest, currentSpec);
+        if (!doorAdmission.valid) {
+          showToast(`${doorAdmission.message}。系统不会自动把普通货物开放到门区。`, 'warning', '门墙配置未就绪');
+          calculationStatus = window.ManifestWorkflow.CalculationStatus.DIRTY;
+          updateCalculationStateUI();
+          return;
+        }
+      }
       console.log(`[3D-AICIVS] BLK007D calculation mode: ${mode}`);
+      const requestedRevision = manifestRevision;
+      calculationStatus = window.ManifestWorkflow.CalculationStatus.RUNNING;
+      updateCalculationStateUI();
 
       // Increment request epoch for stale update rejection
       const thisEpoch = ++currentSolutionEpoch;
@@ -4836,7 +5247,8 @@
         runBtn.disabled = busy;
         runBtn.style.opacity = busy ? '0.55' : '';
         runBtn.style.pointerEvents = busy ? 'none' : '';
-        if (runBtnLabel) runBtnLabel.textContent = busy ? '算柜推演中…' : '重新执行 AI 算柜装箱';
+        if (runBtnLabel && busy) runBtnLabel.textContent = '算柜推演中…';
+        if (!busy) updateCalculationStateUI();
       };
       setRunBusy(true);
       prog.step(1, `策略 ${currentStrategy === 'mec' ? 'MEC 紧凑填充' : '同品聚合'} · 货物间距 ${Math.round(currentGap * 1000)}mm · 配平 ${isCoGBalanceEnabled ? '开' : '关'}`);
@@ -4880,23 +5292,58 @@
           },
           sku: activeManifest
         });
-        if (thisEpoch < currentSolutionEpoch) {
+        if (thisEpoch < currentSolutionEpoch || requestedRevision !== manifestRevision) {
           console.warn('[3D-AICIVS] 请求已被后续任务取代，终止渲染');
+          calculationStatus = window.ManifestWorkflow.CalculationStatus.DIRTY;
+          updateCalculationStateUI();
           return;
         }
       } catch (err) {
-        console.error('[3D-AICIVS] BLK007D backend request failed:', err);
-        if (mode === 'BACKEND') updateBackendStatus('OFFLINE');
-        const message = '后端算柜服务不可用。请检查：1. 后端服务是否启动 2. API 地址配置 3. 网络连接';
-        showToast(message, 'warning', '后端连接失败');
-        ['kpi-util', 'kpi-vol', 'kpi-count', 'kpi-weight'].forEach(id => {
-          const element = document.getElementById(id);
-          if (element) element.textContent = '—';
-        });
-        activePackingResult = null;
-        window.activePackingResult = null;
-        window.activeLoadingResult = null;
-        prog.finish(false, `${err.type || 'NETWORK_ERROR'}: ${err.message || err}`);
+        const errorType = err && err.type ? err.type : 'NETWORK_ERROR';
+        const isInputConstraint = errorType === 'INPUT_CONSTRAINT';
+        if (isInputConstraint) {
+          console.warn('[3D-AICIVS] 算柜输入约束未满足:', err.message || err);
+        } else {
+          console.error('[3D-AICIVS] BLK007D backend request failed:', err);
+          window.reportAppError(err, {
+            source: 'BACKEND_API', operation: 'CALCULATE_LOADING', type: errorType,
+            status: err && err.status != null ? err.status : null
+          });
+        }
+        if (mode === 'BACKEND' && errorType === 'NETWORK_ERROR') updateBackendStatus('OFFLINE');
+        const failureCopy = {
+          TIMEOUT: {
+            title: '算柜任务超时',
+            message: '完整布局计算超过 5 分钟，后端仍可能正在计算。请稍后重试；服务在线状态不会因此改为离线。'
+          },
+          SERVER_ERROR: {
+            title: '后端算柜执行失败',
+            message: '后端服务在线，但本次算柜发生错误。请检查服务日志中的具体校验或计算异常。'
+          },
+          INPUT_CONSTRAINT: {
+            title: '货单安全配置未满足',
+            message: (err && err.details && err.details.action) || '请在 SKU 参数中配置至少一种可形成门墙的“封柜门”货物，然后重新算柜。'
+          },
+          INVALID_RESULT: {
+            title: '后端结果无效',
+            message: '后端服务在线，但返回结果无法通过 BLK007C 数据校验。'
+          },
+          SCHEMA_ERROR: {
+            title: '接口数据不兼容',
+            message: '后端服务在线，但请求或响应不符合 BLK007C Contract。'
+          },
+          NETWORK_ERROR: {
+            title: '后端连接失败',
+            message: '后端算柜服务不可用。请检查：1. 后端服务是否启动 2. API 地址配置 3. 网络连接'
+          }
+        }[errorType];
+        const copy = failureCopy || { title: '算柜失败', message: err.message || String(err) };
+        showToast(copy.message, 'warning', copy.title);
+        calculationStatus = isInputConstraint
+          ? window.ManifestWorkflow.CalculationStatus.DIRTY
+          : window.ManifestWorkflow.CalculationStatus.FAILED;
+        updateCalculationStateUI();
+        prog.finish(false, `${errorType}: ${copy.message}`);
         setRunBusy(false);
         return;
       }
@@ -4941,13 +5388,20 @@
 
         console.log('[3D-AICIVS] 3D scene rebuild complete. Boxes:', boxMeshes.length, 'Util:', activePackingResult.utilization + '%');
 
+        calculatedRevision = requestedRevision;
+        calculationStatus = window.ManifestWorkflow.CalculationStatus.READY;
+        updateCalculationStateUI();
+
         // 进度卡收尾
         prog.finish(true, `${mode === 'MOCK' ? 'BLK007C Mock' : 'BLK007C Backend API'} · 共 ${activePackingResult.totalCount} 箱 · 利用率 ${activePackingResult.utilization}% · 总耗时 ${prog.elapsedSec().toFixed(1)}s`);
         setRunBusy(false);
       } catch (renderErr) {
         console.error('[3D-AICIVS] 3D 场景渲染异常:', renderErr);
+        window.reportAppError(renderErr, { source: 'THREE_RENDERER', operation: 'APPLY_LOADING_RESULT', type: 'RENDER_ERROR' });
         showToast('⚠️ 3D 渲染异常: ' + renderErr.message, 'warning');
         prog.finish(false, '3D 渲染异常: ' + (renderErr.message || renderErr));
+        calculationStatus = window.ManifestWorkflow.CalculationStatus.FAILED;
+        updateCalculationStateUI();
         setRunBusy(false);
       }
     };
@@ -5056,7 +5510,7 @@
       saveAppState();
       document.getElementById('btn-strat-cluster').classList.toggle('active', strat === 'cluster');
       document.getElementById('btn-strat-mec').classList.toggle('active', strat === 'mec');
-      runSmartPackingAlgorithm(true);
+      markManifestDirty('STRATEGY_CHANGED');
     };
 
     window.setGapSpacing = function(gapVal) {
@@ -5064,19 +5518,21 @@
       saveAppState();
       document.getElementById('btn-gap-zero').classList.toggle('active', gapVal === 0);
       document.getElementById('btn-gap-subtle').classList.toggle('active', gapVal > 0);
-      runSmartPackingAlgorithm(true);
+      markManifestDirty('GAP_CHANGED');
     };
 
     window.loadManifestPreset = function(presetKey) {
-      activeManifest = PRESET_MANIFESTS[presetKey] || PRODUCTION_CLEANED_MANIFEST;
+      activeManifest = (PRESET_MANIFESTS[presetKey] || PRODUCTION_CLEANED_MANIFEST).map(item => ({ ...item }));
       document.querySelectorAll('#left-drawer .chip-grid-2 .btn-chip').forEach(b => b.classList.remove('active'));
       const btn = document.getElementById('btn-pre-' + presetKey);
       if (btn) btn.classList.add('active');
       selectedSKUs.clear();
+      selectedManifestSkuIds.clear();
       saveAppState();
       renderManifestUI();
       renderAnchorRibbon();
-      runSmartPackingAlgorithm(true);
+      markManifestDirty('PRESET_LOADED', true);
+      showToast(`已载入 ${activeManifest.length} 种 SKU，等待手动算柜。`, 'info');
     };
 
     // --- 8. ANCHOR RIBBON (MULTI-ROW & EDGE-ALIGNED) & MANIFEST UI ---
@@ -5147,7 +5603,9 @@
       const countEl = document.getElementById('manifest-sku-count');
       const totalUnplaced = activePackingResult?.totalUnplacedCount || 0;
       if (countEl) {
-        if (totalUnplaced > 0) {
+        if (activeManifest.length === 0) {
+          countEl.innerHTML = '<span style="color:#64748b; font-weight:800;">0 种 SKU • 空货单</span>';
+        } else if (totalUnplaced > 0) {
           countEl.innerHTML = `<span style="color:#b45309; font-weight:800;">⚠️ ${activeManifest.length} 种 SKU • 余 ${totalUnplaced} 箱未装完</span>`;
         } else {
           countEl.innerHTML = `<span style="color:#059669; font-weight:800;">✅ ${activeManifest.length} 种 SKU • 100% 全部装完</span>`;
@@ -5240,14 +5698,14 @@
 
         card.addEventListener('click', (e) => {
           if (e.shiftKey || e.ctrlKey || e.metaKey) {
-            if (selectedSKUs.has(sku.sku)) selectedSKUs.delete(sku.sku);
-            else selectedSKUs.add(sku.sku);
+            if (selectedManifestSkuIds.has(sku.sku)) selectedManifestSkuIds.delete(sku.sku);
+            else selectedManifestSkuIds.add(sku.sku);
           } else {
-            if (selectedSKUs.size === 1 && selectedSKUs.has(sku.sku)) {
-              selectedSKUs.clear();
+            if (selectedManifestSkuIds.size === 1 && selectedManifestSkuIds.has(sku.sku)) {
+              selectedManifestSkuIds.clear();
             } else {
-              selectedSKUs.clear();
-              selectedSKUs.add(sku.sku);
+              selectedManifestSkuIds.clear();
+              selectedManifestSkuIds.add(sku.sku);
             }
           }
           syncSelectionStates();
@@ -5255,6 +5713,8 @@
 
         container.appendChild(card);
       });
+      syncSelectionStates();
+      updateCalculationStateUI();
     }
 
     // --- CoG Balancing Switch & HUD Micro-Toggle ---
@@ -5282,28 +5742,33 @@
       }
 
       saveAppState();
-      runSmartPackingAlgorithm(true);
+      markManifestDirty('COG_CHANGED');
     };
 
     // --- SKU CRUD Operations ---
     window.deleteSKUItem = function(skuCode) {
-      if (activeManifest.length <= 1) {
-        alert('货单中至少需要保留 1 个货物 SKU！');
-        return;
-      }
       const target = activeManifest.find(s => s.sku === skuCode);
       const name = target ? target.name : skuCode;
       if (!confirm(`确定要从当前装载清单中移除「${name}」吗？`)) return;
 
       activeManifest = activeManifest.filter(s => s.sku !== skuCode);
       selectedSKUs.delete(skuCode);
+      selectedManifestSkuIds.delete(skuCode);
       saveAppState();
       renderManifestUI();
       renderAnchorRibbon();
-      runSmartPackingAlgorithm(true);
+      markManifestDirty('SKU_DELETED');
     };
 
     window.deleteCurrentEditingSKU = function() {
+      if (skuSettingsTarget.type === 'pending') {
+        const item = pendingImportManifest && pendingImportManifest[skuSettingsTarget.index];
+        if (!item || !confirm(`确定从导入暂存区删除「${item.name}」吗？`)) return;
+        pendingImportManifest.splice(skuSettingsTarget.index, 1);
+        closeSKUSettingsModal();
+        showImportPreviewModal(pendingImportManifest);
+        return;
+      }
       const skuCode = document.getElementById('sku-edit-id').value;
       closeSKUSettingsModal();
       deleteSKUItem(skuCode);
@@ -5364,12 +5829,31 @@
       saveAppState();
       renderManifestUI();
       renderAnchorRibbon();
-      runSmartPackingAlgorithm(true);
+      markManifestDirty('SKU_ADDED');
     };
 
     window.openSKUSettingsModal = function(skuCode) {
-      const item = activeManifest.find(s => s.sku === skuCode);
+      const index = activeManifest.findIndex(s => s.sku === skuCode);
+      const item = activeManifest[index];
       if (!item) return;
+      skuSettingsTarget = { type: 'active', index };
+      populateSKUSettingsForm(item);
+    };
+
+    window.openPendingImportSKUSettings = function(index) {
+      const item = pendingImportManifest && pendingImportManifest[index];
+      if (!item) return;
+      skuSettingsTarget = { type: 'pending', index };
+      populateSKUSettingsForm(item);
+    };
+
+    function populateSKUSettingsForm(item) {
+      const profile = item.cargoProfile || {};
+      const placement = profile.placementPolicy || {};
+      const stack = profile.stackPolicy || {};
+      const stability = profile.stabilityPolicy || {};
+      const topfill = profile.topFillPolicy || {};
+      const handling = profile.handlingPolicy || {};
 
       document.getElementById('sku-edit-id').value = item.sku;
       document.getElementById('sku-modal-name').textContent = item.name;
@@ -5388,16 +5872,32 @@
       document.getElementById('sku-edit-h').value = item.h;
       document.getElementById('sku-edit-qty').value = item.quantity;
 
+      document.getElementById('sku-edit-load-priority').value = placement.loadPriority || item.loadPriority || 0;
+      document.getElementById('sku-edit-min-qty').value = placement.minimumQuantity || item.minimumQuantity || 0;
+      document.getElementById('sku-edit-allow-above').value = String(stack.allowStackingOnTop ?? item.allowStackingOnTop ?? true);
+      document.getElementById('sku-edit-floor-only').value = String(stack.mustBeOnFloor ?? item.mustBeOnFloor ?? false);
+      document.getElementById('sku-edit-min-support').value = stability.minSupportRatio ?? item.minSupportRatio ?? 0.70;
+      document.getElementById('sku-edit-max-span').value = stability.maxUnsupportedSpan ?? item.maxUnsupportedSpanM ?? 0.10;
+      document.getElementById('sku-edit-topfill-state').value = topfill.state || 'AUTO';
+      document.getElementById('sku-edit-topfill-layers').value = topfill.maxLayers || item.maxFlatLayers || 0;
+      document.getElementById('sku-edit-topfill-base').value = topfill.minBaseHeight || 0;
+      document.getElementById('sku-edit-keep-upright').value = String(handling.keepUpright ?? true);
+      document.getElementById('sku-edit-fragile').value = String(handling.fragile ?? false);
+      document.getElementById('sku-edit-anti-tip').value = String(stability.antiTipRequired ?? true);
+      document.getElementById('sku-settings-save-label').textContent = skuSettingsTarget.type === 'pending'
+        ? '保存至导入暂存区'
+        : '保存参数（不自动算柜）';
+
       document.getElementById('sku-settings-modal').style.display = 'flex';
-    };
+    }
 
     window.closeSKUSettingsModal = function() {
       document.getElementById('sku-settings-modal').style.display = 'none';
     };
 
-    window.saveSKUSettingsAndRepack = async function() {
-      const skuCode = document.getElementById('sku-edit-id').value;
-      const item = activeManifest.find(s => s.sku === skuCode);
+    window.saveSKUSettingsAndRepack = function() {
+      const targetManifest = skuSettingsTarget.type === 'pending' ? pendingImportManifest : activeManifest;
+      const item = targetManifest && targetManifest[skuSettingsTarget.index];
       if (!item) return;
 
       item.requirement = document.getElementById('sku-edit-req').value;
@@ -5425,31 +5925,104 @@
       if (!isNaN(h) && h > 0) item.h = h;
       if (!isNaN(qty) && qty > 0) item.quantity = qty;
 
+      const profileValues = {
+        allowedOrientation: item.allowedOrientation,
+        maxStackLayers: item.maxStackLayers,
+        maxBearingKg: item.maxBearingKg,
+        maxPressureKgM2: item.maxPressureKgM2,
+        reductionAllowed: item.isElastic,
+        loadPriority: parseInt(document.getElementById('sku-edit-load-priority').value, 10) || 0,
+        minimumQuantity: parseInt(document.getElementById('sku-edit-min-qty').value, 10) || 0,
+        allowStackingOnTop: document.getElementById('sku-edit-allow-above').value === 'true',
+        mustBeOnFloor: document.getElementById('sku-edit-floor-only').value === 'true',
+        minSupportRatio: parseFloat(document.getElementById('sku-edit-min-support').value),
+        maxUnsupportedSpanM: parseFloat(document.getElementById('sku-edit-max-span').value),
+        topFillState: document.getElementById('sku-edit-topfill-state').value,
+        topFillMaxLayers: parseInt(document.getElementById('sku-edit-topfill-layers').value, 10) || 0,
+        topFillMinBaseHeight: parseFloat(document.getElementById('sku-edit-topfill-base').value) || 0,
+        keepUpright: document.getElementById('sku-edit-keep-upright').value === 'true',
+        fragile: document.getElementById('sku-edit-fragile').value === 'true',
+        antiTipRequired: document.getElementById('sku-edit-anti-tip').value === 'true',
+        preferredZones: /封柜门|封门|门区|door/i.test(item.requirement || '') ? ['DOOR'] : /最里面|柜尾|rear/i.test(item.requirement || '') ? ['REAR'] : ['MIDDLE'],
+        packingRoles: /封柜门|封门|门区|door/i.test(item.requirement || '') ? ['DOOR_SEAL'] : ['MAIN_WALL']
+      };
+      item.minimumQuantity = profileValues.minimumQuantity;
+      item.allowStackingOnTop = profileValues.allowStackingOnTop;
+      item.mustBeOnFloor = profileValues.mustBeOnFloor;
+      item.minSupportRatio = profileValues.minSupportRatio;
+      item.maxUnsupportedSpanM = profileValues.maxUnsupportedSpanM;
+      item.cargoProfile = window.ManifestWorkflow.buildCargoProfile(item, profileValues);
+
+      const validation = window.ManifestWorkflow.validateManifest(targetManifest);
+      if (!validation.valid) {
+        showToast(validation.errors.slice(0, 4).join('；'), 'warning', 'SKU参数校验失败');
+        return;
+      }
+
       closeSKUSettingsModal();
-      selectedSKUs.clear();
-      hoveredSKU = null;
-      syncSelectionStates();
-      saveAppState();
-      renderManifestUI();
-      renderAnchorRibbon();
-      const prevTotal = (activePackingResult && activePackingResult.totalCount) || 0;
-      await runSmartPackingAlgorithm(true);
-      const placedCount = activePackingResult?.skuStats?.[item.sku]?.placed || 0;
-      const newTotal = activePackingResult?.totalCount || 0;
-      if (newTotal === prevTotal) {
-        showToast(`✅ SKU [${item.sku}] 参数已生效：实装 ${placedCount}/${item.quantity} 箱。总装载数 ${newTotal} 箱未变化（容器已满或该 SKU 已达可装上限）`, 'info');
+      if (skuSettingsTarget.type === 'pending') {
+        showImportPreviewModal(pendingImportManifest);
+        showToast(`SKU [${item.sku}] 参数已保存到导入暂存区。`, 'success');
       } else {
-        showToast(`✨ SKU [${item.sku}] 规则已生效：实装 ${placedCount}/${item.quantity} 箱，3D 货柜已完成重新推演排布！`, 'success');
+        selectedSKUs.clear();
+        hoveredSKU = null;
+        syncSelectionStates();
+        saveAppState();
+        renderManifestUI();
+        renderAnchorRibbon();
+        markManifestDirty('SKU_PROFILE_CHANGED');
+        showToast(`SKU [${item.sku}] 参数已保存，等待手动算柜。`, 'success');
       }
     };
 
     window.selectAllSKUs = function(selectAll) {
       if (selectAll) {
-        activeManifest.forEach(s => selectedSKUs.add(s.sku));
+        activeManifest.forEach(s => selectedManifestSkuIds.add(s.sku));
       } else {
-        selectedSKUs.clear();
+        selectedManifestSkuIds.clear();
       }
       syncSelectionStates();
+    };
+
+    window.invertManifestSelection = function() {
+      const next = new Set();
+      activeManifest.forEach(item => {
+        if (!selectedManifestSkuIds.has(item.sku)) next.add(item.sku);
+      });
+      selectedManifestSkuIds = next;
+      syncSelectionStates();
+    };
+
+    window.deleteSelectedSKUs = function() {
+      if (selectedManifestSkuIds.size === 0) {
+        showToast('请先勾选要删除的 SKU。', 'info');
+        return;
+      }
+      const affected = activeManifest.filter(item => selectedManifestSkuIds.has(item.sku));
+      const totalQuantity = affected.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+      if (!confirm(`将删除 ${affected.length} 种 SKU、共 ${totalQuantity} 箱货物。此操作不会自动重新算柜，是否继续？`)) return;
+      activeManifest = window.ManifestWorkflow.deleteSelected(activeManifest, selectedManifestSkuIds);
+      selectedManifestSkuIds.clear();
+      selectedSKUs.clear();
+      saveAppState();
+      renderManifestUI();
+      renderAnchorRibbon();
+      markManifestDirty('BULK_SKU_DELETE');
+      showToast(`已删除 ${affected.length} 种 SKU，等待手动算柜。`, 'success');
+    };
+
+    window.clearManifest = function() {
+      if (activeManifest.length === 0) return;
+      const totalQuantity = activeManifest.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+      if (!confirm(`确定清空当前 ${activeManifest.length} 种 SKU、共 ${totalQuantity} 箱货物吗？`)) return;
+      activeManifest = [];
+      selectedManifestSkuIds.clear();
+      selectedSKUs.clear();
+      saveAppState();
+      renderManifestUI();
+      renderAnchorRibbon();
+      markManifestDirty('MANIFEST_CLEARED', true);
+      showToast('货单已清空，当前为空柜草稿。', 'success');
     };
 
     window.resetSKUSelection = function() {
@@ -5474,13 +6047,21 @@
 
     function syncSelectionStates() {
       activeManifest.forEach(s => {
-        const isSel = selectedSKUs.has(s.sku);
+        const isManifestSelected = selectedManifestSkuIds.has(s.sku);
+        const isSceneSelected = selectedSKUs.has(s.sku);
         const card = document.getElementById(`manifest-card-${s.sku}`);
-        if (card) card.classList.toggle('selected', isSel);
+        if (card) card.classList.toggle('selected', isManifestSelected);
+        const checkbox = document.getElementById(`chk-box-${s.sku}`);
+        if (checkbox) checkbox.classList.toggle('checked', isManifestSelected);
 
         const anchor = document.getElementById(`anchor-chip-${s.sku}`);
-        if (anchor) anchor.classList.toggle('active', isSel);
+        if (anchor) anchor.classList.toggle('active', isSceneSelected);
       });
+
+      const selectionCount = document.getElementById('manifest-selection-count');
+      if (selectionCount) selectionCount.textContent = `已选 ${selectedManifestSkuIds.size} / ${activeManifest.length}`;
+      const deleteButton = document.getElementById('btn-delete-selected-skus');
+      if (deleteButton) deleteButton.disabled = selectedManifestSkuIds.size === 0;
 
       updateBoxVisibilityAndMaterials();
     }
@@ -5684,6 +6265,7 @@
         }
       });
 
+      if (packageOrientationDisplayMode === window.BLK007F78.DisplayMode.ASSIST) rebuildOrientationAssist();
       isRaycastDirty = true;
     }
 
@@ -5787,19 +6369,19 @@
       if (label) label.textContent = numVal;
       activeAlgorithmWeights[key] = numVal;
 
-      // Live debounced real-time 3D recompute on slider drag
+      // Weight changes update the draft only. Solver execution is always manual.
       if (weightRecomputeTimer) clearTimeout(weightRecomputeTimer);
       weightRecomputeTimer = setTimeout(() => {
         saveAppState();
-        runSmartPackingAlgorithm(true);
+        markManifestDirty('OBJECTIVE_WEIGHT_CHANGED');
       }, 150);
     };
 
     window.applyAlgorithmWeights = function() {
       if (weightRecomputeTimer) clearTimeout(weightRecomputeTimer);
-      showToast('⚡ 算法动态权重已生效，已完成 3D 重新推演！', 'info');
+      showToast('⚡ 算法动态权重已保存，等待手动算柜。', 'info');
       saveAppState();
-      runSmartPackingAlgorithm(true);
+      markManifestDirty('OBJECTIVE_WEIGHTS_APPLIED');
     };
 
     window.resetAlgorithmWeights = function() {
@@ -5810,9 +6392,9 @@
         if (input) input.value = v;
         if (label) label.textContent = v;
       }
-      showToast('🔄 已恢复推荐标准算法权重！', 'success');
+      showToast('🔄 已恢复推荐标准算法权重，等待手动算柜。', 'success');
       saveAppState();
-      runSmartPackingAlgorithm(true);
+      markManifestDirty('OBJECTIVE_WEIGHTS_RESET');
     };
 
     window.setSmartCutaway = function(state) {
@@ -6277,6 +6859,7 @@
         init();
       } catch (err) {
         console.error('[3D-AICIVS] 启动异常:', err);
+        window.reportAppError(err, { source: 'APPLICATION', operation: 'START_APP', type: 'STARTUP_ERROR' });
       }
     }
 

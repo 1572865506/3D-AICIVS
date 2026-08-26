@@ -25,7 +25,7 @@ class TestBLK007CFrontendAPI(unittest.TestCase):
         self.service=LoadingAPIService(LoadingJobStore());self.service.put_result(self.result)
 
     def p(self,pid,y):
-        return Placement(pid,"i"+pid,"T",Point3D(.5,y,0),Orientation3D(.4,.12,.8,"UPRIGHT"),4,
+        return Placement(pid,"i"+pid,"T",Point3D(.5,y,0),Orientation3D(.4,.12,.8,"UPRIGHT_NORMAL"),4,
                          PlacementContext.MAIN_WALL)
 
     def get(self,endpoint):
@@ -65,6 +65,7 @@ class TestBLK007CFrontendAPI(unittest.TestCase):
         self.assertEqual(len(layout["cargo"]),len(scene["objects"]))
         by_id={x["id"]:x for x in layout["cargo"]};obj={x["uuid"]:x for x in scene["objects"]}["a"]
         self.assertEqual(obj["scale"],[by_id["a"]["size"][k] for k in ("w","d","h")])
+        self.assertEqual(obj["metadata"]["orientation"],"UPRIGHT_NORMAL")
         self.assertEqual(animation["total_frames"],layout["sequence"]["total_steps"])
 
 
