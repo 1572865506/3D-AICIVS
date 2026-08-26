@@ -191,25 +191,11 @@ class AdaptiveZoneManager:
         box_max_x = x + dx
         safe_limit = self.latest_safe_main_x
 
-        # 1. Door zone dynamic boundary check
-        is_door_seal = (
-            PackingRole.DOOR_SEAL in sku.packing_roles
-            or sku.target_zone == ZoneType.DOOR
-        )
-        if (not is_door_seal) and (box_max_x > safe_limit + eps):
-            return False, f"Door zone lockout: non-door-seal SKU '{sku.sku_id}' penetrated safe door boundary (x_end={box_max_x:.3f} > safe_limit={safe_limit:.3f})"
-
-        # 2. Rear zone constraint
-        if sku.target_zone == ZoneType.REAR:
-            rear_limit = self.rear_zone_length_m + 0.5
-            if box_max_x > rear_limit + eps:
-                return False, f"Rear zone violation: SKU '{sku.sku_id}' restricted to rear zone exceeds boundary (x_end={box_max_x:.3f} > {rear_limit:.3f})"
-
-        # 3. Floor only constraint
+        # 1. Floor only constraint (physical rule)
         if sku.stacking_policy.must_be_on_floor and z > eps:
             return False, f"Floor only violation: SKU '{sku.sku_id}' must be on floor, but placed at z={z:.3f}"
 
-        # 4. Explicit forbidden zones from CargoProfile.
+        # 2. Explicit forbidden zones from CargoProfile (explicit user hard block)
         if sku.cargo_profile is not None:
             boundaries = self.get_zone_boundaries()
             for forbidden in sku.cargo_profile.zone_policy.forbidden:
@@ -231,27 +217,29 @@ class AdaptiveZoneManager:
     ) -> float:
         """
         Computes soft affinity score:
-        Higher score = better placement alignment with preferred zone.
+        Higher score = better placement alignment with preferred zone and space utilization.
         """
         score = 0.0
         door_closure_start = self.door_closure_start_x
 
-        # Bonus for packing roles
+        # Bonus for foundation cargo on floor
         if PackingRole.FOUNDATION in sku.packing_roles and z <= self.geom_epsilon:
-            score += 20.0  # Encourages foundation cargo on floor
+            score += 25.0
 
-        if PackingRole.DOOR_SEAL in sku.packing_roles:
-            if x >= door_closure_start - 0.2:
-                score += 50.0  # High bonus for door seal in door closure area
+        # Rear affinity: smooth bonus favoring deeper positions near x=0, allowing smooth outward progression
+        if sku.target_zone == ZoneType.REAR or PackingRole.FOUNDATION in sku.packing_roles:
+            x_ratio = max(0.0, 1.0 - (x / max(self.container.Lx, 1.0)))
+            score += x_ratio * 50.0
+
+        # Door seal affinity: bonus for placing near trailing edge / door zone
+        if PackingRole.DOOR_SEAL in sku.packing_roles or sku.target_zone == ZoneType.DOOR:
+            if x >= door_closure_start - 0.5:
+                score += 50.0
             else:
-                score += 10.0  # Excess door seal in main body is also acceptable
+                score += 15.0
 
         if PackingRole.TOP_FILL in sku.packing_roles:
-            # Higher z gets higher score
             z_ratio = z / self.container.Lz if self.container.Lz > 0 else 0.0
             score += z_ratio * 30.0
-
-        if sku.target_zone == ZoneType.REAR and (x + dx) <= self.rear_zone_length_m:
-            score += 40.0
 
         return score

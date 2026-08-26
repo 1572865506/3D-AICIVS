@@ -47,8 +47,10 @@ class LoadingAPIService:
             repair=SequenceRepairEngine(container,cargo).repair(
                 plan,plan.infeasible_reasons[0],plan.graph,solution.placements)
         recomposition=(solution.telemetry.wall_plan_search_metrics or {}).get("cargo_recomposition")
+        braking=(solution.telemetry.wall_plan_search_metrics or {}).get("braking_stability")
         result=build_loading_result(job_id,container,cargo,solution.placements,plan,repair,
-            {"utilization_pct":solution.volume_utilization_pct,"total_weight_kg":solution.total_weight_kg},recomposition)
+            {"utilization_pct":solution.volume_utilization_pct,"total_weight_kg":solution.total_weight_kg,
+             "braking_stability":braking},recomposition)
         self.store.put(job_id,result);return result
 
     def put_result(self,result):

@@ -93,17 +93,14 @@
     const wallFormable = candidates.filter(item => item.wallFormable);
     let code = null;
     if (conflicts.length) code = 'DOOR_PROFILE_CONFLICT';
-    else if (!candidates.length) code = 'NO_EXPLICIT_DOOR_CARGO';
-    else if (!wallFormable.length) code = 'NO_WALL_FORMABLE_DOOR_CARGO';
     const messages = {
       DOOR_PROFILE_CONFLICT: `SKU ${conflicts.join('、')} 的“封柜门”文字与结构化 CargoProfile 冲突，请打开 SKU 参数并重新保存门区规则`,
-      NO_EXPLICIT_DOOR_CARGO: '货单没有明确的门墙 SKU。请在 SKU 参数中将至少一种货物的摆放位置设置为“封柜门”',
-      NO_WALL_FORMABLE_DOOR_CARGO: '已配置的门墙 SKU 因尺寸、单件重量或库存无法形成门墙，请检查规格、数量与门区规则'
     };
     return {
       valid: code === null,
       code,
       message: code ? messages[code] : '',
+      hasExplicitDoorCargo: candidates.length > 0,
       candidates,
       wallFormableCandidates: wallFormable,
       conflicts

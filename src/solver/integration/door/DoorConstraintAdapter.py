@@ -37,8 +37,23 @@ class DoorConstraintAdapter:
     def prepare(self, container: ContainerSpec, cargo: Iterable[CargoSKU]) -> PreparedPackingInput:
         cargo_tuple = tuple(cargo)
         plan = self.engine.plan(container, cargo_tuple)
-        if plan.status != "READY" or plan.wall is None:
-            raise ValueError(f"{plan.reason}: {plan.detail}")
+        
+        # Adaptive check: Only anchor a fixed door wall if cargo naturally reaches the door zone.
+        # Otherwise, cargo (including door-seal capable SKUs) should pack continuously inside.
+        total_volume = sum(sku.box.x * sku.box.y * sku.box.z * sku.quantity.required for sku in cargo_tuple)
+        container_cross_section = container.Ly * container.Lz
+        estimated_load_length = total_volume / max(container_cross_section * 0.70, 1e-6)
+        door_zone_threshold = plan.zone.solver_start_x * 0.75 if (plan.zone and plan.zone.solver_start_x > 0) else (container.Lx * 0.75)
+        reaches_door_zone = estimated_load_length >= door_zone_threshold
+
+        if plan.status != "READY" or plan.wall is None or not reaches_door_zone:
+            region = ReservedRegion("NO_DOOR_RESERVED", container.Lx, container.Lx)
+            anchor = DoorAnchor("", ())
+            context = SolverDoorContext(
+                plan.zone, (), dict(plan.constraints.forced_orientation) if plan.constraints else {},
+                region, (), (), anchor,
+            )
+            return PreparedPackingInput(container, container, cargo_tuple, cargo_tuple, context, None)
         anchors = tuple(self._placement(p,p.concrete_orientation) for p in plan.wall.placements)
         # Only the anchored blocking wall and its small door-side restraint gap
         # are unavailable to ordinary cargo. The rest of the semantic Door Zone

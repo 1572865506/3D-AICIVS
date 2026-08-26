@@ -32,9 +32,12 @@ class WallConstraintAdapter:
             result.append(replace(sku,quantity=q))
         return tuple(result)
 
-    def prepare(self,container,cargo)->PreparedWallInput:
+    def prepare(self,container,cargo,allow_fallback=True)->PreparedWallInput:
         cargo=tuple(cargo);plan=self.engine.plan(container,cargo)
-        if plan.status!="READY":raise ValueError("CARGO_WALL_PLAN_INVALID")
+        if plan.status!="READY":
+            if not allow_fallback:
+                raise ValueError("CARGO_WALL_PLAN_INVALID")
+            return None
         residual=max(0.001,container.Lx-plan.build.wall_end_x)
         solver_container=replace(container,code=f"{container.code}-RESIDUAL",inner_dim=BoxDim(residual,container.Ly,container.Lz))
         return PreparedWallInput(container,solver_container,cargo,self._reserve(cargo,plan.build.consumed_inventory),plan,plan.build.wall_end_x)

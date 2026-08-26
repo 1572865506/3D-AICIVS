@@ -1117,8 +1117,8 @@ class BoundedBeamSearchEngine:
                     sku.cargo_class.value == "HEAVY"):
                     phase_skus.append(sku)
             elif context == PlacementContext.MAIN_WALL:
-                # In MAIN_WALL: only include MAIN_WALL, FLEXIBLE, or DOOR_SEAL with excess
-                if PackingRole.MAIN_WALL in sku.packing_roles or PackingRole.FLEXIBLE in sku.packing_roles or PackingRole.DOOR_SEAL in sku.packing_roles:
+                # In MAIN_WALL: include MAIN_WALL, FOUNDATION (remaining), FLEXIBLE, or DOOR_SEAL
+                if PackingRole.MAIN_WALL in sku.packing_roles or PackingRole.FOUNDATION in sku.packing_roles or PackingRole.FLEXIBLE in sku.packing_roles or PackingRole.DOOR_SEAL in sku.packing_roles:
                     phase_skus.append(sku)
             elif context == PlacementContext.GAP_FILL:
                 phase_skus.append(sku)

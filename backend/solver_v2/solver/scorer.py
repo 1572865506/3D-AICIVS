@@ -125,29 +125,46 @@ class CandidateScorer:
         # 6. Wall Continuity & Contact Bonus
         wall_continuity_bonus = 0.0
         touching_items = world_state.query_touching(candidate.aabb)
+        has_lateral_neighbor = False
         if touching_items:
             touch_cnt = len(touching_items)
             wall_continuity_bonus += min(touch_cnt * 6.0, self.wall_continuity_weight)
             # Rear-contact bonus against existing front face
             if any(abs(item[0].max_x - x) <= 0.01 for item in touching_items if item[0] is not None):
                 wall_continuity_bonus += 12.0
-            # Lateral Y contact bonus (forming continuous Row)
+            # Lateral Y contact bonus (forming continuous full-width Row across container)
             if any(abs(item[0].max_y - y) <= 0.01 or abs(item[0].min_y - (y + dy)) <= 0.01 for item in touching_items if item[0] is not None):
-                wall_continuity_bonus += 8.0
+                wall_continuity_bonus += 16.0
+                has_lateral_neighbor = True
         breakdown["wall_continuity_bonus"] = round(wall_continuity_bonus, 3)
 
         # 7. Row & Layer Completion Bonus
         row_completion_bonus = 0.0
         layer_completion_bonus = 0.0
 
-        # Completing row boundary against container wall
-        if abs(y) <= 0.01 or abs(y + dy - container.Ly) <= 0.01:
-            row_completion_bonus += 12.0
+        # Completing row boundary against container wall or extending from lateral neighbor
+        if abs(y) <= 0.01 or abs(y + dy - container.Ly) <= 0.01 or has_lateral_neighbor:
+            row_completion_bonus += 14.0
         # Check if adjacent to neighbor at same Z level
         for it, ctype in touching_items:
             if it and abs(it.min_z - z) <= 0.02 and abs(it.orientation.dz - dz) <= 0.02:
-                row_completion_bonus += 10.0
+                row_completion_bonus += 12.0
                 break
+
+        # Transverse Full-Width Wall Priority:
+        # Heavily penalize advancing forward in X when the current rear cross-section still has empty lateral width!
+        transverse_priority = 0.0
+        if world_state.placement_count > 0:
+            rear_boxes = [p for p in world_state.placements if p.min_x < x - 0.05]
+            if rear_boxes:
+                rear_max_y = max(p.max_y for p in rear_boxes)
+                if rear_max_y + dy <= container.Ly + 0.01:
+                    # Advancing in X while rear width is incomplete
+                    transverse_priority -= 45.0
+            min_existing_x = min(p.min_x for p in world_state.placements)
+            if x <= min_existing_x + 0.08:
+                # Completing the deepest transverse wall across width
+                transverse_priority += 25.0
 
         # Layer completion bonus: floor contact or resting flush on lower layer
         if abs(z) <= 0.01:
@@ -157,6 +174,7 @@ class CandidateScorer:
 
         breakdown["row_completion_bonus"] = round(row_completion_bonus, 3)
         breakdown["layer_completion_bonus"] = round(layer_completion_bonus, 3)
+        breakdown["transverse_priority"] = round(transverse_priority, 3)
 
         # 8. Valley Filling Bonus & Surface Flatness Bonus
         valley_fill_bonus = 0.0
@@ -231,6 +249,7 @@ class CandidateScorer:
             + layer_completion_bonus
             + valley_fill_bonus
             + surface_flatness_bonus
+            + transverse_priority
             - height_step_penalty
             - isolated_box_penalty
             - cavity_creation_penalty

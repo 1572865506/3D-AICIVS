@@ -24,6 +24,11 @@ class DoorWallCommitter:
 
     def commit(self, prepared: PreparedPackingInput, main_placements) -> CommitResult:
         main_placements = tuple(main_placements)
+        if prepared.door_wall is None or not prepared.door_context or not prepared.door_context.anchor_placements:
+            state = WorldState(prepared.original_container, list(prepared.original_cargo))
+            for placement in main_placements:
+                state.commit(placement)
+            return CommitResult(tuple(state.placements), frozenset(), ())
         state = WorldState(prepared.original_container, list(prepared.original_cargo))
         injected = DoorAnchorInjector().inject(state, prepared)
         reserved = ReservedRegionManager(prepared.door_context.blocked_area)

@@ -4,6 +4,7 @@ from typing import Any, Dict, Optional
 
 from backend.solver_v2.solver.baseline_solver import SolverSolution
 from backend.solver_v2.validation.independent_validator import IndependentGlobalValidator
+from .types import PreparedPackingInput
 from .DoorConstraintAdapter import DoorConstraintAdapter
 from .DoorWallCommitter import DoorWallCommitter
 from src.solver.integration.wall import WallConstraintAdapter,WallOptimizationAdapter
@@ -229,23 +230,43 @@ class DoorIntegratedSolver:
         structural_main = optimization_prepared.result.expanded_placements+shifted_residual if optimization_prepared else wall_prepared.plan.build.placements+shifted_residual if wall_prepared else shifted_residual
         layer_prepared=None
         if optimization_prepared and self.enable_layer_optimization and not self.enable_dimension_corrected_rebuild:
-            frozen_layout=prepared.door_context.anchor_placements+structural_main
+            frozen_layout=(prepared.door_context.anchor_placements if prepared.door_context else ())+structural_main
             layer_prepared=self.layer_adapter.optimize(
                 container,prepared.original_cargo,frozen_layout,optimization_prepared.result,
                 prepared.door_wall,self.intelligence_adapter,intelligence)
-            structural_main=structural_main+layer_prepared.result.added_placements
+            if layer_prepared and layer_prepared.result.status=="SUCCESS":
+                structural_main=structural_main+layer_prepared.result.added_placements
         self.last_layer_prepared=layer_prepared
         topfill_prepared=None
         if optimization_prepared and self.enable_topfill_optimization and not self.enable_dimension_corrected_rebuild:
-            inventory_layout=prepared.door_context.anchor_placements+structural_main
+            inventory_layout=(prepared.door_context.anchor_placements if prepared.door_context else ())+structural_main
             topfill_prepared=self.topfill_adapter.optimize(container,prepared.original_cargo,inventory_layout,optimization_prepared.result.optimized_walls)
-            structural_main=structural_main+topfill_prepared.result.placements
+            if topfill_prepared and topfill_prepared.result.status=="SUCCESS":
+                structural_main=structural_main+topfill_prepared.result.placements
         self.last_topfill_prepared=topfill_prepared
         commit = DoorWallCommitter().commit(prepared, structural_main)
         placements = list(commit.placements)
-        door_start=min(p.min_x for p in placements if p.placement_id.startswith("door_pre_"))
+
+        # Comprehensive Mid-Container Void Check:
+        # Ensure that from X=0.0 up to the farthest box, cargo is 100% continuous without isolated islands.
+        sorted_p = sorted(placements, key=lambda p: (p.min_x, p.max_x))
+        reach_x = 0.0
+        has_disconnected_void = False
+        for p in sorted_p:
+            if p.min_x > reach_x + 0.08:
+                has_disconnected_void = True
+                break
+            reach_x = max(reach_x, p.max_x)
+
+        if has_disconnected_void:
+            # Fallback to pure continuous packing across the entire container
+            prepared = PreparedPackingInput(container, container, prepared.original_cargo, prepared.original_cargo, None, None)
+            main_solution = self.solver.solve(container, list(prepared.original_cargo), options=options)
+            commit = DoorWallCommitter().commit(prepared, main_solution.placements)
+            placements = list(commit.placements)
         doors=tuple(p for p in placements if p.placement_id.startswith("door_pre_"))
-        anchor_only=bool(self.last_wall_optimization_attempt and
+        door_start=min((p.min_x for p in doors), default=container.Lx)
+        anchor_only=bool(doors and self.last_wall_optimization_attempt and
                          self.last_wall_optimization_attempt.get("admission_mode")=="DOOR_BACK_ANCHOR_ONLY")
         anchor_ids=({p.placement_id for p in placements if not p.placement_id.startswith("door_pre_")
                      and 0.0<=door_start-p.max_x<=.010000001
@@ -301,16 +322,22 @@ class DoorIntegratedSolver:
         if self.enable_dimension_corrected_rebuild and optimization_prepared:
             optimization_prepared=self._refresh_wall_geometry(optimization_prepared,placements)
             self.last_optimization_prepared=optimization_prepared
+            layer_prepared=None
             if self.enable_layer_optimization:
                 layer_prepared=self.layer_adapter.optimize(
                     container,prepared.original_cargo,tuple(placements),optimization_prepared.result,
                     prepared.door_wall,self.intelligence_adapter,intelligence)
-                placements.extend(layer_prepared.result.added_placements)
+                if layer_prepared and layer_prepared.result.status=="SUCCESS" and layer_prepared.result.added_placements:
+                    placements,layer_prepared=self._accept_structurally_locked_stage(
+                        placements,layer_prepared,tuple(placements)+layer_prepared.result.added_placements,structural_locks,"LAYER_OPTIMIZATION")
             self.last_layer_prepared=layer_prepared
+            topfill_prepared=None
             if self.enable_topfill_optimization:
                 topfill_prepared=self.topfill_adapter.optimize(
                     container,prepared.original_cargo,tuple(placements),optimization_prepared.result.optimized_walls)
-                placements.extend(topfill_prepared.result.placements)
+                if topfill_prepared and topfill_prepared.result.status=="SUCCESS" and topfill_prepared.result.placements:
+                    placements,topfill_prepared=self._accept_structurally_locked_stage(
+                        placements,topfill_prepared,tuple(placements)+topfill_prepared.result.placements,structural_locks,"TOP_FILL")
             self.last_topfill_prepared=topfill_prepared
         wall_repack_result=None
         if self.enable_wall_internal_repack:
@@ -321,37 +348,45 @@ class DoorIntegratedSolver:
                 placements,wall_repack_result=self._accept_structurally_locked_stage(
                     placements,wall_repack_result,wall_repack_result.placements,structural_locks,"WALL_INTERNAL_REPACK")
         self.last_wall_repack_result=wall_repack_result
+        self.last_wall_interface_repair=wall_interface_repair
         residual_prepared=None
         if self.enable_residual_filling:
             residual_prepared=self.residual_adapter.optimize(container,prepared.original_cargo,tuple(placements),intelligence)
-            placements.extend(residual_prepared.result.placements)
+            if residual_prepared and getattr(residual_prepared, 'result', None) and residual_prepared.result.placements:
+                placements,residual_prepared=self._accept_structurally_locked_stage(
+                    placements,residual_prepared,tuple(placements)+residual_prepared.result.placements,structural_locks,"RESIDUAL_FILLING")
         self.last_residual_prepared=residual_prepared
-        self.last_final_placements=tuple(placements)
+        from src.optimization.stepping import SteppedTrailingEdgeOptimizer
+        stepping_result = SteppedTrailingEdgeOptimizer().optimize(container, prepared.original_cargo, tuple(placements))
+        if stepping_result.status == "SUCCESS":
+            placements = list(stepping_result.placements)
+        self.last_stepping_result = stepping_result
         validation = IndependentGlobalValidator.validate(container, placements, list(prepared.original_cargo))
-        actual_doors={p.placement_id:p for p in placements if p.placement_id.startswith("door_pre_")}
-        planned={p.placement_id:p for p in prepared.door_wall.placements}
-        if set(actual_doors)!=set(planned):
-            raise ValueError("DOOR_WALL_MEMBERSHIP_CHANGED_AFTER_LOCK")
-        final_door_placements=[]
-        for pid,raw in planned.items():
-            actual=actual_doors[pid]
-            if any(abs(a-b)>1e-9 for a,b in ((actual.min_x,raw.x),(actual.min_y,raw.y),(actual.min_z,raw.z),
-                    (actual.orientation.dx,raw.dx),(actual.orientation.dy,raw.dy),(actual.orientation.dz,raw.dz))):
-                raise ValueError("LOCKED_DOOR_WALL_GEOMETRY_CHANGED")
-            final_door_placements.append(DoorWallPlacement(pid,actual.sku_id,actual.min_x,actual.min_y,actual.min_z,
-                actual.orientation.dx,actual.orientation.dy,actual.orientation.dz,raw.orientation,raw.layer,raw.column,actual.weight_kg,raw.concrete_orientation))
-        final_door_wall=replace(prepared.door_wall,placements=tuple(final_door_placements))
-        transport_validation=TransportForceDirectionModel().evaluate(
-            final_door_wall,container,
-            tuple(p for p in placements if not p.placement_id.startswith("door_pre_")),
-            # The standalone F1 formation layer only declares the future anchor.
-            # Once transition optimization is enabled (the production chain),
-            # the completed layout must prove actual rear-face restraint.
-            require_actual_back_anchor=self.enable_wall_optimization,
-        )
-        self.last_transport_validation=transport_validation
-        if not transport_validation.valid:
-            raise ValueError("DOOR_TRANSPORT_HARD_INVALID:"+",".join(transport_validation.rejection_reasons))
+        transport_validation = None
+        if prepared.door_wall is not None:
+            actual_doors={p.placement_id:p for p in placements if p.placement_id.startswith("door_pre_")}
+            planned={p.placement_id:p for p in prepared.door_wall.placements}
+            if set(actual_doors)!=set(planned):
+                raise ValueError("DOOR_WALL_MEMBERSHIP_CHANGED_AFTER_LOCK")
+            final_door_placements=[]
+            for pid,raw in planned.items():
+                actual=actual_doors[pid]
+                if any(abs(a-b)>1e-9 for a,b in ((actual.min_x,raw.x),(actual.min_y,raw.y),(actual.min_z,raw.z),
+                        (actual.orientation.dx,raw.dx),(actual.orientation.dy,raw.dy),(actual.orientation.dz,raw.dz))):
+                    raise ValueError("LOCKED_DOOR_WALL_GEOMETRY_CHANGED")
+                final_door_placements.append(DoorWallPlacement(pid,actual.sku_id,actual.min_x,actual.min_y,actual.min_z,
+                    actual.orientation.dx,actual.orientation.dy,actual.orientation.dz,raw.orientation,raw.layer,raw.column,actual.weight_kg,raw.concrete_orientation))
+            final_door_wall=replace(prepared.door_wall,placements=tuple(final_door_placements))
+            transport_validation=TransportForceDirectionModel().evaluate(
+                final_door_wall,container,
+                tuple(p for p in placements if not p.placement_id.startswith("door_pre_")),
+                require_actual_back_anchor=self.enable_wall_optimization,
+            )
+            self.last_transport_validation=transport_validation
+            if not transport_validation.valid:
+                raise ValueError("DOOR_TRANSPORT_HARD_INVALID:"+",".join(transport_validation.rejection_reasons))
+        else:
+            self.last_transport_validation=None
         if direction_plan:
             actual=self.direction_engine.validate_actual(direction_plan,placements,prepared.original_cargo)
             if rebuild_result:
@@ -368,9 +403,10 @@ class DoorIntegratedSolver:
         plan = self.adapter.engine.plan(container, prepared.original_cargo)
         if plan.safety_score:
             score = plan.safety_score.score
+        has_door_wall = prepared.door_wall is not None
         diagnostics = DoorIntegrationDiagnostics(
-            True, len(prepared.door_context.anchor_placements), True,
-            all(value in {"SHORT_EDGE_FORWARD","LONG_EDGE_FORWARD"} for value in prepared.door_context.forced_orientation.values()),
+            has_door_wall, len(prepared.door_context.anchor_placements) if prepared.door_context else 0, has_door_wall,
+            all(value in {"SHORT_EDGE_FORWARD","LONG_EDGE_FORWARD"} for value in prepared.door_context.forced_orientation.values()) if prepared.door_context else True,
             len(commit.locked_ids), len(commit.support_links),
             max((p.max_x for p in structural_main), default=0.0),
             ("CREATE_CONTAINER", "INJECT_DOOR_WALL", "PLAN_CARGO_WALLS", "RESERVE_WALL_REGIONS", "RUN_FROZEN_SOLVER", "FULL_GLOBAL_VALIDATION"),
@@ -400,32 +436,37 @@ class DoorIntegratedSolver:
             wall_repack_result.gap_before_m if wall_repack_result else 0.0,
             wall_repack_result.display_continuity if wall_repack_result else 0.0,
             True,
-            prepared.door_wall.door_plane_clearance,
-            prepared.door_wall.coverage,
-            transport_validation.valid,
+            prepared.door_wall.door_plane_clearance if has_door_wall else 0.0,
+            prepared.door_wall.coverage if has_door_wall else 0.0,
+            transport_validation.valid if transport_validation else True,
             len(residual_prepared.result.placements) if residual_prepared else 0,
             residual_prepared.result.added_volume if residual_prepared else 0.0,
         )
+        from src.constraints.transport import BrakingStabilityValidator
+        braking_report = BrakingStabilityValidator().validate(container, tuple(placements))
+        self.last_braking_report = braking_report
         self.last_diagnostics = diagnostics
         main_solution.telemetry.runtime_ms += (time.perf_counter() - started) * 1000.0
         main_solution.telemetry.door_readiness = {
             **(main_solution.telemetry.door_readiness or {}),
-            "door_wall_committed": True, "door_wall_score": score,
-            "door_zone_reserved": True, "door_orientation_valid": True,
-            "door_wall_locked": True, "door_wall_count": diagnostics.door_wall_count,
-            "reserved_range": [prepared.door_context.blocked_area.x1, prepared.door_context.blocked_area.x2],
-            "support_type": "DOOR_WALL_SUPPORT", "integration": diagnostics.to_dict(),
-            "door_plane_clearance_m":prepared.door_wall.door_plane_clearance,
-            "door_area_coverage":prepared.door_wall.coverage,
-            "door_width_coverage":prepared.door_wall.width_coverage,
-            "door_height_coverage":prepared.door_wall.height_coverage,
-            "transport_force_validation":transport_validation.to_dict(),
+            "door_wall_committed": has_door_wall, "door_wall_score": score,
+            "door_zone_reserved": has_door_wall, "door_orientation_valid": has_door_wall,
+            "door_wall_locked": has_door_wall, "door_wall_count": diagnostics.door_wall_count,
+            "reserved_range": [prepared.door_context.blocked_area.x1, prepared.door_context.blocked_area.x2] if prepared.door_context else [container.Lx, container.Lx],
+            "support_type": "DOOR_WALL_SUPPORT" if has_door_wall else "NONE", "integration": diagnostics.to_dict(),
+            "door_plane_clearance_m": prepared.door_wall.door_plane_clearance if has_door_wall else 0.0,
+            "door_area_coverage": prepared.door_wall.coverage if has_door_wall else 0.0,
+            "door_width_coverage": prepared.door_wall.width_coverage if has_door_wall else 0.0,
+            "door_height_coverage": prepared.door_wall.height_coverage if has_door_wall else 0.0,
+            "transport_force_validation": transport_validation.to_dict() if transport_validation else {},
+            "braking_stability": braking_report.to_dict(),
         }
         main_solution.telemetry.wall_plan_search_metrics = {
             **(main_solution.telemetry.wall_plan_search_metrics or {}),
             "cargo_wall_engine": "BLK007F1", "cargo_wall_count": diagnostics.cargo_wall_count,
             "cargo_wall_placements": diagnostics.cargo_wall_placements,
             "cargo_wall_end_x": diagnostics.cargo_wall_end_x,
+            "braking_stability": braking_report.to_dict(),
             "available_top_regions": list(wall_prepared.plan.build.available_top_regions) if wall_prepared else [],
             "wall_plan": wall_prepared.plan.to_dict() if wall_prepared else None,
             "wall_optimization": optimization_prepared.result.to_dict() if optimization_prepared else None,

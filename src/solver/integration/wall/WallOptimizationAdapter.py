@@ -26,11 +26,12 @@ class WallOptimizationAdapter:
     def _optimize(self,wall_prepared,door_prepared):
         result=self.engine.optimize(wall_prepared.plan,wall_prepared.solver_cargo,wall_prepared.original_container,door_prepared.door_wall)
         self.last_result=result
-        door_anchor_x=min((p.x for p in door_prepared.door_wall.placements),default=wall_prepared.original_container.Lx)
+        has_door = door_prepared.door_wall and getattr(door_prepared.door_wall, 'placements', None)
+        door_anchor_x=min((p.x for p in door_prepared.door_wall.placements),default=wall_prepared.original_container.Lx) if has_door else wall_prepared.original_container.Lx
         transition_placements=tuple(p for wall in result.transition_walls for p in wall.placements)
         anchor_validation=(TransportForceDirectionModel().evaluate(
             door_prepared.door_wall,wall_prepared.original_container,
-            transition_placements,require_actual_back_anchor=True) if transition_placements else None)
+            transition_placements,require_actual_back_anchor=True) if (has_door and transition_placements) else None)
         back_axis=next((axis for axis in anchor_validation.axes if axis.vector=="-X"),None) if anchor_validation else None
         door_back_anchor_ready=bool(back_axis and back_axis.valid)
         reasons=[]

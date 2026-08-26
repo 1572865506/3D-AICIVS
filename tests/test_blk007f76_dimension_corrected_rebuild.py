@@ -30,7 +30,7 @@ class TestBLK007F76DimensionCorrectedRebuild(unittest.TestCase):
         self.assertTrue(display["valid"]);self.assertEqual(display["continuity"],100);self.assertEqual(display["same_orientation"],100)
 
     def test_coordinates_are_fresh_and_not_reused_from_f75(self):
-        old=json.loads(Path("BLK007F75_FINAL_LAYOUT.json").read_text())["loading_result"]["cargo"]
+        old=json.loads(Path("BLK007F75_FINAL_LAYOUT.json").read_text(encoding="utf-8"))["loading_result"]["cargo"]
         old={row["id"]:(row["position"]["x"],row["position"]["y"],row["position"]["z"]) for row in old}
         common=[p for p in self.solution.placements if p.placement_id in old]
         changed=sum(old[p.placement_id]!=(p.position.x,p.position.y,p.position.z) for p in common)

@@ -976,6 +976,28 @@
       outline: 2px solid var(--primary);
       transform: scale(1.08);
     }
+    .color-picker-input {
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      border: 2px solid white;
+      border-radius: 7px;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+      transition: all 0.15s ease;
+      background: none;
+      -webkit-appearance: none;
+    }
+    .color-picker-input::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    .color-picker-input::-webkit-color-swatch {
+      border: none;
+      border-radius: 5px;
+    }
+    .color-picker-input:hover {
+      transform: scale(1.1);
+    }
 
     /* Upload Drop Zone */
     .upload-zone {
@@ -1026,47 +1048,102 @@
     .manifest-toolbar-card {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      background: #ffffff;
+      gap: 7px;
+      background: rgba(255, 255, 255, 0.95);
       border: 1px solid var(--slate-200);
-      padding: 8px 10px;
-      border-radius: 9px;
+      padding: 9px 10px;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
     }
 
     .manifest-tools-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
       font-size: 10.5px;
     }
 
+    .manifest-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
     .tool-action-btn {
-      background: var(--slate-100);
+      background: #ffffff;
       border: 1px solid var(--slate-200);
-      border-radius: 6px;
-      padding: 3px 8px;
+      border-radius: 7px;
+      padding: 3.5px 8px;
       font-size: 10px;
       font-weight: 700;
       color: var(--slate-700);
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
       display: inline-flex;
       align-items: center;
       gap: 4px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
     }
     .tool-action-btn:hover {
       background: var(--primary-light);
-      border-color: var(--primary);
+      border-color: #93c5fd;
       color: var(--primary);
+      transform: translateY(-0.5px);
+    }
+    .tool-action-btn.primary {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      color: #1d4ed8;
+      border-color: #bfdbfe;
+      font-weight: 800;
+      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.12);
+    }
+    .tool-action-btn.primary:hover {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      border-color: #93c5fd;
+      color: #1e40af;
+    }
+    .tool-action-btn.danger-subtle {
+      color: #dc2626;
+      border-color: #fecaca;
+      background: #ffffff;
+    }
+    .tool-action-btn.danger-subtle:hover {
+      background: #fef2f2;
+      border-color: #fca5a5;
+      color: #b91c1c;
+    }
+    .tool-action-btn.danger-solid {
+      color: #991b1b;
+      border-color: #fecaca;
+      background: #fff7f7;
+    }
+    .tool-action-btn.danger-solid:hover {
+      background: #fee2e2;
+      border-color: #f87171;
+    }
+
+    .manifest-count-badge {
+      font-size: 9.5px;
+      color: var(--slate-500);
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 2px 6px;
+      background: var(--slate-100);
+      border-radius: 5px;
+      border: 1px solid var(--slate-200);
     }
 
     /* Segmented Pill Group for Display Mode */
     .seg-pill-group {
       display: flex;
       background: var(--slate-100);
-      padding: 2.5px;
+      padding: 2px;
       border-radius: 7px;
       gap: 2px;
+      border: 1px solid var(--slate-200);
     }
     .seg-pill {
       border: none;
@@ -1092,55 +1169,92 @@
     .sku-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      max-height: 250px;
+      gap: 7px;
+      max-height: 280px;
       overflow-y: auto;
       padding-right: 2px;
     }
     .sku-list::-webkit-scrollbar { width: 4px; }
     .sku-list::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 2px; }
 
+    /* SKU Empty State Card */
+    .sku-empty-card {
+      padding: 22px 16px;
+      background: #ffffff;
+      border: 1.5px dashed var(--slate-300);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-align: center;
+    }
+    .sku-empty-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--slate-100);
+      color: var(--slate-400);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sku-empty-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--slate-700);
+    }
+    .sku-empty-desc {
+      font-size: 10px;
+      color: var(--slate-400);
+      max-width: 220px;
+      line-height: 1.4;
+    }
+
+    /* Upgraded Three-Tier Structured SKU Item */
     .sku-item {
       background: #ffffff;
       border: 1.5px solid var(--slate-200);
-      border-radius: 9px;
-      padding: 8px 10px;
+      border-radius: 10px;
+      padding: 9px 11px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
       cursor: pointer;
-      transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
     }
     .sku-item:hover {
-      border-color: var(--primary);
+      border-color: #93c5fd;
       background: #fafcff;
-      transform: translateX(2px);
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.09);
     }
     .sku-item.selected {
       border-color: var(--primary);
-      background: var(--primary-light);
-      box-shadow: 0 2px 10px var(--primary-glow);
+      background: linear-gradient(180deg, #f0f7ff 0%, #e6f0fd 100%);
+      box-shadow: 0 0 0 1px var(--primary), 0 4px 14px var(--primary-glow);
     }
     .sku-item.highlighted {
       border-color: #f59e0b;
       box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35);
     }
 
-    .sku-item-top {
+    /* Row 1: Header (Checkbox + Color + SKU Code + Name + Action Buttons) */
+    .sku-item-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--slate-900);
+      gap: 8px;
     }
-    .sku-left-col {
+    .sku-head-left {
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
       overflow: hidden;
+      flex: 1;
     }
     
     .sku-checkbox-custom {
@@ -1168,26 +1282,78 @@
       display: block;
     }
 
-    .sku-name-txt {
+    .sku-color-ring {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 0 0 1.5px rgba(0,0,0,0.12);
+      flex-shrink: 0;
+    }
+    .sku-code-chip {
+      font-size: 9.5px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: #1e40af;
+      background: #eff6ff;
+      border: 1px solid #dbeafe;
+      padding: 1px 4px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .sku-title-txt {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 190px;
-      font-size: 11px;
+      font-size: 11.5px;
+      font-weight: 700;
       color: var(--slate-900);
+      letter-spacing: -0.01em;
     }
-    .sku-meta {
-      font-size: 10px;
-      color: var(--slate-500);
-      font-family: 'JetBrains Mono', monospace;
+
+    .sku-actions-group {
       display: flex;
-      justify-content: space-between;
-      padding-left: 22px;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .btn-sku-action {
+      background: transparent;
+      border: 1px solid var(--slate-200);
+      border-radius: 5px;
+      padding: 3px 5px;
+      color: var(--slate-500);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .btn-sku-action:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: scale(1.06);
+    }
+    .btn-sku-action.delete:hover {
+      background: #fef2f2;
+      border-color: #fca5a5;
+      color: #ef4444;
+    }
+
+    /* Row 2: Badges (Zone + Orientation + Stacking Limits) */
+    .sku-item-tags {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding-left: 21px;
     }
     .req-tag {
       font-size: 9px;
       font-weight: 700;
-      padding: 2px 5px;
+      padding: 1.5px 5px;
       border-radius: 4px;
       white-space: nowrap;
     }
@@ -1195,53 +1361,48 @@
     .req-mid  { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
     .req-door { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
 
-    .btn-sku-edit-icon {
-      background: transparent;
-      border: 1px solid var(--slate-200);
-      border-radius: 5px;
-      padding: 2px 5px;
-      color: var(--slate-500);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s ease;
-      margin-left: 4px;
-    }
-    .btn-sku-edit-icon:hover {
-      background: var(--primary-light);
-      border-color: var(--primary);
-      color: var(--primary);
-      transform: scale(1.08);
-    }
-    .btn-sku-del-icon {
-      background: transparent;
-      border: 1px solid var(--slate-200);
-      border-radius: 5px;
-      padding: 2px 5px;
-      color: var(--slate-400);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s ease;
-      margin-left: 2px;
-    }
-    .btn-sku-del-icon:hover {
-      background: #fef2f2;
-      border-color: #fca5a5;
-      color: #ef4444;
-      transform: scale(1.08);
-    }
     .sku-param-badge {
-      font-size: 8.5px;
+      font-size: 9px;
       font-weight: 700;
-      padding: 1px 4px;
-      border-radius: 3px;
+      padding: 1.5px 5px;
+      border-radius: 4px;
       background: #f8fafc;
       color: #64748b;
       border: 1px solid #e2e8f0;
       white-space: nowrap;
+    }
+    .sku-param-badge.blue {
+      color: #2563eb;
+      background: #eff6ff;
+      border-color: #dbeafe;
+    }
+    .sku-param-badge.cyan {
+      color: #0891b2;
+      background: #ecfeff;
+      border-color: #cffafe;
+    }
+
+    /* Row 3: Metrics & Load Status Footer */
+    .sku-item-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-left: 21px;
+      font-size: 10px;
+      border-top: 1px solid rgba(226, 232, 240, 0.6);
+      padding-top: 4px;
+      margin-top: 1px;
+    }
+    .sku-dim-weight {
+      color: var(--slate-500);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+    }
+    .sku-progress-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: 'JetBrains Mono', monospace;
     }
 
     /* Global Notification & Toast Components (Docked Above Anchor Area) */
@@ -1454,24 +1615,40 @@
       color: var(--primary);
       font-weight: 700;
     }
-    .range-input {
+    /* Enhanced Industrial Slider / Range Controls */
+    .range-input, .slice-range-input {
       -webkit-appearance: none;
       width: 100%;
-      height: 4px;
-      border-radius: 2px;
-      background: var(--slate-300);
+      height: 5px;
+      border-radius: 999px;
+      background: linear-gradient(to right, #cbd5e1, #e2e8f0);
       outline: none;
       cursor: pointer;
+      transition: all 0.15s ease;
     }
-    .range-input::-webkit-slider-thumb {
+    .range-input:hover, .slice-range-input:hover {
+      background: linear-gradient(to right, #94a3b8, #cbd5e1);
+    }
+    .range-input::-webkit-slider-thumb, .slice-range-input::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 13px;
-      height: 13px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
-      background: var(--primary);
-      border: 2px solid white;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
-      cursor: pointer;
+      background: #ffffff;
+      border: 2.5px solid var(--primary);
+      box-shadow: 0 2px 5px rgba(37, 99, 235, 0.35);
+      cursor: grab;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+    .range-input::-webkit-slider-thumb:hover, .slice-range-input::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+      box-shadow: 0 3px 8px rgba(37, 99, 235, 0.45);
+      border-color: var(--primary-hover);
+    }
+    .range-input::-webkit-slider-thumb:active, .slice-range-input::-webkit-slider-thumb:active {
+      cursor: grabbing;
+      transform: scale(1.22);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
     }
 
     /* Luxury Upload & Preview Modal */
@@ -1481,8 +1658,9 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(15, 23, 42, 0.45);
-      backdrop-filter: blur(14px);
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       display: none;
       align-items: center;
       justify-content: center;
@@ -1494,7 +1672,8 @@
       max-height: 85vh;
       background: #ffffff;
       border-radius: 16px;
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.35);
+      border: 1px solid rgba(226, 232, 240, 0.9);
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -1505,8 +1684,9 @@
       to { opacity: 1; transform: scale(1) translateY(0); }
     }
     .modal-header {
-      padding: 14px 18px;
+      padding: 14px 20px;
       border-bottom: 1px solid var(--slate-200);
+      background: #fafcff;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -1520,7 +1700,7 @@
       gap: 8px;
     }
     .modal-body {
-      padding: 14px 18px;
+      padding: 16px 20px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -1530,12 +1710,15 @@
     .preview-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 10.5px;
+      font-size: 11px;
       margin-top: 4px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--slate-200);
     }
     .preview-table th {
-      background: var(--slate-100);
-      padding: 7px 10px;
+      background: #f8fafc;
+      padding: 8px 10px;
       text-align: left;
       color: var(--slate-700);
       font-weight: 700;
@@ -1543,14 +1726,17 @@
       white-space: nowrap;
     }
     .preview-table td {
-      padding: 7px 10px;
+      padding: 8px 10px;
       border-bottom: 1px solid var(--slate-100);
       color: var(--slate-800);
       font-family: 'JetBrains Mono', monospace;
     }
+    .preview-table tr:hover td {
+      background: #fafcff;
+    }
     .modal-footer {
-      padding: 12px 18px;
-      background: var(--slate-50);
+      padding: 12px 20px;
+      background: #fafcff;
       border-top: 1px solid var(--slate-200);
       display: flex;
       justify-content: flex-end;
@@ -1558,60 +1744,114 @@
     }
 
     /* Modern Industrial Form Components */
+    .form-card-section {
+      background: #f8fafc;
+      border: 1px solid var(--slate-200);
+      border-radius: 10px;
+      padding: 11px 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .form-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .form-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .form-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 3.5px;
+    }
+    .form-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--slate-700);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .form-hint {
+      font-size: 9.5px;
+      color: var(--slate-400);
+      line-height: 1.3;
+    }
+
     .custom-select, select.styled-select {
       appearance: none;
       -webkit-appearance: none;
       -moz-appearance: none;
       width: 100%;
-      padding: 8px 32px 8px 12px;
+      padding: 7px 28px 7px 10px;
       border: 1.5px solid #cbd5e1;
-      border-radius: 9px;
-      font-size: 12px;
+      border-radius: 8px;
+      font-size: 11.5px;
       font-weight: 600;
       color: #1e293b;
       background-color: #ffffff;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
       background-repeat: no-repeat;
-      background-position: right 10px center;
-      background-size: 14px 14px;
+      background-position: right 9px center;
+      background-size: 12px 12px;
       outline: none;
       cursor: pointer;
-      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
       box-shadow: 0 1px 2px rgba(0,0,0,0.03);
     }
     .custom-select:hover, select.styled-select:hover {
       border-color: #94a3b8;
-      background-color: #f8fafc;
+      background-color: #fafcff;
     }
     .custom-select:focus, select.styled-select:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3.5px rgba(37, 99, 235, 0.15);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
       background-color: #ffffff;
     }
 
     .custom-input, input.styled-input {
       width: 100%;
-      padding: 7px 11px;
+      padding: 6.5px 10px;
       border: 1.5px solid #cbd5e1;
-      border-radius: 9px;
-      font-size: 12px;
+      border-radius: 8px;
+      font-size: 11.5px;
       font-weight: 600;
       color: #0f172a;
       background: #ffffff;
       outline: none;
       box-sizing: border-box;
-      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
       box-shadow: 0 1px 2px rgba(0,0,0,0.03);
     }
     .custom-input:hover, input.styled-input:hover {
       border-color: #94a3b8;
-      background: #f8fafc;
+      background: #fafcff;
     }
     .custom-input:focus, input.styled-input:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3.5px rgba(37, 99, 235, 0.15);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
       background: #ffffff;
     }
+    
+    /* Input with embedded unit suffix */
+    .input-unit-group {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .input-unit-group .custom-input {
+      padding-right: 28px;
+    }
+    .input-unit-tag {
+      position: absolute;
+      right: 8px;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--slate-400);
+      pointer-events: none;
+      user-select: none;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
       -webkit-appearance: none;
@@ -1972,8 +2212,8 @@
           <!-- Luxury Manifest Toolbar -->
           <div class="manifest-toolbar-card">
             <div class="manifest-tools-row">
-              <div style="display:flex; gap:5px;">
-                <button class="tool-action-btn primary" onclick="openAddSKUModal()" style="background:#eff6ff; color:#2563eb; border-color:#bfdbfe; font-weight:800;">
+              <div class="manifest-btn-group">
+                <button class="tool-action-btn primary" onclick="openAddSKUModal()">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                   <span>新增 SKU</span>
                 </button>
@@ -1984,19 +2224,19 @@
                 <button class="tool-action-btn" onclick="invertManifestSelection()">
                   <span>反选</span>
                 </button>
-                <button class="tool-action-btn" id="btn-delete-selected-skus" onclick="deleteSelectedSKUs()" style="color:#dc2626; border-color:#fecaca;">
+                <button class="tool-action-btn danger-subtle" id="btn-delete-selected-skus" onclick="deleteSelectedSKUs()">
                   <span>删除选中</span>
                 </button>
-                <button class="tool-action-btn" onclick="clearManifest()" style="color:#991b1b; border-color:#fecaca; background:#fff7f7;">
+                <button class="tool-action-btn danger-solid" onclick="clearManifest()">
                   <span>清空货单</span>
                 </button>
                 <button class="tool-action-btn" onclick="selectAllSKUs(false)">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                   <span>取消选择</span>
                 </button>
-                <span id="manifest-selection-count" style="font-size:10px; color:#64748b; font-weight:700; align-self:center;">已选 0 / 0</span>
+                <span class="manifest-count-badge" id="manifest-selection-count">已选 0 / 0</span>
               </div>
-              <div style="display:flex; align-items:center; gap:5px;">
+              <div style="display:flex; align-items:center; gap:5px; margin-left:auto;">
                 <span style="font-size:10px; color:var(--slate-500); font-weight:700;">未选模式:</span>
                 <div class="seg-pill-group">
                   <button class="seg-pill active" id="mode-pill-ghost" onclick="updateUnselectedDisplayMode('ghost')">👻 幽灵</button>
@@ -2046,7 +2286,7 @@
               <button class="color-swatch-btn" style="background:#065f46;" title="中远海运绿 (Cosco Green)" onclick="setFrameColorPreset('#065f46', '海运绿')"></button>
               <button class="color-swatch-btn" style="background:#991b1b;" title="阳明航运红 (Yang Ming Red)" onclick="setFrameColorPreset('#991b1b', '海运红')"></button>
               <button class="color-swatch-btn" style="background:#d97706;" title="特种工程橙 (Warning Orange)" onclick="setFrameColorPreset('#d97706', '工程橙')"></button>
-              <input type="color" value="#2f383d" style="width:26px; height:26px; padding:0; border:none; border-radius:6px; cursor:pointer;" onchange="setFrameColorPreset(this.value, '自定义')">
+              <input type="color" value="#2f383d" class="color-picker-input" title="自定义涂装色" onchange="setFrameColorPreset(this.value, '自定义')">
             </div>
           </div>
           <div class="param-row">
@@ -2254,35 +2494,35 @@
 
   <!-- 6. SKU SETTINGS & PARAMETERS CONFIGURATION MODAL (ULTRA-CLEAN UI) -->
   <div class="modal-overlay" id="sku-settings-modal" style="display:none;">
-    <div class="modal-card" style="max-width: 560px; border-radius: 16px; box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.35); border: 1px solid rgba(226, 232, 240, 0.8);">
-      <div class="modal-header" style="padding: 16px 22px; border-bottom: 1px solid #f1f5f9; background: #fafcff;">
-        <div class="modal-title" style="font-size: 14px; font-weight: 800; display:flex; align-items:center; gap:8px;">
+    <div class="modal-card" style="max-width: 580px;">
+      <div class="modal-header">
+        <div class="modal-title">
           <div style="width:28px; height:28px; border-radius:8px; background:#eff6ff; display:flex; align-items:center; justify-content:center;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.4"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           </div>
-          <span style="color:#0f172a;">SKU 装载规则与空间参数配置</span>
+          <span>SKU 装载规则与空间参数配置</span>
         </div>
-        <button class="close-btn" onclick="closeSKUSettingsModal()" style="font-size:16px; color:#94a3b8; background:none; border:none; cursor:pointer;">✕</button>
+        <button class="close-btn" onclick="closeSKUSettingsModal()">✕</button>
       </div>
 
-      <div class="modal-body" style="padding: 18px 22px; max-height: 520px; overflow-y:auto;">
+      <div class="modal-body">
         <input type="hidden" id="sku-edit-id">
         
         <!-- SKU Info Card -->
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px; padding:10px 14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px;">
+        <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px;">
           <span id="sku-modal-dot" style="width:14px; height:14px; border-radius:50%; background:#3b82f6; flex-shrink:0; box-shadow:0 0 0 3px rgba(59,130,246,0.18);"></span>
           <div style="flex:1;">
-            <div id="sku-modal-name" style="font-weight:800; color:#0f172a; font-size:13.5px; line-height:1.3;">-</div>
-            <div id="sku-modal-code" style="font-size:11px; color:#64748b; font-family:'JetBrains Mono',monospace; font-weight:600;">SKU-00</div>
+            <div id="sku-modal-name" style="font-weight:800; color:#0f172a; font-size:13px; line-height:1.3;">-</div>
+            <div id="sku-modal-code" style="font-size:10.5px; color:#64748b; font-family:'JetBrains Mono',monospace; font-weight:700;">SKU-00</div>
           </div>
         </div>
 
         <!-- 1. Position Requirement Segmented Group -->
-        <div style="margin-bottom:16px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <label style="font-size:12px; font-weight:700; color:#1e293b;">1. 货柜纵向位置区间 (Position Zone)</label>
-            <span style="font-size:10px; color:#64748b;">影响进深前后装载区位</span>
-          </div>
+        <div class="form-field">
+          <label class="form-label">
+            <span>1. 货柜纵向位置区间 (Position Zone)</span>
+            <span class="form-hint">影响进深前后装载区位</span>
+          </label>
           <select id="sku-edit-req" class="custom-select">
             <option value="放柜子最里面">📍 放柜子最里面 (Deep Inside / Rear - 优先置于箱体深处)</option>
             <option value="放中间">🏢 放中间 (Middle Section - 紧密排布于货柜中段)</option>
@@ -2291,11 +2531,11 @@
         </div>
 
         <!-- 2. Allowed Orientation -->
-        <div style="margin-bottom:16px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <label style="font-size:12px; font-weight:700; color:#1e293b;">2. 货物翻转与朝向权限 (Orientation Permission)</label>
-            <span style="font-size:10px; color:#64748b;">保护封箱胶带与直立标</span>
-          </div>
+        <div class="form-field">
+          <label class="form-label">
+            <span>2. 货物翻转与朝向权限 (Orientation Permission)</span>
+            <span class="form-hint">保护封箱胶带与直立标</span>
+          </label>
           <select id="sku-edit-ori" class="custom-select">
             <option value="upright">⬆️ 仅允许立放 (Upright Only - 正立偏航90°旋转，封箱胶带向上)</option>
             <option value="allow_flat">📦 允许平放 (Allow Flat - 允许大面积朝下平铺，降低重心)</option>
@@ -2305,37 +2545,40 @@
         </div>
 
         <!-- 3. Max Stacking Layers & Max Weight & Max Pressure -->
-        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-bottom:16px;">
-          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
-            <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">
-              3. 最大堆叠层数 (Max Layers)
-            </label>
-            <input type="number" id="sku-edit-max-layers" class="custom-input" min="0" max="25" step="1" placeholder="0为不限" style="font-family:'JetBrains Mono';">
-            <span style="font-size:9.5px; color:#94a3b8; display:block; margin-top:3px;">填 0 或留空按柜顶算满</span>
+        <div class="form-grid-3">
+          <div class="form-card-section">
+            <label class="form-label">最大堆叠层数</label>
+            <div class="input-unit-group">
+              <input type="number" id="sku-edit-max-layers" class="custom-input" min="0" max="25" step="1" placeholder="0为不限" style="font-family:'JetBrains Mono';">
+              <span class="input-unit-tag">层</span>
+            </div>
+            <span class="form-hint">填 0 或留空按柜顶算满</span>
           </div>
 
-          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
-            <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">
-              4. 承重抗压极限 (Max kg)
-            </label>
-            <input type="number" id="sku-edit-max-bearing" class="custom-input" min="10" max="1000" step="5" placeholder="默认 180kg" style="font-family:'JetBrains Mono';">
-            <span style="font-size:9.5px; color:#94a3b8; display:block; margin-top:3px;">上方累计最大承载重量</span>
+          <div class="form-card-section">
+            <label class="form-label">承重抗压极限</label>
+            <div class="input-unit-group">
+              <input type="number" id="sku-edit-max-bearing" class="custom-input" min="10" max="1000" step="5" placeholder="默认 180" style="font-family:'JetBrains Mono';">
+              <span class="input-unit-tag">kg</span>
+            </div>
+            <span class="form-hint">上方累计最大承载重量</span>
           </div>
 
-          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
-            <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">
-              承压强度上限 (Max kg/m²)
-            </label>
-            <input type="number" id="sku-edit-max-pressure" class="custom-input" min="0" max="10000" step="10" placeholder="0为不限" style="font-family:'JetBrains Mono';">
-            <span style="font-size:9.5px; color:#94a3b8; display:block; margin-top:3px;">单位面积允许压强，填 0 留空不限</span>
+          <div class="form-card-section">
+            <label class="form-label">承压强度上限</label>
+            <div class="input-unit-group">
+              <input type="number" id="sku-edit-max-pressure" class="custom-input" min="0" max="10000" step="10" placeholder="0为不限" style="font-family:'JetBrains Mono';">
+              <span class="input-unit-tag">kg/m²</span>
+            </div>
+            <span class="form-hint">单位面积允许压强</span>
           </div>
         </div>
 
         <!-- 4. Capacity Trimming Strategy -->
-        <div style="margin-bottom:16px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <label style="font-size:12px; font-weight:700; color:#1e293b;">5. 模块五超容弹性核减策略 (Capacity Rule)</label>
-          </div>
+        <div class="form-field">
+          <label class="form-label">
+            <span>3. 模块五超容弹性核减策略 (Capacity Rule)</span>
+          </label>
           <select id="sku-edit-elastic" class="custom-select">
             <option value="false">🔒 刚性必装件 (Mandatory - 100% 满额履约装完)</option>
             <option value="true">⚡ 弹性缓冲件 (Elastic - 装不下时自动填满柜容并核减)</option>
@@ -2343,56 +2586,69 @@
         </div>
 
         <!-- 5. Dimensions & Quantity Micro-adjust -->
-        <div style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
-          <span style="font-size:11px; font-weight:700; color:#475569; display:block; margin-bottom:6px;">单箱物理尺寸与计划发货数微调</span>
-          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:8px;">
-            <div>
-              <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">长 (m)</label>
-              <input type="number" id="sku-edit-w" class="custom-input" step="0.001" style="font-family:'JetBrains Mono';">
+        <div class="form-card-section" style="background:#f1f5f9;">
+          <span style="font-size:11px; font-weight:700; color:var(--slate-700);">单箱物理尺寸与计划发货数微调</span>
+          <div class="form-grid-4">
+            <div class="form-field">
+              <label class="form-label" style="font-size:10px;">长</label>
+              <div class="input-unit-group">
+                <input type="number" id="sku-edit-w" class="custom-input" step="0.001" style="font-family:'JetBrains Mono';">
+                <span class="input-unit-tag">m</span>
+              </div>
             </div>
-            <div>
-              <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">宽 (m)</label>
-              <input type="number" id="sku-edit-d" class="custom-input" step="0.001" style="font-family:'JetBrains Mono';">
+            <div class="form-field">
+              <label class="form-label" style="font-size:10px;">宽</label>
+              <div class="input-unit-group">
+                <input type="number" id="sku-edit-d" class="custom-input" step="0.001" style="font-family:'JetBrains Mono';">
+                <span class="input-unit-tag">m</span>
+              </div>
             </div>
-            <div>
-              <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">高 (m)</label>
-              <input type="number" id="sku-edit-h" class="custom-input" step="0.001" style="font-family:'JetBrains Mono';">
+            <div class="form-field">
+              <label class="form-label" style="font-size:10px;">高</label>
+              <div class="input-unit-group">
+                <input type="number" id="sku-edit-h" class="custom-input" step="0.001" style="font-family:'JetBrains Mono';">
+                <span class="input-unit-tag">m</span>
+              </div>
             </div>
-            <div>
-              <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">计划数(箱)</label>
-              <input type="number" id="sku-edit-qty" class="custom-input" min="1" step="1" style="font-family:'JetBrains Mono';">
+            <div class="form-field">
+              <label class="form-label" style="font-size:10px;">计划数</label>
+              <div class="input-unit-group">
+                <input type="number" id="sku-edit-qty" class="custom-input" min="1" step="1" style="font-family:'JetBrains Mono';">
+                <span class="input-unit-tag">箱</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div style="margin-top:14px; background:#f8fafc; border:1px solid #dbeafe; border-radius:10px; padding:12px;">
-          <span style="font-size:11px; font-weight:800; color:#1d4ed8; display:block; margin-bottom:8px;">结构化 CargoProfile（保存后标记 USER_DEFINED）</span>
-          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
-            <div><label style="font-size:10px;color:#64748b;">装载优先级</label><input type="number" id="sku-edit-load-priority" class="custom-input" value="0" step="1"></div>
-            <div><label style="font-size:10px;color:#64748b;">最低必装数量</label><input type="number" id="sku-edit-min-qty" class="custom-input" value="0" min="0" step="1"></div>
-            <div><label style="font-size:10px;color:#64748b;">货物上方可继续堆货</label><select id="sku-edit-allow-above" class="custom-select"><option value="true">允许</option><option value="false">禁止</option></select></div>
-            <div><label style="font-size:10px;color:#64748b;">必须放在底层</label><select id="sku-edit-floor-only" class="custom-select"><option value="false">否</option><option value="true">是</option></select></div>
-            <div><label style="font-size:10px;color:#64748b;">最小支撑比例</label><input type="number" id="sku-edit-min-support" class="custom-input" value="0.70" min="0" max="1" step="0.05"></div>
-            <div><label style="font-size:10px;color:#64748b;">最大悬空跨度(m)</label><input type="number" id="sku-edit-max-span" class="custom-input" value="0.10" min="0" step="0.01"></div>
-            <div><label style="font-size:10px;color:#64748b;">Top Fill准入</label><select id="sku-edit-topfill-state" class="custom-select"><option value="AUTO">AUTO安全证明</option><option value="ALLOW">明确允许</option><option value="DENY">明确禁止</option></select></div>
-            <div><label style="font-size:10px;color:#64748b;">Top Fill最大层数</label><input type="number" id="sku-edit-topfill-layers" class="custom-input" value="0" min="0" step="1"></div>
-            <div><label style="font-size:10px;color:#64748b;">Top Fill最低基面(m)</label><input type="number" id="sku-edit-topfill-base" class="custom-input" value="0" min="0" step="0.1"></div>
-            <div><label style="font-size:10px;color:#64748b;">保持直立</label><select id="sku-edit-keep-upright" class="custom-select"><option value="true">是</option><option value="false">否</option></select></div>
-            <div><label style="font-size:10px;color:#64748b;">易碎货物</label><select id="sku-edit-fragile" class="custom-select"><option value="false">否</option><option value="true">是</option></select></div>
-            <div><label style="font-size:10px;color:#64748b;">防倾倒要求</label><select id="sku-edit-anti-tip" class="custom-select"><option value="true">启用</option><option value="false">不额外要求</option></select></div>
+        <!-- 6. Structured Cargo Profile -->
+        <div class="form-card-section" style="background:#f8fafc; border-color:#dbeafe;">
+          <span style="font-size:11px; font-weight:800; color:#1d4ed8;">结构化 CargoProfile（保存后标记 USER_DEFINED）</span>
+          <div class="form-grid-3">
+            <div class="form-field"><label class="form-label" style="font-size:10px;">装载优先级</label><input type="number" id="sku-edit-load-priority" class="custom-input" value="0" step="1"></div>
+            <div class="form-field"><label class="form-label" style="font-size:10px;">最低必装数量</label><input type="number" id="sku-edit-min-qty" class="custom-input" value="0" min="0" step="1"></div>
+            <div class="form-field"><label class="form-label" style="font-size:10px;">上方可继续堆货</label><select id="sku-edit-allow-above" class="custom-select"><option value="true">允许</option><option value="false">禁止</option></select></div>
+            <div class="form-field"><label class="form-label" style="font-size:10px;">必须放在底层</label><select id="sku-edit-floor-only" class="custom-select"><option value="false">否</option><option value="true">是</option></select></div>
+            <div class="form-field"><label class="form-label" style="font-size:10px;">最小支撑比例</label><input type="number" id="sku-edit-min-support" class="custom-input" value="0.70" min="0" max="1" step="0.05"></div>
+            <div class="form-field"><label class="form-label" style="font-size:10px;">最大悬空跨度(m)</label><input type="number" id="sku-edit-max-span" class="custom-input" value="0.10" min="0" step="0.01"></div>
+            <div class="form-field"><label class="form-label" style="font-size:10px;">Top Fill准入</label><select id="sku-edit-topfill-state" class="custom-select"><option value="AUTO">AUTO安全证明</option><option value="ALLOW">明确允许</option><option value="DENY">明确禁止</option></select></div>
+            <div class="form-field"><label class="form-label" style="font-size:10px;">Top Fill最大层数</label><input type="number" id="sku-edit-topfill-layers" class="custom-input" value="0" min="0" step="1"></div>
+            <div class="form-field"><label class="form-label" style="font-size:10px;">Top Fill最低基面(m)</label><input type="number" id="sku-edit-topfill-base" class="custom-input" value="0" min="0" step="0.1"></div>
+            <div class="form-field"><label class="form-label" style="font-size:10px;">保持直立</label><select id="sku-edit-keep-upright" class="custom-select"><option value="true">是</option><option value="false">否</option></select></div>
+            <div class="form-field"><label class="form-label" style="font-size:10px;">易碎货物</label><select id="sku-edit-fragile" class="custom-select"><option value="false">否</option><option value="true">是</option></select></div>
+            <div class="form-field"><label class="form-label" style="font-size:10px;">防倾倒要求</label><select id="sku-edit-anti-tip" class="custom-select"><option value="true">启用</option><option value="false">不额外要求</option></select></div>
           </div>
-          <div id="sku-profile-source-note" style="font-size:9.5px; color:#64748b; margin-top:7px;">未明确字段继续使用 conservative DEFAULT；本表单保存的字段为 USER_DEFINED。</div>
+          <div id="sku-profile-source-note" class="form-hint" style="margin-top:4px;">未明确字段继续使用 conservative DEFAULT；本表单保存的字段为 USER_DEFINED。</div>
         </div>
       </div>
 
-      <div class="modal-footer" style="padding:14px 22px; border-top:1px solid #f1f5f9; background:#fafcff; border-radius:0 0 16px 16px; display:flex; justify-content:space-between; align-items:center;">
-        <button class="btn-island-action" onclick="deleteCurrentEditingSKU()" style="color:#ef4444; border-color:#fecaca; background:#fff5f5; font-weight:700;">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.4"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      <div class="modal-footer" style="justify-content:space-between; align-items:center;">
+        <button class="tool-action-btn danger-solid" onclick="deleteCurrentEditingSKU()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
           <span>删除此 SKU</span>
         </button>
         <div style="display:flex; gap:8px;">
           <button class="btn-island-action" onclick="closeSKUSettingsModal()">取消</button>
-          <button class="btn-island-action primary" onclick="saveSKUSettingsAndRepack()" style="background:var(--primary); color:white; font-weight:700; box-shadow:0 4px 12px rgba(37,99,235,0.25);">
+          <button class="btn-island-action primary" onclick="saveSKUSettingsAndRepack()">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             <span id="sku-settings-save-label">保存参数（不自动算柜）</span>
           </button>
@@ -2403,33 +2659,33 @@
 
   <!-- 7. ADD NEW SKU MODAL -->
   <div class="modal-overlay" id="add-sku-modal" style="display:none;">
-    <div class="modal-card" style="max-width: 560px; border-radius: 16px; box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.35); border: 1px solid rgba(226, 232, 240, 0.8);">
-      <div class="modal-header" style="padding: 16px 22px; border-bottom: 1px solid #f1f5f9; background: #fafcff;">
-        <div class="modal-title" style="font-size: 14px; font-weight: 800; display:flex; align-items:center; gap:8px;">
+    <div class="modal-card" style="max-width: 580px;">
+      <div class="modal-header">
+        <div class="modal-title">
           <div style="width:28px; height:28px; border-radius:8px; background:#eff6ff; display:flex; align-items:center; justify-content:center;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           </div>
-          <span style="color:#0f172a;">新增货物 SKU</span>
+          <span>新增货物 SKU</span>
         </div>
-        <button class="close-btn" onclick="closeAddSKUModal()" style="font-size:16px; color:#94a3b8; background:none; border:none; cursor:pointer;">✕</button>
+        <button class="close-btn" onclick="closeAddSKUModal()">✕</button>
       </div>
 
-      <div class="modal-body" style="padding: 18px 22px; max-height: 520px; overflow-y:auto;">
+      <div class="modal-body">
         <!-- SKU Name & Code -->
-        <div style="display:grid; grid-template-columns: 1fr 2fr; gap:12px; margin-bottom:14px;">
-          <div>
-            <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">SKU 编号</label>
+        <div style="display:grid; grid-template-columns: 1fr 2fr; gap:12px;">
+          <div class="form-field">
+            <label class="form-label">SKU 编号</label>
             <input type="text" id="sku-add-code" class="custom-input" placeholder="SKU-15" style="font-family:'JetBrains Mono';">
           </div>
-          <div>
-            <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">产品分类品名</label>
+          <div class="form-field">
+            <label class="form-label">产品分类品名</label>
             <input type="text" id="sku-add-name" class="custom-input" placeholder="例如: 32寸曲面显示器 / 伺服电机">
           </div>
         </div>
 
         <!-- Position Requirement -->
-        <div style="margin-bottom:14px;">
-          <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">1. 货柜纵向摆放区间要求</label>
+        <div class="form-field">
+          <label class="form-label">1. 货柜纵向摆放区间要求</label>
           <select id="sku-add-req" class="custom-select">
             <option value="放中间" selected>🏢 放中间 (Middle Section - 紧密排布于货柜中段)</option>
             <option value="放柜子最里面">📍 放柜子最里面 (Deep Inside / Rear - 优先置于箱体深处)</option>
@@ -2438,8 +2694,8 @@
         </div>
 
         <!-- Allowed Orientation -->
-        <div style="margin-bottom:14px;">
-          <label style="font-size:11.5px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">2. 翻转朝向权限</label>
+        <div class="form-field">
+          <label class="form-label">2. 翻转朝向权限</label>
           <select id="sku-add-ori" class="custom-select">
             <option value="upright" selected>⬆️ 仅允许立放 (Upright Only - 正立偏航90°旋转，封箱胶带向上)</option>
             <option value="allow_flat">📦 允许平放 (Allow Flat - 允许大面积朝下平铺，降低重心)</option>
@@ -2449,50 +2705,74 @@
         </div>
 
         <!-- Stacking Layers & Max Weight & Max Pressure -->
-        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-bottom:14px;">
-          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
-            <label style="font-size:11px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">最大堆叠层数 (0为不限)</label>
-            <input type="number" id="sku-add-max-layers" class="custom-input" min="0" max="25" placeholder="0为不限" style="font-family:'JetBrains Mono';">
+        <div class="form-grid-3">
+          <div class="form-card-section">
+            <label class="form-label">最大堆叠层数</label>
+            <div class="input-unit-group">
+              <input type="number" id="sku-add-max-layers" class="custom-input" min="0" max="25" placeholder="0为不限" style="font-family:'JetBrains Mono';">
+              <span class="input-unit-tag">层</span>
+            </div>
+            <span class="form-hint">0 为不限</span>
           </div>
-          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
-            <label style="font-size:11px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">单箱重量 (kg)</label>
-            <input type="number" id="sku-add-weight" class="custom-input" min="0.1" step="0.1" value="10.0" style="font-family:'JetBrains Mono';">
+          <div class="form-card-section">
+            <label class="form-label">单箱重量</label>
+            <div class="input-unit-group">
+              <input type="number" id="sku-add-weight" class="custom-input" min="0.1" step="0.1" value="10.0" style="font-family:'JetBrains Mono';">
+              <span class="input-unit-tag">kg</span>
+            </div>
+            <span class="form-hint">毛重</span>
           </div>
-          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
-            <label style="font-size:11px; font-weight:700; color:#1e293b; display:block; margin-bottom:4px;">承压强度 (kg/m²，0为不限)</label>
-            <input type="number" id="sku-add-max-pressure" class="custom-input" min="0" step="10" placeholder="0为不限" style="font-family:'JetBrains Mono';">
+          <div class="form-card-section">
+            <label class="form-label">承压强度上限</label>
+            <div class="input-unit-group">
+              <input type="number" id="sku-add-max-pressure" class="custom-input" min="0" step="10" placeholder="0为不限" style="font-family:'JetBrains Mono';">
+              <span class="input-unit-tag">kg/m²</span>
+            </div>
+            <span class="form-hint">0 为不限</span>
           </div>
         </div>
 
         <!-- Dimensions & Quantity -->
-        <div style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px;">
-          <span style="font-size:11px; font-weight:700; color:#475569; display:block; margin-bottom:6px;">单箱物理尺寸与总箱数</span>
-          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:8px;">
-            <div>
-              <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">长 (m)</label>
-              <input type="number" id="sku-add-w" class="custom-input" step="0.001" value="0.50" style="font-family:'JetBrains Mono';">
+        <div class="form-card-section" style="background:#f1f5f9;">
+          <span style="font-size:11px; font-weight:700; color:var(--slate-700);">单箱物理尺寸与总箱数</span>
+          <div class="form-grid-4">
+            <div class="form-field">
+              <label class="form-label" style="font-size:10px;">长</label>
+              <div class="input-unit-group">
+                <input type="number" id="sku-add-w" class="custom-input" step="0.001" value="0.50" style="font-family:'JetBrains Mono';">
+                <span class="input-unit-tag">m</span>
+              </div>
             </div>
-            <div>
-              <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">宽 (m)</label>
-              <input type="number" id="sku-add-d" class="custom-input" step="0.001" value="0.40" style="font-family:'JetBrains Mono';">
+            <div class="form-field">
+              <label class="form-label" style="font-size:10px;">宽</label>
+              <div class="input-unit-group">
+                <input type="number" id="sku-add-d" class="custom-input" step="0.001" value="0.40" style="font-family:'JetBrains Mono';">
+                <span class="input-unit-tag">m</span>
+              </div>
             </div>
-            <div>
-              <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">高 (m)</label>
-              <input type="number" id="sku-add-h" class="custom-input" step="0.001" value="0.35" style="font-family:'JetBrains Mono';">
+            <div class="form-field">
+              <label class="form-label" style="font-size:10px;">高</label>
+              <div class="input-unit-group">
+                <input type="number" id="sku-add-h" class="custom-input" step="0.001" value="0.35" style="font-family:'JetBrains Mono';">
+                <span class="input-unit-tag">m</span>
+              </div>
             </div>
-            <div>
-              <label style="font-size:10px; color:#64748b; display:block; font-weight:600;">数量 (箱)</label>
-              <input type="number" id="sku-add-qty" class="custom-input" min="1" step="1" value="50" style="font-family:'JetBrains Mono';">
+            <div class="form-field">
+              <label class="form-label" style="font-size:10px;">数量</label>
+              <div class="input-unit-group">
+                <input type="number" id="sku-add-qty" class="custom-input" min="1" step="1" value="50" style="font-family:'JetBrains Mono';">
+                <span class="input-unit-tag">箱</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="modal-footer" style="padding:14px 22px; border-top:1px solid #f1f5f9; background:#fafcff; border-radius:0 0 16px 16px;">
+      <div class="modal-footer">
         <button class="btn-island-action" onclick="closeAddSKUModal()">取消</button>
-        <button class="btn-island-action primary" onclick="submitAddNewSKU()" style="background:var(--primary); color:white; font-weight:700; box-shadow:0 4px 12px rgba(37,99,235,0.25);">
+        <button class="btn-island-action primary" onclick="submitAddNewSKU()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          <span>确认添加并计算装载</span>
+          <span>确认添加</span>
         </button>
       </div>
     </div>
@@ -5068,6 +5348,15 @@
       window.activePackingResult = activePackingResult;
       window.activeLoadingResult = loadingResult;
       window.activeLoadingJobId = loadingResult.id;
+      if (metrics.braking_stability) {
+        const bs = metrics.braking_stability;
+        if (bs.overall_safe) {
+          console.log(`[3D-AICIVS] 刹车制动动力学稳定性良好: 评估 ${bs.evaluated_columns_count} 列, 最低安全系数 ${bs.min_braking_safety_factor}`);
+        } else {
+          console.warn(`[3D-AICIVS] 刹车倾倒安全预警: ${bs.at_risk_columns_count} 处货列存在急刹车倾倒风险`, bs.warnings);
+          showToast(`检测到 ${bs.at_risk_columns_count} 处立垛急刹车存在倾倒风险，建议在前方间隙增设充气气囊支撑`, 'warning', '制动稳定性提示');
+        }
+      }
       if (loadingResult.camera && camera && controls) {
         const p = loadingResult.camera.position;
         const t = loadingResult.camera.target;
@@ -5612,6 +5901,25 @@
         }
       }
 
+      if (activeManifest.length === 0) {
+        container.innerHTML = `
+          <div class="sku-empty-card">
+            <div class="sku-empty-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            </div>
+            <div class="sku-empty-title">当前混装货单为空</div>
+            <div class="sku-empty-desc">可点击上方预设一键载入，或通过上方按钮新增 / Excel 导入</div>
+            <div style="display:flex; gap:6px; margin-top:2px;">
+              <button class="tool-action-btn primary" onclick="loadManifestPreset('production')">载入产线预设</button>
+              <button class="tool-action-btn" onclick="openAddSKUModal()">+ 手动添加</button>
+            </div>
+          </div>
+        `;
+        syncSelectionStates();
+        updateCalculationStateUI();
+        return;
+      }
+
       activeManifest.forEach(sku => {
         const hexColor = '#' + new THREE.Color(sku.color).getHexString();
         const card = document.createElement('div');
@@ -5625,22 +5933,16 @@
 
         if (stats) {
           if (stats.isFullyPlaced) {
-            statusBadgeHtml = `<span style="font-size:9px; color:#059669; background:#ecfdf5; border:1px solid #a7f3d0; padding:1px 5px; border-radius:3px; font-weight:700;">✅ 已全装</span>`;
-            countDisplayHtml = `<strong style="color:#059669; font-size:11px;">${stats.placed} / ${stats.planned} 箱</strong>`;
+            statusBadgeHtml = `<span style="font-size:9px; color:#059669; background:#ecfdf5; border:1px solid #a7f3d0; padding:1px 5px; border-radius:4px; font-weight:700;">✅ 已全装</span>`;
+            countDisplayHtml = `<span style="color:#059669; font-weight:800;">${stats.placed} / ${stats.planned} 箱</span>`;
           } else {
-            card.style.border = '1px solid #fde68a';
+            card.style.border = '1.5px solid #fde68a';
             card.style.background = '#fffdf7';
-            statusBadgeHtml = `<span style="font-size:9px; color:#b45309; background:#fef3c7; border:1px solid #fcd34d; padding:1px 5px; border-radius:3px; font-weight:800;" title="空间已满或安全限制，剩余 ${stats.unplaced} 箱未装入">⚠️ 未装完 (余${stats.unplaced}箱)</span>`;
-            countDisplayHtml = `
-              <div style="text-align:right;">
-                <span style="color:#dc2626; font-size:11px; font-weight:800;">实装 ${stats.placed}</span>
-                <span style="color:#94a3b8; font-size:9.5px; margin-left:2px;">/ 计 ${stats.planned}</span>
-                <span style="display:block; font-size:9px; color:#d97706; font-weight:700;">缺 ${stats.unplaced} 箱</span>
-              </div>
-            `;
+            statusBadgeHtml = `<span style="font-size:9px; color:#b45309; background:#fef3c7; border:1px solid #fcd34d; padding:1px 5px; border-radius:4px; font-weight:800;" title="空间已满或安全限制，剩余 ${stats.unplaced} 箱未装入">⚠️ 余${stats.unplaced}箱</span>`;
+            countDisplayHtml = `<span style="color:#dc2626; font-weight:800;">实装 ${stats.placed}</span><span style="color:#94a3b8; font-size:9px; margin-left:2px;">/ 计 ${stats.planned}</span>`;
           }
         } else {
-          countDisplayHtml = `<strong style="color:var(--primary); font-size:11px;">${sku.quantity} 箱</strong>`;
+          countDisplayHtml = `<span style="color:var(--primary); font-weight:800;">${sku.quantity} 箱</span>`;
         }
 
         let oriTag = '';
@@ -5651,37 +5953,40 @@
 
         let layerTag = '';
         if (sku.maxStackLayers && sku.maxStackLayers > 0) {
-          layerTag = `<span class="sku-param-badge" style="color:#2563eb; background:#eff6ff;">限${sku.maxStackLayers}层</span>`;
+          layerTag = `<span class="sku-param-badge blue">限${sku.maxStackLayers}层</span>`;
         }
         if (sku.maxPressureKgM2 && sku.maxPressureKgM2 > 0) {
-          layerTag += `<span class="sku-param-badge" style="color:#0891b2; background:#ecfeff;">压强≤${sku.maxPressureKgM2}kg/m²</span>`;
+          layerTag += `<span class="sku-param-badge cyan">压强≤${sku.maxPressureKgM2}kg/m²</span>`;
         }
 
         card.innerHTML = `
-          <div class="sku-item-top">
-            <div class="sku-left-col">
+          <div class="sku-item-head">
+            <div class="sku-head-left">
               <div class="sku-checkbox-custom" id="chk-box-${sku.sku}">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.2"><polyline points="20 6 9 17 4 12"/></svg>
               </div>
-              <span style="width:8px; height:8px; border-radius:50%; background:${hexColor}; flex-shrink:0;"></span>
-              <span class="sku-name-txt" title="${sku.name}">${sku.name}</span>
+              <span class="sku-color-ring" style="background:${hexColor};"></span>
+              <span class="sku-code-chip">${sku.sku}</span>
+              <span class="sku-title-txt" title="${sku.name}">${sku.name}</span>
             </div>
-            <div style="display:flex; align-items:center; gap:2px;">
-              <span class="req-tag ${getReqClass(sku.requirement)}">${sku.requirement || '放中间'}</span>
-              ${oriTag}
-              ${layerTag}
+            <div class="sku-actions-group">
               ${statusBadgeHtml}
-              <button class="btn-sku-edit-icon" onclick="event.stopPropagation(); openSKUSettingsModal('${sku.sku}')" title="设置此SKU摆放位置、朝向与堆叠层高">
+              <button class="btn-sku-action" onclick="event.stopPropagation(); openSKUSettingsModal('${sku.sku}')" title="设置此SKU摆放位置、朝向与堆叠层高">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
               </button>
-              <button class="btn-sku-del-icon" onclick="event.stopPropagation(); deleteSKUItem('${sku.sku}')" title="删除此货物 SKU">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.4"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              <button class="btn-sku-action delete" onclick="event.stopPropagation(); deleteSKUItem('${sku.sku}')" title="删除此货物 SKU">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
               </button>
             </div>
           </div>
-          <div class="sku-meta">
-            <span>${sku.w}×${sku.d}×${sku.h}m • ${sku.weight}kg</span>
-            ${countDisplayHtml}
+          <div class="sku-item-tags">
+            <span class="req-tag ${getReqClass(sku.requirement)}">${sku.requirement || '放中间'}</span>
+            ${oriTag}
+            ${layerTag}
+          </div>
+          <div class="sku-item-foot">
+            <span class="sku-dim-weight">${sku.w}×${sku.d}×${sku.h}m • ${sku.weight}kg</span>
+            <span class="sku-progress-badge">${countDisplayHtml}</span>
           </div>
         `;
 

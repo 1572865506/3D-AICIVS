@@ -44,12 +44,12 @@ class ConstraintCompiler:
             if (PackingRole.DOOR_SEAL in cargo.packing_roles) or (cargo.target_zone == ZoneType.DOOR):
                 door_exempt_skus.add(sku)
 
-            # Zone constraint
+            # Zone constraint (preferential loading guidance)
             if cargo.target_zone:
                 zone_constraints[sku] = ZoneConstraint(
                     sku_id=sku,
                     allowed_zones=(cargo.target_zone,),
-                    mode=PlacementRuleMode.REQUIRED
+                    mode=PlacementRuleMode.PREFER
                 )
 
             # Stacking limits

@@ -71,12 +71,12 @@ test('DOOR-PREFLIGHT explicit legacy door rule is accepted without SKU-name gues
   assert.equal(result.wallFormableCandidates[0].sku, 'A');
 });
 
-test('DOOR-PREFLIGHT missing door policy is an actionable configuration failure', () => {
+test('DOOR-PREFLIGHT missing door policy is a non-blocking conditional constraint', () => {
   const result = workflow.validateDoorWallAdmission([
     { sku: 'A', w: .5, d: .4, h: .4, weight: 8, quantity: 20, requirement: '放中间' }
   ], { intW: 2.35, intH: 2.69 });
-  assert.equal(result.valid, false);
-  assert.equal(result.code, 'NO_EXPLICIT_DOOR_CARGO');
+  assert.equal(result.valid, true);
+  assert.equal(result.hasExplicitDoorCargo, false);
 });
 
 test('DOOR-PREFLIGHT explicit CargoProfile overrides contradictory requirement text', () => {

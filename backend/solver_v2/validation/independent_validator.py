@@ -562,35 +562,31 @@ class IndependentGlobalValidator:
 
             # --- Zone Rules ---
             if cargo:
-                # Target Zone check
-                if cargo.target_zone == ZoneType.REAR and (x + dx > rear_zone_len + 0.5):
-                    rule_violations.append(
-                        ViolationDetail(
-                            violation_type=ViolationType.ZONE_VIOLATION,
-                            severity=ViolationSeverity.FATAL,
-                            message=f"Placement {p['placement_id']} (SKU: {sku_id}) assigned to REAR zone exceeds rear limit ({x+dx:.2f} > {rear_zone_len+0.5:.2f})",
-                            sku_id=sku_id,
-                            placement_id=p["placement_id"],
-                            placement_index=i,
-                        )
-                    )
-
-                # Door Lockout check: non-door-seal SKUs must not enter door zone
-                is_door_seal = (
-                    PackingRole.DOOR_SEAL in cargo.packing_roles
-                    or cargo.target_zone == ZoneType.DOOR
-                )
-                if (not is_door_seal) and (x + dx > door_start + eps):
-                    rule_violations.append(
-                        ViolationDetail(
-                            violation_type=ViolationType.DOOR_LOCKOUT_VIOLATION,
-                            severity=ViolationSeverity.FATAL,
-                            message=f"Placement {p['placement_id']} (SKU: {sku_id}) violates door lockout: non-door-seal SKU placed in door zone [x_end={x+dx:.2f} > door_start={door_start:.2f}]",
-                            sku_id=sku_id,
-                            placement_id=p["placement_id"],
-                            placement_index=i,
-                        )
-                    )
+                # Explicit forbidden zones from CargoProfile
+                if cargo.cargo_profile is not None:
+                    for forbidden in cargo.cargo_profile.zone_policy.forbidden:
+                        if forbidden == ZoneType.DOOR and (x + dx > door_start + eps):
+                            rule_violations.append(
+                                ViolationDetail(
+                                    violation_type=ViolationType.ZONE_VIOLATION,
+                                    severity=ViolationSeverity.FATAL,
+                                    message=f"Placement {p['placement_id']} (SKU: {sku_id}) violates explicit forbidden zone DOOR",
+                                    sku_id=sku_id,
+                                    placement_id=p["placement_id"],
+                                    placement_index=i,
+                                )
+                            )
+                        elif forbidden == ZoneType.REAR and (x <= rear_zone_len + eps):
+                            rule_violations.append(
+                                ViolationDetail(
+                                    violation_type=ViolationType.ZONE_VIOLATION,
+                                    severity=ViolationSeverity.FATAL,
+                                    message=f"Placement {p['placement_id']} (SKU: {sku_id}) violates explicit forbidden zone REAR",
+                                    sku_id=sku_id,
+                                    placement_id=p["placement_id"],
+                                    placement_index=i,
+                                )
+                            )
 
                 # Floor Only check
                 if cargo.stacking_policy.must_be_on_floor and z > eps:

@@ -15,11 +15,11 @@ class LayerOptimizationAdapter:
         self.engine = engine or LayerOptimizationEngine()
 
     def optimize(self, container, cargo, existing, optimization_result, door_wall,
-                 intelligence_adapter=None, intelligence=None):
+                 intelligence_adapter=None, intelligence=None, allow_fallback=True):
         result = self.engine.optimize(
             container, cargo, existing, optimization_result.optimized_walls,
             optimization_result, door_wall, intelligence_adapter, intelligence,
         )
-        if result.status != "SUCCESS":
+        if result.status != "SUCCESS" and not allow_fallback:
             raise ValueError("LAYER_OPTIMIZATION_FAILED")
         return PreparedLayerOptimization(result)

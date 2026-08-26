@@ -7,9 +7,9 @@ class PreparedTopFill:
 
 class TopFillOptimizationAdapter:
     def __init__(self,engine=None):self.engine=engine or TopFillEngine()
-    def optimize(self,container,cargo,existing,optimized_walls):
+    def optimize(self,container,cargo,existing,optimized_walls,allow_fallback=True):
         result=self.engine.fill(container,cargo,existing,optimized_walls)
-        if result.status!="SUCCESS":
+        if result.status!="SUCCESS" and not allow_fallback:
             reasons=",".join(f"{v.violation_type.value}:{v.placement_id or ''}" for v in result.validation.violations[:8])
             raise ValueError(f"TOP_FILL_OPTIMIZATION_FAILED:{reasons or 'STRUCTURAL_FINGERPRINT_CHANGED'}")
         return PreparedTopFill(result)

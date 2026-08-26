@@ -24,7 +24,7 @@ class TestBLK000DDimensionNormalization(unittest.TestCase):
         self.assertTrue(any(issue.code=="AXIS_SWAP_WARNING" for issue in result.issues))
 
     def test_dim_004_full_14_sku_audit_and_sku14(self):
-        data=json.loads(DATASET.read_text())
+        data=json.loads(DATASET.read_text(encoding="utf-8"))
         audit=DimensionAudit().audit_manifest(data["cargo"])
         self.assertEqual(len(audit),14)
         self.assertTrue(all(row.normalized.length>=row.normalized.width for row in audit))
@@ -33,7 +33,7 @@ class TestBLK000DDimensionNormalization(unittest.TestCase):
 
     def test_affected_optimizers_do_not_read_ambiguous_box_xyz_or_size_array(self):
         roots=[Path("src/optimization/layer"),Path("src/optimization/direction"),Path("src/optimization/global_rebuild"),Path("src/optimization/cargo_recomposition")]
-        content="\n".join(path.read_text() for root in roots for path in root.glob("*.py"))
+        content="\n".join(path.read_text(encoding="utf-8") for root in roots for path in root.glob("*.py"))
         for token in (".box.x",".box.y",".box.z",'"size":['):self.assertNotIn(token,content)
 
 if __name__=="__main__":unittest.main()
