@@ -34,36 +34,43 @@ class MixedSkuWallBlueprintGenerator:
             wall_max_z=max(p.max_z for p in wall)
             gaps=[(0.0,min(p.min_y for p in wall)),(max(p.max_y for p in wall),container.Ly)]
             for gap_start,gap_end in gaps:
+                gap_w=gap_end-gap_start
+                if gap_w<.02:continue
                 cursor=gap_start
-                while gap_end-cursor>.01:
+                while gap_end-cursor>.02:
                     choices=[]
                     for sku in cargo:
                         if local_remaining.get(sku.sku_id,0)<=0:continue
                         for candidate in self.orientations.get_candidate_orientations(sku,PlacementContext.MAIN_WALL):
                             orientation=candidate.orientation
-                            if orientation.dy>gap_end-cursor+1e-9 or orientation.dx>wall_depth+1e-4:continue
-                            layers=min(int((wall_max_z+1e-9)//orientation.dz),local_remaining[sku.sku_id])
+                            if orientation.dy>gap_end-cursor+1e-4 or orientation.dx>wall_depth+1e-4:continue
+                            max_x_count=max(1,int((wall_depth+1e-4)//orientation.dx))
+                            layers=min(int((wall_max_z+1e-4)//orientation.dz),local_remaining[sku.sku_id])
                             policy=sku.stacking_policy
                             if policy.max_stack_layers is not None:layers=min(layers,policy.max_stack_layers)
                             if not policy.stack_on_self or not policy.allow_stacking_on_top:layers=min(layers,1)
                             if policy.max_bearing_kg is not None and sku.weight_kg>0:
                                 layers=min(layers,int(policy.max_bearing_kg//sku.weight_kg)+1)
                             if layers<=0:continue
-                            residual=gap_end-cursor-orientation.dy;height=layers*orientation.dz
-                            choices.append((-residual,height,orientation.dy*height,-orientation.dx,sku.sku_id,orientation.name,sku,orientation,layers))
+                            actual_x_count=min(max_x_count,local_remaining[sku.sku_id]//layers)
+                            if actual_x_count<=0:continue
+                            residual_y=gap_end-cursor-orientation.dy
+                            covered_vol=actual_x_count*orientation.dx*orientation.dy*(layers*orientation.dz)
+                            choices.append((-residual_y,covered_vol,sku.sku_id,orientation.name,sku,orientation,layers,actual_x_count))
                     if not choices:break
-                    *_,sku,orientation,layers=max(choices,key=lambda row:row[:6])
-                    for layer in range(layers):
-                        serial+=1
-                        added.append(Placement(f"{wall_id.lower()}_jointfill_{serial:04d}",
-                            f"jointfill_{sku.sku_id}_{serial:04d}",sku.sku_id,
-                            Point3D(round(wall_min_x,6),round(cursor,6),round(layer*orientation.dz,6)),
-                            orientation,sku.weight_kg,PlacementContext.MAIN_WALL,len(placements)+len(added)))
-                    local_remaining[sku.sku_id]-=layers;cursor=round(cursor+orientation.dy,6)
+                    *_,sku,orientation,layers,actual_x_count=max(choices,key=lambda row:row[:2])
+                    for ix in range(actual_x_count):
+                        x_pos=round(wall_min_x+ix*orientation.dx,6)
+                        for layer in range(layers):
+                            z_pos=round(layer*orientation.dz,6)
+                            serial+=1
+                            added.append(Placement(f"{wall_id.lower()}_jointfill_{serial:04d}",
+                                f"jointfill_{sku.sku_id}_{serial:04d}",sku.sku_id,
+                                Point3D(x_pos,round(cursor,6),z_pos),
+                                orientation,sku.weight_kg,PlacementContext.MAIN_WALL,len(placements)+len(added)))
+                            local_remaining[sku.sku_id]-=1
+                    cursor=round(cursor+orientation.dy,6)
         if not added:return None
-        # Report the resulting joint wall composition, not merely the filler
-        # subset. This makes it explicit that the added columns participate in
-        # a wall shared with the pre-existing SKU families.
         mix=Counter(p.sku_id for p in placements
                     if detector.wall_id(p) in region.wall_ids and p.context.value!="TOP_FILL")
         mix.update(p.sku_id for p in added)

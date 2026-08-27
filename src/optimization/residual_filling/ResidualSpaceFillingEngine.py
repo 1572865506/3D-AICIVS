@@ -94,11 +94,12 @@ class ResidualSpaceFillingEngine:
     def _covered_x(cls,intervals):
         return sum(right-left for left,right in cls._merge_intervals(intervals))
 
-    def _top_regions(self,placed,x,orientation,container,door_start):
+    def _top_regions(self,placed,x,orientation,container,door_start,index=None):
         regions=[];dx=orientation.dx
-        planes=sorted({round(p.max_z,6) for p in placed if p.max_z+orientation.dz<=container.Lz+1e-9})
+        candidates = index.nearby(AABB(x - 1e-4, 0.0, 0.0, x + dx + 1e-4, container.Ly, container.Lz)) if index is not None else placed
+        planes=sorted({round(p.max_z,6) for p in candidates if p.max_z+orientation.dz<=container.Lz+1e-9})
         for z in planes:
-            lowers=[p for p in placed if abs(p.max_z-z)<=1e-5 and p.max_x>x+1e-6 and p.min_x<x+dx-1e-6]
+            lowers=[p for p in candidates if abs(p.max_z-z)<=1e-5 and p.max_x>x+1e-6 and p.min_x<x+dx-1e-6]
             if not lowers:continue
             y_edges=sorted({0.0,container.Ly}|{max(0.0,min(container.Ly,v)) for p in lowers for v in (p.min_y,p.max_y)})
             supported=[]
@@ -108,7 +109,7 @@ class ResidualSpaceFillingEngine:
                 x_support=[(max(x,p.min_x),min(x+dx,p.max_x)) for p in lowers if p.min_y<mid+1e-9 and p.max_y>mid-1e-9]
                 if self._covered_x(x_support)+1e-9>=.98*dx:supported.append((y1,y2))
             blockers=[]
-            for p in placed:
+            for p in candidates:
                 if p.max_x<=x+1e-6 or p.min_x>=x+dx-1e-6:continue
                 if p.max_z<=z+1e-6 or p.min_z>=z+orientation.dz-1e-6:continue
                 blockers.append((max(0.0,p.min_y),min(container.Ly,p.max_y)))
@@ -120,10 +121,11 @@ class ResidualSpaceFillingEngine:
                 regions.append(ResidualRegion(f"TOP_{x:.3f}_{z:.3f}_{number}","STRUCTURED_TOP_ROW",(x,x+dx),(y1,y2),z,1.0))
         return tuple(regions)
 
-    def _floor_regions(self,placed,x,orientation,container,door_start):
+    def _floor_regions(self,placed,x,orientation,container,door_start,index=None):
         if x<0 or x+orientation.dx>door_start+1e-9:return ()
         blocked=[]
-        for p in placed:
+        candidates = index.nearby(AABB(x - 1e-4, 0.0, 0.0, x + orientation.dx + 1e-4, container.Ly, orientation.dz + 1e-4)) if index is not None else placed
+        for p in candidates:
             if p.max_x<=x+1e-6 or p.min_x>=x+orientation.dx-1e-6:continue
             if p.max_z<=1e-6 or p.min_z>=orientation.dz-1e-6:continue
             blocked.append((max(0.0,p.min_y),min(container.Ly,p.max_y)))
@@ -177,7 +179,7 @@ class ResidualSpaceFillingEngine:
         for sku,seed in self._orientation_specs(cargo,PlacementContext.MAIN_WALL,0.0,intelligence):
             if remaining[sku.sku_id]<=0:continue
             for x in x_anchors:
-                for region in self._floor_regions(placed,x,seed,container,door_start):
+                for region in self._floor_regions(placed,x,seed,container,door_start,index=index):
                     key=(region.source,round(x,4),round(region.y_range[0],4),round(region.y_range[1],4),round(seed.dx,4),round(seed.dz,4))
                     if key in seen:continue
                     seen.add(key);attempted+=1
@@ -188,7 +190,7 @@ class ResidualSpaceFillingEngine:
             if remaining[sku.sku_id]<=0:continue
             top_x=sorted({round(v,6) for p in placed for v in (p.min_x,p.max_x-seed.dx) if v>=-1e-9 and v+seed.dx<=door_start+1e-9})
             for x in top_x:
-                for region in self._top_regions(placed,x,seed,container,door_start):
+                for region in self._top_regions(placed,x,seed,container,door_start,index=index):
                     key=(region.source,round(x,4),round(region.base_z,4),round(region.y_range[0],4),round(region.y_range[1],4),round(seed.dx,4),round(seed.dz,4))
                     if key in seen:continue
                     seen.add(key);attempted+=1

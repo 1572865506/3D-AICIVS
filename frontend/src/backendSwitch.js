@@ -67,7 +67,7 @@
 
   async function requestJson(path, init, timeoutMs) {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs || 30000);
+    const timer = setTimeout(() => controller.abort(), timeoutMs || LOADING_JOB_TIMEOUT_MS);
     try {
       let response;
       try { response = await root.fetch(`${configuredBase()}${path}`, Object.assign({}, init || {}, { signal: controller.signal })); }
@@ -106,7 +106,7 @@
   }
 
   async function getResult(jobId) {
-    return validateLoadingResult(await requestJson(`/loading/${encodeURIComponent(jobId)}`, {}, 30000));
+    return validateLoadingResult(await requestJson(`/loading/${encodeURIComponent(jobId)}`, {}, LOADING_JOB_TIMEOUT_MS));
   }
 
   async function getHighlight(jobId, type, id) {

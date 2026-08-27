@@ -2020,6 +2020,11 @@
 
       <!-- Header Action Buttons -->
       <div class="header-actions interactive">
+        <a href="/algorithm_space.html" target="_blank" class="btn-action-pill" id="btn-open-algo-space" style="background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); color: #ffffff; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 12px rgba(37,99,235,0.3);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          <span style="font-weight: 700;">📐 算法空间 (Algorithm Space)</span>
+        </a>
+
         <button class="btn-action-pill secondary" id="btn-toggle-left" onclick="toggleLeftDrawer()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
           <span>货柜与货单配置</span>
@@ -2404,6 +2409,11 @@
         <button class="btn-island-action" id="btn-orientation-mode" onclick="togglePackageOrientationMode()" title="切换真实包装贴图与产品向上方向辅助线">
           <span>📦</span>
           <span id="txt-orientation-mode">真实贴图</span>
+        </button>
+
+        <button class="btn-island-action" id="btn-screenshot" onclick="captureViewportScreenshot()" title="一键截图并复制到剪贴板 (可直接按 Ctrl+V 粘贴)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span id="txt-screenshot">截图</span>
         </button>
 
         <div class="island-divider"></div>
@@ -3854,6 +3864,64 @@
       } catch (e) {}
     }
 
+    // --- LOADING RESULT PERSISTENT CACHE ---
+    const CACHED_LOADING_RESULT_KEY = '3D_AICIVS_CACHED_LOADING_RESULT_V30';
+
+    function saveLoadingResultCache(loadingResult, usableDim, manifest, spec) {
+      try {
+        if (!loadingResult || !Array.isArray(loadingResult.cargo) || loadingResult.cargo.length === 0) return;
+        const payload = {
+          loadingResult: loadingResult,
+          usableDim: usableDim,
+          manifest: manifest,
+          containerType: currentContainerType,
+          specCode: spec ? spec.code : '',
+          timestamp: Date.now()
+        };
+        localStorage.setItem(CACHED_LOADING_RESULT_KEY, JSON.stringify(payload));
+        console.log('[3D-AICIVS] 算柜结果已持久化至本地缓存:', loadingResult.cargo.length, '箱');
+      } catch (e) {
+        console.warn('[3D-AICIVS] 无法保存算柜缓存至 localStorage:', e);
+      }
+    }
+
+    function restoreLoadingResultCache() {
+      try {
+        const raw = localStorage.getItem(CACHED_LOADING_RESULT_KEY);
+        if (!raw) return false;
+        const payload = JSON.parse(raw);
+        if (!payload || !payload.loadingResult || !Array.isArray(payload.loadingResult.cargo) || payload.loadingResult.cargo.length === 0) {
+          return false;
+        }
+
+        const usableDim = payload.usableDim || {
+          length: currentSpec.intL,
+          height: currentSpec.intH,
+          width: currentSpec.intW
+        };
+        const manifestToUse = (Array.isArray(payload.manifest) && payload.manifest.length > 0) ? payload.manifest : activeManifest;
+
+        const success = applyBackendLoadingResult(payload.loadingResult, usableDim, manifestToUse, currentSpec);
+        if (success) {
+          calculatedRevision = manifestRevision;
+          calculationStatus = window.ManifestWorkflow.CalculationStatus.READY;
+          isCameraDirty = true;
+          isRaycastDirty = true;
+          console.log('[3D-AICIVS] 已从本地缓存自动恢复算柜结果:', payload.loadingResult.cargo.length, '箱');
+          return true;
+        }
+      } catch (e) {
+        console.warn('[3D-AICIVS] 恢复本地算柜结果缓存失败:', e);
+      }
+      return false;
+    }
+
+    function clearLoadingResultCache() {
+      try {
+        localStorage.removeItem(CACHED_LOADING_RESULT_KEY);
+      } catch (e) {}
+    }
+
     // --- INTERACTIVE SELECTION & ISOLATION STATE ---
     let selectedSKUs = new Set();
     let hoveredSKU = null;
@@ -4467,7 +4535,7 @@
       camera.position.set(-20, 19.8, 20);
       camera.lookAt(0, currentSpec.extH / 2, 0);
 
-      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: true });
       renderer.setSize(width, height);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.shadowMap.enabled = true;
@@ -4500,7 +4568,10 @@
       setupEnvironment();
 
       rebuildContainerModel();
-      clearPackingResultAndScene();
+      const cacheRestored = restoreLoadingResultCache();
+      if (!cacheRestored) {
+        clearPackingResultAndScene();
+      }
       renderManifestUI();
       renderAnchorRibbon();
       updateCalculationStateUI();
@@ -5687,6 +5758,7 @@
       await nextPaint();
       try {
         applyBackendLoadingResult(loadingResult, usableDim, activeManifest, currentSpec);
+        saveLoadingResultCache(loadingResult, usableDim, activeManifest, currentSpec);
 
         isCameraDirty = true;
         isRaycastDirty = true;
@@ -6348,6 +6420,7 @@
       activeManifest = [];
       selectedManifestSkuIds.clear();
       selectedSKUs.clear();
+      clearLoadingResultCache();
       saveAppState();
       renderManifestUI();
       renderAnchorRibbon();
@@ -6648,6 +6721,47 @@
         }
       }
     }
+
+    // --- 10.1 VIEWPORT QUICK SCREENSHOT TO CLIPBOARD ---
+    window.captureViewportScreenshot = async function() {
+      try {
+        if (!renderer || !scene || !camera) {
+          showToast('3D 场景尚未初始化就绪，无法截图', 'warning');
+          return;
+        }
+
+        // Force a synchronous high-fidelity render pass
+        renderer.render(scene, camera);
+
+        if (renderer.domElement.toBlob) {
+          renderer.domElement.toBlob(async (blob) => {
+            if (!blob) {
+              showToast('生成截图图像数据失败', 'warning');
+              return;
+            }
+
+            try {
+              if (navigator.clipboard && window.ClipboardItem) {
+                await navigator.clipboard.write([
+                  new ClipboardItem({ 'image/png': blob })
+                ]);
+                showToast('3D 视图截图已成功复制到剪贴板，可直接按 Ctrl+V 粘贴！', 'success', '📸 已复制到剪贴板');
+              } else {
+                showToast('当前浏览器环境不支持直接写入剪贴板图片，请使用 Chrome/Edge/Safari 现代浏览器。', 'warning');
+              }
+            } catch (clipErr) {
+              console.warn('[3D-AICIVS] 剪贴板写入受限:', clipErr);
+              showToast('剪贴板写入受限，请确认浏览器已授予剪贴板访问权限。', 'warning');
+            }
+          }, 'image/png');
+        } else {
+          showToast('当前环境不支持 Canvas toBlob 导出', 'warning');
+        }
+      } catch (err) {
+        console.error('[3D-AICIVS] 截图操作异常:', err);
+        showToast('截图操作异常: ' + (err.message || err), 'warning');
+      }
+    };
 
     // --- 11. WORKBENCH DRAWER TOGGLES & STUDIO CONTROLS ---
     window.toggleLeftDrawer = function() {

@@ -361,13 +361,17 @@ class DoorIntegratedSolver:
             container, prepared.original_cargo, tuple(placements), structural_lock_ids
         )
         if compaction_result.status == "SUCCESS":
-            placements = list(compaction_result.placements)
+            placements, compaction_result = self._accept_structurally_locked_stage(
+                placements, compaction_result, compaction_result.placements, structural_locks, "CASCADE_COMPACTION"
+            )
         self.last_compaction_result = compaction_result
 
         from src.optimization.stepping import SteppedTrailingEdgeOptimizer
         stepping_result = SteppedTrailingEdgeOptimizer().optimize(container, prepared.original_cargo, tuple(placements))
         if stepping_result.status == "SUCCESS":
-            placements = list(stepping_result.placements)
+            placements, stepping_result = self._accept_structurally_locked_stage(
+                placements, stepping_result, stepping_result.placements, structural_locks, "STEPPED_TRAILING_EDGE"
+            )
         self.last_stepping_result = stepping_result
         validation = IndependentGlobalValidator.validate(container, placements, list(prepared.original_cargo))
         transport_validation = None
@@ -390,6 +394,13 @@ class DoorIntegratedSolver:
                 tuple(p for p in placements if not p.placement_id.startswith("door_pre_")),
                 require_actual_back_anchor=self.enable_wall_optimization,
             )
+            if not transport_validation.valid and compaction_result and compaction_result.status == "SUCCESS":
+                placements = list(compaction_result.details.get("pre_compaction_placements", placements))
+                transport_validation=TransportForceDirectionModel().evaluate(
+                    final_door_wall,container,
+                    tuple(p for p in placements if not p.placement_id.startswith("door_pre_")),
+                    require_actual_back_anchor=self.enable_wall_optimization,
+                )
             self.last_transport_validation=transport_validation
             if not transport_validation.valid:
                 raise ValueError("DOOR_TRANSPORT_HARD_INVALID:"+",".join(transport_validation.rejection_reasons))

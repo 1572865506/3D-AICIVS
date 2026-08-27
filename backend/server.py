@@ -143,33 +143,82 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                         time_budget_sec=time_budget,
                         seed=seed,
                     )
-                    solver = (DoorIntegratedSolver(
-                        HierarchicalSearchSolver(config=search_cfg),
-                        enable_cargo_walls=True,
-                        enable_wall_optimization=True,
-                    ).with_direction_strategy(True).with_layer_optimization(True).with_topfill_optimization(True).with_global_rebuild("REBUILD").with_cargo_recomposition(True).with_multisku_wall_recomposition(True).with_3d_layer_recomposition(True).with_wall_interface_repair(True).with_dimension_corrected_rebuild(True).with_wall_internal_repack(True).with_residual_filling(True))
-                    solution = solver.solve(container=container_spec, cargo_list=cargo_skus)
+                    from src.unified_pipeline.model.UnifiedCargoModel import UnifiedCargoModel, ZonePreference
+                    from src.unified_pipeline.packer.UnifiedSectionalPacker import UnifiedSectionalPacker
+                    from solver_v2.solver.baseline_solver import SolverSolution, SolverTelemetry
+                    from solver_v2.domain.models import Placement, Point3D, Orientation3D, PlacementContext
+                    from solver_v2.validation.independent_validator import IndependentGlobalValidator
+
+                    unified_cargo = []
+                    sku_weights = {}
+                    for s in cargo_skus:
+                        req = getattr(s, 'source_requirement_text', '') or ''
+                        zp = ZonePreference.GENERAL
+                        if '最里面' in req:
+                            zp = ZonePreference.INNER
+                        elif '中间' in req:
+                            zp = ZonePreference.MIDDLE
+                        elif '封柜门' in req or '门' in req:
+                            zp = ZonePreference.DOOR
+                        
+                        sku_weights[s.sku_id] = s.weight_kg
+                        allow_flat = False
+                        if hasattr(s, 'orientation_policy') and s.orientation_policy:
+                            allow_flat = getattr(s.orientation_policy, 'allow_flat', False)
+
+                        unified_cargo.append(UnifiedCargoModel(
+                            sku_id=s.sku_id,
+                            name=s.name,
+                            length=max(s.box.x, s.box.y),
+                            width=min(s.box.x, s.box.y),
+                            height=s.box.z,
+                            weight_kg=s.weight_kg,
+                            quantity_required=s.quantity.required,
+                            zone_preference=zp,
+                            allow_flat=allow_flat,
+                            raw_requirement=req
+                        ))
+
+                    packer = UnifiedSectionalPacker(
+                        container_length=container_spec.Lx,
+                        container_width=container_spec.Ly,
+                        container_height=container_spec.Lz
+                    )
+                    raw_placements, metrics = packer.pack(unified_cargo)
+
+                    final_placements = []
+                    for idx, p in enumerate(raw_placements):
+                        w = sku_weights.get(p['sku_id'], 10.0)
+                        final_placements.append(Placement(
+                            placement_id=f"p_{idx:04d}",
+                            instance_id=f"inst_{idx:04d}",
+                            sku_id=p['sku_id'],
+                            position=Point3D(p['x'], p['y'], p['z']),
+                            orientation=Orientation3D(p['dx'], p['dy'], p['dz'], name=p.get('orientation', 'DEFAULT')),
+                            weight_kg=w,
+                            context=PlacementContext.MAIN_WALL,
+                            step_index=p.get('step', idx + 1)
+                        ))
+
+                    val_result = IndependentGlobalValidator.validate(
+                        container=container_spec,
+                        placements=final_placements,
+                        cargo_list=cargo_skus
+                    )
+
                     elapsed_ms = (time.perf_counter() - t_start) * 1000.0
-                    residual = solver.last_residual_prepared.result if solver.last_residual_prepared else None
-                    layer = solver.last_layer_prepared.result if solver.last_layer_prepared else None
-                    topfill = solver.last_topfill_prepared.result if solver.last_topfill_prepared else None
-                    print('[PACK-V2-AUDIT] request=' + json.dumps({
-                        'mode': mode_str,
-                        'seed': seed,
-                        'cargo': request_policy_audit,
-                    }, ensure_ascii=False, sort_keys=True))
-                    print('[PACK-V2-AUDIT] deployment=' + json.dumps({
-                        'layer_added': len(layer.added_placements) if layer else 0,
-                        'topfill_added': len(topfill.placements) if topfill else 0,
-                        'residual_attempted': residual.attempted if residual else 0,
-                        'residual_rows': len(residual.plans) if residual else 0,
-                        'residual_added': len(residual.placements) if residual else 0,
-                        'residual_rejected': residual.rejected if residual else {},
-                        'residual_remaining_inventory': residual.remaining_inventory if residual else {},
-                        'final_placements': len(solution.placements),
-                        'final_utilization_pct': solution.volume_utilization_pct,
-                        'global_valid': solution.validation_result.is_valid,
-                    }, ensure_ascii=False, sort_keys=True))
+
+                    solution = SolverSolution(
+                        status="SUCCESS",
+                        container=container_spec,
+                        placements=final_placements,
+                        placed_count=len(final_placements),
+                        unplaced_count=max(0, sum(s.quantity.required for s in cargo_skus) - len(final_placements)),
+                        volume_utilization_pct=val_result.metrics.get("volume_utilization_pct", metrics.get("utilization_pct", 0.0)),
+                        total_weight_kg=val_result.metrics.get("total_cargo_weight_kg", metrics.get("weight_loaded_kg", 0.0)),
+                        validation_result=val_result,
+                        telemetry=SolverTelemetry(runtime_ms=elapsed_ms)
+                    )
 
                     # Output full response (includes V2 schema and visualizer placedBoxes)
                     result = OutputAdapter.to_legacy_response(

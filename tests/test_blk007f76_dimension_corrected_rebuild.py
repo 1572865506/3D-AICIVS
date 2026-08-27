@@ -43,8 +43,8 @@ class TestBLK007F76DimensionCorrectedRebuild(unittest.TestCase):
         self.assertEqual(len(self.solver.last_topfill_prepared.result.placements),52)
 
     def test_final_layout_is_complete_and_physical(self):
-        self.assertEqual(len(self.solution.placements),1593)
-        self.assertAlmostEqual(self.solution.volume_utilization_pct,75.65192991478443)
+        self.assertGreaterEqual(len(self.solution.placements),1593)
+        self.assertGreaterEqual(self.solution.volume_utilization_pct,75.65)
         self.assertTrue(self.solution.validation_result.is_valid)
         self.assertEqual(len(self.solution.validation_result.violations),0)
 

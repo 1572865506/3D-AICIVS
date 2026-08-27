@@ -64,7 +64,7 @@ class MultiSkuWallRecompositionEngine:
                           for wid in {self.detector.wall_id(p) for p in current if self.detector.wall_id(p)}}
             layer_added=[]
             for index,placement in enumerate(layer_result.placements,1):
-                wall_id=max(wall_extents,key=lambda wid:max(0.0,min(placement.max_x,wall_extents[wid][1])-max(placement.min_x,wall_extents[wid][0])))
+                wall_id=max(wall_extents,key=lambda wid:max(0.0,min(placement.max_x,wall_extents[wid][1])-max(placement.min_x,wall_extents[wid][0]))) if wall_extents else "WALL_001"
                 layer_added.append(replace(placement,placement_id=f"{wall_id.lower()}_jointlayer_{index:04d}"))
             trial=tuple(current)+tuple(layer_added)
             layer_validation=IndependentGlobalValidator.validate(container,list(trial),list(cargo))

@@ -98,7 +98,7 @@ class CascadeCompactionOptimizer:
         return CompactionResult(
             "SUCCESS", len(placements), len(current), round(reduction_mm, 2),
             round(recycled_volume, 4), tuple(current),
-            {"initial_gaps_m": initial_gaps, "final_gaps_m": final_gaps}
+            {"initial_gaps_m": initial_gaps, "final_gaps_m": final_gaps, "pre_compaction_placements": placements}
         )
 
     def _cascade_shove_slices_x(
