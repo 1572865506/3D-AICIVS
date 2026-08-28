@@ -4284,32 +4284,73 @@
       clearOrientationAssist();
       if (packageOrientationDisplayMode !== window.BLK007F78.DisplayMode.ASSIST || !scene) return;
       const positions = [];
+      const colors = [];
+
       boxMeshes.filter(box => box.visible).forEach(box => {
         const raw = box.userData.productUpThree || [0, 1, 0];
         const up = new THREE.Vector3(raw[0], raw[1], raw[2]).applyQuaternion(box.quaternion).normalize();
+        
+        // 3-Axis Directional Color Coding:
+        // Y-axis (Vertical / Upright): Vibrant Green (#22c55e)
+        // X-axis (Longitudinal / Length): Vibrant Blue (#3b82f6)
+        // Z-axis (Lateral / Width): Vibrant Amber Orange (#f59e0b)
+        let r = 0.13, g = 0.85, b = 0.45; // Default green
+        const absX = Math.abs(up.x);
+        const absY = Math.abs(up.y);
+        const absZ = Math.abs(up.z);
+
+        if (absY >= absX && absY >= absZ) {
+          // Vertical Upward / Downward -> Emerald Green
+          r = 0.13; g = 0.85; b = 0.45; // #22c55e
+        } else if (absX >= absY && absX >= absZ) {
+          // Longitudinal (Container Length) -> Vibrant Blue
+          r = 0.23; g = 0.51; b = 0.96; // #3b82f6
+        } else {
+          // Lateral (Container Width) -> Vibrant Amber Orange
+          r = 0.96; g = 0.62; b = 0.05; // #f59e0b
+        }
+
         const minDimension = Math.max(0.08, Math.min(
           Number(box.userData.rawW || 0.2), Number(box.userData.rawD || 0.2), Number(box.userData.rawH || 0.2)
         ));
-        const length = Math.max(0.10, Math.min(0.24, minDimension * 0.75));
+        const length = Math.max(0.12, Math.min(0.28, minDimension * 0.85));
         const start = box.position.clone();
         const end = start.clone().addScaledVector(up, length);
         let perpendicular = new THREE.Vector3().crossVectors(up, new THREE.Vector3(0, 1, 0));
         if (perpendicular.lengthSq() < 1e-8) perpendicular = new THREE.Vector3().crossVectors(up, new THREE.Vector3(1, 0, 0));
         perpendicular.normalize();
-        const headBase = end.clone().addScaledVector(up, -length * 0.30);
-        const headWidth = length * 0.15;
+        const headBase = end.clone().addScaledVector(up, -length * 0.32);
+        const headWidth = length * 0.18;
         const left = headBase.clone().addScaledVector(perpendicular, headWidth);
         const right = headBase.clone().addScaledVector(perpendicular, -headWidth);
-        [start, end, end, left, end, right].forEach(point => positions.push(point.x, point.y, point.z));
+
+        const points = [start, end, end, left, end, right];
+        points.forEach(point => {
+          positions.push(point.x, point.y, point.z);
+          colors.push(r, g, b);
+        });
       });
+
       if (!positions.length) return;
       const geometry = new THREE.BufferGeometry();
       geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-      const material = new THREE.LineBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.92, depthTest: false });
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+      const material = new THREE.LineBasicMaterial({
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.95,
+        depthTest: false
+      });
       orientationAssistLine = new THREE.LineSegments(geometry, material);
       orientationAssistLine.name = 'PRODUCT_UP_ORIENTATION_ASSIST';
       orientationAssistLine.renderOrder = 999;
-      scene.add(orientationAssistLine);
+      
+      // CRITICAL FIX: Attach directly to cargoGroup so local box coordinates match 100%
+      if (cargoGroup) {
+        cargoGroup.add(orientationAssistLine);
+      } else {
+        scene.add(orientationAssistLine);
+      }
       isCameraDirty = true;
     }
 
@@ -4318,11 +4359,15 @@
         ? window.BLK007F78.DisplayMode.ASSIST : window.BLK007F78.DisplayMode.PHYSICAL;
       const text = document.getElementById('txt-orientation-mode');
       const button = document.getElementById('btn-orientation-mode');
-      if (text) text.textContent = packageOrientationDisplayMode === window.BLK007F78.DisplayMode.PHYSICAL ? '真实贴图' : '朝向辅助';
-      if (button) button.title = packageOrientationDisplayMode === window.BLK007F78.DisplayMode.PHYSICAL
-        ? '当前显示真实包装标签，点击显示产品向上方向辅助线'
-        : '青色箭头表示产品原始向上方向，点击返回真实贴图';
+      const isAssist = packageOrientationDisplayMode === window.BLK007F78.DisplayMode.ASSIST;
+      if (text) text.textContent = isAssist ? '朝向辅助' : '真实贴图';
+      if (button) button.title = isAssist
+        ? '朝向三色图例：🟢 垂直向上 | 🔵 纵深朝向 | 🟠 宽度朝向（点击返回贴图）'
+        : '当前显示真实包装标签，点击开启多轴彩色朝向辅助线';
       rebuildOrientationAssist();
+      if (isAssist) {
+        showToast('🟢 绿色：垂直向上 | 🔵 蓝色：纵深方向 | 🟠 橙色：横向宽度', 'info', '🧭 朝向三色辅助已开启');
+      }
     };
 
     window.getOrientationRenderingDiagnostics = function() {
