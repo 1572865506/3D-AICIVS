@@ -730,6 +730,67 @@
       background: var(--primary-hover);
     }
 
+    .screenshot-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+    .screenshot-menu-dropdown {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.2), 0 4px 12px rgba(15, 23, 42, 0.08);
+      border-radius: 12px;
+      padding: 6px;
+      display: none;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 178px;
+      z-index: 1000;
+      animation: screenshotMenuPop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .screenshot-menu-dropdown.show {
+      display: flex;
+    }
+    @keyframes screenshotMenuPop {
+      from { opacity: 0; transform: translate(-50%, 6px) scale(0.96); }
+      to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    }
+    .screenshot-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--slate-700);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      width: 100%;
+    }
+    .screenshot-menu-item:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+    .screenshot-menu-item svg {
+      flex-shrink: 0;
+    }
+    .screenshot-menu-divider {
+      height: 1px;
+      background: var(--slate-200);
+      margin: 3px 0;
+    }
+
     .opacity-pill-ctrl {
       display: flex;
       align-items: center;
@@ -1952,6 +2013,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/three@0.128.0/build/three.min.js';"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" onerror="this.onerror=null;this.src='https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js';"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js';"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js';"></script>
   <script src="/frontend/src/errorLogReporter.js"></script>
   <script src="/frontend/src/orientationRendering.js"></script>
   <script src="/frontend/src/manifestWorkflow.js"></script>
@@ -2411,10 +2473,33 @@
           <span id="txt-orientation-mode">真实贴图</span>
         </button>
 
-        <button class="btn-island-action" id="btn-screenshot" onclick="captureViewportScreenshot()" title="一键截图并复制到剪贴板 (可直接按 Ctrl+V 粘贴)">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-          <span id="txt-screenshot">截图</span>
-        </button>
+        <div class="screenshot-wrapper" id="screenshot-wrapper">
+          <button class="btn-island-action" id="btn-screenshot" onclick="toggleScreenshotMenu(event)" title="截图选项：复制/下载 (纯3D 或 带UI)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span id="txt-screenshot">截图</span>
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="opacity:0.75; margin-left:1px;"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+
+          <div class="screenshot-menu-dropdown" id="screenshot-menu-dropdown">
+            <button class="screenshot-menu-item" onclick="triggerScreenshotAction(false, 'copy')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span>复制截图 (纯3D)</span>
+            </button>
+            <button class="screenshot-menu-item" onclick="triggerScreenshotAction(true, 'copy')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              <span>复制截图 (带UI)</span>
+            </button>
+            <div class="screenshot-menu-divider"></div>
+            <button class="screenshot-menu-item" onclick="triggerScreenshotAction(false, 'download')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>下载截图 (纯3D)</span>
+            </button>
+            <button class="screenshot-menu-item" onclick="triggerScreenshotAction(true, 'download')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>下载截图 (带UI)</span>
+            </button>
+          </div>
+        </div>
 
         <div class="island-divider"></div>
 
@@ -6722,46 +6807,157 @@
       }
     }
 
-    // --- 10.1 VIEWPORT QUICK SCREENSHOT TO CLIPBOARD ---
-    window.captureViewportScreenshot = async function() {
+    // --- 10.1 MULTI-MODE SCREENSHOT SUITE (复制/下载 x 纯3D/带UI) ---
+    window.toggleScreenshotMenu = function(event) {
+      if (event) event.stopPropagation();
+      const menu = document.getElementById('screenshot-menu-dropdown');
+      if (menu) {
+        menu.classList.toggle('show');
+      }
+    };
+
+    window.triggerScreenshotAction = function(withUI, action) {
+      const menu = document.getElementById('screenshot-menu-dropdown');
+      if (menu) menu.classList.remove('show');
+      captureViewportScreenshot({ withUI, action });
+    };
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+      const wrapper = document.getElementById('screenshot-wrapper');
+      const menu = document.getElementById('screenshot-menu-dropdown');
+      if (wrapper && menu && !wrapper.contains(e.target)) {
+        menu.classList.remove('show');
+      }
+    });
+
+    window.captureViewportScreenshot = async function({ withUI = false, action = 'copy' } = {}) {
       try {
         if (!renderer || !scene || !camera) {
           showToast('3D 场景尚未初始化就绪，无法截图', 'warning');
           return;
         }
 
-        // Force a synchronous high-fidelity render pass
-        renderer.render(scene, camera);
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}${String(now.getSeconds()).padStart(2,'0')}`;
+        const containerCode = currentContainerType || (currentSpec ? currentSpec.code : '40HQ');
+        const modeLabel = withUI ? '全景带UI' : '纯3D视图';
+        const filename = `3D-AICIVS-${modeLabel}-${containerCode}-${timestamp}.png`;
 
-        if (renderer.domElement.toBlob) {
-          renderer.domElement.toBlob(async (blob) => {
-            if (!blob) {
-              showToast('生成截图图像数据失败', 'warning');
-              return;
+        if (withUI) {
+          // --- MODE: WITH UI (html2canvas) ---
+          if (typeof window.html2canvas !== 'function') {
+            showToast('html2canvas 截图组件加载中，请稍候再试...', 'info');
+            return;
+          }
+
+          // Hide transient screenshot menu before snapshot
+          const menu = document.getElementById('screenshot-menu-dropdown');
+          if (menu) menu.classList.remove('show');
+
+          // Ensure 3D canvas is freshly rendered
+          renderer.render(scene, camera);
+
+          showToast('正在生成带 UI 全景截图...', 'info', '📸 处理中');
+
+          const canvas = await window.html2canvas(document.body, {
+            backgroundColor: '#dce5ef',
+            useCORS: true,
+            allowTaint: true,
+            scale: Math.min(window.devicePixelRatio || 2, 2),
+            logging: false,
+            ignoreElements: (el) => {
+              if (!el) return false;
+              if (el.id === 'screenshot-menu-dropdown') return true;
+              if (el.classList && el.classList.contains('toast-notification')) return true;
+              return false;
             }
+          });
 
-            try {
-              if (navigator.clipboard && window.ClipboardItem) {
-                await navigator.clipboard.write([
-                  new ClipboardItem({ 'image/png': blob })
-                ]);
-                showToast('3D 视图截图已成功复制到剪贴板，可直接按 Ctrl+V 粘贴！', 'success', '📸 已复制到剪贴板');
-              } else {
-                showToast('当前浏览器环境不支持直接写入剪贴板图片，请使用 Chrome/Edge/Safari 现代浏览器。', 'warning');
+          if (!canvas) {
+            showToast('全景截图生成失败', 'warning');
+            return;
+          }
+
+          if (action === 'copy') {
+            canvas.toBlob(async (blob) => {
+              if (!blob) {
+                showToast('全景截图转换为图像数据失败', 'warning');
+                return;
               }
-            } catch (clipErr) {
-              console.warn('[3D-AICIVS] 剪贴板写入受限:', clipErr);
-              showToast('剪贴板写入受限，请确认浏览器已授予剪贴板访问权限。', 'warning');
-            }
-          }, 'image/png');
+              try {
+                if (navigator.clipboard && window.ClipboardItem) {
+                  await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+                  showToast('带 UI 全景截图已复制到剪贴板，可直接按 Ctrl+V 粘贴！', 'success', '📸 复制成功');
+                } else {
+                  showToast('浏览器不支持剪贴板图片写入，已为您切换为下载', 'info');
+                  downloadCanvasImage(canvas, filename);
+                }
+              } catch (clipErr) {
+                console.warn('[3D-AICIVS] 剪贴板写入受限:', clipErr);
+                showToast('剪贴板写入受限，已自动为您下载全景截图文件。', 'info');
+                downloadCanvasImage(canvas, filename);
+              }
+            }, 'image/png');
+          } else {
+            // Download file
+            downloadCanvasImage(canvas, filename);
+            showToast(`带 UI 全景截图已成功下载（${filename}）！`, 'success', '💾 下载成功');
+          }
         } else {
-          showToast('当前环境不支持 Canvas toBlob 导出', 'warning');
+          // --- MODE: PURE 3D (WebGL Canvas) ---
+          // Force a synchronous high-fidelity render pass
+          renderer.render(scene, camera);
+
+          if (action === 'copy') {
+            if (renderer.domElement.toBlob) {
+              renderer.domElement.toBlob(async (blob) => {
+                if (!blob) {
+                  showToast('生成 3D 截图数据失败', 'warning');
+                  return;
+                }
+                try {
+                  if (navigator.clipboard && window.ClipboardItem) {
+                    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+                    showToast('纯 3D 视图截图已成功复制到剪贴板，可直接按 Ctrl+V 粘贴！', 'success', '📸 复制成功');
+                  } else {
+                    showToast('浏览器不支持剪贴板图片写入，已为您切换为下载', 'info');
+                    downloadDataUrl(renderer.domElement.toDataURL('image/png'), filename);
+                  }
+                } catch (clipErr) {
+                  console.warn('[3D-AICIVS] 剪贴板写入受限:', clipErr);
+                  showToast('剪贴板写入受限，已自动为您下载 3D 截图文件。', 'info');
+                  downloadDataUrl(renderer.domElement.toDataURL('image/png'), filename);
+                }
+              }, 'image/png');
+            } else {
+              showToast('当前环境不支持 Canvas toBlob 导出', 'warning');
+            }
+          } else {
+            // Download file
+            downloadDataUrl(renderer.domElement.toDataURL('image/png'), filename);
+            showToast(`纯 3D 视图截图已成功下载（${filename}）！`, 'success', '💾 下载成功');
+          }
         }
       } catch (err) {
         console.error('[3D-AICIVS] 截图操作异常:', err);
         showToast('截图操作异常: ' + (err.message || err), 'warning');
       }
     };
+
+    function downloadCanvasImage(canvas, filename) {
+      const dataUrl = canvas.toDataURL('image/png');
+      downloadDataUrl(dataUrl, filename);
+    }
+
+    function downloadDataUrl(dataUrl, filename) {
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
 
     // --- 11. WORKBENCH DRAWER TOGGLES & STUDIO CONTROLS ---
     window.toggleLeftDrawer = function() {
