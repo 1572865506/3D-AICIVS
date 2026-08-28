@@ -143,30 +143,30 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                         time_budget_sec=time_budget,
                         seed=seed,
                     )
-                    from src.unified_pipeline.model.UnifiedCargoModel import UnifiedCargoModel, ZonePreference
-                    from src.unified_pipeline.packer.UnifiedSectionalPacker import UnifiedSectionalPacker
+                    from src.unified_pipeline.model.UniversalCargoTensor import UniversalCargoTensor, UniversalZone, ContainerDimensions
+                    from src.unified_pipeline.engine.UniversalHierarchicalSolver import UniversalHierarchicalSolver
                     from solver_v2.solver.baseline_solver import SolverSolution, SolverTelemetry
                     from solver_v2.domain.models import Placement, Point3D, Orientation3D, PlacementContext
                     from solver_v2.validation.independent_validator import IndependentGlobalValidator
 
-                    unified_cargo = []
+                    universal_cargo = []
                     sku_weights = {}
                     for s in cargo_skus:
                         req = getattr(s, 'source_requirement_text', '') or ''
-                        zp = ZonePreference.GENERAL
-                        if '最里面' in req:
-                            zp = ZonePreference.INNER
+                        zp = UniversalZone.FLEXIBLE
+                        if '最里面' in req or '里面' in req or '内' in req:
+                            zp = UniversalZone.INNER
                         elif '中间' in req:
-                            zp = ZonePreference.MIDDLE
+                            zp = UniversalZone.MIDDLE
                         elif '封柜门' in req or '门' in req:
-                            zp = ZonePreference.DOOR
+                            zp = UniversalZone.DOOR
                         
                         sku_weights[s.sku_id] = s.weight_kg
                         allow_flat = False
                         if hasattr(s, 'orientation_policy') and s.orientation_policy:
                             allow_flat = getattr(s.orientation_policy, 'allow_flat', False)
 
-                        unified_cargo.append(UnifiedCargoModel(
+                        universal_cargo.append(UniversalCargoTensor(
                             sku_id=s.sku_id,
                             name=s.name,
                             length=max(s.box.x, s.box.y),
@@ -179,12 +179,15 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                             raw_requirement=req
                         ))
 
-                    packer = UnifiedSectionalPacker(
-                        container_length=container_spec.Lx,
-                        container_width=container_spec.Ly,
-                        container_height=container_spec.Lz
+                    c_dims = ContainerDimensions(
+                        code=container_spec.code,
+                        length=container_spec.Lx,
+                        width=container_spec.Ly,
+                        height=container_spec.Lz,
+                        max_payload_kg=container_spec.max_payload_kg
                     )
-                    raw_placements, metrics = packer.pack(unified_cargo)
+                    solver = UniversalHierarchicalSolver(container=c_dims)
+                    raw_placements, metrics = solver.solve(universal_cargo)
 
                     final_placements = []
                     for idx, p in enumerate(raw_placements):

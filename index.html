@@ -2439,11 +2439,11 @@
           <button class="btn-slice-reset" onclick="resetSlicingTimeline()" title="恢复完整装载视图">🔄 重置切片</button>
         </div>
         <div class="slice-slider-row">
-          <span class="slice-end-label left" title="柜门方向 (X=L)">🚪 柜门 (0.00m)</span>
+          <span class="slice-end-label left" title="柜门端开门口 (X=L)">🚪 柜门端 (12.03m)</span>
           <div class="slice-slider-wrapper">
             <input type="range" class="slice-range-input" id="slice-depth-slider" min="0" max="100" step="0.2" value="0" oninput="onSlicingTimelineChange(this.value)">
           </div>
-          <span class="slice-end-label right" id="slice-deep-label" title="柜尾最远端 (X=0)">📦 最远端 (12.03m)</span>
+          <span class="slice-end-label right" id="slice-deep-label" title="柜尾最深处 (X=0)">0.00m 📦 (最深内壁)</span>
         </div>
       </div>
 
@@ -5051,12 +5051,13 @@
         }
       }
 
-      const rulerGeo = new THREE.PlaneGeometry(L, 0.28);
-      const rulerTex = createGroundRulerTexture(currentSpec.intL);
+      const rulerH = 0.44;
+      const rulerGeo = new THREE.PlaneGeometry(currentSpec.intL, rulerH);
+      const rulerTex = createGroundRulerTexture(currentSpec.intL, rulerH);
       const rulerMat = new THREE.MeshBasicMaterial({
         map: rulerTex,
         transparent: true,
-        opacity: 0.96,
+        opacity: 0.98,
         side: THREE.DoubleSide,
         depthWrite: false
       });
@@ -6624,54 +6625,93 @@
     let groundRulerMesh = null;
     let slicingGroundMarkerMesh = null;
 
-    function createGroundRulerTexture(lengthMeters) {
+    function createGroundRulerTexture(lengthMeters, rulerHeightMeters) {
+      const length = lengthMeters || 12.032;
+      const heightMeters = rulerHeightMeters || 0.44;
+
+      // Calculate pixel dimensions ensuring 1:1 square pixel aspect ratio (ZERO stretching)
+      const pxPerMeter = 360; // 360 pixels per meter for razor-sharp text
+      const widthPx = Math.round(length * pxPerMeter);
+      const heightPx = Math.round(heightMeters * pxPerMeter);
+
       const canvas = document.createElement('canvas');
-      canvas.width = 2048;
-      canvas.height = 128;
+      canvas.width = widthPx;
+      canvas.height = heightPx;
       const ctx = canvas.getContext('2d');
 
-      // Metallic slate background ribbon
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(0, 0, 2048, 128);
+      // 1. Fully Transparent Background (No dark rectangle fill)
+      ctx.clearRect(0, 0, widthPx, heightPx);
 
-      // Top glowing cyan rail
-      ctx.fillStyle = '#0284c7';
-      ctx.fillRect(0, 0, 2048, 5);
+      // 2. Continuous Top Baseline Rail (Clean industrial hairline)
+      const railY = 4;
+      ctx.fillStyle = '#64748b'; // slate-500
+      ctx.fillRect(0, railY, widthPx, 2);
 
-      // Bottom subtle edge
-      ctx.fillStyle = '#334155';
-      ctx.fillRect(0, 122, 2048, 6);
+      // Accent marks along the rail
+      ctx.fillStyle = '#0284c7'; // sky-600
+      ctx.fillRect(0, railY, widthPx, 1);
 
-      // Metric ticks from Door (Left in 3D: +halfIntL) to Deep end (Right: -halfIntL)
-      const numMeters = Math.ceil(lengthMeters);
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = 'bold 22px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+      // 3. Metric Ticks: Right side in 3D (x=widthPx) is 0m (最里面), Left side in 3D (x=0) is Door (lengthMeters)
+      const numMeters = Math.ceil(length);
 
-      for (let m = 0; m <= numMeters; m += 0.5) {
-        const x = (m / lengthMeters) * 2048;
-        const isMajor = (m % 1 === 0);
-
-        if (isMajor) {
-          ctx.fillStyle = '#38bdf8';
-          ctx.fillRect(x - 1.5, 0, 3, 38);
-          ctx.fillStyle = '#f8fafc';
-          if (m === 0) {
-            ctx.fillText('🚪 0m', x + 25, 78);
-          } else if (m >= numMeters) {
-            ctx.fillText(`${m}m 📦`, x - 25, 78);
-          } else {
-            ctx.fillText(`${m}m`, x, 78);
-          }
-        } else {
-          ctx.fillStyle = '#64748b';
-          ctx.fillRect(x - 1, 0, 2, 22);
+      // 3.1 Draw decimeter micro-ticks (every 0.1m)
+      for (let dm = 0; dm <= length; dm += 0.1) {
+        if (Math.abs(dm % 0.5) > 1e-4) {
+          const x = widthPx - (dm / length) * widthPx;
+          ctx.fillStyle = '#64748b'; // slate-500
+          ctx.fillRect(x - 0.5, railY, 1, 9);
         }
       }
 
+      // 3.2 Draw half-meter ticks (every 0.5m)
+      for (let hm = 0.5; hm <= length; hm += 1.0) {
+        const x = widthPx - (hm / length) * widthPx;
+        ctx.fillStyle = '#94a3b8'; // slate-400
+        ctx.fillRect(x - 1, railY, 2, 18);
+      }
+
+      // 3.3 Draw Major 1-meter ticks & Sharp Clean Sans-Serif Typography
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+
+      for (let m = 0; m <= numMeters; m += 1.0) {
+        if (m > length + 1e-3) break;
+        const x = widthPx - (m / length) * widthPx;
+
+        // Major tick pillar
+        ctx.fillStyle = '#38bdf8'; // sky-400
+        ctx.fillRect(x - 1.5, railY, 3, 28);
+
+        // Tick dot
+        ctx.beginPath();
+        ctx.arc(x, railY + 33, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#0284c7';
+        ctx.fill();
+
+        // Crisp Modern Sans-Serif font (300 Light: slim, sharp, elegant)
+        ctx.font = '300 38px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif';
+        
+        let labelText = `${m}m`;
+        let labelOffset = 0;
+
+        if (m === 0) {
+          labelText = '0m 最里面';
+          labelOffset = -75;
+        } else if (m >= numMeters || Math.abs(m - length) < 0.3) {
+          labelText = `${length.toFixed(3).replace(/\.?0+$/, '')}m 柜门`;
+          labelOffset = 75;
+        }
+
+        // Single-pass pure sharp text without heavy shadow
+        ctx.fillStyle = (m === 0 || m >= numMeters) ? '#0284c7' : '#0f172a';
+        ctx.fillText(labelText, x + labelOffset, railY + 40);
+      }
+
       const tex = new THREE.CanvasTexture(canvas);
-      tex.anisotropy = 8;
+      tex.generateMipmaps = true;
+      tex.minFilter = THREE.LinearMipmapLinearFilter;
+      tex.magFilter = THREE.LinearFilter;
+      tex.anisotropy = 16;
       return tex;
     }
 
@@ -6697,7 +6737,7 @@
 
       const txtEl = document.getElementById('slice-depth-txt');
       const deepLabel = document.getElementById('slice-deep-label');
-      if (deepLabel) deepLabel.textContent = `📦 最远端 (${L.toFixed(2)}m)`;
+      if (deepLabel) deepLabel.textContent = `0.00m 📦 (最深内壁)`;
 
       if (currentSliceCutPercent <= 0.01) {
         if (txtEl) txtEl.textContent = `纵深位置: ${L.toFixed(2)}m / ${L.toFixed(2)}m (全部可见)`;
