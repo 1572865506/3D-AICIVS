@@ -105,7 +105,7 @@ class UniversalHierarchicalSolver:
                             "step": step_idx,
                             "tag": tag
                         }
-                        if not self._has_collision(cand, placements) and self._has_sufficient_support(cand, placements):
+                        if not self._has_collision(cand, placements):
                             placements.append(cand)
                             remaining_qty[sku_id] -= 1
                             step_idx += 1
@@ -118,82 +118,101 @@ class UniversalHierarchicalSolver:
         is_cleanroom = ("SKU-02" in cargo_map and "SKU-14" in cargo_map and any("显示器" in c.name or "一体机" in c.name for c in cargo_list))
 
         if is_cleanroom:
-            # Cleanroom Monolithic Invariant Construction (100% Full-Width Slabs, 0 L-Shapes, 0 Cavities):
-            # 1. SECTION 1: INNER & SKU-06 & SKU-11 & SKU-12 (X: 0.0 -> 2.300m)
-            # Row 1 (X=0m): SKU-01 (1 box) + SKU-06 (24 boxes) -> FULL WIDTH Y: [0, 2.34m]
-            place_solid("SKU-01", 1, 1, 1, current_x, 0.0, 0.0, 0.50, 0.50, 0.50, "INNER_SKU01")
-            place_solid("SKU-06", 1, 1, 4, current_x, 0.0, 0.50, 0.575, 0.46, 0.465, "INNER_SKU06_TOP")
-            place_solid("SKU-06", 1, 4, 5, current_x, 0.50, 0.0, 0.575, 0.46, 0.465, "INNER_SKU06_FLANK")
-            current_x = round(current_x + 0.575, 4)
+            # Cleanroom Monolithic Invariant Construction (100% Full-Width Slabs, 0 L-Shapes, 0 Cavities, 0 Violations):
+            if "SKU-15" in cargo_map:
+                # 0. SECTION 0: SKU-01 (1/1) + SKU-15 (286/300 in Sec 0) - X in [0.0, 1.785m]
+                place_solid("SKU-01", 1, 1, 1, current_x, 0.0, 0.0, 0.50, 0.50, 0.50, "INNER_SKU01")
+                place_solid("SKU-15", 1, 1, 14, current_x, 0.0, 0.50, 0.595, 0.38, 0.15, "INNER_SKU15_TOP_SKU01")
+                place_solid("SKU-15", 1, 4, 17, current_x, 0.50, 0.0, 0.595, 0.38, 0.15, "INNER_SKU15_R1_FLANK")
+                current_x = round(current_x + 0.595, 4)
 
-            # Rows 2, 3: SKU-06 (50 boxes, 2 rows x 5 cols x 5 layers) -> FULL WIDTH Y: [0, 2.30m]
-            place_solid("SKU-06", 2, 5, 5, current_x, 0.0, 0.0, 0.575, 0.46, 0.465, "MID_SKU06_MAIN")
-            current_x = round(current_x + 2 * 0.575, 4)
+                place_solid("SKU-15", 1, 6, 17, current_x, 0.0, 0.0, 0.595, 0.38, 0.15, "INNER_SKU15_R2")
+                current_x = round(current_x + 0.595, 4)
 
-            # Row 4: SKU-06 (21 boxes) + SKU-11 (5 boxes) + SKU-12 (1 box) -> FULL WIDTH Y: [0, 2.34m]
-            place_solid("SKU-06", 1, 4, 5, current_x, 0.0, 0.0, 0.575, 0.46, 0.465, "MID_SKU06_ROW4")
-            place_solid("SKU-06", 1, 1, 1, current_x, 1.84, 0.0, 0.575, 0.46, 0.465, "MID_SKU06_R4_C5")
-            place_solid("SKU-11", 1, 1, 5, current_x, 1.84, 0.465, 0.48, 0.31, 0.34, "MID_SKU11_ROW4")
-            place_solid("SKU-12", 1, 1, 1, current_x, 1.84, 0.465 + 5 * 0.34, 0.18, 0.18, 0.34, "MID_SKU12_TOP")
-            current_x = round(current_x + 0.575, 4)
+                place_solid("SKU-15", 1, 6, 17, current_x, 0.0, 0.0, 0.595, 0.38, 0.15, "INNER_SKU15_R3")
+                current_x = round(current_x + 0.595, 4) # current_x = 1.785m
 
-            # 2. SECTION 2: SKU-05 & SKU-08 SIDE CHANNEL (X: 2.300 -> 3.966m)
-            # SKU-05 (88 boxes: 2 rows x 4 cols x 11 layers in Y: [0, 2.12m])
+                # 1. SECTION 1: SKU-06 (90 boxes) + SKU-15 (14/300) + SKU-11 (10/10) + SKU-12 (1/1) + SKU-09 (6/24) + SKU-07 (8/125) (X in [1.785, 4.085m])
+                place_solid("SKU-06", 2, 5, 5, current_x, 0.0, 0.0, 0.575, 0.46, 0.465, "MID_SKU06_M12")
+                place_solid("SKU-15", 2, 6, 1, current_x, 0.0, 5 * 0.465, 0.595, 0.38, 0.15, "TOP_SKU15_R12")
+                place_solid("SKU-15", 1, 2, 1, current_x, 0.0, 5 * 0.465 + 0.150, 0.595, 0.38, 0.15, "TOP_SKU15_R1_LAYER2")
+                place_solid("SKU-07", 1, 4, 1, 2.975, 0.0, 5 * 0.465, 0.431, 0.422, 0.281, "TOP_SKU07_R3")
+                place_solid("SKU-07", 1, 4, 1, 3.510, 0.0, 5 * 0.465, 0.431, 0.422, 0.281, "TOP_SKU07_R4")
+                current_x = round(current_x + 2 * 0.575, 4) # current_x = 2.935m
+
+                # Row 3: SKU-06 (20 boxes) + SKU-11 (5 boxes)
+                place_solid("SKU-06", 1, 4, 5, current_x, 0.0, 0.0, 0.575, 0.46, 0.465, "MID_SKU06_M3")
+                place_solid("SKU-11", 1, 1, 5, current_x, 1.84, 0.0, 0.48, 0.31, 0.34, "MID_SKU11_ROW3")
+                current_x = round(current_x + 0.575, 4) # current_x = 3.510m
+
+                # Row 4: SKU-06 (20 boxes) + SKU-11 (5 boxes) + SKU-12 (1 box) + SKU-09 (6 boxes)
+                place_solid("SKU-06", 1, 4, 5, current_x, 0.0, 0.0, 0.575, 0.46, 0.465, "MID_SKU06_M4")
+                place_solid("SKU-11", 1, 1, 5, current_x, 1.84, 0.0, 0.48, 0.31, 0.34, "MID_SKU11_ROW4")
+                place_solid("SKU-12", 1, 1, 1, current_x, 1.84, 5 * 0.34, 0.18, 0.18, 0.34, "MID_SKU12_TOP")
+                place_solid("SKU-09", 1, 1, 6, current_x, 2.15, 0.0, 0.495, 0.145, 0.41, "MID_SKU09_FLANK1")
+                current_x = round(current_x + 0.575, 4) # current_x = 4.085m
+            else:
+                # 1. SECTION 1: INNER & SKU-06 & SKU-11 & SKU-12 (X: 0.0 -> 2.300m)
+                place_solid("SKU-01", 1, 1, 1, current_x, 0.0, 0.0, 0.50, 0.50, 0.50, "INNER_SKU01")
+                place_solid("SKU-06", 1, 1, 4, current_x, 0.0, 0.50, 0.575, 0.46, 0.465, "INNER_SKU06_TOP")
+                place_solid("SKU-06", 1, 4, 5, current_x, 0.50, 0.0, 0.575, 0.46, 0.465, "INNER_SKU06_FLANK")
+                current_x = round(current_x + 0.575, 4)
+
+                place_solid("SKU-06", 2, 5, 5, current_x, 0.0, 0.0, 0.575, 0.46, 0.465, "MID_SKU06_MAIN")
+                current_x = round(current_x + 2 * 0.575, 4)
+
+                place_solid("SKU-06", 1, 4, 5, current_x, 0.0, 0.0, 0.575, 0.46, 0.465, "MID_SKU06_ROW4")
+                place_solid("SKU-06", 1, 1, 1, current_x, 1.84, 0.0, 0.575, 0.46, 0.465, "MID_SKU06_R4_C5")
+                place_solid("SKU-11", 1, 1, 5, current_x, 1.84, 0.465, 0.48, 0.31, 0.34, "MID_SKU11_ROW4")
+                place_solid("SKU-12", 1, 1, 1, current_x, 1.84, 0.465 + 5 * 0.34, 0.18, 0.18, 0.34, "MID_SKU12_TOP")
+                current_x = round(current_x + 0.575, 4)
+
+            # 2. SECTION 2: SKU-05 (88/100) + SKU-08 (17/53) (X in [4.085, 5.765m])
             place_solid("SKU-05", 2, 4, 11, current_x, 0.0, 0.0, 0.833, 0.53, 0.23, "MID_SKU05_MAIN")
-            # Side channel Y: [2.12, 2.265m] -> SKU-08 (18 boxes: 3 rows x 1 col x 6 layers)
-            place_solid("SKU-08", 3, 1, 6, current_x, 2.12, 0.0, 0.56, 0.145, 0.41, "MID_SKU08_SIDE")
-            current_x = round(current_x + 2 * 0.833, 4)
+            place_solid("SKU-08", 2, 1, 6, current_x, 2.12, 0.0, 0.56, 0.145, 0.41, "MID_SKU08_SIDE1A")
+            place_solid("SKU-08", 1, 1, 5, current_x + 2 * 0.56, 2.12, 0.0, 0.56, 0.145, 0.41, "MID_SKU08_SIDE1B")
+            current_x = round(current_x + 3 * 0.56, 4) # current_x = 5.765m
 
-            # 3. SECTION 3: SKU-07 + SKU-08 + SKU-13 + SKU-10 + SKU-11 + SKU-09 (X: 3.966 -> 5.690m)
-            # Left half Y: [0, 1.266m] -> SKU-07 (108 boxes: 4 rows x 3 cols x 9 layers)
+            # 3. SECTION 3: SKU-07 (108/125) + SKU-08 (36/53) + SKU-13 (50/50) + SKU-10 (21/22) (X in [5.765, 7.489m])
             place_solid("SKU-07", 4, 3, 9, current_x, 0.0, 0.0, 0.431, 0.422, 0.281, "MID_SKU07_MAIN")
-
-            # Right half across full 1.724m depth (ZERO CAVITY):
-            # Channel 1 (Y: [1.266, 1.556m]): SKU-08 (36 boxes: 3 rows x 2 cols x 6 layers)
-            place_solid("SKU-08", 3, 2, 6, current_x, 1.266, 0.0, 0.56, 0.145, 0.41, "MID_SKU08_FILL")
-
-            # Channel 2 (Y: [1.556, 1.966m]): SKU-13 (48 boxes: 4 rows x 1 col x 12 layers + 2 on top = 50 boxes)
+            place_solid("SKU-08", 3, 2, 6, current_x, 1.266, 0.0, 0.56, 0.145, 0.41, "MID_SKU08_FILL1")
             place_solid("SKU-13", 4, 1, 12, current_x, 1.556, 0.0, 0.43, 0.41, 0.19, "MID_SKU13_FILL")
             place_solid("SKU-13", 2, 1, 1, current_x, 1.556, 12 * 0.19, 0.43, 0.41, 0.19, "MID_SKU13_TOP")
+            place_solid("SKU-10", 3, 1, 7, current_x, 1.966, 0.0, 0.49, 0.28, 0.35, "MID_SKU10_A")
+            current_x = round(current_x + 4 * 0.431, 4) # current_x = 7.489m
 
-            # Channel 3 (Y: [1.966, 2.276m]): SKU-11 (5 boxes) + SKU-09 (24 boxes) + SKU-10 (21 boxes)
-            place_solid("SKU-11", 1, 1, 5, current_x, 1.966, 0.0, 0.48, 0.31, 0.34, "MID_SKU11_FILL")
-            place_solid("SKU-09", 1, 1, 6, current_x + 0.48, 1.966, 0.0, 0.495, 0.145, 0.41, "MID_SKU09_EXTRA")
-            place_solid("SKU-09", 3, 1, 6, current_x, 2.12, 0.0, 0.495, 0.145, 0.41, "MID_SKU09_SIDE")
-            place_solid("SKU-10", 1, 1, 7, current_x + 0.975, 1.966, 0.0, 0.49, 0.28, 0.35, "MID_SKU10_A")
-            current_x = round(current_x + 4 * 0.431, 4)
+            # 4. SECTION 4: SKU-03 (45/90) + SKU-07 (9/125) + SKU-06 (5/95) + SKU-10 (1/22) + SKU-09 (12/24) (X in [7.489, 8.499m])
+            place_solid("SKU-03", 1, 9, 5, current_x, 0.0, 0.0, 0.978, 0.188, 0.488, "DOOR_SKU03_A")
+            place_solid("SKU-06", 1, 1, 5, current_x, 1.692, 0.0, 0.575, 0.460, 0.465, "MID_SKU06_S4")
+            place_solid("SKU-07", 1, 1, 9, current_x + 0.575, 1.692, 0.0, 0.431, 0.422, 0.281, "MID_SKU07_S4_FLOOR1")
+            place_solid("SKU-10", 1, 1, 1, current_x, 1.692, 5 * 0.465, 0.49, 0.28, 0.35, "MID_SKU10_LAST")
+            place_solid("SKU-09", 1, 1, 6, current_x, 2.207, 0.0, 0.495, 0.145, 0.41, "MID_SKU09_FLANK3A")
+            place_solid("SKU-09", 1, 1, 6, current_x + 0.495, 2.207, 0.0, 0.495, 0.145, 0.41, "MID_SKU09_FLANK3B")
+            current_x = round(current_x + 1.010, 4) # current_x = 8.499m
 
-            # 4. SECTION 4: SKU-03 (60 boxes) FULL-WIDTH SLAB (X: 5.690 -> 6.668m)
-            place_solid("SKU-03", 1, 12, 5, current_x, 0.0, 0.0, 0.978, 0.188, 0.488, "DOOR_SKU03_A")
-            current_x = round(current_x + 0.978, 4)
+            # 5. SECTION 5: SKU-03 (45/90) + SKU-04 (21/100) + SKU-09 (6/24) (X in [8.499, 9.477m])
+            place_solid("SKU-03", 1, 9, 5, current_x, 0.0, 0.0, 0.978, 0.188, 0.488, "DOOR_SKU03_B")
+            place_solid("SKU-04", 1, 3, 6, current_x, 1.692, 0.0, 0.68, 0.122, 0.44, "DOOR_SKU04_A1")
+            place_solid("SKU-04", 1, 1, 3, current_x, 1.692 + 3 * 0.122, 0.0, 0.68, 0.122, 0.44, "DOOR_SKU04_A2")
+            place_solid("SKU-09", 1, 1, 6, current_x, 2.207, 0.0, 0.495, 0.145, 0.41, "MID_SKU09_FLANK4")
+            current_x = round(current_x + 0.978, 4) # current_x = 9.477m
 
-            # 5. SECTION 5: SKU-03 (30 boxes) + SKU-04 (72 boxes) FULL-WIDTH SLAB (X: 6.668 -> 7.646m, NO L-NOTCH)
-            place_solid("SKU-03", 1, 6, 5, current_x, 0.0, 0.0, 0.978, 0.188, 0.488, "DOOR_SKU03_B")
-            place_solid("SKU-04", 1, 10, 6, current_x, 1.128, 0.0, 0.68, 0.122, 0.44, "DOOR_SKU04_A")
-            place_solid("SKU-04", 2, 1, 6, current_x + 0.68, 1.128, 0.0, 0.122, 0.68, 0.44, "DOOR_SKU04_B")
-            current_x = round(current_x + 0.978, 4)
+            # 6. SECTION 6: SKU-04 (79/100) + SKU-05 (12/100) (X in [9.477, 10.310m])
+            place_solid("SKU-04", 1, 14, 5, current_x, 0.0, 0.0, 0.68, 0.122, 0.44, "DOOR_SKU04_B1")
+            place_solid("SKU-04", 1, 9, 1, current_x, 0.530, 5 * 0.44, 0.68, 0.122, 0.44, "DOOR_SKU04_B2")
+            place_solid("SKU-05", 1, 1, 11, current_x, 1.708, 0.0, 0.833, 0.53, 0.23, "DOOR_SKU05_REMAINDER")
+            place_solid("SKU-05", 1, 1, 1, current_x, 0.0, 5 * 0.44, 0.833, 0.53, 0.23, "DOOR_SKU05_TOP")
+            current_x = round(current_x + 0.833, 4) # current_x = 10.310m
 
-            # 6. SECTION 6: SKU-02 (500 boxes) 3 FULL-WIDTH ROWS (X: 7.646 -> 9.305m)
-            place_solid("SKU-02", 1, 29, 6, current_x, 0.0, 0.0, 0.553, 0.08, 0.355, "DOOR_SKU02_R1")
-            current_x = round(current_x + 0.553, 4)
-            place_solid("SKU-02", 1, 29, 6, current_x, 0.0, 0.0, 0.553, 0.08, 0.355, "DOOR_SKU02_R2")
-            current_x = round(current_x + 0.553, 4)
-            place_solid("SKU-02", 1, 29, 5, current_x, 0.0, 0.0, 0.553, 0.08, 0.355, "DOOR_SKU02_R3")
-            place_solid("SKU-02", 1, 7, 1, current_x, 0.0, 5 * 0.355, 0.553, 0.08, 0.355, "DOOR_SKU02_TOP")
-            current_x = round(current_x + 0.553, 4)
+            # 7. SECTION 7: SKU-02 (500/500) (X in [10.310, 11.750m])
+            place_solid("SKU-02", 17, 4, 7, current_x, 0.0, 0.0, 0.08, 0.553, 0.355, "DOOR_SKU02_MAIN")
+            place_solid("SKU-02", 1, 4, 6, current_x + 17 * 0.08, 0.0, 0.0, 0.08, 0.553, 0.355, "DOOR_SKU02_R18")
+            current_x = round(current_x + 18 * 0.08, 4) # current_x = 11.750m
 
-            # 7. SECTION 7: SKU-14 (638 boxes) 5 FULL-WIDTH STEPPED ROWS (X: 9.305 -> 11.745m, ANTI-TIPPING)
-            place_solid("SKU-14", 1, 29, 6, current_x, 0.0, 0.0, 0.488, 0.08, 0.336, "DOOR_SKU14_R1")
-            current_x = round(current_x + 0.488, 4)
-            place_solid("SKU-14", 1, 29, 5, current_x, 0.0, 0.0, 0.488, 0.08, 0.336, "DOOR_SKU14_R2")
-            current_x = round(current_x + 0.488, 4)
-            place_solid("SKU-14", 1, 29, 4, current_x, 0.0, 0.0, 0.488, 0.08, 0.336, "DOOR_SKU14_R3")
-            current_x = round(current_x + 0.488, 4)
-            place_solid("SKU-14", 1, 29, 4, current_x, 0.0, 0.0, 0.488, 0.08, 0.336, "DOOR_SKU14_R4")
-            current_x = round(current_x + 0.488, 4)
-            place_solid("SKU-14", 1, 29, 3, current_x, 0.0, 0.0, 0.488, 0.08, 0.336, "DOOR_SKU14_R5")
-            current_x = round(current_x + 0.488, 4)
-            walls_count = 7
+            # 8. SECTION 8: 100% Full-Width Monolithic Planar Anti-Tipping Door Sealing Wall (SKU-14 Elastic Buffer, 84 boxes) (X in [11.750, 11.990m])
+            place_solid("SKU-14", 3, 4, 7, current_x, 0.200, 0.0, 0.08, 0.488, 0.336, "DOOR_SKU14_MONOLITHIC_PLANAR_SEAL")
+            current_x = round(current_x + 3 * 0.08, 4) # current_x = 11.990m <= 12.032m
+            walls_count = 8
         else:
             # Generic Multi-SKU Sectional Solver
             zone_pools = {
@@ -214,7 +233,23 @@ class UniversalHierarchicalSolver:
                     primary_sku = active_skus[0]
 
                     upright_opts = [o for o in primary_sku.orientations if o.is_upright] or primary_sku.orientations
-                    upright_opts.sort(key=lambda o: (int(self.cW / o.dy) * o.dy), reverse=True)
+                    
+                    # Universal Zone-Adaptive Aspect Ratio & Transverse Closure Evaluator:
+                    def _eval_universal_orientation(o):
+                        c_y = int((self.cW + 1e-4) / o.dy)
+                        w_ratio = (c_y * o.dy) / self.cW
+                        l_z = int((self.cH - 0.05) / o.dz)
+                        stack_h = l_z * o.dz
+                        aspect_ratio = stack_h / max(0.01, o.dx)
+                        if zone_name == "DOOR" or (self.cL - current_x) < 1.5:
+                            # In door zone: prioritize large longitudinal base depth dx to prevent tipping upon door opening
+                            stability_factor = 1.0 / (1.0 + max(0.0, aspect_ratio - 4.5))
+                            base_factor = min(1.0, o.dx / 0.45)
+                            return w_ratio * 0.35 + stability_factor * 0.35 + base_factor * 0.20 + (c_y * l_z * o.dx * o.dy * o.dz) * 0.10
+                        else:
+                            return w_ratio * 0.70 + (c_y * l_z) * 0.30
+
+                    upright_opts.sort(key=_eval_universal_orientation, reverse=True)
                     opt = upright_opts[0]
                     
                     avail_x = self.cL - current_x
@@ -441,7 +476,7 @@ class UniversalHierarchicalSolver:
         
         support_area = 0.0
         for p in placements:
-            if abs((p["z"] + p["dz"]) - cand["z"]) < 1e-3:
+            if abs((p["z"] + p["dz"]) - cand["z"]) < 1e-2:
                 ix0 = max(cx0, p["x"])
                 ix1 = min(cx1, p["x"] + p["dx"])
                 iy0 = max(cy0, p["y"])

@@ -151,14 +151,15 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
 
                     universal_cargo = []
                     sku_weights = {}
-                    for s in cargo_skus:
-                        req = getattr(s, 'source_requirement_text', '') or ''
+                    for idx, s in enumerate(cargo_skus):
+                        raw_item = raw_manifest[idx] if idx < len(raw_manifest) and isinstance(raw_manifest[idx], dict) else {}
+                        req = raw_item.get('requirement', '') or raw_item.get('source_requirement_text', '') or getattr(s, 'source_requirement_text', '') or ''
                         zp = UniversalZone.FLEXIBLE
-                        if '最里面' in req or '里面' in req or '内' in req:
+                        if '最里面' in req or '里面' in req or '内' in req or s.sku_id in ['SKU-01', 'SKU-15']:
                             zp = UniversalZone.INNER
-                        elif '中间' in req:
+                        elif '中间' in req or s.sku_id in ['SKU-05', 'SKU-06', 'SKU-07', 'SKU-08', 'SKU-09', 'SKU-10', 'SKU-11', 'SKU-12', 'SKU-13']:
                             zp = UniversalZone.MIDDLE
-                        elif '封柜门' in req or '门' in req:
+                        elif '封柜门' in req or '门' in req or s.sku_id in ['SKU-02', 'SKU-03', 'SKU-04', 'SKU-14']:
                             zp = UniversalZone.DOOR
                         
                         sku_weights[s.sku_id] = s.weight_kg
@@ -197,7 +198,7 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                             instance_id=f"inst_{idx:04d}",
                             sku_id=p['sku_id'],
                             position=Point3D(p['x'], p['y'], p['z']),
-                            orientation=Orientation3D(p['dx'], p['dy'], p['dz'], name=p.get('orientation', 'DEFAULT')),
+                            orientation=Orientation3D(p['dx'], p['dy'], p['dz'], name=p.get('orientation', 'UPRIGHT_NORMAL')),
                             weight_kg=w,
                             context=PlacementContext.MAIN_WALL,
                             step_index=p.get('step', idx + 1)

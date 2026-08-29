@@ -1,7 +1,7 @@
 {
   "caseId": "40hq_cleanroom_case_001",
-  "skuCount": 14,
-  "requestedCartons": 1845,
+  "skuCount": 15,
+  "requestedCartons": 2145,
   "containerSeed": {
     "type": "40HQ",
     "inner": {
@@ -262,6 +262,20 @@
         "weight": 2.15,
         "quantity": 674,
         "requirement": "封柜门; 可以减少点"
+      },
+      "status": "BUSINESS_NORMALIZATION_REQUIRED"
+    },
+    {
+      "sku": "SKU-15",
+      "name": "23.8寸摄像头显示器",
+      "cargoProfileRef": "REAR_UPRIGHT_DEFAULT",
+      "source": {
+        "w": 0.595,
+        "d": 0.380,
+        "h": 0.150,
+        "weight": 5.0,
+        "quantity": 300,
+        "requirement": "放柜子最里面"
       },
       "status": "BUSINESS_NORMALIZATION_REQUIRED"
     }

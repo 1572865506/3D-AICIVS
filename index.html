@@ -2266,11 +2266,11 @@
         <div class="section-card">
           <div class="section-label">
             <span>混装货物清单</span>
-            <span class="param-val" id="manifest-sku-count">14 种 SKU</span>
+            <span class="param-val" id="manifest-sku-count">15 种 SKU</span>
           </div>
 
           <div class="chip-grid-2">
-            <button class="btn-chip active" id="btn-pre-production" onclick="loadManifestPreset('production')">🖥️ 真实产线混装单 (14种)</button>
+            <button class="btn-chip active" id="btn-pre-production" onclick="loadManifestPreset('production')">🖥️ 真实产线混装单 (15种)</button>
             <button class="btn-chip" id="btn-pre-standard" onclick="loadManifestPreset('standard')">📦 标准跨境单</button>
             <button class="btn-chip" id="btn-pre-heavy" onclick="loadManifestPreset('heavy')">⚙️ 重型汽配单</button>
             <button class="btn-chip" id="btn-pre-pallets" onclick="loadManifestPreset('pallets')">🪵 标准打托单</button>
@@ -3743,7 +3743,7 @@
     const PALETTE = [
       0x3b82f6, 0x10b981, 0xf59e0b, 0xef4444, 0x8b5cf6,  
       0x06b6d4, 0xec4899, 0x6366f1, 0x14b8a6, 0xf97316,
-      0x84cc16, 0xa855f7, 0x0ea5e9, 0xeab308
+      0x84cc16, 0xa855f7, 0x0ea5e9, 0xeab308, 0x0284c7
     ];
 
     const PRODUCTION_CLEANED_MANIFEST = [
@@ -3760,7 +3760,8 @@
       { sku: 'SKU-11', name: '电源线', w: 0.48, d: 0.31, h: 0.34, weight: 25.5, quantity: 10, requirement: '放中间', color: PALETTE[10] },
       { sku: 'SKU-12', name: '电源线 (小箱)', w: 0.18, d: 0.18, h: 0.34, weight: 5.5, quantity: 1, requirement: '放中间', color: PALETTE[11] },
       { sku: 'SKU-13', name: '电源', w: 0.43, d: 0.41, h: 0.19, weight: 15.5, quantity: 50, requirement: '放中间', color: PALETTE[12] },
-      { sku: 'SKU-14', name: '19寸 显示器 BG (DA)', w: 0.488, d: 0.08, h: 0.336, weight: 2.15, quantity: 674, requirement: '封柜门; 可以减少点', color: PALETTE[13] }
+      { sku: 'SKU-14', name: '19寸 显示器 BG (DA)', w: 0.488, d: 0.08, h: 0.336, weight: 2.15, quantity: 674, requirement: '封柜门; 可以减少点', color: PALETTE[13] },
+      { sku: 'SKU-15', name: '23.8寸摄像头显示器', w: 0.595, d: 0.380, h: 0.150, weight: 5.0, quantity: 300, requirement: '放柜子最里面', color: PALETTE[14] }
     ];
 
     const PRESET_MANIFESTS = {
@@ -3841,8 +3842,8 @@
     }
 
     // --- CLIENT-SIDE SPATIAL COORDINATE CACHE ENGINE ---
-    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V30_TRUE_6MODULES_';
-    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V30_TRUE_6MODULES';
+    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V35_MONOLITHIC_';
+    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V35_MONOLITHIC';
 
     // Auto purge obsolete localStorage caches from older versions
     (function purgeObsoleteCaches() {
@@ -3850,7 +3851,7 @@
         const keysToRemove = [];
         for (let i = 0; i < localStorage.length; i++) {
           const k = localStorage.key(i);
-          if (k && k.startsWith('3D_AICIVS_') && !k.includes('V30_TRUE_6MODULES')) {
+          if (k && k.startsWith('3D_AICIVS_') && !k.includes('V35_MONOLITHIC')) {
             keysToRemove.push(k);
           }
         }
@@ -3950,7 +3951,7 @@
     }
 
     // --- LOADING RESULT PERSISTENT CACHE ---
-    const CACHED_LOADING_RESULT_KEY = '3D_AICIVS_CACHED_LOADING_RESULT_V32';
+    const CACHED_LOADING_RESULT_KEY = '3D_AICIVS_CACHED_LOADING_RESULT_V35_MONOLITHIC';
 
     function saveLoadingResultCache(loadingResult, usableDim, manifest, spec) {
       try {
