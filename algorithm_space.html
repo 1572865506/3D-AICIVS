@@ -3,764 +3,999 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D-AICIVS 算法空间 | 全量算法矩阵、计算流水线与 Agent 架构规范</title>
+  <title>3D-AICIVS 算法空间 | Archy 风格全链路架构与计算拓扑可视化</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- KaTeX for crisp LaTeX Math Formula Rendering -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- D3.js for high-performance interactive topology graph -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
   <style>
+    :root {
+      --bg-space: #070a13;
+      --bg-panel: rgba(13, 20, 36, 0.85);
+      --border-glow: rgba(59, 130, 246, 0.25);
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-purple: #8b5cf6;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+    }
+
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #0b0f19;
+      background-color: var(--bg-space);
       color: #f1f5f9;
+      overflow-x: hidden;
     }
+
     .font-mono {
       font-family: 'JetBrains Mono', monospace;
     }
+
+    /* Modern Cyber-Industrial Grid Background */
+    .grid-bg {
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.12) 0%, transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+      background-position: 0 0, 0 0, -1px -1px, -1px -1px;
+    }
+
     .glass-card {
-      background: rgba(17, 24, 39, 0.75);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-      transition: all 0.2s ease-in-out;
+      background: var(--bg-panel);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
+
     .glass-card:hover {
-      border-color: rgba(59, 130, 246, 0.4);
+      border-color: rgba(59, 130, 246, 0.45);
+      box-shadow: 0 20px 40px -10px rgba(37, 99, 235, 0.2);
     }
-    .nav-tab.active {
-      background: #2563eb;
-      color: #ffffff;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+
+    .node-active {
+      border-color: #3b82f6 !important;
+      background: rgba(30, 58, 138, 0.4) !important;
+      box-shadow: 0 0 24px rgba(59, 130, 246, 0.35) !important;
     }
-    .pipeline-step-card.active {
-      border-color: #3b82f6;
-      background: rgba(37, 99, 235, 0.1);
+
+    /* Archy Pulse Flow Line Animation */
+    @keyframes flowPulse {
+      0% { stroke-dashoffset: 40; }
+      100% { stroke-dashoffset: 0; }
     }
-    .cluster-tag {
-      font-size: 10px;
-      font-weight: 700;
-      font-family: 'JetBrains Mono', monospace;
-      padding: 2px 6px;
-      border-radius: 4px;
+
+    .flow-edge-animated {
+      stroke-dasharray: 6, 6;
+      animation: flowPulse 1.2s linear infinite;
+    }
+
+    .flow-edge-cyan {
+      animation-duration: 0.9s;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b0f19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
     }
   </style>
 </head>
-<body class="min-h-screen antialiased flex flex-col">
+<body class="min-h-screen antialiased flex flex-col grid-bg text-slate-100 select-none">
 
-  <!-- TOP HEADER -->
-  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+  <!-- ================= TOP HEADER NAVIGATION ================= -->
+  <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between shadow-2xl">
+    <!-- Brand & Project Title -->
     <div class="flex items-center gap-4">
-      <a href="/" class="flex items-center gap-3 hover:opacity-90 transition">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/20 text-white font-black text-lg">
-          📐
+      <a href="/" class="flex items-center gap-3 hover:opacity-90 transition group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/25 text-white font-black text-xl group-hover:scale-105 transition-transform duration-300">
+          <i data-lucide="network" class="w-5 h-5"></i>
         </div>
         <div>
-          <h1 class="text-base font-bold text-white tracking-tight flex items-center gap-2">
-            3D-AICIVS 算法空间 <span class="text-xs font-mono font-medium px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">Computation Pipeline v2.7</span>
-          </h1>
-          <p class="text-xs text-slate-400">完整约束特征向量 • 尾数优先与邻近聚合填补 • 三视角(XYZ)中空重构 • Agent 主导规范</p>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base font-bold text-white tracking-tight flex items-center gap-2">
+              3D-AICIVS 算法链路空间
+            </h1>
+            <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/30 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+              Archy Live Graph v3.0
+            </span>
+          </div>
+          <p class="text-xs text-slate-400 font-medium">全域拓扑矩阵 • 截面宽度闭包 (1D DP) • 尾数平铺投影 • 双盲物理裁决</p>
         </div>
       </a>
     </div>
 
-    <!-- Navigation Tabs -->
-    <nav class="flex items-center gap-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700/60 text-xs font-medium">
-      <button class="nav-tab active px-3 py-1.5 rounded-lg transition" onclick="switchSection('pipeline')">⚡ 计算流水线 (Pipeline)</button>
-      <button class="nav-tab px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition" onclick="switchSection('matrix')">🗺️ 7大算法集群矩阵</button>
-      <button class="nav-tab px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition" onclick="switchSection('cargo-model')">📦 1. 约束解析与统一特征</button>
-      <button class="nav-tab px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition" onclick="switchSection('sorter-pairing')">🔀 2. 尾数优先与邻近聚合</button>
-      <button class="nav-tab px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition" onclick="switchSection('tri-view')">👁️ 3. 三视角(XYZ)中空重构</button>
-      <button class="nav-tab px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition" onclick="switchSection('wall-optimization')">🧱 4. 货墙拓扑与重构引擎</button>
-      <button class="nav-tab px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition" onclick="switchSection('compaction-residual')">⚡ 5. 级联紧缩与残余填充</button>
-      <button class="nav-tab px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition" onclick="switchSection('door-dynamics')">🚪 6. 运输动力学与防倾倒</button>
-      <button class="nav-tab px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition" onclick="switchSection('physics-validator')">🛡️ 7. 独立全局物理裁决</button>
-      <button class="nav-tab px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition" onclick="switchSection('agent-blueprint')">🤖 8. Agent 主导宪章</button>
-    </nav>
+    <!-- Quick Search & Mode Switcher -->
+    <div class="flex items-center gap-3">
+      <!-- Search Input -->
+      <div class="relative w-64">
+        <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <input 
+          type="text" 
+          id="nodeSearchInput" 
+          placeholder="搜索算法模块、Tensor 或约束..." 
+          oninput="handleNodeSearch(this.value)"
+          class="w-full bg-slate-900/90 text-xs text-slate-200 pl-8 pr-3 py-1.5 rounded-lg border border-slate-700/80 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition placeholder:text-slate-500 font-mono"
+        />
+      </div>
 
-    <!-- Return to 3D Viewer -->
-    <a href="/" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-sm transition">
-      <span>返回 3D 视界</span>
-      <span>→</span>
-    </a>
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800 text-xs font-medium">
+        <button id="tab-graph" class="px-3 py-1.5 rounded-lg bg-blue-600 text-white shadow-md font-semibold transition flex items-center gap-1.5" onclick="switchViewMode('graph')">
+          <i data-lucide="git-branch" class="w-3.5 h-3.5"></i>
+          <span>链路拓扑图 (Flow)</span>
+        </button>
+        <button id="tab-matrix" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5" onclick="switchViewMode('matrix')">
+          <i data-lucide="grid" class="w-3.5 h-3.5"></i>
+          <span>算法矩阵 (Matrix)</span>
+        </button>
+        <button id="tab-math" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5" onclick="switchViewMode('math')">
+          <i data-lucide="sigma" class="w-3.5 h-3.5"></i>
+          <span>数学内核 (Proofs)</span>
+        </button>
+      </nav>
+
+      <!-- Flow Animation Toggle -->
+      <button 
+        id="flowAnimToggle" 
+        onclick="toggleFlowAnimation()" 
+        class="px-2.5 py-1.5 rounded-lg border border-slate-700/80 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-medium flex items-center gap-1.5 transition"
+        title="暂停/开启粒子流光动画"
+      >
+        <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+        <span id="flowAnimLabel">流光开启</span>
+      </button>
+
+      <!-- Return to 3D Viewport -->
+      <a href="/" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-blue-500/20 transition-all hover:scale-[1.02]">
+        <i data-lucide="box" class="w-3.5 h-3.5"></i>
+        <span>返回 3D 算柜</span>
+        <i data-lucide="arrow-right" class="w-3 h-3"></i>
+      </a>
+    </div>
   </header>
 
-  <!-- MAIN CONTAINER -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-8">
+  <!-- ================= MAIN CONTENT WORKSPACE ================= -->
+  <div class="flex-1 flex overflow-hidden relative">
 
-    <!-- 0. COMPUTATION PIPELINE SECTION -->
-    <section id="sec-pipeline" class="space-y-6">
-      <div class="border-b border-slate-800 pb-4 flex items-center justify-between">
+    <!-- LEFT / MAIN VISUALIZATION CANVAS (ARCHY TOPOLOGY GRAPH) -->
+    <div id="view-graph" class="flex-1 flex flex-col relative overflow-hidden">
+
+      <!-- Canvas Floating Toolset -->
+      <div class="absolute top-4 left-6 z-20 flex items-center gap-2 bg-slate-900/90 backdrop-blur-md p-1.5 rounded-xl border border-slate-800 shadow-xl">
+        <button onclick="zoomInGraph()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition" title="放大">
+          <i data-lucide="zoom-in" class="w-4 h-4"></i>
+        </button>
+        <button onclick="zoomOutGraph()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition" title="缩小">
+          <i data-lucide="zoom-out" class="w-4 h-4"></i>
+        </button>
+        <button onclick="resetGraphView()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition" title="重置视角">
+          <i data-lucide="maximize" class="w-4 h-4"></i>
+        </button>
+        <div class="w-px h-4 bg-slate-700 mx-1"></div>
+        <button onclick="triggerLiveSimulation()" class="px-2.5 py-1 rounded-lg bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/30 text-xs font-semibold flex items-center gap-1.5 transition">
+          <i data-lucide="play" class="w-3 h-3"></i>
+          <span>演练测试链路</span>
+        </button>
+      </div>
+
+      <!-- Stage Legend / Status Bar -->
+      <div class="absolute bottom-4 left-6 z-20 flex items-center gap-3 bg-slate-950/80 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-800/80 text-xs text-slate-400 font-mono shadow-xl">
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+          <span>L1 Ingestion</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+          <span>L2 Zone Partition</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+          <span>L3 1D DP Closure</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+          <span>L4 Planar Remainder</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>L5 Anti-Tipping</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+          <span>L6 Dual-Blind Validator</span>
+        </div>
+      </div>
+
+      <!-- SVG Graph Canvas -->
+      <div id="archy-canvas-container" class="w-full h-full cursor-grab active:cursor-grabbing overflow-hidden">
+        <!-- SVG rendered by D3.js -->
+        <svg id="archy-svg" class="w-full h-full"></svg>
+      </div>
+    </div>
+
+    <!-- VIEW 2: ALGORITHM MATRIX (TAB) -->
+    <div id="view-matrix" class="flex-1 p-8 overflow-y-auto hidden space-y-6 max-w-7xl mx-auto w-full">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
         <div>
           <h2 class="text-xl font-bold text-white flex items-center gap-2">
-            <span>⚡ 3D-AICIVS 端到端智能算柜计算流水线 (End-to-End Pipeline v2.7)</span>
+            <i data-lucide="grid" class="w-5 h-5 text-blue-400"></i>
+            <span>3D-AICIVS 7大核心算法集群矩阵 (Algorithm Cluster Matrix)</span>
           </h2>
-          <p class="text-sm text-slate-400 mt-1">融入“全约束特征向量构建”、“尾数优先与局部邻近聚合填补”与“三正交投影 (XYZ) 中空重构”的完整工业流水线。</p>
+          <p class="text-xs text-slate-400 mt-1">系统化解构装柜算法从约束解析、截面宽度闭包、多模数咬合到物理安全验算的全生命周期模块。</p>
         </div>
-        <div class="text-xs font-mono text-emerald-400 bg-emerald-950/40 px-3 py-1.5 rounded-lg border border-emerald-500/30 flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Pipeline: Enhanced v2.7</span>
-        </div>
+        <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">7 Clusters • 100% Operational</span>
       </div>
 
-      <!-- Interactive Step Flow Visualizer -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-        <!-- Step 1 -->
-        <div class="glass-card rounded-xl p-3.5 border-l-4 border-l-blue-500 cursor-pointer pipeline-step-card active" onclick="showPipelineStep(1)">
-          <div class="flex items-center justify-between text-[11px] font-mono text-blue-400 font-bold mb-1">
-            <span>STEP 01</span>
-            <span>INTAKE & CONSTRAINTS</span>
-          </div>
-          <h3 class="text-xs font-bold text-white">货单接入与全约束向量化</h3>
-          <p class="text-[11px] text-slate-400 mt-1">完善物理/力学/区位约束，提取特征向量与优先级</p>
-        </div>
-
-        <!-- Step 2 -->
-        <div class="glass-card rounded-xl p-3.5 border-l-4 border-l-indigo-500 cursor-pointer pipeline-step-card" onclick="showPipelineStep(2)">
-          <div class="flex items-center justify-between text-[11px] font-mono text-indigo-400 font-bold mb-1">
-            <span>STEP 02</span>
-            <span>STACK & TAIL PAIRING</span>
-          </div>
-          <h3 class="text-xs font-bold text-white">主货整垛与尾数优先配对</h3>
-          <p class="text-[11px] text-slate-400 mt-1">主货连续成垛，优先消耗自身尾数或邻近SKU配对</p>
-        </div>
-
-        <!-- Step 3 -->
-        <div class="glass-card rounded-xl p-3.5 border-l-4 border-l-cyan-500 cursor-pointer pipeline-step-card" onclick="showPipelineStep(3)">
-          <div class="flex items-center justify-between text-[11px] font-mono text-cyan-400 font-bold mb-1">
-            <span>STEP 03</span>
-            <span>TRI-VIEW 3D</span>
-          </div>
-          <h3 class="text-xs font-bold text-white">三视角(XYZ)中空重构</h3>
-          <p class="text-[11px] text-slate-400 mt-1">横向(Y)+立面(Z)+纵深(X)三重视角消灭死腔</p>
-        </div>
-
-        <!-- Step 4 -->
-        <div class="glass-card rounded-xl p-3.5 border-l-4 border-l-teal-500 cursor-pointer pipeline-step-card" onclick="showPipelineStep(4)">
-          <div class="flex items-center justify-between text-[11px] font-mono text-teal-400 font-bold mb-1">
-            <span>STEP 04</span>
-            <span>PROXIMITY TOP-FILL</span>
-          </div>
-          <h3 class="text-xs font-bold text-white">邻近聚合顶面平铺</h3>
-          <p class="text-[11px] text-slate-400 mt-1">优先用本地邻近同类货平铺封顶，杜绝SKU碎片化散落</p>
-        </div>
-
-        <!-- Step 5 -->
-        <div class="glass-card rounded-xl p-3.5 border-l-4 border-l-emerald-500 cursor-pointer pipeline-step-card" onclick="showPipelineStep(5)">
-          <div class="flex items-center justify-between text-[11px] font-mono text-emerald-400 font-bold mb-1">
-            <span>STEP 05</span>
-            <span>COMPACTION</span>
-          </div>
-          <h3 class="text-xs font-bold text-white">级联连续刚体推靠</h3>
-          <p class="text-[11px] text-slate-400 mt-1">刚体级联推挤消除纵向间隙、残余空间再吸收</p>
-        </div>
-
-        <!-- Step 6 -->
-        <div class="glass-card rounded-xl p-3.5 border-l-4 border-l-amber-500 cursor-pointer pipeline-step-card" onclick="showPipelineStep(6)">
-          <div class="flex items-center justify-between text-[11px] font-mono text-amber-400 font-bold mb-1">
-            <span>STEP 06</span>
-            <span>DYNAMICS</span>
-          </div>
-          <h3 class="text-xs font-bold text-white">防倾倒阶梯平滑</h3>
-          <p class="text-[11px] text-slate-400 mt-1">急刹车惯性力校验、门端阶梯自锁成形</p>
-        </div>
-
-        <!-- Step 7 -->
-        <div class="glass-card rounded-xl p-3.5 border-l-4 border-l-purple-500 cursor-pointer pipeline-step-card" onclick="showPipelineStep(7)">
-          <div class="flex items-center justify-between text-[11px] font-mono text-purple-400 font-bold mb-1">
-            <span>STEP 07</span>
-            <span>VALIDATION</span>
-          </div>
-          <h3 class="text-xs font-bold text-white">独立全局物理裁决</h3>
-          <p class="text-[11px] text-slate-400 mt-1">Sweep-and-Prune 0 碰撞、支撑率 $\ge 70\%$</p>
-        </div>
-
-        <!-- Step 8 -->
-        <div class="glass-card rounded-xl p-3.5 border-l-4 border-l-rose-500 cursor-pointer pipeline-step-card" onclick="showPipelineStep(8)">
-          <div class="flex items-center justify-between text-[11px] font-mono text-rose-400 font-bold mb-1">
-            <span>STEP 08</span>
-            <span>OUTPUT</span>
-          </div>
-          <h3 class="text-xs font-bold text-white">3D 渲染与工序输出</h3>
-          <p class="text-[11px] text-slate-400 mt-1">装车动画步序、质心轮轴配平度指标生成</p>
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="matrixGridContainer">
+        <!-- Dynamically rendered matrix cards -->
       </div>
+    </div>
 
-      <!-- Step Detail Interactive Board -->
-      <div id="pipeline-step-detail" class="glass-card rounded-2xl p-6 border border-blue-500/30 bg-slate-900/90 space-y-4">
-        <!-- Injected via JS -->
-      </div>
-    </section>
-
-    <!-- NEW SECTION: TRI-VIEW ORTHOGONAL PROJECTION & VOID RECONSTRUCTION -->
-    <section id="sec-tri-view" class="space-y-6 hidden">
-      <div class="border-b border-slate-800 pb-4">
-        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-          <span>👁️ 三正交视角 (XYZ) 拓扑重构与中空区域检测机制</span>
-        </h2>
-        <p class="text-sm text-slate-400 mt-1">解决单向分析“只看 X 轴无法知晓 Y/Z 深度”的问题：通过三维正交投影交集 $\Omega_{\text{Hollow}}$ 精准捕获并修复所有空间死腔。</p>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Projection 1 -->
-        <div class="glass-card rounded-xl p-5 space-y-3 border-t-2 border-t-blue-500">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-blue-400 font-mono">PROJECTION 1</span>
-            <span class="text-xs text-slate-400">侧立面 (Y-Z)</span>
-          </div>
-          <h3 class="text-sm font-bold text-white">X 轴投影视角 (Front Elevation)</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            沿集装箱纵深轴扫描截面：检测横向宽度 $Y \in [0, 2.35\text{m}]$ 是否满宽、垂直高度 $Z \in [0, 2.69\text{m}]$ 是否饱和，标记<strong>侧立面空白切片</strong>。
-          </p>
-          <div class="p-2.5 bg-slate-950 rounded font-mono text-[11px] text-blue-300 border border-slate-800">
-            Mask_X(y, z) = 0 (Free) / 1 (Occupied)
-          </div>
-        </div>
-
-        <!-- Projection 2 -->
-        <div class="glass-card rounded-xl p-5 space-y-3 border-t-2 border-t-indigo-500">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-indigo-400 font-mono">PROJECTION 2</span>
-            <span class="text-xs text-slate-400">纵立面 (X-Z)</span>
-          </div>
-          <h3 class="text-sm font-bold text-white">Y 轴投影视角 (Side Elevation)</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            沿集装箱侧壁扫描侧面：暴露<strong>货墙与货墙之间的纵向裂隙</strong>（如 $X=7.9\text{m}, 8.5\text{m}$）以及纵向走廊式贯通中空区。
-          </p>
-          <div class="p-2.5 bg-slate-950 rounded font-mono text-[11px] text-indigo-300 border border-slate-800">
-            Mask_Y(x, z) = 0 (Free) / 1 (Occupied)
-          </div>
-        </div>
-
-        <!-- Projection 3 -->
-        <div class="glass-card rounded-xl p-5 space-y-3 border-t-2 border-t-emerald-500">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-emerald-400 font-mono">PROJECTION 3</span>
-            <span class="text-xs text-slate-400">俯视平面 (X-Y)</span>
-          </div>
-          <h3 class="text-sm font-bold text-white">Z 轴投影视角 (Top Plan View)</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            自顶向下鸟瞰底面：直观识别<strong>侧边 $0.67\text{m}$ 宽暗灰色空槽</strong>、角落死区及断头墙，是解决用户截图视觉黑斑的关键视角。
-          </p>
-          <div class="p-2.5 bg-slate-950 rounded font-mono text-[11px] text-emerald-300 border border-slate-800">
-            Mask_Z(x, y) = 0 (Free) / 1 (Occupied)
-          </div>
-        </div>
-      </div>
-
-      <!-- Orthogonal Intersection Formula Card -->
-      <div class="glass-card rounded-2xl p-6 bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/20 space-y-3">
-        <h3 class="text-sm font-bold text-white flex items-center gap-2">
-          <span>📐 三正交视角空间交集与中空修复算子 (Tri-View Occlusion Cavity Extractor)</span>
-        </h3>
-        <div class="p-4 bg-slate-950 rounded-xl font-mono text-xs text-blue-300 border border-slate-800 text-center">
-          $$\Omega_{\text{Hollow}} = \left\{ (x, y, z) \mid \mathcal{M}_{X}(y, z) = 0 \;\land\; \mathcal{M}_{Y}(x, z) = 0 \;\land\; \mathcal{M}_{Z}(x, y) = 0 \right\}$$
-        </div>
-        <p class="text-xs text-slate-300 leading-relaxed">
-          算法将三重视角提取出的连续三维中空包围盒 $[X_1, X_2] \times [Y_1, Y_2] \times [Z_1, Z_2]$，直接转换为<strong>“局部自洽填充微空间 (Localized Infill Pocket)”</strong>，并派发适配的侧翼立柱块或顶层平铺件进行立体填实，实现从 1D 线性扫描到 3D 空间全息感知的跃升！
-        </p>
-      </div>
-    </section>
-
-    <!-- MATRIX OVERVIEW -->
-    <section id="sec-matrix" class="space-y-6 hidden">
-      <div class="border-b border-slate-800 pb-4 flex items-center justify-between">
+    <!-- VIEW 3: MATH PROOFS & FORMULATION (TAB) -->
+    <div id="view-math" class="flex-1 p-8 overflow-y-auto hidden space-y-6 max-w-6xl mx-auto w-full">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
         <div>
           <h2 class="text-xl font-bold text-white flex items-center gap-2">
-            <span>🗺️ 3D-AICIVS 全量算法集群与工程模块拓扑图</span>
+            <i data-lucide="sigma" class="w-5 h-5 text-indigo-400"></i>
+            <span>算法空间数学公式与定理证明全集 (Mathematical Formulation)</span>
           </h2>
-          <p class="text-sm text-slate-400 mt-1">系统全景包含 7 大算法集群、14 大核心引擎、共计 90+ 算法类协同工作。</p>
+          <p class="text-xs text-slate-400 mt-1">基于运筹优化、截面宽度动态规划与刚体运动学的数学严谨证明体系。</p>
         </div>
+        <span class="text-xs font-mono text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">KaTeX Formulations</span>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <div class="glass-card rounded-xl p-5 space-y-3 border-t-2 border-t-blue-500 cursor-pointer" onclick="switchSection('cargo-model')">
-          <div class="flex items-center justify-between">
-            <span class="cluster-tag bg-blue-500/10 text-blue-400 border border-blue-500/20">CLUSTER 01</span>
-            <span class="text-xs text-slate-500 font-mono">5 Engines</span>
-          </div>
-          <h3 class="text-base font-bold text-white">📦 货物智能理解与全约束特征集群</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">尺寸轴向纠偏、长宽高自动推断、多维物理/力学/区位约束特征张量建模。</p>
-        </div>
-
-        <div class="glass-card rounded-xl p-5 space-y-3 border-t-2 border-t-indigo-500 cursor-pointer" onclick="switchSection('sorter-pairing')">
-          <div class="flex items-center justify-between">
-            <span class="cluster-tag bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">CLUSTER 02</span>
-            <span class="text-xs text-slate-500 font-mono">3 Engines</span>
-          </div>
-          <h3 class="text-base font-bold text-white">🔀 预处理整垛配对与邻近聚合集群</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">同SKU多排成垛、尾数优先填补、局部品类亲和力 $\mathcal{A}_{\text{local}}$ 聚合配对。</p>
-        </div>
-
-        <div class="glass-card rounded-xl p-5 space-y-3 border-t-2 border-t-cyan-500 cursor-pointer" onclick="switchSection('wall-optimization')">
-          <div class="flex items-center justify-between">
-            <span class="cluster-tag bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">CLUSTER 03</span>
-            <span class="text-xs text-slate-500 font-mono">6 Engines</span>
-          </div>
-          <h3 class="text-base font-bold text-white">🧱 结构化货墙拓扑与多级重构集群</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">均质货墙连续性对齐、混合 SKU 复合墙蓝图生成、全局截面重排、三维高度平整化。</p>
-        </div>
-
-        <div class="glass-card rounded-xl p-5 space-y-3 border-t-2 border-t-emerald-500 cursor-pointer" onclick="switchSection('compaction-residual')">
-          <div class="flex items-center justify-between">
-            <span class="cluster-tag bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">CLUSTER 04</span>
-            <span class="text-xs text-slate-500 font-mono">4 Engines</span>
-          </div>
-          <h3 class="text-base font-bold text-white">⚡ 级联空间紧缩与残余填充集群</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">多轴刚体级联连续推靠、货墙缝隙吸收、三维立体侧槽矩阵填补与顶层饱和平铺。</p>
-        </div>
-
-        <div class="glass-card rounded-xl p-5 space-y-3 border-t-2 border-t-amber-500 cursor-pointer" onclick="switchSection('door-dynamics')">
-          <div class="flex items-center justify-between">
-            <span class="cluster-tag bg-amber-500/10 text-amber-400 border border-amber-500/20">CLUSTER 05</span>
-            <span class="text-xs text-slate-500 font-mono">4 Engines</span>
-          </div>
-          <h3 class="text-base font-bold text-white">🚪 运输动力学受力与门端防倾倒集群</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">急刹车前冲惯性力（-X 轴）、急转弯侧翻力（±Y 轴）、阶梯状防倒塌支撑与门区封门。</p>
-        </div>
-
-        <div class="glass-card rounded-xl p-5 space-y-3 border-t-2 border-t-purple-500 cursor-pointer" onclick="switchSection('physics-validator')">
-          <div class="flex items-center justify-between">
-            <span class="cluster-tag bg-purple-500/10 text-purple-400 border border-purple-500/20">CLUSTER 06</span>
-            <span class="text-xs text-slate-500 font-mono">3 Engines</span>
-          </div>
-          <h3 class="text-base font-bold text-white">🛡️ 独立全局物理力学校验系统</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">一维扫描剪枝（Sweep-and-Prune）+ Z 轴层级空间桶，毫秒级判定 0 碰撞与支撑率。</p>
-        </div>
+      <div class="space-y-6" id="mathProofsContainer">
+        <!-- Rendered Math Cards -->
       </div>
-    </section>
+    </div>
 
-    <!-- CARGO MODEL & CONSTRAINTS -->
-    <section id="sec-cargo-model" class="space-y-6 hidden">
-      <div class="border-b border-slate-800 pb-4">
-        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-          <span>📦 集群一：全约束特征向量化与智能画像 (Comprehensive Constraint Normalization)</span>
-        </h2>
-        <p class="text-sm text-slate-400 mt-1">完善物理尺寸、力学抗压、堆码层级、空间区位倾向与减量政策，输出权威数学元组 $\mathcal{M}_{\text{SKU}}$。</p>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 space-y-4">
-          <div class="glass-card rounded-xl p-5 space-y-2">
-            <h3 class="text-sm font-bold text-blue-400">1. 物理几何与力学刚性约束体系</h3>
-            <p class="text-xs text-slate-300 leading-relaxed">
-              - <strong>尺寸与轴向</strong>：通过 DimensionNormalizer 自动修正长宽颠倒，锁定标准朝向；<br>
-              - <strong>力学与承压</strong>：最大承载极限 $F_{\text{bearing}}$（kg）、最大自堆叠层数 $N_{\text{layer}}$、最小接触支撑率 $\eta_{\text{support}} \ge 0.70$；<br>
-              - <strong>物理朝向权限</strong>：严格立放（Keep Upright）、允许平放（Allow Flat）、允许侧放（Allow Side）。
-            </p>
+    <!-- ================= RIGHT INSPECTOR DRAWER (ARCHY NODE DETAILS) ================= -->
+    <aside id="nodeInspector" class="w-96 border-l border-slate-800/80 bg-slate-950/90 backdrop-blur-2xl flex flex-col transition-all duration-300 shadow-2xl z-30">
+      <!-- Drawer Header -->
+      <div class="p-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-900/50">
+        <div class="flex items-center gap-2">
+          <div id="inspectorIconBadge" class="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+            <i data-lucide="box" class="w-4 h-4"></i>
           </div>
-          <div class="glass-card rounded-xl p-5 space-y-2">
-            <h3 class="text-sm font-bold text-emerald-400">2. 空间区位倾向与业务政策体系</h3>
-            <p class="text-xs text-slate-300 leading-relaxed">
-              - <strong>连续空间势能</strong>：将“放最里面”映射为 $X \in [0, 3\text{m}]$ 高势能；“放中间”映射为 $X \in [3, 9\text{m}]$；“封柜门”映射为门端亲和；<br>
-              - <strong>装卸与弹性减量</strong>：支持“可少装/可减量（Elastic Reduction Allowed）”，当满载时自动按优先级弹性裁剪尾货；<br>
-              - <strong>混堆兼容性</strong>：定义允许/严禁压在其上方的货物类别列表（Allowed/Forbidden Above Categories）。
-            </p>
+          <div>
+            <h3 id="inspectorNodeTitle" class="text-xs font-bold text-white tracking-tight">节点详情检查器</h3>
+            <span id="inspectorNodeLayer" class="text-[10px] font-mono text-blue-400">Click node to inspect</span>
           </div>
         </div>
-
-        <div class="glass-card rounded-xl p-5 space-y-4">
-          <h3 class="text-sm font-bold text-white">🧮 交互式特征计算模拟器</h3>
-          <div class="space-y-3 text-xs">
-            <div>
-              <label class="text-slate-400 block mb-1">载入 14-SKU 基准货物：</label>
-              <select id="sel-preset-sku" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white font-mono" onchange="loadPresetSku(this.value)">
-                <option value="sku5">SKU-05: 32寸智能显示器 (0.833 x 0.53 x 0.23m, 20.8kg)</option>
-                <option value="sku2">SKU-02: 21.5寸显示器 (0.553 x 0.08 x 0.355m, 8.4kg)</option>
-                <option value="sku8">SKU-08: 21.5寸一体机 (0.56 x 0.145 x 0.41m, 12.65kg)</option>
-                <option value="sku14">SKU-14: 19寸显示器 (0.488 x 0.08 x 0.336m, 2.15kg)</option>
-              </select>
-            </div>
-            <div class="p-3 bg-slate-900/90 rounded-lg border border-slate-800 space-y-2 text-[11px] font-mono">
-              <div class="flex justify-between">
-                <span class="text-slate-400">单箱体积 (v):</span>
-                <span class="text-white font-bold" id="res-vol">0.1015 m³</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-slate-400">等效密度 (ρ):</span>
-                <span class="text-emerald-400 font-bold" id="res-rho">204.9 kg/m³</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-slate-400">细高自稳比 (λ):</span>
-                <span class="text-blue-400 font-bold" id="res-lambda">0.43 (自稳方块)</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SORTER & PAIRING WITH TAIL CARTONS & PROXIMITY AFFINITY -->
-    <section id="sec-sorter-pairing" class="space-y-6 hidden">
-      <div class="border-b border-slate-800 pb-4">
-        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-          <span>🔀 集群二：尾数优先成堆与局部邻近品类亲和聚合 (Tail Priority & Proximity Affinity)</span>
-        </h2>
-        <p class="text-sm text-slate-400 mt-1">严禁随机散落使用 SKU：优先使用同 SKU 尾数成堆，侧向与顶层填补严格遵循局部邻近亲和力内核 $\mathcal{A}_{\text{local}}$。</p>
+        <button onclick="closeInspector()" class="p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="glass-card rounded-xl p-5 space-y-4">
-          <h3 class="text-sm font-bold text-white">📐 尾数优先与邻近亲和力评分算子</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            在进行侧向互补配对、中空填补及顶层平铺时，候选填充货物 $SKU_j$ 的选用评分公式如下：
-          </p>
-          <div class="p-3 bg-slate-900 rounded-lg text-xs font-mono text-blue-300 border border-slate-800 text-center">
-            $$\text{FillScore}(SKU_j \mid \text{Wall}_i) = w_1 \cdot \mathbf{M}_{ij} + w_2 \cdot \mathcal{A}_{\text{local}}(SKU_j, SKU_i) + w_3 \cdot \mathbb{I}_{\text{is\_tail}}(SKU_j)$$
-          </div>
-          <p class="text-xs text-slate-400 leading-relaxed">
-            - <strong class="text-emerald-400">1. 同品类尾数优先 ($\mathbb{I}_{\text{is\_tail}}$)</strong>：主货整垛成堆后剩余的零星尾数（Tail Cartons），必须优先用于该垛自身的顶部或侧边填充；<br>
-            - <strong class="text-blue-400">2. 局部品类亲和力 ($\mathcal{A}_{\text{local}}$)</strong>：优先挑选相邻货墙正在使用的共存 SKU 或同一区位的近邻品类；<br>
-            - <strong class="text-amber-400">3. 杜绝散落碎片化</strong>：严禁从远离当前位置的异区调用零星小件，确保每种 SKU 在货柜中高度成团、整垛聚拢，极大提升装卸作业效率。
-          </p>
-        </div>
-
-        <div class="glass-card rounded-xl p-5 space-y-4">
-          <h3 class="text-sm font-bold text-white flex items-center justify-between">
-            <span>🖼️ 整垛截面装配动态示意图 (Y 轴满宽)</span>
-            <span class="text-xs font-mono text-emerald-400">Full 2.35m Width</span>
-          </h3>
-          <div class="w-full h-44 bg-slate-950 rounded-lg border border-slate-800 relative flex items-center p-3">
-            <div class="h-full bg-amber-500/20 border-2 border-amber-500 rounded flex flex-col items-center justify-center text-amber-300 text-xs font-bold" style="width: 70.9%;">
-              <span>主骨架整垛: SKU-05 (深1.59m)</span>
-              <span class="text-[10px] text-amber-400 font-mono">宽 1.666m</span>
-            </div>
-            <div class="h-full bg-blue-500/20 border-2 border-blue-500 rounded ml-1 flex flex-col items-center justify-center text-blue-300 text-xs font-bold" style="width: 23.5%;">
-              <span>邻近亲和副货: SKU-02</span>
-              <span class="text-[10px] text-blue-400 font-mono">宽 0.553m (同深1.59m)</span>
-            </div>
-            <div class="absolute right-2 top-2 text-[10px] font-mono text-slate-500">
-              内宽 Ly = 2.35m
-            </div>
-          </div>
-          <div class="text-[11px] text-slate-400 flex justify-between font-mono">
-            <span>← 左侧柜壁 Y=0.0m</span>
-            <span class="text-emerald-400">同品类高密成垛 • 杜绝散落</span>
-            <span>右侧柜壁 Y=2.35m →</span>
-          </div>
+      <!-- Drawer Content -->
+      <div class="flex-1 overflow-y-auto p-4 space-y-4 text-xs font-sans" id="inspectorBody">
+        <!-- Initial Blank State -->
+        <div class="text-center py-16 text-slate-500 space-y-3">
+          <i data-lucide="mouse-pointer-click" class="w-8 h-8 mx-auto stroke-1 opacity-50"></i>
+          <p class="text-xs">点击拓扑画布中的任意算法节点<br>查看该模块的 Tensor 规范、数学公式与源码</p>
         </div>
       </div>
-    </section>
 
-    <!-- 4. WALL OPTIMIZATION -->
-    <section id="sec-wall-optimization" class="space-y-6 hidden">
-      <div class="border-b border-slate-800 pb-4">
-        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-          <span>🧱 集群三：货墙拓扑规划与多级重构引擎 (Wall Recomposition)</span>
-        </h2>
-        <p class="text-sm text-slate-400 mt-1">负责均质货墙连续性对齐、跨货墙拓扑重构、三维多层平整化与过渡带自适应对接。</p>
+      <!-- Drawer Footer -->
+      <div class="p-3 border-t border-slate-800/80 bg-slate-900/40 flex items-center justify-between text-[11px] font-mono text-slate-400">
+        <span id="inspectorUnitStatus" class="flex items-center gap-1 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span>Validator 0 Violations</span>
+        </span>
+        <span class="text-slate-500">Python 3.11 Kernel</span>
       </div>
+    </aside>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div class="glass-card rounded-xl p-5 space-y-2">
-          <h3 class="text-sm font-bold text-blue-400">WallContinuityOptimizer</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            将同截面货物沿 $Y=0.0$ 或 $Y=L_y$ 单侧对齐，将分散的微小孔隙规整为集中连续的侧向空间。
-          </p>
-        </div>
-        <div class="glass-card rounded-xl p-5 space-y-2">
-          <h3 class="text-sm font-bold text-indigo-400">GlobalLayoutRebuildEngine</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            在全局尺度上进行 5 大布局策略搜索，寻找理论空间利用率最高的墙序排布。
-          </p>
-        </div>
-        <div class="glass-card rounded-xl p-5 space-y-2">
-          <h3 class="text-sm font-bold text-cyan-400">ThreeDLayerRecomposition</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            对高低不平的货墙截面进行垂直高度重切分，消除高低落差，为顶层平铺打下平整承托基底。
-          </p>
-        </div>
-      </div>
-    </section>
+  </div>
 
-    <!-- 5. COMPACTION & RESIDUAL -->
-    <section id="sec-compaction-residual" class="space-y-6 hidden">
-      <div class="border-b border-slate-800 pb-4">
-        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-          <span>⚡ 集群四：级联紧缩与残余空间填充引擎 (Compaction & Residual)</span>
-        </h2>
-        <p class="text-sm text-slate-400 mt-1">全截面刚体推靠消除纵向裂隙；多波次空间索引残余填充消除顶部与侧槽空隙。</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="glass-card rounded-xl p-5 space-y-3">
-          <h3 class="text-sm font-bold text-emerald-400">1. CascadeCompactionOptimizer (级联推挤紧缩器)</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            将全柜按 $X$ 轴切片为刚体连续单元，在保证内部 100% 垂直支撑不变的前提下向 $X=0$ 方向刚体推靠，彻底吸收货墙之间的前后裂隙。
-          </p>
-        </div>
-        <div class="glass-card rounded-xl p-5 space-y-3">
-          <h3 class="text-sm font-bold text-blue-400">2. ResidualSpaceFillingEngine (空间索引残余填充)</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            接入 <code class="text-blue-400 font-mono">_SpatialIndex.nearby()</code> 包围盒近邻检索，对 $Z$ 轴顶部与侧槽执行多波次多件成排注入。
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 6. TRANSPORT DYNAMICS -->
-    <section id="sec-door-dynamics" class="space-y-6 hidden">
-      <div class="border-b border-slate-800 pb-4">
-        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-          <span>🚪 集群五：运输动力学受力与门端防倾倒 (Transport Dynamics)</span>
-        </h2>
-        <p class="text-sm text-slate-400 mt-1">模拟汽车急刹车惯性冲击、急转弯侧翻倾覆力矩与阶梯状抗倾倒形态。</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div class="glass-card rounded-xl p-5 space-y-2">
-          <h3 class="text-sm font-bold text-amber-400">TransportForceDirectionModel</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            构建 $-X$ 轴（前冲急刹车）、$\pm Y$ 轴（转弯侧向力）与 $+Z$ 轴（路面颠簸）动力学受力模型。
-          </p>
-        </div>
-        <div class="glass-card rounded-xl p-5 space-y-2">
-          <h3 class="text-sm font-bold text-indigo-400">SteppedTrailingEdgeOptimizer</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            在未装满货柜的尾部，将货物高度自动平滑收敛为安全的“阶梯型抗倾倒坡度”。
-          </p>
-        </div>
-        <div class="glass-card rounded-xl p-5 space-y-2">
-          <h3 class="text-sm font-bold text-emerald-400">DoorSafetyEngine</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            确保开门时无货物直接顶压箱门，提供人身与货物双重开柜安全防护。
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 7. INDEPENDENT VALIDATOR -->
-    <section id="sec-physics-validator" class="space-y-6 hidden">
-      <div class="border-b border-slate-800 pb-4">
-        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-          <span>🛡️ 集群六：独立全局物理力学校验系统 (Independent Validator)</span>
-        </h2>
-        <p class="text-sm text-slate-400 mt-1">全系统最高物理硬约束仲裁系统，毫秒级严密裁决几何与力学合规。</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="glass-card rounded-xl p-5 space-y-3">
-          <h3 class="text-sm font-bold text-blue-400">⚡ 一维扫描剪枝 (Sweep-and-Prune) 碰撞加速</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            在 1845 箱的大规模数据集上，通过 $X$ 轴排序投影剪枝，瞬间剔除无重叠可能的箱对，单次全柜校验从 <strong>6.6s 降低至 0.3s（提速 1800%）</strong>。
-          </p>
-        </div>
-        <div class="glass-card rounded-xl p-5 space-y-3">
-          <h3 class="text-sm font-bold text-emerald-400">🏢 $Z$ 轴层级空间桶 (Z-Level Spatial Bucketing)</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            针对底部支撑率（$\ge 70\%$）、承压承载（$P \le P_{\text{max}}$）及同 SKU 堆叠层数，直接通过哈希桶命中接触面。
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 8. AGENT MASTER BLUEPRINT -->
-    <section id="sec-agent-blueprint" class="space-y-6 hidden">
-      <div class="border-b border-slate-800 pb-4">
-        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-          <span>🤖 集群七：Agent 开发主导规范手册 (Agent Master Blueprint)</span>
-        </h2>
-        <p class="text-sm text-slate-400 mt-1">指导后续任何 AI Agent 在本代码库进行迭代、重构与功能扩展的最高架构宪章。</p>
-      </div>
-
-      <div class="space-y-4 text-xs text-slate-300 leading-relaxed">
-        <div class="glass-card rounded-xl p-5 space-y-3 border-l-4 border-l-blue-500">
-          <h3 class="text-sm font-bold text-white">第 1 条：单一统一模型不变律 (Unified Model Invariance)</h3>
-          <p>
-            严禁为特定 SKU 属性新增独立的 if-else 分支子流水线。所有属性必须转化为 <code class="text-blue-400 font-mono">UnifiedCargoModel</code> 特征张量。
-          </p>
-        </div>
-        <div class="glass-card rounded-xl p-5 space-y-3 border-l-4 border-l-indigo-500">
-          <h3 class="text-sm font-bold text-white">第 2 条：整垛截面满宽装配律 (Full-Width Slabs)</h3>
-          <p>
-            主货必须先整堆成垛锁定纵深 $\Delta X$，并在预处理阶段通过互补矩阵 $\mathbf{M}_{ij}$ 绑定侧翼副货，一次性填满集装箱内宽 $2.35\text{m}$。
-          </p>
-        </div>
-        <div class="glass-card rounded-xl p-5 space-y-3 border-l-4 border-l-teal-500">
-          <h3 class="text-sm font-bold text-white">第 3 条：尾数优先与局部邻近亲和律 (Tail-First & Proximity Affinity)</h3>
-          <p>
-            在进行侧向填补、中空修补与顶层平铺时，必须优先消耗同 SKU 尾数或本地邻近 SKU，严禁跨区无序散落调用货物破坏成团性。
-          </p>
-        </div>
-        <div class="glass-card rounded-xl p-5 space-y-3 border-l-4 border-l-cyan-500">
-          <h3 class="text-sm font-bold text-white">第 4 条：三正交视角中空重构律 (Tri-View Occlusion Invariance)</h3>
-          <p>
-            严禁仅依靠单一 X 轴投影判断空间饱满度，必须融合 Y 轴纵立面与 Z 轴俯视平面，全面消除隐藏在深部的侧槽与中空死腔。
-          </p>
-        </div>
-        <div class="glass-card rounded-xl p-5 space-y-3 border-l-4 border-l-emerald-500">
-          <h3 class="text-sm font-bold text-white">第 5 条：全局力学独立裁决律 (Independent Validation Authority)</h3>
-          <p>
-            所有阶段生成的候选方案，最终必须通过 <code class="text-emerald-400 font-mono">IndependentGlobalValidator</code> 的严格裁决。
-          </p>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- FOOTER -->
-  <footer class="border-t border-slate-800 bg-slate-900 px-6 py-4 text-center text-xs text-slate-500 font-mono">
-    3D-AICIVS Container Packing System • Computation Pipeline & Tri-View Orthogonal Architecture © 2026
-  </footer>
-
+  <!-- ================= JAVASCRIPT TOPOLOGY ENGINE & DATASET ================= -->
   <script>
-    // Pipeline Steps Data
-    const pipelineSteps = {
-      1: {
-        title: "STEP 01: 货单接入、全约束解析与统一特征向量化 (Intake & Comprehensive Normalization)",
-        module: "src/cargo/dimension_normalization & src/cargo/intelligence",
-        input: "Raw Manifest JSON / Excel (长宽高、毛重、件数、力学极限、区位要求、减量规则)",
-        output: "UnifiedCargoModel[] 权威特征向量组 [G, P, S, Z, R]",
-        details: "【用户核心优化点落地】：\n1. 【全约束标准化】：全面解析物理几何尺寸 (L, W, H)、单箱质量密度 (ρ)、极限承压 (F_bearing)、最大自堆叠层数 (N_layer)、严格向上 (Keep Upright)、减量装车政策 (Elastic Reduction)；\n2. 【连续势能场量化】：将“放最里面”、“放中间”、“封柜门”等自然语言解析为连续空间区位势能函数 f_zone(x)，彻底废弃 if-else 硬分支；\n3. 【特征向量与装载优先级】：综合势能、密度梯度与大单品体积生成权威排产特征向量。"
+    // 1. ARCHY TOPOLOGY GRAPH NODES & EDGES DATASET
+    const archyNodes = [
+      // Layer 1: Ingestion
+      {
+        id: "L1_INPUT",
+        layer: 1,
+        title: "InputAdapter",
+        subtitle: "Canonical Parsing",
+        category: "Ingestion",
+        color: "#3b82f6",
+        x: 120,
+        y: 200,
+        icon: "file-input",
+        file: "src/unified_pipeline/model/UniversalCargoTensor.py",
+        desc: "标准化多源货单输入，提取物理尺寸 (w, d, h)、质量、承重能力及业务文本需求。",
+        math: "T_i = \\langle w_i, d_i, h_i, m_i, q_i, \\mathcal{O}_i, \\mathcal{Z}_i \\rangle",
+        inputs: ["Raw CSV/JSON Manifest", "Container Specification (20GP/40HQ)"],
+        outputs: ["UniversalCargoTensor[] (Canonical Tensors)"],
+        codeSnippet: `class UniversalCargoTensor:
+    sku_id: str
+    length: float
+    width: float
+    height: float
+    weight_kg: float
+    quantity_required: int
+    zone_preference: UniversalZone
+    allow_flat: bool`
       },
-      2: {
-        title: "STEP 02: 主货整堆成垛与尾数优先配对 (Stack-First Monolithic Pairing)",
-        module: "src/unified_pipeline/sorter/CargoPreprocessSorter.py",
-        input: "UnifiedCargoModel[] 特征向量组 + ContainerSpec(40HQ)",
-        output: "Ordered MonolithicSectionRecipes (整垛复合满宽配方队列)",
-        details: "【用户核心优化点 1 落地】：\n1. 【整堆成垛优先】：对于大批量主货（如 SKU-05 有 100 箱），不再切成单排碎片，而是优先将其凝聚为 3 排一体的纵深实心大垛（ΔX = 1.59m）；\n2. 【整垛侧翼配对】：在主垛成形后，以整个垛体纵深 ΔX 和高度 Z 为基准，调用模余互补矩阵 M_ij 从货物池中挑选侧翼件（如 SKU-02）；\n3. 【消除纵向裂隙】：侧翼立柱块与主货大垛共享完全一致的起始 X1 与结束 X2，前后表面绝对平整，从原理上彻底消除锯齿状前后间隙！"
+      {
+        id: "L1_CONSTRAINT",
+        layer: 1,
+        title: "ConstraintParser",
+        subtitle: "NLP & Logic Normalizer",
+        category: "Ingestion",
+        color: "#3b82f6",
+        x: 120,
+        y: 380,
+        icon: "shield-alert",
+        file: "src/unified_pipeline/model/UniversalCargoTensor.py",
+        desc: "解析“放柜子最里面”、“封柜门”等语义标注，绑定区位硬约束与方向白名单。",
+        math: "\\mathcal{Z}_i = \\begin{cases} \\text{INNER}, & \\text{if } \"最里面\" \\in \\text{req} \\\\ \\text{DOOR}, & \\text{if } \"封门\" \\in \\text{req} \\\\ \\text{MIDDLE}, & \\text{otherwise} \\end{cases}",
+        inputs: ["Prose Requirement Strings"],
+        outputs: ["ZonePreference Enum", "OrientationPolicy Struct"],
+        codeSnippet: `if '最里面' in req or sku == 'SKU-01':
+    c.zone_preference = UniversalZone.INNER
+elif '封柜门' in req or sku in ['SKU-02', 'SKU-14']:
+    c.zone_preference = UniversalZone.DOOR`
       },
-      3: {
-        title: "STEP 03: 三正交视角 (XYZ) 拓扑重构与立体截面装配 (Tri-View Occlusion Reconstruction)",
-        module: "src/unified_pipeline/packer/UnifiedSectionalPacker.py",
-        input: "SectionRecipeQueue + Container 3D Grid",
-        output: "Zero-Hollow Full-Width Solid Walls (零中空满宽整墙实体)",
-        details: "【用户核心优化点 2 落地】：\n1. 【X 轴正面投影】：校验横向宽度 Y 满宽 2.35m 与高度 Z 饱和度；\n2. 【Y 轴侧面投影 (深度感知)】：扫描纵立面 X-Z 截面，识别货墙之间的纵向缝隙与侧面中空通道；\n3. 【Z 轴俯视投影 (鸟瞰感知)】：俯视检测侧槽 0.67m 留空走廊与死区；\n4. 【三维交集修补 Ω_Hollow】：三重视角交集锁定真实空腔，由立体装配引擎直接派发 3D 矩阵块精准填实，拒绝只看 X 轴产生的内部中空盲区！"
+
+      // Layer 2: Partitioning & Whitelist
+      {
+        id: "L2_ZONE",
+        layer: 2,
+        title: "ZoneManager",
+        subtitle: "Spatial Isolation",
+        category: "Partitioning",
+        color: "#8b5cf6",
+        x: 360,
+        y: 200,
+        icon: "layout-grid",
+        file: "src/unified_pipeline/engine/UniversalHierarchicalSolver.py",
+        desc: "将集装箱严格分割为内壁区 (X=0m)、中段组合区 (0.575m~6m)、门端封门区 (6m~12m)。",
+        math: "\\mathcal{P}_{\\text{INNER}} \\prec \\mathcal{P}_{\\text{MIDDLE}} \\prec \\mathcal{P}_{\\text{DOOR}} \\quad (X_{\\max}^{\\text{inner}} \\le X_{\\min}^{\\text{door}})",
+        inputs: ["UniversalCargoTensor[]"],
+        outputs: ["inner_group[]", "middle_group[]", "door_group[]"],
+        codeSnippet: `inner_group = [c for c in cargo if c.zone == UniversalZone.INNER]
+middle_group = [c for c in cargo if c.zone == UniversalZone.MIDDLE]
+door_group = [c for c in cargo if c.zone == UniversalZone.DOOR]`
       },
-      4: {
-        title: "STEP 04: 尾数优先与局部邻近亲和顶面平铺 (Proximity Affinity Top-Fill)",
-        module: "src/constraints/topfill & src/optimization/three_d_layer",
-        input: "Committed Walls + Local Tail Inventory",
-        output: "Z-Axis Saturated & Clustered Layout (高度饱和且同类成团布局)",
-        details: "【用户核心优化点 3 落地】：\n1. 【同 SKU 尾数优先】：主货整垛后剩余的零星尾数（Tail Cartons），必须优先用于该垛自身的顶部平铺封顶；\n2. 【局部邻近亲和力 A_local】：若自身无尾数，仅允许调用相邻货墙正在使用的共存 SKU，严禁从柜尾随机抓取无关 SKU 填补；\n3. 【杜绝碎片化散落】：彻底消灭品类飞散现象，确保每种 SKU 在柜内大面积成团聚拢，兼顾超高空间利用率与现场高效装卸。"
+      {
+        id: "L2_UPRIGHT",
+        layer: 2,
+        title: "UprightClassifier",
+        subtitle: "Orientation Whitelist",
+        category: "Partitioning",
+        color: "#8b5cf6",
+        x: 360,
+        y: 380,
+        icon: "arrow-up",
+        file: "src/unified_pipeline/model/UniversalCargoTensor.py",
+        desc: "执行严格立放约束 (Upright Invariant)，固定高度 dz = h，禁止任意侧放或卧放。",
+        math: "dz \\equiv h_i, \\quad (dx, dy) \\in \\{(w_i, d_i), (d_i, w_i)\\}",
+        inputs: ["allow_flat", "allow_side"],
+        outputs: ["Legal Orientation Permutations (Yaw Only)"],
+        codeSnippet: `upright_opts = [o for o in primary_sku.orientations if o.is_upright]
+# Strict Invariant: dz must match carton height`
       },
-      5: {
-        title: "STEP 05: 级联连续刚体推靠与多波次残余吸收 (Cascade Compaction & Residual Filling)",
-        module: "src/optimization/compaction & src/optimization/residual_filling",
-        input: "Raw Wall Layout with Micro-Gaps",
-        output: "Seamless Solid Locked Body (无缝刚体锁紧货体)",
-        details: "1. CascadeCompactionOptimizer 将相邻截面按刚体切片向 X=0 方向级联连续推靠，消除纵向裂隙；\n2. ResidualSpaceFillingEngine 接入 _SpatialIndex.nearby() 近邻空间索引，多波次扫描微小空槽并注入零星尾货，最大化压榨柜内可用体积。"
+
+      // Layer 3: Width-Closure & Co-Depth
+      {
+        id: "L3_KNAPSACK",
+        layer: 3,
+        title: "1D DP Knapsack",
+        subtitle: "Y-Section Closure",
+        category: "Slicing",
+        color: "#06b6d4",
+        x: 620,
+        y: 190,
+        icon: "split",
+        file: "src/unified_pipeline/engine/UniversalHierarchicalSolver.py",
+        desc: "动态规划求解横向宽度组合，实现满宽率 >= 96.5%，彻底消灭中段死穴与贯穿空腔。",
+        math: "\\max \\sum_{j} n_j y_j \\quad \\text{s.t.} \\quad \\sum n_j y_j \\le W_{\\text{container}}, \\quad \\text{Ratio} \\ge 96.5\\%",
+        inputs: ["Active SKU Widths in current Zone"],
+        outputs: ["Full-Width Column Layouts (Y: 0 -> 2.35m)"],
+        codeSnippet: `// 1D DP guarantees >=96.5% width coverage
+place_solid('SKU-07', 4, 3, 9, cur_x, 0.0, 0.0, 0.431, 0.422, 0.281)
+place_solid('SKU-08', 1, 7, 5, cur_x, 1.266, 0.0, 0.56, 0.145, 0.41)`
       },
-      6: {
-        title: "STEP 06: 运输制动动力学受力与门端阶梯防倾倒 (Braking Dynamics & Stepped Trailing Edge)",
-        module: "src/constraints/door & src/optimization/compaction",
-        input: "Compacted Layout + Door Zone Bounds",
-        output: "Anti-Tip Stepped Layout (防倾倒阶梯稳态布局)",
-        details: "1. 模拟车辆急刹车产生的 -X 轴惯性冲击力（a = 0.8g）与急转弯 ±Y 轴翻覆力矩；\n2. 在靠近门端区域将货物高度自动平滑收敛为“阶梯状抗倾倒坡度”（ΔH/ΔX ≤ 1.0），确保运输安全性与开门作业人身防护。"
+      {
+        id: "L3_CODEPTH",
+        layer: 3,
+        title: "Co-Depth Sync",
+        subtitle: "X-Advance Synchronization",
+        category: "Slicing",
+        color: "#06b6d4",
+        x: 620,
+        y: 390,
+        icon: "align-horizontal-distribute-center",
+        file: "src/unified_pipeline/engine/UniversalHierarchicalSolver.py",
+        desc: "对齐大件与中副件的纵向步进深度 (如 1排大件深度 = 2排中件深度)，消除前后错位夹缝。",
+        math: "\\Delta X = \\text{LCM}(\\Delta x_{\\text{major}}, \\sum \\Delta x_{\\text{minor}})",
+        inputs: ["Depth Modules of paired SKUs"],
+        outputs: ["Synchronized Slice Advance step ΔX"],
+        codeSnippet: `delta_x = round(rows_x * opt.dx, 4)
+current_x = round(current_x + delta_x, 4)  # Seamless advance`
       },
-      7: {
-        title: "STEP 07: 独立全局物理与几何硬约束裁决 (Independent Global Physics Validation)",
-        module: "backend/solver_v2/validation/independent_validator.py",
-        input: "Final Placements + Manifest Specifications",
-        output: "ValidationResult(is_valid: True/False, metrics, audit_log)",
-        details: "1. 一维扫描剪枝 (Sweep-and-Prune)：毫秒级判定 1845 箱两两空间零穿模与零出界；\n2. Z-Level 空间桶检索：严密校验每个箱子的底部物理接触支撑率（≥ 70%）、上表面承重压力（P ≤ P_max）与同 SKU 最大自堆叠层数；\n3. 若存在任何违规，触发原子级安全回退机制。"
+
+      // Layer 4: Planar Remainder Leveling
+      {
+        id: "L4_PLANAR",
+        layer: 4,
+        title: "PlanarLeveling",
+        subtitle: "Anti-Notch Remainder",
+        category: "Leveling",
+        color: "#f59e0b",
+        x: 880,
+        y: 200,
+        icon: "layers",
+        file: "src/unified_pipeline/engine/UniversalHierarchicalSolver.py",
+        desc: "尾数箱强制转为整层满宽平铺或均摊到下层，严禁单侧立放，根除 L 型缺角与悬崖。",
+        math: "L_{\\text{full}} = \\lfloor R_i / (N_x \\times N_y) \\rfloor, \\quad \\text{Prohibit } \\text{Isolated Vertical Columns}",
+        inputs: ["Remainder Quantities R < BlockCapacity"],
+        outputs: ["Planar Full-Width Slices (29 cols wide)"],
+        codeSnippet: `# 29 cols wide across entire width:
+place_solid('SKU-02', 1, 29, 3, cur_x, 0.0, 0.0, ...)
+place_solid('SKU-14', 1, 29, 4, cur_x, 0.0, 1.065, ...)`
       },
-      8: {
-        title: "STEP 08: 最终装载工序生成与 3D 渲染就绪 (Authoritative Output & 3D Render Ready)",
-        module: "backend/server.py & frontend/src/adapters",
-        input: "Validated Solution Tensor",
-        output: "Authoritative JSON (3D Coords, Step Order, Utilization, Axle Balance)",
-        details: "1. 输出包含空间坐标、欧拉旋转角、装载步序（Step Index）的标准 JSON 结果报文；\n2. 前端 WebGL 引擎以 60FPS 实时渲染三维装载实景，并生成装车工步动画与重心偏载仪表盘。"
+      {
+        id: "L4_SLOT",
+        layer: 4,
+        title: "SideSlotNesting",
+        subtitle: "Accessory Enclosure",
+        category: "Leveling",
+        color: "#f59e0b",
+        x: 880,
+        y: 380,
+        icon: "package-plus",
+        file: "src/unified_pipeline/engine/UniversalHierarchicalSolver.py",
+        desc: "将电源线、配件等零散微小单箱作为填充料嵌入大件侧翼凹槽，消除突刺外露。",
+        math: "\\text{Slot}_{\\text{flank}} = [Y_{\\text{primary}}, W] \\times [0, H] \\times \\Delta X",
+        inputs: ["Small Discrete SKUs (SKU-09..13)"],
+        outputs: ["Enclosed Safe Nested Placements"],
+        codeSnippet: `place_solid('SKU-11', 2, 1, 5, cur_x, 1.96, 0.0, 0.48, 0.31, 0.34)
+place_solid('SKU-12', 1, 1, 1, cur_x, 1.96, 1.70, 0.18, 0.18, 0.34)`
+      },
+
+      // Layer 5: Anti-Tipping & Door Dynamics
+      {
+        id: "L5_ANTITIP",
+        layer: 5,
+        title: "Anti-Tipping Engine",
+        subtitle: "Terminal Stepdown",
+        category: "Dynamics",
+        color: "#10b981",
+        x: 1140,
+        y: 200,
+        icon: "trending-down",
+        file: "src/unified_pipeline/engine/UniversalHierarchicalSolver.py",
+        desc: "在集装箱柜门端最后 1~2m 构建从高到低的平稳阶梯过渡面，避免开门倾倒倒塌。",
+        math: "Z_{\\max}(X) = H_{\\text{container}} - \\alpha \\cdot \\max(0, X - (L - 1.5))",
+        inputs: ["Door Proximity Placements X > 10m"],
+        outputs: ["Stepped Down Anti-Tipping Surface"],
+        codeSnippet: `def _apply_anti_tip_stepping(self, placements):
+    # Natural safety stepdown at door opening`
+      },
+      {
+        id: "L5_DOORSEAL",
+        layer: 5,
+        title: "DoorSealingWall",
+        subtitle: "Rigid Vertical Face",
+        category: "Dynamics",
+        color: "#10b981",
+        x: 1140,
+        y: 380,
+        icon: "door-closed",
+        file: "src/unified_pipeline/engine/UniversalHierarchicalSolver.py",
+        desc: "由大件显示器与满宽标准箱形成垂直拉齐的封门大墙，牢牢锁住柜内货物。",
+        math: "X_{\\text{face}} \\approx L_{\\text{container}} - \\epsilon, \\quad \\text{Span}_Y = 100\\%",
+        inputs: ["Door Group SKUs (SKU-02, 14)"],
+        outputs: ["Flat Solid Door Face"],
+        codeSnippet: `place_solid('SKU-14', 1, 29, 5, cur_x, 0.0, 0.0, 0.488, 0.08, 0.336)`
+      },
+
+      // Layer 6: Dual-Blind Validation
+      {
+        id: "L6_VALIDATOR",
+        layer: 6,
+        title: "GlobalValidator",
+        subtitle: "Dual-Blind Physical Proof",
+        category: "Validation",
+        color: "#f43f5e",
+        x: 1400,
+        y: 290,
+        icon: "check-check",
+        file: "backend/solver_v2/validation/independent_validator.py",
+        desc: "完全独立的双盲物理引擎，硬核验算 0 碰撞、0 越界、0 违规姿态、>=70% 底部支撑率。",
+        math: "\\text{Overlap}(A, B) = 0 \\;\\land\\; \\frac{\\text{Area}_{\\text{support}}}{\\text{Area}_{\\text{base}}} \\ge 70\\% \\;\\land\\; \\text{Violations} \\equiv 0",
+        inputs: ["Full Placements Array", "ContainerSpec", "SKU Manifest"],
+        outputs: ["ValidationReport (is_valid: True, 0 Violations, Util: 77.65%)"],
+        codeSnippet: `val = IndependentGlobalValidator.validate(
+    container=c_spec, placements=placements, cargo_list=sku_manifest
+)
+assert val.is_valid and len(val.violations) == 0`
       }
-    };
+    ];
 
-    function showPipelineStep(stepNum) {
-      const cards = document.querySelectorAll('.pipeline-step-card');
-      cards.forEach((c, idx) => {
-        if (idx === stepNum - 1) {
-          c.classList.add('active');
-        } else {
-          c.classList.remove('active');
-        }
-      });
+    const archyLinks = [
+      { source: "L1_INPUT", target: "L2_ZONE", label: "Canonical Tensors" },
+      { source: "L1_CONSTRAINT", target: "L2_ZONE", label: "Zone Constraints" },
+      { source: "L1_CONSTRAINT", target: "L2_UPRIGHT", label: "Whitelist Rule" },
+      { source: "L2_ZONE", target: "L3_KNAPSACK", label: "Zone Partitions" },
+      { source: "L2_UPRIGHT", target: "L3_KNAPSACK", label: "Yaw Orientations" },
+      { source: "L2_ZONE", target: "L3_CODEPTH", label: "Depth Profiles" },
+      { source: "L3_KNAPSACK", target: "L4_PLANAR", label: "Full-Width Slabs" },
+      { source: "L3_CODEPTH", target: "L4_SLOT", label: "Slot Coordinates" },
+      { source: "L4_PLANAR", target: "L5_ANTITIP", label: "Solid Blocks" },
+      { source: "L4_SLOT", target: "L5_DOORSEAL", label: "Enclosed Cargo" },
+      { source: "L5_ANTITIP", target: "L6_VALIDATOR", label: "Final Packing Plan" },
+      { source: "L5_DOORSEAL", target: "L6_VALIDATOR", label: "Door Slices" }
+    ];
 
-      const d = pipelineSteps[stepNum];
-      const detailEl = document.getElementById('pipeline-step-detail');
-      detailEl.innerHTML = `
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <h3 class="text-sm font-bold text-white flex items-center gap-2">
-            <span class="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs font-mono">${stepNum}</span>
-            <span>${d.title}</span>
-          </h3>
-          <span class="text-[11px] font-mono text-blue-400 bg-blue-950/60 px-2 py-1 rounded border border-blue-500/20">${d.module}</span>
+    // 2. MATRIX CARDS DATASET (For Tab 2)
+    const matrixClusters = [
+      {
+        id: "cluster_1",
+        num: "01",
+        title: "特征张量与约束解析",
+        tag: "TENSOR_EXTRACTION",
+        color: "blue",
+        icon: "database",
+        file: "UniversalCargoTensor.py",
+        desc: "构建多维不可变特征张量，标准化尺寸、密度、承重阈值及文本业务需求映射。"
+      },
+      {
+        id: "cluster_2",
+        num: "02",
+        title: "业务区位与方向白名单",
+        tag: "ZONE_WHITELIST",
+        color: "purple",
+        icon: "compass",
+        file: "ZonePartitioning.py",
+        desc: "执行最深内壁 (0m)、中段及门端业务区位硬隔离，严格锁定立放高度 dz=h。"
+      },
+      {
+        id: "cluster_3",
+        num: "03",
+        title: "截面宽度闭包 (1D DP)",
+        tag: "WIDTH_CLOSURE_DP",
+        color: "cyan",
+        icon: "split",
+        file: "UniversalHierarchicalSolver.py",
+        desc: "动态规划求解横向宽度组合，实现满宽率 >= 96.5%，彻底消灭中段死穴与贯穿空腔。"
+      },
+      {
+        id: "cluster_4",
+        num: "04",
+        title: "复合模数共深度咬合",
+        tag: "CO_DEPTH_SYNC",
+        color: "cyan",
+        icon: "columns",
+        file: "UniversalHierarchicalSolver.py",
+        desc: "对齐大件与副件的纵向步进深度 (LCM Window)，消除前后货垛之间的错位夹缝。"
+      },
+      {
+        id: "cluster_5",
+        num: "05",
+        title: "尾数平铺与槽位内嵌",
+        tag: "PLANAR_NESTING",
+        color: "amber",
+        icon: "layers",
+        file: "UniversalHierarchicalSolver.py",
+        desc: "尾数箱强制转为整层满宽平铺，小件散箱内嵌侧翼余料槽位，根绝 L 型缺角与突刺。"
+      },
+      {
+        id: "cluster_6",
+        num: "06",
+        title: "运输动力学与防倾倒",
+        tag: "ANTI_TIPPING_DOOR",
+        color: "emerald",
+        icon: "shield-check",
+        file: "AntiTippingDynamics.py",
+        desc: "门端构建平稳阶梯过渡面，配合满宽垂直封门大墙，牢牢锁住柜内货物防倒塌。"
+      },
+      {
+        id: "cluster_7",
+        num: "07",
+        title: "独立全局物理双盲裁决",
+        tag: "DUAL_BLIND_VALIDATOR",
+        color: "rose",
+        icon: "check-check",
+        file: "independent_validator.py",
+        desc: "独立物理引擎严苛验算 0 碰撞、0 越界、0 违规姿态、>=70% 底部支撑率。"
+      }
+    ];
+
+    // 3. MATH PROOFS DATASET (For Tab 3)
+    const mathProofs = [
+      {
+        title: "定理 1：截面宽度闭包存在性定理 (Cross-Section Width Closure Theorem)",
+        latex: `\\forall \\text{Slice } X \\in [X_k, X_k + \\Delta X], \\quad \\exists \\mathbf{n} = (n_1, \\dots, n_m) \\in \\mathbb{N}^m \\quad \\text{s.t.} \\quad W_{\\text{container}} - \\sum_{i=1}^m n_i y_i < \\min_{j} y_j`,
+        proof: "由一维背包动态规划可知，在货品宽度模数集合下，贪心取剩余空间小于最小单品宽度即可实现截面最大化填充。当且仅当满足满宽闭包时，该截面方可确认推进，杜绝形成单侧缺角与中段空腔。"
+      },
+      {
+        title: "定理 2：尾数平铺投影无缺角引理 (Planar Remainder Projection Lemma)",
+        latex: `R_i = Q_i \\pmod{N_x N_y N_z} \\implies \\text{Arrange as } \\lfloor R_i / N_y \\rfloor \\times N_y \\text{ full-width planar layers}`,
+        proof: "对于任意未达到整垛的剩余件数 R，将其投影为高度为 dz 的全宽水平层，保证在任意垂直切面上均不存在单侧凸出柱体 (Chimney)，从数学上消除了 L 型凹陷。"
+      },
+      {
+        title: "定理 3：防倾倒终端阶梯重力稳定条件 (Anti-Tipping Gravity Equilibrium)",
+        latex: `\\tan \\theta_{\\text{brake}} = \\frac{a_{\\text{decel}}}{g} \\le \\frac{L_{\\text{base}}}{2 H_{\\text{center}}}, \\quad Z_{\\max}(X) = H - \\alpha (X - X_{\\text{door}})`,
+        proof: "在货柜减速与颠簸工况下，门端阶梯化降低了最外侧货物的重心高度 H，显著提升了倾覆临界力矩，符合实际物流防倾倒安全规范。"
+      }
+    ];
+
+    // 4. D3 GRAPH INITIALIZATION
+    let svg, g, zoom, linkElements, nodeElements, textElements;
+    let isFlowAnim = true;
+
+    function initArchyGraph() {
+      const container = document.getElementById("archy-canvas-container");
+
+      svg = d3.select("#archy-svg")
+        .attr("viewBox", [0, 0, 1600, 600])
+        .attr("width", "100%")
+        .attr("height", "100%");
+
+      // Defs for gradients & glowing filters
+      const defs = svg.append("defs");
+
+      // Glow filter
+      const filter = defs.append("filter")
+        .attr("id", "glow")
+        .attr("x", "-20%")
+        .attr("y", "-20%")
+        .attr("width", "140%")
+        .attr("height", "140%");
+      filter.append("feGaussianBlur")
+        .attr("stdDeviation", "4")
+        .attr("result", "blur");
+      filter.append("feComposite")
+        .attr("in", "SourceGraphic")
+        .attr("in2", "blur")
+        .attr("operator", "over");
+
+      // Flow Gradient
+      const grad = defs.append("linearGradient")
+        .attr("id", "flowGrad")
+        .attr("x1", "0%").attr("y1", "0%").attr("x2", "100%").attr("y2", "0%");
+      grad.append("stop").attr("offset", "0%").attr("stop-color", "#3b82f6");
+      grad.append("stop").attr("offset", "50%").attr("stop-color", "#06b6d4");
+      grad.append("stop").attr("offset", "100%").attr("stop-color", "#8b5cf6");
+
+      // Root Group for Zoom/Pan
+      g = svg.append("g").attr("id", "graph-root");
+
+      zoom = d3.zoom()
+        .scaleExtent([0.4, 2.5])
+        .on("zoom", (event) => {
+          g.attr("transform", event.transform);
+        });
+
+      svg.call(zoom);
+
+      // Initial center transform
+      svg.call(zoom.transform, d3.zoomIdentity.translate(40, 40).scale(0.92));
+
+      // Draw Links
+      linkElements = g.append("g").attr("class", "links")
+        .selectAll("path")
+        .data(archyLinks)
+        .enter()
+        .append("path")
+        .attr("d", d => {
+          const s = archyNodes.find(n => n.id === d.source);
+          const t = archyNodes.find(n => n.id === d.target);
+          const sx = s.x + 90, sy = s.y + 40;
+          const tx = t.x - 90, ty = t.y + 40;
+          const dx = (tx - sx) * 0.5;
+          return `M ${sx} ${sy} C ${sx + dx} ${sy}, ${tx - dx} ${ty}, ${tx} ${ty}`;
+        })
+        .attr("fill", "none")
+        .attr("stroke", "url(#flowGrad)")
+        .attr("stroke-width", 2.2)
+        .attr("stroke-opacity", 0.65)
+        .attr("class", "flow-edge-animated");
+
+      // Draw Nodes
+      nodeElements = g.append("g").attr("class", "nodes")
+        .selectAll("g")
+        .data(archyNodes)
+        .enter()
+        .append("g")
+        .attr("class", "node-group cursor-pointer")
+        .attr("transform", d => `translate(${d.x - 90}, ${d.y})`)
+        .on("click", (event, d) => selectNode(d));
+
+      // Node Glass Card Background
+      nodeElements.append("rect")
+        .attr("width", 180)
+        .attr("height", 80)
+        .attr("rx", 14)
+        .attr("fill", "rgba(13, 20, 36, 0.92)")
+        .attr("stroke", d => d.color)
+        .attr("stroke-width", 1.5)
+        .attr("stroke-opacity", 0.7)
+        .attr("class", "glass-card-rect");
+
+      // Node Left Color Stripe
+      nodeElements.append("path")
+        .attr("d", "M 0 14 A 14 14 0 0 1 14 0 L 14 80 L 14 80 A 14 14 0 0 1 0 66 Z")
+        .attr("fill", d => d.color);
+
+      // Node Title
+      nodeElements.append("text")
+        .attr("x", 26)
+        .attr("y", 32)
+        .attr("fill", "#ffffff")
+        .attr("font-size", "13px")
+        .attr("font-weight", "700")
+        .text(d => d.title);
+
+      // Node Subtitle
+      nodeElements.append("text")
+        .attr("x", 26)
+        .attr("y", 50)
+        .attr("fill", "#94a3b8")
+        .attr("font-size", "10px")
+        .attr("font-family", "JetBrains Mono")
+        .text(d => d.subtitle);
+
+      // Node Stage Tag Pill
+      const pillGroup = nodeElements.append("g")
+        .attr("transform", "translate(26, 58)");
+
+      pillGroup.append("rect")
+        .attr("width", 72)
+        .attr("height", 14)
+        .attr("rx", 4)
+        .attr("fill", d => `${d.color}20`)
+        .attr("stroke", d => `${d.color}50`)
+        .attr("stroke-width", 0.8);
+
+      pillGroup.append("text")
+        .attr("x", 6)
+        .attr("y", 10)
+        .attr("fill", d => d.color)
+        .attr("font-size", "8.5px")
+        .attr("font-weight", "700")
+        .attr("font-family", "JetBrains Mono")
+        .text(d => `L${d.layer} ${d.category}`);
+    }
+
+    // 5. INSPECTOR DRAWER CONTROLS
+    function selectNode(d) {
+      // Highlight in canvas
+      d3.selectAll(".glass-card-rect").attr("stroke-width", 1.5).attr("stroke", n => n.color);
+      d3.selectAll(".node-group").filter(n => n.id === d.id).select(".glass-card-rect")
+        .attr("stroke-width", 3)
+        .attr("stroke", "#60a5fa");
+
+      // Update Inspector Title
+      document.getElementById("inspectorNodeTitle").textContent = d.title;
+      document.getElementById("inspectorNodeLayer").textContent = `Layer ${d.layer} • ${d.subtitle}`;
+      document.getElementById("inspectorIconBadge").innerHTML = `<i data-lucide="${d.icon}" class="w-4 h-4 text-blue-400"></i>`;
+
+      const body = document.getElementById("inspectorBody");
+      body.innerHTML = `
+        <!-- Module Path & GitHub File -->
+        <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1.5">
+          <span class="text-[10px] font-mono text-slate-400 flex items-center gap-1">
+            <i data-lucide="file-code" class="w-3 h-3 text-blue-400"></i>
+            <span>源码位置</span>
+          </span>
+          <div class="text-[11px] font-mono text-blue-300 break-all select-text">${d.file}</div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div class="p-3.5 bg-slate-950/80 rounded-xl border border-slate-800 space-y-1.5">
-            <span class="text-slate-400 font-bold font-mono">📥 输入 (Input Data):</span>
-            <p class="text-slate-300 font-mono text-[11px] leading-relaxed">${d.input}</p>
-          </div>
-          <div class="p-3.5 bg-slate-950/80 rounded-xl border border-slate-800 space-y-1.5">
-            <span class="text-emerald-400 font-bold font-mono">📤 输出 (Output Data):</span>
-            <p class="text-emerald-300 font-mono text-[11px] leading-relaxed">${d.output}</p>
+
+        <!-- Description -->
+        <div class="space-y-1">
+          <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">算法功能职责</span>
+          <p class="text-xs text-slate-200 leading-relaxed">${d.desc}</p>
+        </div>
+
+        <!-- Math Formulation (KaTeX) -->
+        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+          <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+            <i data-lucide="sigma" class="w-3 h-3 text-indigo-400"></i>
+            <span>数学公式与约束条件</span>
+          </span>
+          <div class="text-xs text-indigo-200 font-mono py-1 overflow-x-auto select-text katex-formula" id="inspectorMathSlot">
+            $$${d.math}$$
           </div>
         </div>
-        <div class="p-4 bg-slate-950/90 rounded-xl border border-slate-800 space-y-2">
-          <span class="text-slate-300 font-bold text-xs">⚙️ 阶段核心计算逻辑与技术不变律 (Core Logic & Invariants):</span>
-          <pre class="text-slate-300 text-xs leading-relaxed font-sans whitespace-pre-line">${d.details}</pre>
+
+        <!-- Inputs / Outputs Tensor Flow -->
+        <div class="grid grid-cols-2 gap-2">
+          <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 space-y-1">
+            <span class="text-[10px] font-semibold text-cyan-400 flex items-center gap-1">
+              <i data-lucide="log-in" class="w-2.5 h-2.5"></i>
+              <span>输入 Tensor</span>
+            </span>
+            <ul class="text-[10px] text-slate-300 space-y-0.5 font-mono">
+              ${d.inputs.map(i => `<li>• ${i}</li>`).join("")}
+            </ul>
+          </div>
+          <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 space-y-1">
+            <span class="text-[10px] font-semibold text-emerald-400 flex items-center gap-1">
+              <i data-lucide="log-out" class="w-2.5 h-2.5"></i>
+              <span>输出 Tensor</span>
+            </span>
+            <ul class="text-[10px] text-slate-300 space-y-0.5 font-mono">
+              ${d.outputs.map(o => `<li>• ${o}</li>`).join("")}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Code Snippet -->
+        <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5 font-mono">
+          <span class="text-[10px] text-slate-400 flex items-center justify-between">
+            <span>核心算法实现片段</span>
+            <span class="text-[9px] text-slate-500">Python 3</span>
+          </span>
+          <pre class="text-[10.5px] text-slate-300 overflow-x-auto leading-tight select-text"><code>${d.codeSnippet}</code></pre>
         </div>
       `;
-    }
 
-    function switchSection(secId) {
-      const sections = ['pipeline', 'tri-view', 'matrix', 'cargo-model', 'sorter-pairing', 'wall-optimization', 'compaction-residual', 'door-dynamics', 'physics-validator', 'agent-blueprint'];
-      sections.forEach(s => {
-        const el = document.getElementById('sec-' + s);
-        if (el) el.classList.add('hidden');
-      });
-      const activeEl = document.getElementById('sec-' + secId);
-      if (activeEl) activeEl.classList.remove('hidden');
-
-      const tabs = document.querySelectorAll('.nav-tab');
-      tabs.forEach(tab => {
-        tab.classList.remove('active');
-        tab.classList.add('text-slate-300');
-      });
-      if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
-        event.currentTarget.classList.remove('text-slate-300');
+      lucide.createIcons();
+      if (window.renderMathInElement) {
+        renderMathInElement(document.getElementById("inspectorMathSlot"), {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
       }
     }
 
-    showPipelineStep(1);
-
-    const presets = {
-      sku5: { l: 0.833, w: 0.53, h: 0.23, m: 20.8, zone: 'MIDDLE' },
-      sku2: { l: 0.553, w: 0.08, h: 0.355, m: 8.4, zone: 'DOOR' },
-      sku8: { l: 0.56, w: 0.145, h: 0.41, m: 12.65, zone: 'MIDDLE' },
-      sku14: { l: 0.488, w: 0.08, h: 0.336, m: 2.15, zone: 'DOOR' }
-    };
-
-    function loadPresetSku(key) {
-      const p = presets[key];
-      if (!p) return;
-      document.getElementById('inp-l').value = p.l;
-      document.getElementById('inp-w').value = p.w;
-      document.getElementById('inp-h').value = p.h;
-      document.getElementById('inp-m').value = p.m;
-      document.getElementById('inp-zone').value = p.zone;
-      calcModel();
+    function closeInspector() {
+      const body = document.getElementById("inspectorBody");
+      body.innerHTML = `
+        <div class="text-center py-16 text-slate-500 space-y-3">
+          <i data-lucide="mouse-pointer-click" class="w-8 h-8 mx-auto stroke-1 opacity-50"></i>
+          <p class="text-xs">点击拓扑画布中的任意算法节点<br>查看该模块的 Tensor 规范、数学公式与源码</p>
+        </div>
+      `;
+      document.getElementById("inspectorNodeTitle").textContent = "节点详情检查器";
+      document.getElementById("inspectorNodeLayer").textContent = "Click node to inspect";
+      lucide.createIcons();
     }
 
-    function calcModel() {
-      const l = parseFloat(document.getElementById('inp-l').value) || 0.1;
-      const w = parseFloat(document.getElementById('inp-w').value) || 0.1;
-      const h = parseFloat(document.getElementById('inp-h').value) || 0.1;
-      const m = parseFloat(document.getElementById('inp-m').value) || 1.0;
-
-      const vol = l * w * h;
-      const rho = vol > 0 ? m / vol : 0;
-      const minBase = Math.min(l, w);
-      const lambda = minBase > 0 ? h / minBase : 0;
-
-      document.getElementById('res-vol').innerText = vol.toFixed(4) + ' m³';
-      document.getElementById('res-rho').innerText = rho.toFixed(1) + ' kg/m³';
-      document.getElementById('res-lambda').innerText = lambda.toFixed(2) + (lambda > 1.2 ? ' (高细型)' : ' (自稳方块)');
-      document.getElementById('res-role').innerText = vol > 0.05 ? 'CORE_WALL (主骨架)' : 'FLANK_FILLER (侧翼件)';
+    // 6. ZOOM & VIEW CONTROLS
+    function zoomInGraph() {
+      svg.transition().duration(300).call(zoom.scaleBy, 1.25);
     }
+    function zoomOutGraph() {
+      svg.transition().duration(300).call(zoom.scaleBy, 0.8);
+    }
+    function resetGraphView() {
+      svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity.translate(40, 40).scale(0.92));
+    }
+    function toggleFlowAnimation() {
+      isFlowAnim = !isFlowAnim;
+      const paths = document.querySelectorAll(".flow-edge-animated");
+      paths.forEach(p => {
+        p.style.animationPlayState = isFlowAnim ? "running" : "paused";
+      });
+      document.getElementById("flowAnimLabel").textContent = isFlowAnim ? "流光开启" : "流光暂停";
+    }
+
+    function triggerLiveSimulation() {
+      // Pulse through nodes L1 -> L6
+      archyNodes.forEach((node, idx) => {
+        setTimeout(() => {
+          selectNode(node);
+        }, idx * 600);
+      });
+    }
+
+    function handleNodeSearch(val) {
+      if (!val) {
+        d3.selectAll(".node-group").attr("opacity", 1);
+        return;
+      }
+      const q = val.toLowerCase();
+      d3.selectAll(".node-group").attr("opacity", d => {
+        const match = d.title.toLowerCase().includes(q) || 
+                      d.subtitle.toLowerCase().includes(q) || 
+                      d.category.toLowerCase().includes(q) || 
+                      d.desc.toLowerCase().includes(q);
+        return match ? 1 : 0.2;
+      });
+    }
+
+    // 7. VIEW MODE SWITCHER (Graph / Matrix / Math)
+    function switchViewMode(mode) {
+      document.getElementById("view-graph").classList.toggle("hidden", mode !== "graph");
+      document.getElementById("view-matrix").classList.toggle("hidden", mode !== "matrix");
+      document.getElementById("view-math").classList.toggle("hidden", mode !== "math");
+
+      // Tabs active styling
+      document.getElementById("tab-graph").className = mode === "graph" 
+        ? "px-3 py-1.5 rounded-lg bg-blue-600 text-white shadow-md font-semibold transition flex items-center gap-1.5"
+        : "px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5";
+      document.getElementById("tab-matrix").className = mode === "matrix" 
+        ? "px-3 py-1.5 rounded-lg bg-blue-600 text-white shadow-md font-semibold transition flex items-center gap-1.5"
+        : "px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5";
+      document.getElementById("tab-math").className = mode === "math" 
+        ? "px-3 py-1.5 rounded-lg bg-blue-600 text-white shadow-md font-semibold transition flex items-center gap-1.5"
+        : "px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5";
+    }
+
+    // 8. POPULATE MATRIX & MATH PROOFS
+    function populateMatrixAndMath() {
+      // Matrix cards
+      const matrixContainer = document.getElementById("matrixGridContainer");
+      matrixContainer.innerHTML = matrixClusters.map(c => `
+        <div class="glass-card rounded-2xl p-5 space-y-3.5 border border-slate-800 hover:border-blue-500/50">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold text-slate-500">CLUSTER ${c.num}</span>
+            <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-${c.color}-500/10 text-${c.color}-400 border border-${c.color}-500/30">${c.tag}</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center text-blue-400 shadow-md">
+              <i data-lucide="${c.icon}" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-white">${c.title}</h3>
+              <p class="text-[11px] font-mono text-slate-400">${c.file}</p>
+            </div>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">${c.desc}</p>
+        </div>
+      `).join("");
+
+      // Math Proofs
+      const mathContainer = document.getElementById("mathProofsContainer");
+      mathContainer.innerHTML = mathProofs.map((m, idx) => `
+        <div class="glass-card rounded-2xl p-6 space-y-3 border border-slate-800">
+          <div class="flex items-center gap-2 text-indigo-400">
+            <i data-lucide="sigma" class="w-4 h-4"></i>
+            <h3 class="text-sm font-bold text-white">${m.title}</h3>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800/80 text-sm text-indigo-200 font-mono overflow-x-auto select-text">
+            $$${m.latex}$$
+          </div>
+          <div class="text-xs text-slate-300 leading-relaxed">
+            <span class="font-semibold text-slate-400">证明与工程机理：</span>${m.proof}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // 9. INITIALIZE ON LOAD
+    window.addEventListener("DOMContentLoaded", () => {
+      initArchyGraph();
+      populateMatrixAndMath();
+      lucide.createIcons();
+
+      const defaultNode = archyNodes.find(n => n.id === "L3_KNAPSACK");
+      if (defaultNode) {
+        selectNode(defaultNode);
+      }
+    });
   </script>
 </body>
 </html>
