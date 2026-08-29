@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D-AICIVS 算法空间 | Archy 风格中英双语全链路架构拓扑可视化</title>
+  <title>3D-AICIVS 算法空间 | 现代工业明亮风 • 全链路架构拓扑可视化</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- KaTeX for crisp LaTeX Math Formula Rendering -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -19,21 +19,26 @@
 
   <style>
     :root {
-      --bg-space: #070a13;
-      --bg-panel: rgba(13, 20, 36, 0.85);
-      --border-glow: rgba(59, 130, 246, 0.25);
-      --accent-blue: #3b82f6;
-      --accent-cyan: #06b6d4;
-      --accent-purple: #8b5cf6;
-      --accent-emerald: #10b981;
-      --accent-amber: #f59e0b;
-      --accent-rose: #f43f5e;
+      --bg-main: #f8fafc;
+      --bg-surface: #ffffff;
+      --border-subtle: #e2e8f0;
+      --border-focus: #3b82f6;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --accent-blue: #2563eb;
+      --accent-indigo: #4f46e5;
+      --accent-cyan: #0891b2;
+      --accent-purple: #7c3aed;
+      --accent-emerald: #059669;
+      --accent-amber: #d97706;
+      --accent-rose: #e11d48;
     }
 
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-space);
-      color: #f1f5f9;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
       overflow-x: hidden;
     }
 
@@ -41,119 +46,110 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
-    /* Modern Cyber-Industrial Grid Background */
-    .grid-bg {
+    /* Modern Light Architectural Grid Background */
+    .grid-bg-light {
+      background-color: #f8fafc;
       background-image: 
-        radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.12) 0%, transparent 60%),
-        radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+        radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.07) 0%, transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(79, 70, 229, 0.05) 0%, transparent 50%),
+        linear-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
       background-position: 0 0, 0 0, -1px -1px, -1px -1px;
     }
 
-    .glass-card {
-      background: var(--bg-panel);
-      backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6);
+    .clean-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .glass-card:hover {
-      border-color: rgba(59, 130, 246, 0.45);
-      box-shadow: 0 20px 40px -10px rgba(37, 99, 235, 0.2);
+    .clean-card:hover {
+      border-color: #93c5fd;
+      box-shadow: 0 12px 28px -4px rgba(37, 99, 235, 0.12);
+      transform: translateY(-1px);
     }
 
-    .node-active {
-      border-color: #3b82f6 !important;
-      background: rgba(30, 58, 138, 0.4) !important;
-      box-shadow: 0 0 24px rgba(59, 130, 246, 0.35) !important;
-    }
-
-    /* Archy Pulse Flow Line Animation */
-    @keyframes flowPulse {
-      0% { stroke-dashoffset: 40; }
+    /* Pulse Flow Line Animation in Light Mode */
+    @keyframes flowPulseLight {
+      0% { stroke-dashoffset: 44; }
       100% { stroke-dashoffset: 0; }
     }
 
     .flow-edge-animated {
-      stroke-dasharray: 6, 6;
-      animation: flowPulse 1.2s linear infinite;
+      stroke-dasharray: 8, 6;
+      animation: flowPulseLight 1.3s linear infinite;
     }
 
-    .flow-edge-cyan {
-      animation-duration: 0.9s;
-    }
-
-    /* Custom Scrollbar */
+    /* Custom Light Scrollbar */
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
     }
     ::-webkit-scrollbar-track {
-      background: #0b0f19;
+      background: #f1f5f9;
     }
     ::-webkit-scrollbar-thumb {
-      background: #1e293b;
+      background: #cbd5e1;
       border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #334155;
+      background: #94a3b8;
     }
   </style>
 </head>
-<body class="min-h-screen antialiased flex flex-col grid-bg text-slate-100 select-none">
+<body class="min-h-screen antialiased flex flex-col grid-bg-light text-slate-900 select-none">
 
   <!-- ================= TOP HEADER NAVIGATION ================= -->
-  <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between shadow-2xl">
-    <!-- Brand & Project Title (Bilingual) -->
-    <div class="flex items-center gap-4">
-      <a href="/" class="flex items-center gap-3 hover:opacity-90 transition group">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/25 text-white font-black text-xl group-hover:scale-105 transition-transform duration-300">
-          <i data-lucide="network" class="w-5 h-5"></i>
+  <header class="border-b border-slate-200/90 bg-white/95 backdrop-blur-md sticky top-0 z-50 px-8 py-4 flex items-center justify-between shadow-sm">
+    <!-- Brand & Project Title (Large, Clear) -->
+    <div class="flex items-center gap-5">
+      <a href="/" class="flex items-center gap-3.5 hover:opacity-90 transition group">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/20 text-white font-black text-2xl group-hover:scale-105 transition-transform duration-300">
+          <i data-lucide="network" class="w-6 h-6"></i>
         </div>
         <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-base font-bold text-white tracking-tight flex items-center gap-2">
-              3D-AICIVS 算法链路空间 <span class="text-xs font-normal text-slate-400">/ Algorithm Space</span>
+          <div class="flex items-center gap-3">
+            <h1 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+              3D-AICIVS 算法链路空间
             </h1>
-            <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/30 flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
-              Archy Bilingual Graph v3.1
+            <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 border border-blue-200 flex items-center gap-1.5 shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+              Modern Archy v3.2
             </span>
           </div>
-          <p class="text-xs text-slate-400 font-medium">全域拓扑矩阵 (Topology Matrix) • 截面宽度闭包 (1D DP) • 尾数平铺投影 (Planar Leveling) • 双盲物理裁决 (Dual-Blind Proof)</p>
+          <p class="text-sm text-slate-500 font-medium mt-0.5">全域拓扑矩阵 (Topology Matrix) • 截面宽度闭包 (1D DP) • 尾数平铺投影 (Planar Leveling) • 双盲物理裁决</p>
         </div>
       </a>
     </div>
 
-    <!-- Quick Search & Mode Switcher -->
-    <div class="flex items-center gap-3">
+    <!-- Quick Search & Mode Switcher (Large, Readable) -->
+    <div class="flex items-center gap-4">
       <!-- Search Input -->
-      <div class="relative w-64">
-        <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+      <div class="relative w-72">
+        <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
         <input 
           type="text" 
           id="nodeSearchInput" 
-          placeholder="搜索模块 / Search module, tensor..." 
+          placeholder="搜索算法模块 / Search modules..." 
           oninput="handleNodeSearch(this.value)"
-          class="w-full bg-slate-900/90 text-xs text-slate-200 pl-8 pr-3 py-1.5 rounded-lg border border-slate-700/80 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition placeholder:text-slate-500 font-mono"
+          class="w-full bg-slate-50 text-sm text-slate-800 pl-10 pr-4 py-2 rounded-xl border border-slate-300 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 transition placeholder:text-slate-400 font-medium"
         />
       </div>
 
-      <!-- Navigation Tabs (Bilingual) -->
-      <nav class="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800 text-xs font-medium">
-        <button id="tab-graph" class="px-3 py-1.5 rounded-lg bg-blue-600 text-white shadow-md font-semibold transition flex items-center gap-1.5" onclick="switchViewMode('graph')">
-          <i data-lucide="git-branch" class="w-3.5 h-3.5"></i>
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center gap-1.5 bg-slate-100/90 p-1.5 rounded-2xl border border-slate-200 text-sm font-semibold">
+        <button id="tab-graph" class="px-4 py-2 rounded-xl bg-blue-600 text-white shadow-md font-bold transition flex items-center gap-2" onclick="switchViewMode('graph')">
+          <i data-lucide="git-branch" class="w-4 h-4"></i>
           <span>拓扑流向图 (Flow Graph)</span>
         </button>
-        <button id="tab-matrix" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5" onclick="switchViewMode('matrix')">
-          <i data-lucide="grid" class="w-3.5 h-3.5"></i>
+        <button id="tab-matrix" class="px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition flex items-center gap-2" onclick="switchViewMode('matrix')">
+          <i data-lucide="grid" class="w-4 h-4"></i>
           <span>算法矩阵 (Matrix)</span>
         </button>
-        <button id="tab-math" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5" onclick="switchViewMode('math')">
-          <i data-lucide="sigma" class="w-3.5 h-3.5"></i>
+        <button id="tab-math" class="px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition flex items-center gap-2" onclick="switchViewMode('math')">
+          <i data-lucide="sigma" class="w-4 h-4"></i>
           <span>数学定理 (Proofs)</span>
         </button>
       </nav>
@@ -162,18 +158,18 @@
       <button 
         id="flowAnimToggle" 
         onclick="toggleFlowAnimation()" 
-        class="px-2.5 py-1.5 rounded-lg border border-slate-700/80 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-medium flex items-center gap-1.5 transition"
-        title="暂停/开启粒子流光动画 Toggle Pulse"
+        class="px-3.5 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-sm font-semibold flex items-center gap-2 transition shadow-sm"
+        title="暂停/开启粒子流光动画"
       >
-        <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
-        <span id="flowAnimLabel">流光开启 (Pulse ON)</span>
+        <i data-lucide="zap" class="w-4 h-4 text-amber-500"></i>
+        <span id="flowAnimLabel">流光开启</span>
       </button>
 
       <!-- Return to 3D Viewport -->
-      <a href="/" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-blue-500/20 transition-all hover:scale-[1.02]">
-        <i data-lucide="box" class="w-3.5 h-3.5"></i>
-        <span>返回 3D 算柜 (3D View)</span>
-        <i data-lucide="arrow-right" class="w-3 h-3"></i>
+      <a href="/" class="flex items-center gap-2 px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-md shadow-blue-600/20 transition-all hover:scale-[1.02]">
+        <i data-lucide="box" class="w-4 h-4"></i>
+        <span>返回 3D 算柜</span>
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
       </a>
     </div>
   </header>
@@ -182,50 +178,50 @@
   <div class="flex-1 flex overflow-hidden relative">
 
     <!-- LEFT / MAIN VISUALIZATION CANVAS (ARCHY TOPOLOGY GRAPH) -->
-    <div id="view-graph" class="flex-1 flex flex-col relative overflow-hidden">
+    <div id="view-graph" class="flex-1 flex flex-col relative overflow-hidden bg-slate-50/50">
 
       <!-- Canvas Floating Toolset -->
-      <div class="absolute top-4 left-6 z-20 flex items-center gap-2 bg-slate-900/90 backdrop-blur-md p-1.5 rounded-xl border border-slate-800 shadow-xl">
-        <button onclick="zoomInGraph()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition" title="放大 (Zoom In)">
-          <i data-lucide="zoom-in" class="w-4 h-4"></i>
+      <div class="absolute top-5 left-8 z-20 flex items-center gap-2 bg-white/95 backdrop-blur-md p-2 rounded-2xl border border-slate-200 shadow-lg">
+        <button onclick="zoomInGraph()" class="p-2 rounded-xl text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition" title="放大 (Zoom In)">
+          <i data-lucide="zoom-in" class="w-5 h-5"></i>
         </button>
-        <button onclick="zoomOutGraph()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition" title="缩小 (Zoom Out)">
-          <i data-lucide="zoom-out" class="w-4 h-4"></i>
+        <button onclick="zoomOutGraph()" class="p-2 rounded-xl text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition" title="缩小 (Zoom Out)">
+          <i data-lucide="zoom-out" class="w-5 h-5"></i>
         </button>
-        <button onclick="resetGraphView()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition" title="重置视角 (Reset View)">
-          <i data-lucide="maximize" class="w-4 h-4"></i>
+        <button onclick="resetGraphView()" class="p-2 rounded-xl text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition" title="重置视角 (Reset View)">
+          <i data-lucide="maximize" class="w-5 h-5"></i>
         </button>
-        <div class="w-px h-4 bg-slate-700 mx-1"></div>
-        <button onclick="triggerLiveSimulation()" class="px-2.5 py-1 rounded-lg bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/30 text-xs font-semibold flex items-center gap-1.5 transition">
-          <i data-lucide="play" class="w-3 h-3"></i>
-          <span>演练测试链路 (Play Simulation)</span>
+        <div class="w-px h-5 bg-slate-200 mx-1.5"></div>
+        <button onclick="triggerLiveSimulation()" class="px-3.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-300 hover:bg-emerald-100 text-sm font-bold flex items-center gap-2 transition">
+          <i data-lucide="play" class="w-4 h-4 text-emerald-600"></i>
+          <span>演练测试链路 (Play Flow)</span>
         </button>
       </div>
 
-      <!-- Stage Legend / Status Bar (Bilingual) -->
-      <div class="absolute bottom-4 left-6 z-20 flex items-center gap-3 bg-slate-950/80 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-800/80 text-xs text-slate-400 font-mono shadow-xl">
-        <div class="flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+      <!-- Stage Legend / Status Bar (Clear Light Theme) -->
+      <div class="absolute bottom-5 left-8 z-20 flex items-center gap-4 bg-white/95 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-slate-200 text-xs text-slate-700 font-bold shadow-md">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-blue-500 shadow-sm"></span>
           <span>L1 特征解析 (Ingestion)</span>
         </div>
-        <div class="flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-purple-500 shadow-sm"></span>
           <span>L2 区位隔离 (Zone)</span>
         </div>
-        <div class="flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-cyan-500 shadow-sm"></span>
           <span>L3 满宽闭包 (1D DP)</span>
         </div>
-        <div class="flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-amber-500 shadow-sm"></span>
           <span>L4 尾数平铺 (Planar)</span>
         </div>
-        <div class="flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-emerald-500 shadow-sm"></span>
           <span>L5 防倾倒 (Anti-Tip)</span>
         </div>
-        <div class="flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-rose-500 shadow-sm"></span>
           <span>L6 双盲验证 (Validator)</span>
         </div>
       </div>
@@ -238,34 +234,34 @@
     </div>
 
     <!-- VIEW 2: ALGORITHM MATRIX (TAB) -->
-    <div id="view-matrix" class="flex-1 p-8 overflow-y-auto hidden space-y-6 max-w-7xl mx-auto w-full">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+    <div id="view-matrix" class="flex-1 p-10 overflow-y-auto hidden space-y-8 max-w-7xl mx-auto w-full">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-5">
         <div>
-          <h2 class="text-xl font-bold text-white flex items-center gap-2">
-            <i data-lucide="grid" class="w-5 h-5 text-blue-400"></i>
+          <h2 class="text-2xl font-extrabold text-slate-900 flex items-center gap-3">
+            <i data-lucide="grid" class="w-7 h-7 text-blue-600"></i>
             <span>3D-AICIVS 7大核心算法集群矩阵 (Algorithm Cluster Matrix)</span>
           </h2>
-          <p class="text-xs text-slate-400 mt-1">系统化解构装柜算法从约束解析、截面宽度闭包、多模数咬合到物理安全验算的全生命周期模块 (Full lifecycle algorithm clusters)。</p>
+          <p class="text-sm text-slate-600 mt-1.5 font-medium">系统化解构装柜算法从约束解析、截面宽度闭包、多模数咬合到物理安全验算的全生命周期模块。</p>
         </div>
-        <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">7 Clusters • 100% Operational</span>
+        <span class="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-300 shadow-sm">7 Clusters • 100% Operational</span>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="matrixGridContainer">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="matrixGridContainer">
         <!-- Dynamically rendered matrix cards -->
       </div>
     </div>
 
     <!-- VIEW 3: MATH PROOFS & FORMULATION (TAB) -->
-    <div id="view-math" class="flex-1 p-8 overflow-y-auto hidden space-y-6 max-w-6xl mx-auto w-full">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+    <div id="view-math" class="flex-1 p-10 overflow-y-auto hidden space-y-8 max-w-6xl mx-auto w-full">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-5">
         <div>
-          <h2 class="text-xl font-bold text-white flex items-center gap-2">
-            <i data-lucide="sigma" class="w-5 h-5 text-indigo-400"></i>
+          <h2 class="text-2xl font-extrabold text-slate-900 flex items-center gap-3">
+            <i data-lucide="sigma" class="w-7 h-7 text-indigo-600"></i>
             <span>算法空间数学公式与定理证明全集 (Mathematical Proofs & Formulations)</span>
           </h2>
-          <p class="text-xs text-slate-400 mt-1">基于运筹优化、截面宽度动态规划与刚体运动学的数学严谨证明体系 (Rigorous mathematical foundations)。</p>
+          <p class="text-sm text-slate-600 mt-1.5 font-medium">基于运筹优化、截面宽度动态规划与刚体运动学的数学严谨证明体系。</p>
         </div>
-        <span class="text-xs font-mono text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">KaTeX Formulations</span>
+        <span class="text-xs font-mono font-bold text-blue-700 bg-blue-50 px-4 py-1.5 rounded-full border border-blue-200 shadow-sm">KaTeX Mathematical Kernel</span>
       </div>
 
       <div class="space-y-6" id="mathProofsContainer">
@@ -273,38 +269,38 @@
       </div>
     </div>
 
-    <!-- ================= RIGHT INSPECTOR DRAWER (ARCHY NODE DETAILS) ================= -->
-    <aside id="nodeInspector" class="w-[420px] border-l border-slate-800/80 bg-slate-950/90 backdrop-blur-2xl flex flex-col transition-all duration-300 shadow-2xl z-30">
-      <!-- Drawer Header (Bilingual) -->
-      <div class="p-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-900/50">
-        <div class="flex items-center gap-2.5">
-          <div id="inspectorIconBadge" class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
-            <i data-lucide="box" class="w-4 h-4"></i>
+    <!-- ================= RIGHT INSPECTOR DRAWER (LARGE, CLEAR TEXT) ================= -->
+    <aside id="nodeInspector" class="w-[460px] border-l border-slate-200 bg-white flex flex-col transition-all duration-300 shadow-xl z-30">
+      <!-- Drawer Header -->
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/70">
+        <div class="flex items-center gap-3">
+          <div id="inspectorIconBadge" class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shadow-sm">
+            <i data-lucide="box" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 id="inspectorNodeTitle" class="text-xs font-bold text-white tracking-tight">节点详情检查器 (Node Inspector)</h3>
-            <span id="inspectorNodeLayer" class="text-[10px] font-mono text-blue-400">Click node to inspect</span>
+            <h3 id="inspectorNodeTitle" class="text-base font-extrabold text-slate-900 tracking-tight">节点详情检查器 (Node Inspector)</h3>
+            <span id="inspectorNodeLayer" class="text-xs font-mono font-semibold text-blue-600">Click node to inspect</span>
           </div>
         </div>
-        <button onclick="closeInspector()" class="p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition">
-          <i data-lucide="x" class="w-4 h-4"></i>
+        <button onclick="closeInspector()" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
       <!-- Drawer Content -->
-      <div class="flex-1 overflow-y-auto p-4 space-y-4 text-xs font-sans" id="inspectorBody">
+      <div class="flex-1 overflow-y-auto p-6 space-y-5 text-sm" id="inspectorBody">
         <!-- Initial Blank State -->
-        <div class="text-center py-16 text-slate-500 space-y-3">
-          <i data-lucide="mouse-pointer-click" class="w-8 h-8 mx-auto stroke-1 opacity-50"></i>
-          <p class="text-xs">点击拓扑画布中的任意算法节点<br>查看该模块的 Tensor 规范、中英职责、数学公式与源码</p>
-          <p class="text-[11px] text-slate-600 font-mono">Click any node to inspect tensor schemas, bilingual definitions & source codes.</p>
+        <div class="text-center py-20 text-slate-400 space-y-3">
+          <i data-lucide="mouse-pointer-click" class="w-10 h-10 mx-auto stroke-1 opacity-60 text-slate-500"></i>
+          <p class="text-sm font-semibold text-slate-600">点击拓扑画布中的任意算法节点<br>查看该模块的 Tensor 规范、中英职责、数学公式与源码</p>
+          <p class="text-xs text-slate-400 font-mono">Click any node to inspect tensor schemas, bilingual definitions & source codes.</p>
         </div>
       </div>
 
       <!-- Drawer Footer -->
-      <div class="p-3 border-t border-slate-800/80 bg-slate-900/40 flex items-center justify-between text-[11px] font-mono text-slate-400">
-        <span id="inspectorUnitStatus" class="flex items-center gap-1 text-emerald-400">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+      <div class="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between text-xs font-mono font-semibold text-slate-600">
+        <span id="inspectorUnitStatus" class="flex items-center gap-2 text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+          <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
           <span>物理裁决 0 违规 (0 Violations)</span>
         </span>
         <span class="text-slate-500">Python 3.11 Kernel</span>
@@ -313,9 +309,9 @@
 
   </div>
 
-  <!-- ================= JAVASCRIPT TOPOLOGY ENGINE & BILINGUAL DATASET ================= -->
+  <!-- ================= JAVASCRIPT TOPOLOGY ENGINE & DATASET ================= -->
   <script>
-    // 1. ARCHY TOPOLOGY GRAPH NODES & EDGES (BILINGUAL)
+    // 1. ARCHY TOPOLOGY GRAPH NODES & EDGES (HIGH-CONTRAST LIGHT THEME)
     const archyNodes = [
       // Layer 1: Ingestion
       {
@@ -325,8 +321,9 @@
         enTitle: "InputAdapter",
         subtitle: "特征张量标准化 / Canonical Parsing",
         category: "输入层 Ingestion",
-        color: "#3b82f6",
-        x: 130,
+        color: "#2563eb",
+        bgColor: "#eff6ff",
+        x: 140,
         y: 190,
         icon: "file-input",
         file: "src/unified_pipeline/model/UniversalCargoTensor.py",
@@ -352,9 +349,10 @@
         enTitle: "ConstraintParser",
         subtitle: "语义归一化 / NLP & Logic Normalizer",
         category: "输入层 Ingestion",
-        color: "#3b82f6",
-        x: 130,
-        y: 390,
+        color: "#2563eb",
+        bgColor: "#eff6ff",
+        x: 140,
+        y: 400,
         icon: "shield-alert",
         file: "src/unified_pipeline/model/UniversalCargoTensor.py",
         descZh: "智能解析自然语言业务要求（如“放柜子最里面”、“封柜门”），将其映射为结构化的区位硬约束与方向白名单。",
@@ -376,8 +374,9 @@ elif '封柜门' in req or sku in ['SKU-02', 'SKU-14']:
         enTitle: "ZoneManager",
         subtitle: "纵向空间硬隔离 / Spatial Isolation",
         category: "区位层 Partitioning",
-        color: "#8b5cf6",
-        x: 390,
+        color: "#7c3aed",
+        bgColor: "#f5f3ff",
+        x: 410,
         y: 190,
         icon: "layout-grid",
         file: "src/unified_pipeline/engine/UniversalHierarchicalSolver.py",
@@ -397,9 +396,10 @@ door_group = [c for c in cargo if c.zone == UniversalZone.DOOR]`
         enTitle: "UprightClassifier",
         subtitle: "方向白名单过滤 / Orientation Whitelist",
         category: "区位层 Partitioning",
-        color: "#8b5cf6",
-        x: 390,
-        y: 390,
+        color: "#7c3aed",
+        bgColor: "#f5f3ff",
+        x: 410,
+        y: 400,
         icon: "arrow-up",
         file: "src/unified_pipeline/model/UniversalCargoTensor.py",
         descZh: "执行严格立放铁律 (Upright Invariant)，高度方向严格锁定 dz = h，只允许水平面 90° 转向，100% 杜绝违规侧放与卧放。",
@@ -419,8 +419,9 @@ door_group = [c for c in cargo if c.zone == UniversalZone.DOOR]`
         enTitle: "1D DP Knapsack",
         subtitle: "横向满宽动态规划 / Y-Section Closure",
         category: "切片层 Slicing",
-        color: "#06b6d4",
-        x: 660,
+        color: "#0891b2",
+        bgColor: "#ecfeff",
+        x: 690,
         y: 180,
         icon: "split",
         file: "src/unified_pipeline/engine/UniversalHierarchicalSolver.py",
@@ -440,9 +441,10 @@ place_solid('SKU-08', 1, 7, 5, cur_x, 1.266, 0.0, 0.56, 0.145, 0.41)`
         enTitle: "Co-Depth Sync",
         subtitle: "纵向同步推进 / X-Advance Synchronization",
         category: "切片层 Slicing",
-        color: "#06b6d4",
-        x: 660,
-        y: 400,
+        color: "#0891b2",
+        bgColor: "#ecfeff",
+        x: 690,
+        y: 410,
         icon: "align-horizontal-distribute-center",
         file: "src/unified_pipeline/engine/UniversalHierarchicalSolver.py",
         descZh: "将大件与中副件的纵向步进深度对齐（如 1 排大件深度 = 2 排中件深度），同一切面同步推进，消除前后错位夹缝。",
@@ -462,8 +464,9 @@ current_x = round(current_x + delta_x, 4)  # Seamless advance`
         enTitle: "PlanarLeveling",
         subtitle: "消灭L型缺角 / Anti-Notch Remainder",
         category: "平整层 Leveling",
-        color: "#f59e0b",
-        x: 930,
+        color: "#d97706",
+        bgColor: "#fffbeb",
+        x: 970,
         y: 190,
         icon: "layers",
         file: "src/unified_pipeline/engine/UniversalHierarchicalSolver.py",
@@ -483,9 +486,10 @@ place_solid('SKU-14', 1, 29, 4, cur_x, 0.0, 1.065, ...)`
         enTitle: "SideSlotNesting",
         subtitle: "散件包裹包覆 / Accessory Enclosure",
         category: "平整层 Leveling",
-        color: "#f59e0b",
-        x: 930,
-        y: 390,
+        color: "#d97706",
+        bgColor: "#fffbeb",
+        x: 970,
+        y: 400,
         icon: "package-plus",
         file: "src/unified_pipeline/engine/UniversalHierarchicalSolver.py",
         descZh: "将电源线、配件等零散微小单箱作为填充料嵌入大件侧翼余料凹槽中，杜绝孤立外露与侧向突刺。",
@@ -505,8 +509,9 @@ place_solid('SKU-12', 1, 1, 1, cur_x, 1.96, 1.70, 0.18, 0.18, 0.34)`
         enTitle: "Anti-Tipping Engine",
         subtitle: "安全阶梯过渡 / Terminal Stepdown",
         category: "动力学 Dynamics",
-        color: "#10b981",
-        x: 1200,
+        color: "#059669",
+        bgColor: "#ecfdf5",
+        x: 1250,
         y: 190,
         icon: "trending-down",
         file: "src/unified_pipeline/engine/UniversalHierarchicalSolver.py",
@@ -525,9 +530,10 @@ place_solid('SKU-12', 1, 1, 1, cur_x, 1.96, 1.70, 0.18, 0.18, 0.34)`
         enTitle: "DoorSealingWall",
         subtitle: "垂直齐平封门面 / Rigid Vertical Face",
         category: "动力学 Dynamics",
-        color: "#10b981",
-        x: 1200,
-        y: 390,
+        color: "#059669",
+        bgColor: "#ecfdf5",
+        x: 1250,
+        y: 400,
         icon: "door-closed",
         file: "src/unified_pipeline/engine/UniversalHierarchicalSolver.py",
         descZh: "由大件显示器与满宽标准箱组成 29 列平整垂直封门面，牢牢压实锁住柜内全部货物。",
@@ -546,9 +552,10 @@ place_solid('SKU-12', 1, 1, 1, cur_x, 1.96, 1.70, 0.18, 0.18, 0.34)`
         enTitle: "GlobalValidator",
         subtitle: "双盲物理验算 / Dual-Blind Physical Proof",
         category: "验证层 Validation",
-        color: "#f43f5e",
-        x: 1470,
-        y: 290,
+        color: "#e11d48",
+        bgColor: "#fff1f2",
+        x: 1530,
+        y: 295,
         icon: "check-check",
         file: "backend/solver_v2/validation/independent_validator.py",
         descZh: "完全解耦独立的双盲物理引擎，严苛核验 0 碰撞、0 悬空、0 越界、0 违规姿态及 >=70% 底部物理支撑率。",
@@ -578,7 +585,7 @@ assert val.is_valid and len(val.violations) == 0`
       { source: "L5_DOORSEAL", target: "L6_VALIDATOR", label: "封门端面 Door Faces" }
     ];
 
-    // 2. MATRIX CARDS DATASET (For Tab 2 - Bilingual)
+    // 2. MATRIX CARDS DATASET (For Tab 2 - Light Theme)
     const matrixClusters = [
       {
         id: "cluster_1",
@@ -666,7 +673,7 @@ assert val.is_valid and len(val.violations) == 0`
       }
     ];
 
-    // 3. MATH PROOFS DATASET (For Tab 3 - Bilingual)
+    // 3. MATH PROOFS DATASET (For Tab 3 - Light Theme)
     const mathProofs = [
       {
         title: "定理 1：截面宽度闭包存在性定理",
@@ -691,7 +698,7 @@ assert val.is_valid and len(val.violations) == 0`
       }
     ];
 
-    // 4. D3 GRAPH INITIALIZATION
+    // 4. D3 GRAPH INITIALIZATION (LIGHT THEME)
     let svg, g, zoom, linkElements, nodeElements, textElements;
     let isFlowAnim = true;
 
@@ -699,35 +706,33 @@ assert val.is_valid and len(val.violations) == 0`
       const container = document.getElementById("archy-canvas-container");
 
       svg = d3.select("#archy-svg")
-        .attr("viewBox", [0, 0, 1680, 620])
+        .attr("viewBox", [0, 0, 1780, 640])
         .attr("width", "100%")
         .attr("height", "100%");
 
-      // Defs for gradients & glowing filters
       const defs = svg.append("defs");
 
-      // Glow filter
+      // Soft Shadow Filter for Light Cards
       const filter = defs.append("filter")
-        .attr("id", "glow")
-        .attr("x", "-20%")
-        .attr("y", "-20%")
-        .attr("width", "140%")
-        .attr("height", "140%");
-      filter.append("feGaussianBlur")
-        .attr("stdDeviation", "4")
-        .attr("result", "blur");
-      filter.append("feComposite")
-        .attr("in", "SourceGraphic")
-        .attr("in2", "blur")
-        .attr("operator", "over");
+        .attr("id", "cardShadow")
+        .attr("x", "-15%")
+        .attr("y", "-15%")
+        .attr("width", "130%")
+        .attr("height", "130%");
+      filter.append("feDropShadow")
+        .attr("dx", "0")
+        .attr("dy", "4")
+        .attr("stdDeviation", "6")
+        .attr("flood-color", "#0f172a")
+        .attr("flood-opacity", "0.08");
 
-      // Flow Gradient
+      // Flow Gradient in Light Mode
       const grad = defs.append("linearGradient")
-        .attr("id", "flowGrad")
+        .attr("id", "flowGradLight")
         .attr("x1", "0%").attr("y1", "0%").attr("x2", "100%").attr("y2", "0%");
-      grad.append("stop").attr("offset", "0%").attr("stop-color", "#3b82f6");
-      grad.append("stop").attr("offset", "50%").attr("stop-color", "#06b6d4");
-      grad.append("stop").attr("offset", "100%").attr("stop-color", "#8b5cf6");
+      grad.append("stop").attr("offset", "0%").attr("stop-color", "#2563eb");
+      grad.append("stop").attr("offset", "50%").attr("stop-color", "#0891b2");
+      grad.append("stop").attr("offset", "100%").attr("stop-color", "#7c3aed");
 
       // Root Group for Zoom/Pan
       g = svg.append("g").attr("id", "graph-root");
@@ -741,7 +746,7 @@ assert val.is_valid and len(val.violations) == 0`
       svg.call(zoom);
 
       // Initial center transform
-      svg.call(zoom.transform, d3.zoomIdentity.translate(30, 30).scale(0.92));
+      svg.call(zoom.transform, d3.zoomIdentity.translate(35, 30).scale(0.92));
 
       // Draw Links
       linkElements = g.append("g").attr("class", "links")
@@ -752,15 +757,15 @@ assert val.is_valid and len(val.violations) == 0`
         .attr("d", d => {
           const s = archyNodes.find(n => n.id === d.source);
           const t = archyNodes.find(n => n.id === d.target);
-          const sx = s.x + 95, sy = s.y + 44;
-          const tx = t.x - 95, ty = t.y + 44;
+          const sx = s.x + 105, sy = s.y + 48;
+          const tx = t.x - 105, ty = t.y + 48;
           const dx = (tx - sx) * 0.5;
           return `M ${sx} ${sy} C ${sx + dx} ${sy}, ${tx - dx} ${ty}, ${tx} ${ty}`;
         })
         .attr("fill", "none")
-        .attr("stroke", "url(#flowGrad)")
-        .attr("stroke-width", 2.2)
-        .attr("stroke-opacity", 0.65)
+        .attr("stroke", "url(#flowGradLight)")
+        .attr("stroke-width", 2.8)
+        .attr("stroke-opacity", 0.75)
         .attr("class", "flow-edge-animated");
 
       // Draw Nodes
@@ -770,143 +775,144 @@ assert val.is_valid and len(val.violations) == 0`
         .enter()
         .append("g")
         .attr("class", "node-group cursor-pointer")
-        .attr("transform", d => `translate(${d.x - 95}, ${d.y})`)
+        .attr("transform", d => `translate(${d.x - 105}, ${d.y})`)
         .on("click", (event, d) => selectNode(d));
 
-      // Node Glass Card Background
+      // Node Card Background (Pure White + Subtle Border + Soft Shadow)
       nodeElements.append("rect")
-        .attr("width", 195)
-        .attr("height", 88)
-        .attr("rx", 14)
-        .attr("fill", "rgba(13, 20, 36, 0.94)")
-        .attr("stroke", d => d.color)
-        .attr("stroke-width", 1.5)
-        .attr("stroke-opacity", 0.75)
-        .attr("class", "glass-card-rect");
+        .attr("width", 215)
+        .attr("height", 96)
+        .attr("rx", 16)
+        .attr("fill", "#ffffff")
+        .attr("stroke", "#e2e8f0")
+        .attr("stroke-width", 1.8)
+        .attr("filter", "url(#cardShadow)")
+        .attr("class", "clean-card-rect transition-all duration-200");
 
       // Node Left Color Stripe
       nodeElements.append("path")
-        .attr("d", "M 0 14 A 14 14 0 0 1 14 0 L 14 88 L 14 88 A 14 14 0 0 1 0 74 Z")
+        .attr("d", "M 0 16 A 16 16 0 0 1 16 0 L 16 96 L 16 96 A 16 16 0 0 1 0 80 Z")
         .attr("fill", d => d.color);
 
-      // Node Title (Chinese)
+      // Node Title (Chinese - Large & Bold)
       nodeElements.append("text")
-        .attr("x", 24)
-        .attr("y", 28)
-        .attr("fill", "#ffffff")
-        .attr("font-size", "12.5px")
-        .attr("font-weight", "700")
+        .attr("x", 26)
+        .attr("y", 30)
+        .attr("fill", "#0f172a")
+        .attr("font-size", "14px")
+        .attr("font-weight", "800")
         .text(d => d.title);
 
-      // Node Title (English)
+      // Node Title (English - Crisp)
       nodeElements.append("text")
-        .attr("x", 24)
-        .attr("y", 46)
-        .attr("fill", "#94a3b8")
-        .attr("font-size", "10px")
+        .attr("x", 26)
+        .attr("y", 50)
+        .attr("fill", d => d.color)
+        .attr("font-size", "12px")
         .attr("font-family", "JetBrains Mono")
-        .attr("font-weight", "600")
+        .attr("font-weight", "700")
         .text(d => d.enTitle);
 
       // Node Stage Tag Pill
       const pillGroup = nodeElements.append("g")
-        .attr("transform", "translate(24, 58)");
+        .attr("transform", "translate(26, 64)");
 
       pillGroup.append("rect")
-        .attr("width", 130)
-        .attr("height", 18)
-        .attr("rx", 5)
-        .attr("fill", d => `${d.color}20`)
-        .attr("stroke", d => `${d.color}50`)
-        .attr("stroke-width", 0.8);
+        .attr("width", 145)
+        .attr("height", 22)
+        .attr("rx", 6)
+        .attr("fill", d => d.bgColor)
+        .attr("stroke", d => d.color)
+        .attr("stroke-opacity", 0.4)
+        .attr("stroke-width", 1);
 
       pillGroup.append("text")
-        .attr("x", 6)
-        .attr("y", 12.5)
+        .attr("x", 8)
+        .attr("y", 15)
         .attr("fill", d => d.color)
-        .attr("font-size", "9px")
-        .attr("font-weight", "700")
+        .attr("font-size", "10.5px")
+        .attr("font-weight", "800")
         .attr("font-family", "JetBrains Mono")
         .text(d => `L${d.layer} • ${d.category}`);
     }
 
-    // 5. INSPECTOR DRAWER CONTROLS (BILINGUAL)
+    // 5. INSPECTOR DRAWER CONTROLS (LIGHT THEME)
     function selectNode(d) {
       // Highlight in canvas
-      d3.selectAll(".glass-card-rect").attr("stroke-width", 1.5).attr("stroke", n => n.color);
-      d3.selectAll(".node-group").filter(n => n.id === d.id).select(".glass-card-rect")
-        .attr("stroke-width", 3)
-        .attr("stroke", "#60a5fa");
+      d3.selectAll(".clean-card-rect").attr("stroke-width", 1.8).attr("stroke", "#e2e8f0");
+      d3.selectAll(".node-group").filter(n => n.id === d.id).select(".clean-card-rect")
+        .attr("stroke-width", 3.5)
+        .attr("stroke", "#2563eb");
 
-      // Update Inspector Title (Bilingual)
+      // Update Inspector Title
       document.getElementById("inspectorNodeTitle").textContent = `${d.title} (${d.enTitle})`;
       document.getElementById("inspectorNodeLayer").textContent = `Layer ${d.layer} • ${d.subtitle}`;
-      document.getElementById("inspectorIconBadge").innerHTML = `<i data-lucide="${d.icon}" class="w-4 h-4 text-blue-400"></i>`;
+      document.getElementById("inspectorIconBadge").innerHTML = `<i data-lucide="${d.icon}" class="w-5 h-5 text-blue-600"></i>`;
 
       const body = document.getElementById("inspectorBody");
       body.innerHTML = `
         <!-- Module Path & Source File -->
-        <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1.5">
-          <span class="text-[10px] font-mono text-slate-400 flex items-center justify-between">
-            <span class="flex items-center gap-1">
-              <i data-lucide="file-code" class="w-3 h-3 text-blue-400"></i>
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+          <span class="text-xs font-mono font-bold text-slate-500 flex items-center justify-between">
+            <span class="flex items-center gap-1.5">
+              <i data-lucide="file-code" class="w-4 h-4 text-blue-600"></i>
               <span>源码模块 (Source Module)</span>
             </span>
-            <span class="text-[9px] text-emerald-400 font-bold">100% COVERED</span>
+            <span class="text-[10px] text-emerald-700 font-extrabold bg-emerald-100 px-2 py-0.5 rounded">100% COVERED</span>
           </span>
-          <div class="text-[11px] font-mono text-blue-300 break-all select-text">${d.file}</div>
+          <div class="text-xs font-mono font-bold text-blue-700 break-all select-text">${d.file}</div>
         </div>
 
-        <!-- Description (Bilingual) -->
-        <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 space-y-2">
-          <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-            <i data-lucide="info" class="w-3 h-3 text-cyan-400"></i>
-            <span>算法职责与功能 (Module Role & Purpose)</span>
+        <!-- Description (Bilingual - Large & Readable) -->
+        <div class="p-4 rounded-2xl bg-blue-50/50 border border-blue-100 space-y-2.5">
+          <span class="text-xs font-extrabold text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="info" class="w-4 h-4 text-blue-600"></i>
+            <span>算法职责与功能 (Role & Purpose)</span>
           </span>
-          <p class="text-xs text-slate-200 leading-relaxed font-medium">${d.descZh}</p>
-          <p class="text-[11px] text-slate-400 leading-relaxed font-mono">${d.descEn}</p>
+          <p class="text-sm text-slate-800 leading-relaxed font-semibold">${d.descZh}</p>
+          <p class="text-xs text-slate-600 leading-relaxed font-mono font-medium">${d.descEn}</p>
         </div>
 
-        <!-- Math Formulation (KaTeX) -->
-        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
-          <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-            <i data-lucide="sigma" class="w-3 h-3 text-indigo-400"></i>
+        <!-- Math Formulation (KaTeX - Crisp on White) -->
+        <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2.5">
+          <span class="text-xs font-extrabold text-indigo-900 uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="sigma" class="w-4 h-4 text-indigo-600"></i>
             <span>数学公式与约束条件 (Mathematical Formulation)</span>
           </span>
-          <div class="text-xs text-indigo-200 font-mono py-1 overflow-x-auto select-text katex-formula" id="inspectorMathSlot">
+          <div class="text-sm text-slate-900 font-mono py-2 overflow-x-auto select-text katex-formula bg-slate-50 p-3 rounded-xl border border-slate-100" id="inspectorMathSlot">
             $$${d.math}$$
           </div>
         </div>
 
-        <!-- Inputs / Outputs Tensor Flow (Bilingual) -->
-        <div class="grid grid-cols-2 gap-2">
-          <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 space-y-1">
-            <span class="text-[10px] font-semibold text-cyan-400 flex items-center gap-1">
-              <i data-lucide="log-in" class="w-2.5 h-2.5"></i>
+        <!-- Inputs / Outputs Tensor Flow -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+            <span class="text-xs font-bold text-cyan-800 flex items-center gap-1.5">
+              <i data-lucide="log-in" class="w-3.5 h-3.5 text-cyan-600"></i>
               <span>输入 Tensor (Inputs)</span>
             </span>
-            <ul class="text-[10px] text-slate-300 space-y-0.5 font-mono">
+            <ul class="text-xs text-slate-700 space-y-1 font-mono font-medium">
               ${d.inputs.map(i => `<li>• ${i}</li>`).join("")}
             </ul>
           </div>
-          <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 space-y-1">
-            <span class="text-[10px] font-semibold text-emerald-400 flex items-center gap-1">
-              <i data-lucide="log-out" class="w-2.5 h-2.5"></i>
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+            <span class="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
+              <i data-lucide="log-out" class="w-3.5 h-3.5 text-emerald-600"></i>
               <span>输出 Tensor (Outputs)</span>
             </span>
-            <ul class="text-[10px] text-slate-300 space-y-0.5 font-mono">
+            <ul class="text-xs text-slate-700 space-y-1 font-mono font-medium">
               ${d.outputs.map(o => `<li>• ${o}</li>`).join("")}
             </ul>
           </div>
         </div>
 
         <!-- Code Snippet -->
-        <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5 font-mono">
-          <span class="text-[10px] text-slate-400 flex items-center justify-between">
-            <span>核心算法实现片段 (Implementation Snippet)</span>
-            <span class="text-[9px] text-slate-500">Python 3</span>
+        <div class="p-4 rounded-2xl bg-slate-900 text-slate-100 border border-slate-800 space-y-2 font-mono shadow-md">
+          <span class="text-xs font-bold text-slate-400 flex items-center justify-between">
+            <span>核心算法实现片段 (Python 3 Implementation)</span>
+            <span class="text-[10px] text-slate-500">UniversalHierarchicalSolver</span>
           </span>
-          <pre class="text-[10.5px] text-slate-300 overflow-x-auto leading-tight select-text"><code>${d.codeSnippet}</code></pre>
+          <pre class="text-xs text-blue-200 overflow-x-auto leading-relaxed select-text p-1"><code>${d.codeSnippet}</code></pre>
         </div>
       `;
 
@@ -924,10 +930,10 @@ assert val.is_valid and len(val.violations) == 0`
     function closeInspector() {
       const body = document.getElementById("inspectorBody");
       body.innerHTML = `
-        <div class="text-center py-16 text-slate-500 space-y-3">
-          <i data-lucide="mouse-pointer-click" class="w-8 h-8 mx-auto stroke-1 opacity-50"></i>
-          <p class="text-xs">点击拓扑画布中的任意算法节点<br>查看该模块的 Tensor 规范、中英职责、数学公式与源码</p>
-          <p class="text-[11px] text-slate-600 font-mono">Click any node to inspect tensor schemas, bilingual definitions & source codes.</p>
+        <div class="text-center py-20 text-slate-400 space-y-3">
+          <i data-lucide="mouse-pointer-click" class="w-10 h-10 mx-auto stroke-1 opacity-60 text-slate-500"></i>
+          <p class="text-sm font-semibold text-slate-600">点击拓扑画布中的任意算法节点<br>查看该模块的 Tensor 规范、中英职责、数学公式与源码</p>
+          <p class="text-xs text-slate-400 font-mono">Click any node to inspect tensor schemas, bilingual definitions & source codes.</p>
         </div>
       `;
       document.getElementById("inspectorNodeTitle").textContent = "节点详情检查器 (Node Inspector)";
@@ -943,7 +949,7 @@ assert val.is_valid and len(val.violations) == 0`
       svg.transition().duration(300).call(zoom.scaleBy, 0.8);
     }
     function resetGraphView() {
-      svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity.translate(30, 30).scale(0.92));
+      svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity.translate(35, 30).scale(0.92));
     }
     function toggleFlowAnimation() {
       isFlowAnim = !isFlowAnim;
@@ -951,11 +957,10 @@ assert val.is_valid and len(val.violations) == 0`
       paths.forEach(p => {
         p.style.animationPlayState = isFlowAnim ? "running" : "paused";
       });
-      document.getElementById("flowAnimLabel").textContent = isFlowAnim ? "流光开启 (Pulse ON)" : "流光暂停 (Pulse OFF)";
+      document.getElementById("flowAnimLabel").textContent = isFlowAnim ? "流光开启" : "流光暂停";
     }
 
     function triggerLiveSimulation() {
-      // Pulse through nodes L1 -> L6
       archyNodes.forEach((node, idx) => {
         setTimeout(() => {
           selectNode(node);
@@ -980,66 +985,65 @@ assert val.is_valid and len(val.violations) == 0`
       });
     }
 
-    // 7. VIEW MODE SWITCHER (Graph / Matrix / Math)
+    // 7. VIEW MODE SWITCHER
     function switchViewMode(mode) {
       document.getElementById("view-graph").classList.toggle("hidden", mode !== "graph");
       document.getElementById("view-matrix").classList.toggle("hidden", mode !== "matrix");
       document.getElementById("view-math").classList.toggle("hidden", mode !== "math");
 
-      // Tabs active styling
       document.getElementById("tab-graph").className = mode === "graph" 
-        ? "px-3 py-1.5 rounded-lg bg-blue-600 text-white shadow-md font-semibold transition flex items-center gap-1.5"
-        : "px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5";
+        ? "px-4 py-2 rounded-xl bg-blue-600 text-white shadow-md font-bold transition flex items-center gap-2"
+        : "px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition flex items-center gap-2";
       document.getElementById("tab-matrix").className = mode === "matrix" 
-        ? "px-3 py-1.5 rounded-lg bg-blue-600 text-white shadow-md font-semibold transition flex items-center gap-1.5"
-        : "px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5";
+        ? "px-4 py-2 rounded-xl bg-blue-600 text-white shadow-md font-bold transition flex items-center gap-2"
+        : "px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition flex items-center gap-2";
       document.getElementById("tab-math").className = mode === "math" 
-        ? "px-3 py-1.5 rounded-lg bg-blue-600 text-white shadow-md font-semibold transition flex items-center gap-1.5"
-        : "px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5";
+        ? "px-4 py-2 rounded-xl bg-blue-600 text-white shadow-md font-bold transition flex items-center gap-2"
+        : "px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition flex items-center gap-2";
     }
 
-    // 8. POPULATE MATRIX & MATH PROOFS (BILINGUAL)
+    // 8. POPULATE MATRIX & MATH PROOFS (LIGHT THEME)
     function populateMatrixAndMath() {
       // Matrix cards
       const matrixContainer = document.getElementById("matrixGridContainer");
       matrixContainer.innerHTML = matrixClusters.map(c => `
-        <div class="glass-card rounded-2xl p-5 space-y-3.5 border border-slate-800 hover:border-blue-500/50">
+        <div class="clean-card rounded-2xl p-6 space-y-4">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-mono font-bold text-slate-500">CLUSTER ${c.num}</span>
-            <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-${c.color}-500/10 text-${c.color}-400 border border-${c.color}-500/30">${c.tag}</span>
+            <span class="text-xs font-mono font-bold text-slate-400">CLUSTER ${c.num}</span>
+            <span class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200">${c.tag}</span>
           </div>
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center text-blue-400 shadow-md">
-              <i data-lucide="${c.icon}" class="w-4 h-4"></i>
+          <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shadow-sm">
+              <i data-lucide="${c.icon}" class="w-5 h-5"></i>
             </div>
             <div>
-              <h3 class="text-sm font-bold text-white">${c.title}</h3>
-              <p class="text-[10.5px] font-mono text-blue-400 font-semibold">${c.enTitle}</p>
-              <p class="text-[10px] font-mono text-slate-500">${c.file}</p>
+              <h3 class="text-base font-extrabold text-slate-900">${c.title}</h3>
+              <p class="text-xs font-mono text-blue-600 font-bold">${c.enTitle}</p>
+              <p class="text-xs font-mono text-slate-400">${c.file}</p>
             </div>
           </div>
-          <p class="text-xs text-slate-200 leading-relaxed font-medium">${c.descZh}</p>
-          <p class="text-[11px] text-slate-400 leading-relaxed font-mono">${c.descEn}</p>
+          <p class="text-sm text-slate-700 leading-relaxed font-medium">${c.descZh}</p>
+          <p class="text-xs text-slate-500 leading-relaxed font-mono">${c.descEn}</p>
         </div>
       `).join("");
 
       // Math Proofs
       const mathContainer = document.getElementById("mathProofsContainer");
       mathContainer.innerHTML = mathProofs.map((m, idx) => `
-        <div class="glass-card rounded-2xl p-6 space-y-3 border border-slate-800">
-          <div class="flex items-center gap-2 text-indigo-400">
-            <i data-lucide="sigma" class="w-4 h-4"></i>
+        <div class="clean-card rounded-2xl p-7 space-y-4">
+          <div class="flex items-center gap-3 text-indigo-600">
+            <i data-lucide="sigma" class="w-6 h-6"></i>
             <div>
-              <h3 class="text-sm font-bold text-white">${m.title}</h3>
-              <p class="text-[11px] font-mono text-indigo-300 font-semibold">${m.enTitle}</p>
+              <h3 class="text-base font-extrabold text-slate-900">${m.title}</h3>
+              <p class="text-xs font-mono text-indigo-600 font-bold">${m.enTitle}</p>
             </div>
           </div>
-          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800/80 text-sm text-indigo-200 font-mono overflow-x-auto select-text">
+          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-sm text-slate-900 font-mono overflow-x-auto select-text shadow-inner">
             $$${m.latex}$$
           </div>
-          <div class="space-y-1.5 text-xs">
-            <p class="text-slate-200 leading-relaxed"><span class="font-semibold text-slate-400">中文证明：</span>${m.proofZh}</p>
-            <p class="text-slate-400 font-mono text-[11px] leading-relaxed"><span class="font-semibold text-slate-500">English: </span>${m.proofEn}</p>
+          <div class="space-y-2 text-sm">
+            <p class="text-slate-800 leading-relaxed font-medium"><span class="font-bold text-slate-900">中文证明：</span>${m.proofZh}</p>
+            <p class="text-slate-600 font-mono text-xs leading-relaxed"><span class="font-bold text-slate-700">English: </span>${m.proofEn}</p>
           </div>
         </div>
       `).join("");
@@ -1051,7 +1055,6 @@ assert val.is_valid and len(val.violations) == 0`
       populateMatrixAndMath();
       lucide.createIcons();
 
-      // Automatically select the 1D DP Knapsack node by default to showcase rich bilingual details
       const defaultNode = archyNodes.find(n => n.id === "L3_KNAPSACK");
       if (defaultNode) {
         selectNode(defaultNode);
