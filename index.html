@@ -2087,7 +2087,7 @@
           <span style="font-weight: 700;">📐 算法空间 (Algorithm Space)</span>
         </a>
 
-        <button class="btn-action-pill secondary" id="btn-toggle-left" onclick="toggleLeftDrawer()">
+        <button class="btn-action-pill secondary active" id="btn-toggle-left" onclick="toggleLeftDrawer()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
           <span>货柜与货单配置</span>
         </button>
@@ -2183,7 +2183,7 @@
     </div>
 
     <!-- 2. LEFT CONFIG WORKBENCH DRAWER -->
-    <aside class="glass-card workbench-drawer left interactive" id="left-drawer" style="display: none;">
+    <aside class="glass-card workbench-drawer left interactive" id="left-drawer" style="display: flex;">
       <div class="drawer-title-bar">
         <div class="drawer-heading">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
@@ -2386,26 +2386,50 @@
 
         <!-- 4. Studio Lighting & Shadow -->
         <div class="section-card">
-          <div class="section-label"><span>影棚高级光照与阴影</span></div>
+          <div class="section-label"><span>影棚高级光照与阴影调优</span></div>
           <div class="param-row">
-            <div class="param-meta"><span>光源方位角 (Azimuth)</span><span class="param-val" id="val-sunAzimuth">42°</span></div>
-            <input type="range" class="range-input" min="0" max="360" step="1" value="42" oninput="updateParam('sunAzimuth', this.value)">
+            <div class="param-meta"><span>光源方位角 (Azimuth)</span><span class="param-val" id="val-sunAzimuth">45°</span></div>
+            <input type="range" class="range-input" id="rng-sunAzimuth" min="0" max="360" step="1" value="45" oninput="updateParam('sunAzimuth', this.value)">
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>光源高度角 (Elevation)</span><span class="param-val" id="val-sunElevation">52°</span></div>
-            <input type="range" class="range-input" min="5" max="88" step="1" value="52" oninput="updateParam('sunElevation', this.value)">
+            <div class="param-meta"><span>光源高度角 (Elevation)</span><span class="param-val" id="val-sunElevation">58°</span></div>
+            <input type="range" class="range-input" id="rng-sunElevation" min="5" max="88" step="1" value="58" oninput="updateParam('sunElevation', this.value)">
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>主光强度 (Sun Intensity)</span><span class="param-val" id="val-sunIntensity">4.0</span></div>
-            <input type="range" class="range-input" min="0.5" max="8.0" step="0.2" value="4.0" oninput="updateParam('sunIntensity', this.value)">
+            <div class="param-meta"><span>主光强度 (Sun Intensity)</span><span class="param-val" id="val-sunIntensity">1.80</span></div>
+            <input type="range" class="range-input" id="rng-sunIntensity" min="0.1" max="6.0" step="0.1" value="1.8" oninput="updateParam('sunIntensity', this.value)">
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>环境光强度 (Ambient)</span><span class="param-val" id="val-ambIntensity">0.20</span></div>
-            <input type="range" class="range-input" min="0" max="1.0" step="0.05" value="0.20" oninput="updateParam('ambIntensity', this.value)">
+            <div class="param-meta"><span>环境光漫射 (Ambient)</span><span class="param-val" id="val-ambIntensity">0.60</span></div>
+            <input type="range" class="range-input" id="rng-ambIntensity" min="0" max="1.5" step="0.05" value="0.6" oninput="updateParam('ambIntensity', this.value)">
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>曝光度 (ACES Tone Exposure)</span><span class="param-val" id="val-exposure">0.72</span></div>
-            <input type="range" class="range-input" min="0.3" max="1.5" step="0.02" value="0.72" oninput="updateParam('exposure', this.value)">
+            <div class="param-meta"><span>全景穹顶光 (Hemi Light)</span><span class="param-val" id="val-hemiIntensity">0.75</span></div>
+            <input type="range" class="range-input" id="rng-hemiIntensity" min="0" max="2.0" step="0.05" value="0.75" oninput="updateParam('hemiIntensity', this.value)">
+          </div>
+          <div class="param-row">
+            <div class="param-meta"><span>柔性补光 1 (Fill 1)</span><span class="param-val" id="val-fill1Intensity">0.55</span></div>
+            <input type="range" class="range-input" id="rng-fill1Intensity" min="0" max="2.0" step="0.05" value="0.55" oninput="updateParam('fill1Intensity', this.value)">
+          </div>
+          <div class="param-row">
+            <div class="param-meta"><span>柔性补光 2 (Fill 2)</span><span class="param-val" id="val-fill2Intensity">1.05</span></div>
+            <input type="range" class="range-input" id="rng-fill2Intensity" min="0" max="2.0" step="0.05" value="1.05" oninput="updateParam('fill2Intensity', this.value)">
+          </div>
+          <div class="param-row">
+            <div class="param-meta"><span>曝光度 (ACES Tone Exposure)</span><span class="param-val" id="val-exposure">0.86</span></div>
+            <input type="range" class="range-input" id="rng-exposure" min="0.3" max="2.0" step="0.02" value="0.86" oninput="updateParam('exposure', this.value)">
+          </div>
+          <div class="param-row">
+            <div class="param-meta"><span>阴影柔化度 (Shadow Blur)</span><span class="param-val" id="val-shadowRadius">0.50</span></div>
+            <input type="range" class="range-input" id="rng-shadowRadius" min="0.5" max="8.0" step="0.2" value="0.5" oninput="updateParam('shadowRadius', this.value)">
+          </div>
+          <div class="param-row">
+            <div class="param-meta"><span>投射阴影浓度 (Cast Shadow)</span><span class="param-val" id="val-groundShadowOpacity">0.00</span></div>
+            <input type="range" class="range-input" id="rng-groundShadowOpacity" min="0.0" max="0.8" step="0.02" value="0" oninput="updateParam('groundShadowOpacity', this.value)">
+          </div>
+          <div class="param-row">
+            <div class="param-meta"><span>底部遮蔽阴影 (Contact Shadow)</span><span class="param-val" id="val-contactShadowOpacity">0.60</span></div>
+            <input type="range" class="range-input" id="rng-contactShadowOpacity" min="0.0" max="1.0" step="0.05" value="0.6" oninput="updateParam('contactShadowOpacity', this.value)">
           </div>
         </div>
 
@@ -3011,7 +3035,7 @@
         usable: { L: 12.032, W: 2.352, H: 2.698 },
         nominalVol: 76.4,
         maxPayloadTons: 28.6,
-        cameraDist: 19.5
+        cameraDist: 11.2
       },
       '40GP': {
         name: '40GP 标准普柜 (Standard 40ft)',
@@ -3022,7 +3046,7 @@
         usable: { L: 12.032, W: 2.352, H: 2.393 },
         nominalVol: 67.7,
         maxPayloadTons: 28.8,
-        cameraDist: 18.5
+        cameraDist: 10.8
       },
       '20GP': {
         name: '20GP 标准小柜 (Standard 20ft)',
@@ -3033,7 +3057,7 @@
         usable: { L: 5.898, W: 2.352, H: 2.393 },
         nominalVol: 33.2,
         maxPayloadTons: 28.2,
-        cameraDist: 11.5
+        cameraDist: 6.5
       },
       '45HQ': {
         name: '45HQ 特种高柜 (45ft High Cube)',
@@ -3044,7 +3068,7 @@
         usable: { L: 13.556, W: 2.352, H: 2.698 },
         nominalVol: 86.0,
         maxPayloadTons: 29.5,
-        cameraDist: 21.5
+        cameraDist: 12.4
       }
     };
 
@@ -3441,7 +3465,14 @@
 
             for (const s of availInCol) {
               const soris = this.getSafeOrientations(s, this.L - currentX, this.H, this.W - currentZ);
-              soris.sort((o1, o2) => Math.abs(o1.l - sliceThickness) - Math.abs(o2.l - sliceThickness));
+              const isNearDoor = (this.L - currentX) <= 1.5;
+              soris.sort((o1, o2) => {
+                if (isNearDoor) {
+                  // 门端安全第一原则：长边顺深度方向(o.l最大化)，防止开门倾覆
+                  return o2.l - o1.l;
+                }
+                return Math.abs(o1.l - sliceThickness) - Math.abs(o2.l - sliceThickness);
+              });
               if (soris.length > 0) {
                 colSKU = s;
                 colOri = soris[0];
@@ -3842,8 +3873,8 @@
     }
 
     // --- CLIENT-SIDE SPATIAL COORDINATE CACHE ENGINE ---
-    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V35_MONOLITHIC_';
-    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V35_MONOLITHIC';
+    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V40_CORRECT_ORIENTATION_';
+    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V40_CORRECT_ORIENTATION';
 
     // Auto purge obsolete localStorage caches from older versions
     (function purgeObsoleteCaches() {
@@ -3951,7 +3982,7 @@
     }
 
     // --- LOADING RESULT PERSISTENT CACHE ---
-    const CACHED_LOADING_RESULT_KEY = '3D_AICIVS_CACHED_LOADING_RESULT_V35_MONOLITHIC';
+    const CACHED_LOADING_RESULT_KEY = '3D_AICIVS_CACHED_LOADING_RESULT_V40_CORRECT_ORIENTATION';
 
     function saveLoadingResultCache(loadingResult, usableDim, manifest, spec) {
       try {
@@ -4225,7 +4256,7 @@
     let scene, camera, renderer, controls;
     let containerGroup, cargoGroup, doorLeftGroup, doorRightGroup;
     let foregroundCutawayMat, solidBackMat, frameSolidMat, steelFloorMat;
-    let sunLight, ambientLight, groundMesh, contactShadowPlane, steelNormalMap;
+    let sunLight, ambientLight, hemiLight, fillLight1, fillLight2, groundMesh, contactShadowPlane, steelNormalMap;
     let boxMeshes = [];
     let raycaster, mouse;
     let hoveredBox = null;
@@ -4256,16 +4287,21 @@
       frameRough: 0.68,
       bump: 0.94,
       backColor: '#43474c',
-      exposure: 0.72,
-      sunIntensity: 4.0,
-      ambIntensity: 0.2,
-      shadowRadius: 1.6,
-      groundColor: '#dce5ef',
+      exposure: 0.86,
+      sunIntensity: 1.8,
+      ambIntensity: 0.6,
+      shadowRadius: 0.5,
+      groundColor: '#ffffff',
       showShadow: true,
       smartCutaway: true,
-      sunAzimuth: 42,
-      sunElevation: 52,
-      sunDistance: 40
+      sunAzimuth: 45,
+      sunElevation: 58,
+      sunDistance: 45,
+      groundShadowOpacity: 0,
+      contactShadowOpacity: 0.6,
+      fill2Intensity: 1.05,
+      fill1Intensity: 0.55,
+      hemiIntensity: 0.75
     };
 
     const CS = 0.16;
@@ -4388,25 +4424,26 @@
       canvas.height = 512;
       const ctx = canvas.getContext('2d');
 
+      // Modern pure bright studio gradient with white ceiling
       const grad = ctx.createLinearGradient(0, 0, 0, 512);
       grad.addColorStop(0, '#ffffff');
-      grad.addColorStop(0.25, '#eef5fc');
-      grad.addColorStop(0.65, '#9bb2c8');
-      grad.addColorStop(1, '#445b71');
+      grad.addColorStop(0.35, '#ffffff');
+      grad.addColorStop(0.75, '#e8f0f8');
+      grad.addColorStop(1, '#c8d8e8');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 1024, 512);
 
       const softbox1 = ctx.createRadialGradient(300, 120, 10, 300, 120, 200);
-      softbox1.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
-      softbox1.addColorStop(0.5, 'rgba(255, 255, 255, 0.4)');
+      softbox1.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+      softbox1.addColorStop(0.5, 'rgba(255, 255, 255, 0.6)');
       softbox1.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
       ctx.fillStyle = softbox1;
       ctx.fillRect(100, 0, 400, 240);
 
       const softbox2 = ctx.createRadialGradient(800, 140, 10, 800, 140, 180);
-      softbox2.addColorStop(0, 'rgba(230, 242, 255, 0.85)');
-      softbox2.addColorStop(0.6, 'rgba(230, 242, 255, 0.25)');
-      softbox2.addColorStop(1, 'rgba(230, 242, 255, 0.0)');
+      softbox2.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+      softbox2.addColorStop(0.6, 'rgba(240, 248, 255, 0.35)');
+      softbox2.addColorStop(1, 'rgba(240, 248, 255, 0.0)');
       ctx.fillStyle = softbox2;
       ctx.fillRect(620, 0, 360, 260);
 
@@ -4678,7 +4715,10 @@
 
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
-      controls.dampingFactor = 0.06;
+      controls.dampingFactor = 0.085; // 增强交互阻尼感，丝滑稳健
+      controls.rotateSpeed = 0.85;
+      controls.panSpeed = 0.85;
+      controls.zoomSpeed = 1.0;
       controls.target.set(0, currentSpec.extH / 2, 0);
       controls.update();
 
@@ -4700,16 +4740,27 @@
 
       rebuildContainerModel();
       const cacheRestored = restoreLoadingResultCache();
-      if (!cacheRestored) {
-        clearPackingResultAndScene();
-      }
       renderManifestUI();
       renderAnchorRibbon();
       updateCalculationStateUI();
-      // Startup intentionally performs health/UI initialization only. The
-      // authoritative BLK007D request is exclusively user-triggered.
+
+      // Check backend health immediately and update HUD status badge
       updateBackendStatus('CHECKING');
-      window.BLK007D.checkHealth().then(updateBackendStatus).catch(() => updateBackendStatus('OFFLINE'));
+      window.BLK007D.checkHealth().then(status => {
+        updateBackendStatus(status);
+        console.log('[3D-AICIVS] 后端算柜服务健康状态:', status);
+      }).catch(() => {
+        updateBackendStatus('OFFLINE');
+      });
+
+      if (!cacheRestored) {
+        if (activeManifest.length > 0) {
+          console.log('[3D-AICIVS] 首次进入或无缓存，自动触发初始 3D 算柜推演与渲染...');
+          runSmartPackingAlgorithm(false);
+        } else {
+          clearPackingResultAndScene();
+        }
+      }
 
       raycaster = new THREE.Raycaster();
       mouse = new THREE.Vector2();
@@ -4728,31 +4779,43 @@
     }
 
     function setupLighting() {
+      // 1. Ambient & Hemispheric Diffuse Light (提供柔和基底漫反射，消除死黑阴影)
       ambientLight = new THREE.AmbientLight(0xffffff, renderConfig.ambIntensity);
       scene.add(ambientLight);
 
+      hemiLight = new THREE.HemisphereLight(0xffffff, 0xf1f5f9, renderConfig.hemiIntensity || 0.85);
+      hemiLight.position.set(0, 50, 0);
+      scene.add(hemiLight);
+
+      // 2. Main Studio Key Light (柔和主光源，大半径软阴影)
       sunLight = new THREE.DirectionalLight(0xffffff, renderConfig.sunIntensity);
+      sunLight.target.position.set(0, 1.4, 0);
+      scene.add(sunLight.target);
+
       updateSunLightPosition();
       sunLight.castShadow = renderConfig.showShadow;
       sunLight.shadow.mapSize.width = 2048;
       sunLight.shadow.mapSize.height = 2048;
       sunLight.shadow.camera.near = 1;
-      sunLight.shadow.camera.far = 120;
+      sunLight.shadow.camera.far = 140;
       const d = 16;
       sunLight.shadow.camera.left = -d;
       sunLight.shadow.camera.right = d;
       sunLight.shadow.camera.top = d;
       sunLight.shadow.camera.bottom = -d;
-      sunLight.shadow.bias = -0.0003;
+      sunLight.shadow.bias = -0.0002;
       sunLight.shadow.radius = renderConfig.shadowRadius;
       scene.add(sunLight);
 
-      const fillLight = new THREE.DirectionalLight(0xbcd9f8, 0.9);
-      fillLight.position.set(-20, 18, -18);
-      scene.add(fillLight);
+      // 3. Studio Fill Light 1 (前侧补光，提亮暗部细节)
+      fillLight1 = new THREE.DirectionalLight(0xf8fafc, renderConfig.fill1Intensity || 0.75);
+      fillLight1.position.set(-25, 20, -20);
+      scene.add(fillLight1);
 
-      const hemiLight = new THREE.HemisphereLight(0xffffff, 0xd2e0ee, 0.65);
-      scene.add(hemiLight);
+      // 4. Studio Fill Light 2 (侧上方微光，增强箱体边缘轮廓质感)
+      fillLight2 = new THREE.DirectionalLight(0xe0f2fe, renderConfig.fill2Intensity || 0.5);
+      fillLight2.position.set(20, 25, 20);
+      scene.add(fillLight2);
     }
 
     function updateSunLightPosition() {
@@ -4765,14 +4828,14 @@
       const x = r * Math.sin(radAzimuth);
       const z = r * Math.cos(radAzimuth);
       sunLight.position.set(x, y, z);
+      if (sunLight.target) sunLight.target.position.set(0, (currentSpec ? currentSpec.extH / 2 : 1.4), 0);
     }
 
     function setupEnvironment() {
-      const floorGeo = new THREE.PlaneGeometry(160, 160);
-      const groundMat = new THREE.MeshStandardMaterial({
-        color: renderConfig.groundColor,
-        roughness: 0.9,
-        metalness: 0.05
+      // 1. Seamless Ground Shadow Plane (完全融入世界背景，无边界切割感)
+      const floorGeo = new THREE.PlaneGeometry(240, 240);
+      const groundMat = new THREE.ShadowMaterial({
+        opacity: renderConfig.groundShadowOpacity !== undefined ? renderConfig.groundShadowOpacity : 0.22
       });
       groundMesh = new THREE.Mesh(floorGeo, groundMat);
       groundMesh.rotation.x = -Math.PI / 2;
@@ -4780,30 +4843,46 @@
       groundMesh.receiveShadow = renderConfig.showShadow;
       scene.add(groundMesh);
 
-      const grid = new THREE.GridHelper(100, 50, 0xc4d3e4, 0xd2e0ee);
-      grid.position.y = 0.01;
+      // 2. High-Clarity Industrial Grid Lines (高清晰度工程参考网格)
+      const grid = new THREE.GridHelper(100, 50, 0x64748b, 0x94a3b8);
+      grid.position.y = 0.005;
+      grid.material.opacity = 0.85;
+      grid.material.transparent = true;
       scene.add(grid);
 
+      // 3. High-Fidelity Soft Ambient Contact Shadow (高品质底部环境遮蔽接触阴影)
+      updateContactShadowTexture();
+
+      contactShadowPlane = new THREE.Mesh(
+        new THREE.PlaneGeometry(currentSpec.extL + 2.0, currentSpec.extW + 1.8),
+        new THREE.MeshBasicMaterial({ map: contactShadowTexture, transparent: true, opacity: renderConfig.contactShadowOpacity !== undefined ? renderConfig.contactShadowOpacity : 0.75, depthWrite: false })
+      );
+      contactShadowPlane.rotation.x = -Math.PI / 2;
+      contactShadowPlane.position.set(0, 0.012, 0);
+      contactShadowPlane.visible = renderConfig.showShadow;
+      scene.add(contactShadowPlane);
+    }
+
+    let contactShadowTexture = null;
+    function updateContactShadowTexture() {
       const shadowCanvas = document.createElement('canvas');
       shadowCanvas.width = 512;
       shadowCanvas.height = 256;
       const sCtx = shadowCanvas.getContext('2d');
-      const sGrad = sCtx.createRadialGradient(256, 128, 40, 256, 128, 240);
-      sGrad.addColorStop(0, 'rgba(30, 45, 65, 0.45)');
-      sGrad.addColorStop(0.5, 'rgba(30, 45, 65, 0.18)');
-      sGrad.addColorStop(1, 'rgba(30, 45, 65, 0.0)');
+      const blurRadius = (renderConfig.shadowRadius || 3.5) * 45;
+      const sGrad = sCtx.createRadialGradient(256, 128, 20, 256, 128, Math.max(80, blurRadius));
+      sGrad.addColorStop(0, 'rgba(15, 23, 42, 0.55)');
+      sGrad.addColorStop(0.4, 'rgba(15, 23, 42, 0.22)');
+      sGrad.addColorStop(1, 'rgba(15, 23, 42, 0.0)');
       sCtx.fillStyle = sGrad;
       sCtx.fillRect(0, 0, 512, 256);
-      const shadowTex = new THREE.CanvasTexture(shadowCanvas);
-
-      contactShadowPlane = new THREE.Mesh(
-        new THREE.PlaneGeometry(currentSpec.extL + 2.0, currentSpec.extW + 1.8),
-        new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, opacity: 0.8, depthWrite: false })
-      );
-      contactShadowPlane.rotation.x = -Math.PI / 2;
-      contactShadowPlane.position.set(0, 0.015, 0);
-      contactShadowPlane.visible = renderConfig.showShadow;
-      scene.add(contactShadowPlane);
+      
+      if (!contactShadowTexture) {
+        contactShadowTexture = new THREE.CanvasTexture(shadowCanvas);
+      } else {
+        contactShadowTexture.image = shadowCanvas;
+        contactShadowTexture.needsUpdate = true;
+      }
     }
 
     function registerDynamicSkeleton(mesh, adjacentFaces) {
@@ -6652,13 +6731,13 @@
       ctx.fillStyle = '#0284c7'; // sky-600
       ctx.fillRect(0, railY, widthPx, 1);
 
-      // 3. Metric Ticks: Right side in 3D (x=widthPx) is 0m (最里面), Left side in 3D (x=0) is Door (lengthMeters)
+      // 3. Metric Ticks: In 3D frame, Left side (-postX) is Door (lengthMeters), Right side (+postX) is Rear 0m (最里面)
       const numMeters = Math.ceil(length);
 
       // 3.1 Draw decimeter micro-ticks (every 0.1m)
       for (let dm = 0; dm <= length; dm += 0.1) {
         if (Math.abs(dm % 0.5) > 1e-4) {
-          const x = widthPx - (dm / length) * widthPx;
+          const x = (dm / length) * widthPx;
           ctx.fillStyle = '#64748b'; // slate-500
           ctx.fillRect(x - 0.5, railY, 1, 9);
         }
@@ -6666,7 +6745,7 @@
 
       // 3.2 Draw half-meter ticks (every 0.5m)
       for (let hm = 0.5; hm <= length; hm += 1.0) {
-        const x = widthPx - (hm / length) * widthPx;
+        const x = (hm / length) * widthPx;
         ctx.fillStyle = '#94a3b8'; // slate-400
         ctx.fillRect(x - 1, railY, 2, 18);
       }
@@ -6677,6 +6756,7 @@
 
       for (let m = 0; m <= numMeters; m += 1.0) {
         if (m > length + 1e-3) break;
+        // x=0 is left (Door = lengthMeters), x=widthPx is right (Rear = 0m)
         const x = widthPx - (m / length) * widthPx;
 
         // Major tick pillar
@@ -6944,49 +7024,98 @@
           // Ensure 3D canvas is freshly rendered
           renderer.render(scene, camera);
 
-          showToast('正在生成带 UI 全景截图...', 'info', '📸 处理中');
-
-          const canvas = await window.html2canvas(document.body, {
-            backgroundColor: '#dce5ef',
-            useCORS: true,
-            allowTaint: true,
-            scale: Math.min(window.devicePixelRatio || 2, 2),
-            logging: false,
-            ignoreElements: (el) => {
-              if (!el) return false;
-              if (el.id === 'screenshot-menu-dropdown') return true;
-              if (el.classList && el.classList.contains('toast-notification')) return true;
-              return false;
-            }
-          });
-
-          if (!canvas) {
-            showToast('全景截图生成失败', 'warning');
-            return;
-          }
-
           if (action === 'copy') {
+            if (navigator.clipboard && window.ClipboardItem) {
+              try {
+                // Mac Safari / Chrome: Direct Promise-wrapped ClipboardItem within user gesture
+                const blobPromise = new Promise(async (resolve, reject) => {
+                  try {
+                    const canvas = await window.html2canvas(document.body, {
+                      backgroundColor: '#dce5ef',
+                      useCORS: true,
+                      allowTaint: true,
+                      scale: Math.min(window.devicePixelRatio || 2, 2),
+                      logging: false,
+                      ignoreElements: (el) => {
+                        if (!el) return false;
+                        if (el.id === 'screenshot-menu-dropdown') return true;
+                        if (el.classList && el.classList.contains('toast-notification')) return true;
+                        return false;
+                      }
+                    });
+                    if (!canvas) {
+                      reject(new Error('Canvas null'));
+                      return;
+                    }
+                    canvas.toBlob((b) => {
+                      if (b) resolve(b);
+                      else reject(new Error('Blob conversion failed'));
+                    }, 'image/png');
+                  } catch (e) {
+                    reject(e);
+                  }
+                });
+
+                await navigator.clipboard.write([new ClipboardItem({ 'image/png': blobPromise })]);
+                showToast('带 UI 全景截图已成功复制到剪贴板，可直接按 ⌘V / Ctrl+V 粘贴！', 'success', '📸 复制成功');
+                return;
+              } catch (clipErr) {
+                console.warn('[3D-AICIVS] Promise 剪贴板写入异常，尝试同步 blob 兜底:', clipErr);
+              }
+            }
+
+            // Fallback for standard browsers
+            const canvas = await window.html2canvas(document.body, {
+              backgroundColor: '#dce5ef',
+              useCORS: true,
+              allowTaint: true,
+              scale: Math.min(window.devicePixelRatio || 2, 2),
+              logging: false,
+              ignoreElements: (el) => {
+                if (!el) return false;
+                if (el.id === 'screenshot-menu-dropdown') return true;
+                if (el.classList && el.classList.contains('toast-notification')) return true;
+                return false;
+              }
+            });
+
+            if (!canvas) {
+              showToast('全景截图生成失败', 'warning');
+              return;
+            }
+
             canvas.toBlob(async (blob) => {
               if (!blob) {
-                showToast('全景截图转换为图像数据失败', 'warning');
+                downloadCanvasImage(canvas, filename);
                 return;
               }
               try {
                 if (navigator.clipboard && window.ClipboardItem) {
                   await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-                  showToast('带 UI 全景截图已复制到剪贴板，可直接按 Ctrl+V 粘贴！', 'success', '📸 复制成功');
+                  showToast('带 UI 全景截图已复制到剪贴板，可直接按 ⌘V / Ctrl+V 粘贴！', 'success', '📸 复制成功');
                 } else {
-                  showToast('浏览器不支持剪贴板图片写入，已为您切换为下载', 'info');
                   downloadCanvasImage(canvas, filename);
                 }
               } catch (clipErr) {
-                console.warn('[3D-AICIVS] 剪贴板写入受限:', clipErr);
-                showToast('剪贴板写入受限，已自动为您下载全景截图文件。', 'info');
+                console.warn('[3D-AICIVS] 剪贴板写入受限，降级为下载:', clipErr);
                 downloadCanvasImage(canvas, filename);
+                showToast('剪贴板写入受限，已自动为您下载全景截图文件。', 'info');
               }
             }, 'image/png');
           } else {
             // Download file
+            const canvas = await window.html2canvas(document.body, {
+              backgroundColor: '#dce5ef',
+              useCORS: true,
+              allowTaint: true,
+              scale: Math.min(window.devicePixelRatio || 2, 2),
+              logging: false,
+              ignoreElements: (el) => {
+                if (!el) return false;
+                if (el.id === 'screenshot-menu-dropdown') return true;
+                return false;
+              }
+            });
             downloadCanvasImage(canvas, filename);
             showToast(`带 UI 全景截图已成功下载（${filename}）！`, 'success', '💾 下载成功');
           }
@@ -6996,28 +7125,46 @@
           renderer.render(scene, camera);
 
           if (action === 'copy') {
+            if (navigator.clipboard && window.ClipboardItem) {
+              try {
+                // Mac Safari & Chrome User Gesture Compliant: wrap blob retrieval inside Promise for instant clipboard write
+                const blobPromise = new Promise((resolve, reject) => {
+                  renderer.domElement.toBlob((b) => {
+                    if (b) resolve(b);
+                    else reject(new Error('WebGL Canvas toBlob failed'));
+                  }, 'image/png');
+                });
+
+                await navigator.clipboard.write([new ClipboardItem({ 'image/png': blobPromise })]);
+                showToast('纯 3D 视图截图已成功复制到剪贴板，可直接按 ⌘V / Ctrl+V 粘贴！', 'success', '📸 复制成功');
+                return;
+              } catch (clipErr) {
+                console.warn('[3D-AICIVS] Promise 剪贴板写入异常，尝试同步兜底:', clipErr);
+              }
+            }
+
+            // Fallback for standard browsers
             if (renderer.domElement.toBlob) {
               renderer.domElement.toBlob(async (blob) => {
                 if (!blob) {
-                  showToast('生成 3D 截图数据失败', 'warning');
+                  downloadDataUrl(renderer.domElement.toDataURL('image/png'), filename);
                   return;
                 }
                 try {
                   if (navigator.clipboard && window.ClipboardItem) {
                     await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-                    showToast('纯 3D 视图截图已成功复制到剪贴板，可直接按 Ctrl+V 粘贴！', 'success', '📸 复制成功');
+                    showToast('纯 3D 视图截图已成功复制到剪贴板，可直接按 ⌘V / Ctrl+V 粘贴！', 'success', '📸 复制成功');
                   } else {
-                    showToast('浏览器不支持剪贴板图片写入，已为您切换为下载', 'info');
                     downloadDataUrl(renderer.domElement.toDataURL('image/png'), filename);
                   }
                 } catch (clipErr) {
                   console.warn('[3D-AICIVS] 剪贴板写入受限:', clipErr);
-                  showToast('剪贴板写入受限，已自动为您下载 3D 截图文件。', 'info');
                   downloadDataUrl(renderer.domElement.toDataURL('image/png'), filename);
+                  showToast('剪贴板写入受限，已自动为您下载 3D 截图文件。', 'info');
                 }
               }, 'image/png');
             } else {
-              showToast('当前环境不支持 Canvas toBlob 导出', 'warning');
+              downloadDataUrl(renderer.domElement.toDataURL('image/png'), filename);
             }
           } else {
             // Download file
@@ -7178,10 +7325,40 @@
       if (key === 'frameMetal' && frameSolidMat) frameSolidMat.metalness = numVal;
       if (key === 'frameRough' && frameSolidMat) frameSolidMat.roughness = numVal;
       if (key === 'bump' && frameSolidMat && frameSolidMat.normalScale) frameSolidMat.normalScale.set(numVal, numVal);
-      if (key === 'sunIntensity' && sunLight) sunLight.intensity = numVal;
-      if (key === 'ambIntensity' && ambientLight) ambientLight.intensity = numVal;
-      if (key === 'exposure' && renderer) renderer.toneMappingExposure = numVal;
-      if (key === 'sunAzimuth' || key === 'sunElevation') updateSunLightPosition();
+      if (key === 'sunIntensity' && sunLight) {
+        sunLight.intensity = numVal;
+      }
+      if (key === 'ambIntensity' && ambientLight) {
+        ambientLight.intensity = numVal;
+      }
+      if (key === 'hemiIntensity' && hemiLight) {
+        hemiLight.intensity = numVal;
+      }
+      if (key === 'fill1Intensity' && fillLight1) {
+        fillLight1.intensity = numVal;
+      }
+      if (key === 'fill2Intensity' && fillLight2) {
+        fillLight2.intensity = numVal;
+      }
+      if (key === 'exposure' && renderer) {
+        renderer.toneMappingExposure = numVal;
+      }
+      if (key === 'shadowRadius') {
+        if (sunLight) {
+          sunLight.shadow.radius = numVal;
+          if (sunLight.shadow.map) sunLight.shadow.map.dispose();
+        }
+        updateContactShadowTexture();
+      }
+      if (key === 'groundShadowOpacity' && groundMesh && groundMesh.material) {
+        groundMesh.material.opacity = numVal;
+      }
+      if (key === 'contactShadowOpacity' && contactShadowPlane && contactShadowPlane.material) {
+        contactShadowPlane.material.opacity = numVal;
+      }
+      if (key === 'sunAzimuth' || key === 'sunElevation') {
+        updateSunLightPosition();
+      }
       
       isCameraDirty = true;
     };
@@ -7564,9 +7741,40 @@
       isRaycastDirty = true;
     }
 
+    // --- SMART VIEWPORT MAGNETIC REBOUND & AUTO-CENTERING SYSTEM ---
+    const DEFAULT_CONTAINER_CENTER = new THREE.Vector3(0, 1.45, 0);
+
+    function enforceViewportBoundaries() {
+      if (!controls || !camera || !currentSpec) return;
+      DEFAULT_CONTAINER_CENTER.y = currentSpec.extH / 2;
+
+      // 1. If user is currently dragging/orbiting, calculate soft spring tension
+      const targetPos = controls.target;
+      const distFromCenter = targetPos.distanceTo(DEFAULT_CONTAINER_CENTER);
+      const maxPanThreshold = (currentSpec.cameraDist || 15.0) * 0.45;
+
+      if (!isOrbiting) {
+        // When user releases touch/mouse and object is offset, smoothly interpolate back to center
+        if (distFromCenter > 0.005) {
+          const reboundSpeed = distFromCenter > maxPanThreshold ? 0.08 : 0.045;
+          controls.target.lerp(DEFAULT_CONTAINER_CENTER, reboundSpeed);
+          isCameraDirty = true;
+        }
+      } else {
+        // If dragged too far beyond boundary (> maxPanThreshold), apply magnetic rubber-band drag limit
+        if (distFromCenter > maxPanThreshold) {
+          const excess = distFromCenter - maxPanThreshold;
+          const correction = targetPos.clone().sub(DEFAULT_CONTAINER_CENTER).normalize().multiplyScalar(excess * 0.15);
+          targetPos.sub(correction);
+          isCameraDirty = true;
+        }
+      }
+    }
+
     function animate() {
       requestAnimationFrame(animate);
       if (controls) controls.update();
+      enforceViewportBoundaries();
       updateAdaptiveCutaway();
       checkRaycast();
       if (renderer && scene && camera) {
