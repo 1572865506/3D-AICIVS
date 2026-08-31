@@ -136,6 +136,10 @@ class InputNormalizer:
         Constructs canonical StackingPolicy.
         """
         max_layers = raw_item.get('maxStackLayers')
+        if max_layers is None:
+            max_layers = raw_item.get('max_stack_layers')
+        if max_layers is None:
+            max_layers = raw_item.get('max_stack')
         if max_layers is not None:
             max_layers = int(max_layers)
 

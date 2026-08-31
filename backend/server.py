@@ -155,17 +155,38 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                         raw_item = raw_manifest[idx] if idx < len(raw_manifest) and isinstance(raw_manifest[idx], dict) else {}
                         req = raw_item.get('requirement', '') or raw_item.get('source_requirement_text', '') or getattr(s, 'source_requirement_text', '') or ''
                         zp = UniversalZone.FLEXIBLE
-                        if '最里面' in req or '里面' in req or '内' in req or s.sku_id in ['SKU-01', 'SKU-15']:
+                        if '最里面' in req or '里面' in req or '内' in req:
                             zp = UniversalZone.INNER
-                        elif '中间' in req or s.sku_id in ['SKU-05', 'SKU-06', 'SKU-07', 'SKU-08', 'SKU-09', 'SKU-10', 'SKU-11', 'SKU-12', 'SKU-13']:
-                            zp = UniversalZone.MIDDLE
-                        elif '封柜门' in req or '门' in req or s.sku_id in ['SKU-02', 'SKU-03', 'SKU-04', 'SKU-14']:
+                        elif '封柜门' in req or '门' in req or '外' in req:
                             zp = UniversalZone.DOOR
+                        elif '中间' in req or '中' in req:
+                            zp = UniversalZone.MIDDLE
+                        else:
+                            if s.sku_id in ['SKU-01', 'SKU-15']:
+                                zp = UniversalZone.INNER
+                            elif s.sku_id in ['SKU-02', 'SKU-03', 'SKU-04', 'SKU-14']:
+                                zp = UniversalZone.DOOR
+                            else:
+                                zp = UniversalZone.MIDDLE
                         
                         sku_weights[s.sku_id] = s.weight_kg
-                        allow_flat = False
-                        if hasattr(s, 'orientation_policy') and s.orientation_policy:
-                            allow_flat = getattr(s.orientation_policy, 'allow_flat', False)
+                        src_dict = raw_item.get('source', {}) if isinstance(raw_item.get('source'), dict) else {}
+                        allow_flat = raw_item.get('allow_flat') or raw_item.get('allowFlat') or src_dict.get('allow_flat') or src_dict.get('allowFlat') or (hasattr(s, 'orientation_policy') and getattr(s.orientation_policy, 'allow_flat', False))
+                        allow_side = raw_item.get('allow_side') or raw_item.get('allowSide') or src_dict.get('allow_side') or src_dict.get('allowSide') or False
+                        
+                        max_stack = (
+                            raw_item.get('max_stack_layers') or 
+                            raw_item.get('maxStackLayers') or 
+                            raw_item.get('max_stack') or
+                            src_dict.get('max_stack_layers') or
+                            src_dict.get('maxStackLayers') or
+                            (hasattr(s, 'stacking_policy') and getattr(s.stacking_policy, 'max_stack_layers', None))
+                        )
+                        if max_stack is not None:
+                            try:
+                                max_stack = int(max_stack)
+                            except (ValueError, TypeError):
+                                max_stack = None
 
                         universal_cargo.append(UniversalCargoTensor(
                             sku_id=s.sku_id,
@@ -176,7 +197,9 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                             weight_kg=s.weight_kg,
                             quantity_required=s.quantity.required,
                             zone_preference=zp,
-                            allow_flat=allow_flat,
+                            allow_flat=bool(allow_flat),
+                            allow_side=bool(allow_side),
+                            max_stack_layers=max_stack,
                             raw_requirement=req
                         ))
 

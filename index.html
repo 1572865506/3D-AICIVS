@@ -3873,8 +3873,8 @@
     }
 
     // --- CLIENT-SIDE SPATIAL COORDINATE CACHE ENGINE ---
-    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V40_CORRECT_ORIENTATION_';
-    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V40_CORRECT_ORIENTATION';
+    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V41_ROTATED_BULKHEAD_';
+    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V41_ROTATED_BULKHEAD';
 
     // Auto purge obsolete localStorage caches from older versions
     (function purgeObsoleteCaches() {
@@ -3882,7 +3882,7 @@
         const keysToRemove = [];
         for (let i = 0; i < localStorage.length; i++) {
           const k = localStorage.key(i);
-          if (k && k.startsWith('3D_AICIVS_') && !k.includes('V35_MONOLITHIC')) {
+          if (k && k.startsWith('3D_AICIVS_') && !k.includes('V41_ROTATED_BULKHEAD')) {
             keysToRemove.push(k);
           }
         }
