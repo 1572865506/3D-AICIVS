@@ -216,6 +216,18 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                     final_placements = []
                     for idx, p in enumerate(raw_placements):
                         w = sku_weights.get(p['sku_id'], 10.0)
+                        raw_c = p.get('context', p.get('tag', 'MAIN_WALL'))
+                        if isinstance(raw_c, str):
+                            if 'TOP' in raw_c.upper():
+                                ctx = PlacementContext.TOP_FILL
+                            elif 'DOOR' in raw_c.upper():
+                                ctx = PlacementContext.DOOR_SEAL
+                            elif 'GAP' in raw_c.upper() or 'CAVITY' in raw_c.upper():
+                                ctx = PlacementContext.GAP_FILL
+                            else:
+                                ctx = PlacementContext.MAIN_WALL
+                        else:
+                            ctx = raw_c
                         final_placements.append(Placement(
                             placement_id=f"p_{idx:04d}",
                             instance_id=f"inst_{idx:04d}",
@@ -223,7 +235,7 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                             position=Point3D(p['x'], p['y'], p['z']),
                             orientation=Orientation3D(p['dx'], p['dy'], p['dz'], name=p.get('orientation', 'UPRIGHT_NORMAL')),
                             weight_kg=w,
-                            context=PlacementContext.MAIN_WALL,
+                            context=ctx,
                             step_index=p.get('step', idx + 1)
                         ))
 
@@ -304,6 +316,8 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                 self.send_header('Content-Type', 'application/json; charset=utf-8')
                 self.end_headers()
                 self.wfile.write(json.dumps(result, ensure_ascii=False).encode('utf-8'))
+            except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
+                pass
             except Exception as e:
                 status, err_data = classify_api_exception(e)
                 if status >= 500:
@@ -311,10 +325,13 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                     err_data['traceback'] = traceback.format_exc()
                 else:
                     print(f"[PACK-V2-INPUT] {err_data['code']}: {err_data['error']}")
-                self.send_response(status)
-                self.send_header('Content-Type', 'application/json; charset=utf-8')
-                self.end_headers()
-                self.wfile.write(json.dumps(err_data).encode('utf-8'))
+                try:
+                    self.send_response(status)
+                    self.send_header('Content-Type', 'application/json; charset=utf-8')
+                    self.end_headers()
+                    self.wfile.write(json.dumps(err_data).encode('utf-8'))
+                except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
+                    pass
             return
 
         self.send_response(404)

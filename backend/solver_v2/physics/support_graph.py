@@ -71,7 +71,7 @@ class SupportGraph:
 
     def get_total_support_ratio(self, upper_id: str) -> float:
         """Returns total support ratio (total supporting contact area / upper base area)."""
-        return sum(e.support_ratio for e in self.get_support_edges(upper_id))
+        return min(1.0, sum(e.support_ratio for e in self.get_support_edges(upper_id)))
 
     def is_on_floor(self, placement_id: str) -> bool:
         """Returns True if placement_id has direct support from container floor."""

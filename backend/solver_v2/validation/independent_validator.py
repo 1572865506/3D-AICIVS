@@ -49,6 +49,61 @@ from backend.solver_v2.validation.types import (
 EPSILON = 1e-4
 
 
+class _HybridValidatorMethod:
+    """Descriptor allowing .validate() to work seamlessly on both class and instance invocations."""
+
+    def __get__(self, obj, cls=None):
+        if obj is not None:
+            def instance_validate(
+                container: Union[ContainerSpec, Tuple[float, float, float], Dict[str, Any]],
+                placements: Union[List[Placement], List[Dict[str, Any]]],
+                cargo_list: Optional[Union[List[CargoSKU], Dict[str, CargoSKU], List[Dict[str, Any]]]] = None,
+                compiled_constraints: Optional[Dict[str, Any]] = None,
+                options: Optional[Dict[str, Any]] = None,
+                **kwargs,
+            ) -> ValidationResult:
+                if "geom_epsilon" in kwargs and kwargs["geom_epsilon"] is not None:
+                    obj.geom_epsilon = kwargs["geom_epsilon"]
+                if "grid_resolution" in kwargs and kwargs["grid_resolution"] is not None:
+                    obj.grid_resolution = kwargs["grid_resolution"]
+                if "max_allowed_cavity_volume" in kwargs and kwargs["max_allowed_cavity_volume"] is not None:
+                    obj.max_allowed_cavity_volume = kwargs["max_allowed_cavity_volume"]
+                return obj._run_validation(
+                    container=container,
+                    placements=placements,
+                    cargo_list=cargo_list,
+                    compiled_constraints=compiled_constraints,
+                    options=options,
+                )
+            return instance_validate
+        else:
+            def class_validate(
+                container: Union[ContainerSpec, Tuple[float, float, float], Dict[str, Any]],
+                placements: Union[List[Placement], List[Dict[str, Any]]],
+                cargo_list: Optional[Union[List[CargoSKU], Dict[str, CargoSKU], List[Dict[str, Any]]]] = None,
+                compiled_constraints: Optional[Dict[str, Any]] = None,
+                options: Optional[Dict[str, Any]] = None,
+                *,
+                geom_epsilon: float = EPSILON,
+                grid_resolution: float = 0.1,
+                max_allowed_cavity_volume: Optional[float] = None,
+                **kwargs,
+            ) -> ValidationResult:
+                inst = cls(
+                    geom_epsilon=geom_epsilon,
+                    grid_resolution=grid_resolution,
+                    max_allowed_cavity_volume=max_allowed_cavity_volume,
+                )
+                return inst._run_validation(
+                    container=container,
+                    placements=placements,
+                    cargo_list=cargo_list,
+                    compiled_constraints=compiled_constraints,
+                    options=options,
+                )
+            return class_validate
+
+
 class IndependentGlobalValidator:
     """
     Authoritative independent solution validator for Solver V2.
@@ -65,38 +120,7 @@ class IndependentGlobalValidator:
         self.grid_resolution = grid_resolution
         self.max_allowed_cavity_volume = max_allowed_cavity_volume
 
-    @classmethod
-    def validate(
-        cls,
-        container: Union[ContainerSpec, Tuple[float, float, float], Dict[str, Any]],
-        placements: Union[List[Placement], List[Dict[str, Any]]],
-        cargo_list: Optional[Union[List[CargoSKU], Dict[str, CargoSKU], List[Dict[str, Any]]]] = None,
-        compiled_constraints: Optional[Dict[str, Any]] = None,
-        options: Optional[Dict[str, Any]] = None,
-        *,
-        geom_epsilon: float = EPSILON,
-        grid_resolution: float = 0.1,
-        max_allowed_cavity_volume: Optional[float] = None,
-    ) -> ValidationResult:
-        """
-        Validation entry point. Can be invoked on an instance or directly on the class.
-        """
-        if isinstance(cls, IndependentGlobalValidator):
-            validator_inst = cls
-        else:
-            validator_inst = cls(
-                geom_epsilon=geom_epsilon,
-                grid_resolution=grid_resolution,
-                max_allowed_cavity_volume=max_allowed_cavity_volume,
-            )
-
-        return validator_inst._run_validation(
-            container=container,
-            placements=placements,
-            cargo_list=cargo_list,
-            compiled_constraints=compiled_constraints,
-            options=options,
-        )
+    validate = _HybridValidatorMethod()
 
     def _run_validation(
         self,
@@ -491,58 +515,49 @@ class IndependentGlobalValidator:
                 )
                 continue
 
-            # Classify rotation type:
-            # 1. Upright: dz == bz (height is preserved along vertical axis)
-            is_upright = abs(dz - bz) <= eps and (
-                (abs(dx - bx) <= eps and abs(dy - by) <= eps) or (abs(dx - by) <= eps and abs(dy - bx) <= eps)
-            )
-
-            # 2. Flat: dz == by (or dz == bx if smallest)
-            is_flat = abs(dz - by) <= eps and (
-                (abs(dx - bx) <= eps and abs(dy - bz) <= eps) or (abs(dx - bz) <= eps and abs(dy - bx) <= eps)
-            )
-
-            # 3. Side: dz == bx
-            is_side = abs(dz - bx) <= eps and (
-                (abs(dx - by) <= eps and abs(dy - bz) <= eps) or (abs(dx - bz) <= eps and abs(dy - by) <= eps)
-            )
-
+            # Classify rotation type and match against allowed rules (robust to equal dimensions):
             legal = False
-            reasons = []
+            matching_allowed_modes = []
 
-            if is_upright:
+            # 1. Upright: dz == bz
+            if abs(dz - bz) <= eps and (
+                (abs(dx - bx) <= eps and abs(dy - by) <= eps) or (abs(dx - by) <= eps and abs(dy - bx) <= eps)
+            ):
                 rule = policy.rule_for(OrientationMode.UPRIGHT, context)
                 if rule and rule.allows(policy.context_region(context), base_height=p["z"]):
                     legal = True
-                else:
-                    reasons.append("Upright orientation is not allowed by policy")
+                    matching_allowed_modes.append("UPRIGHT")
 
-            if is_flat:
+            # 2. Flat: dz == by
+            if abs(dz - by) <= eps and (
+                (abs(dx - bx) <= eps and abs(dy - bz) <= eps) or (abs(dx - bz) <= eps and abs(dy - bx) <= eps)
+            ):
                 rule = policy.rule_for(OrientationMode.FLAT, context)
                 if rule and rule.allows(policy.context_region(context), base_height=p["z"]):
                     legal = True
-                else:
-                    reasons.append(f"Flat orientation not allowed by rule in context {context}")
+                    matching_allowed_modes.append("FLAT")
 
-            if is_side:
+            # 3. Side: dz == bx
+            if abs(dz - bx) <= eps and (
+                (abs(dx - by) <= eps and abs(dy - bz) <= eps) or (abs(dx - bz) <= eps and abs(dy - by) <= eps)
+            ):
                 rule = policy.rule_for(OrientationMode.SIDE, context)
                 if rule and rule.allows(policy.context_region(context), base_height=p["z"]):
                     legal = True
-                else:
-                    reasons.append(f"Side orientation not allowed by rule in context {context}")
+                    matching_allowed_modes.append("SIDE")
 
             if not legal:
                 violations.append(
                     ViolationDetail(
                         violation_type=ViolationType.FORBIDDEN_ORIENTATION,
                         severity=ViolationSeverity.FATAL,
-                        message=f"Placement {p['placement_id']} (SKU: {sku_id}) orientation ({dx:.3f}x{dy:.3f}x{dz:.3f}) is illegal: {'; '.join(reasons) if reasons else 'Orientation not permitted'}",
+                        message=f"Placement {p['placement_id']} (SKU: {sku_id}) orientation ({dx:.3f}x{dy:.3f}x{dz:.3f}) is illegal under policy for context {context}",
                         sku_id=sku_id,
                         placement_id=p["placement_id"],
                         placement_index=i,
                         location=(p["x"], p["y"], p["z"]),
                         dimension=(dx, dy, dz),
-                        extra_data={"context": str(context), "is_upright": is_upright, "is_flat": is_flat, "is_side": is_side},
+                        extra_data={"context": str(context)},
                     )
                 )
 
@@ -577,15 +592,46 @@ class IndependentGlobalValidator:
 
         # 1. Door zone boundary
         door_start = max(0.0, c_lx - door_zone_len)
+        has_door_skus = any(
+            (s.target_zone == ZoneType.DOOR or PackingRole.DOOR_SEAL in s.packing_roles)
+            for s in (sku_map.values() if sku_map else [])
+        )
 
-        # 2. Build Z-level spatial indices for high-performance vertical neighbor queries
+        # 2. Build Z-level spatial indices with continuous bin-interval querying (robust against float rounding drift)
         from collections import defaultdict
-        z_top_map = defaultdict(list)     # round(z + dz, 3) -> [index]
-        z_bottom_map = defaultdict(list)  # round(z, 3) -> [index]
-        for idx, p in enumerate(placements):
-            z_top_map[round(p["z"] + p["dz"], 3)].append(idx)
-            z_bottom_map[round(p["z"], 3)].append(idx)
+        import math
+        z_bin_size = 0.01  # 10mm bin buckets
+        z_contact_tol = max(1e-3, eps * 2)  # 1mm physical contact tolerance
 
+        z_top_bins = defaultdict(list)
+        z_bottom_bins = defaultdict(list)
+        for idx, p in enumerate(placements):
+            z_top_bins[int(math.floor((p["z"] + p["dz"]) / z_bin_size))].append(idx)
+            z_bottom_bins[int(math.floor(p["z"] / z_bin_size))].append(idx)
+
+        def get_supporting_candidates(target_z: float) -> List[int]:
+            min_bin = int(math.floor((target_z - z_contact_tol) / z_bin_size))
+            max_bin = int(math.floor((target_z + z_contact_tol) / z_bin_size))
+            candidates = []
+            for b in range(min_bin, max_bin + 1):
+                for idx in z_top_bins.get(b, []):
+                    p_cand = placements[idx]
+                    if abs((p_cand["z"] + p_cand["dz"]) - target_z) <= z_contact_tol:
+                        candidates.append(idx)
+            return candidates
+
+        def get_supported_candidates(target_top_z: float) -> List[int]:
+            min_bin = int(math.floor((target_top_z - z_contact_tol) / z_bin_size))
+            max_bin = int(math.floor((target_top_z + z_contact_tol) / z_bin_size))
+            candidates = []
+            for b in range(min_bin, max_bin + 1):
+                for idx in z_bottom_bins.get(b, []):
+                    p_cand = placements[idx]
+                    if abs(p_cand["z"] - target_top_z) <= z_contact_tol:
+                        candidates.append(idx)
+            return candidates
+
+        stack_depth_memo: Dict[int, int] = {}
         for i, p in enumerate(placements):
             sku_id = p["sku_id"]
             x, y, z = p["x"], p["y"], p["z"]
@@ -620,6 +666,25 @@ class IndependentGlobalValidator:
                                 )
                             )
 
+                # Door Zone Lockout: Non-DOOR_SEAL items cannot enter [Lx - door_zone_len, Lx]
+                if (
+                    has_door_skus
+                    and cargo.target_zone != ZoneType.DOOR
+                    and PackingRole.DOOR_SEAL not in cargo.packing_roles
+                    and (x + dx > door_start + eps)
+                    and (cargo.cargo_profile is None or (ZoneType.DOOR not in cargo.cargo_profile.zone_policy.allowed and ZoneType.DOOR not in cargo.cargo_profile.zone_policy.preferred))
+                ):
+                    rule_violations.append(
+                        ViolationDetail(
+                            violation_type=ViolationType.DOOR_LOCKOUT_VIOLATION,
+                            severity=ViolationSeverity.FATAL,
+                            message=f"Placement {p['placement_id']} (SKU: {sku_id}) violates door lockout: non-door item placed in door zone [{door_start:.3f}, {c_lx:.3f}]",
+                            sku_id=sku_id,
+                            placement_id=p["placement_id"],
+                            placement_index=i,
+                        )
+                    )
+
                 # Floor Only check
                 if cargo.stacking_policy.must_be_on_floor and z > eps:
                     rule_violations.append(
@@ -636,8 +701,7 @@ class IndependentGlobalValidator:
             # --- Support Ratio & Floating Box Check ---
             if z > eps:
                 total_support_area = 0.0
-                bottom_z_key = round(z, 3)
-                candidate_lowers = z_top_map.get(bottom_z_key, [])
+                candidate_lowers = get_supporting_candidates(z)
 
                 for j in candidate_lowers:
                     if i == j:
@@ -650,7 +714,7 @@ class IndependentGlobalValidator:
                             total_support_area += ox * oy
 
                 base_area = dx * dy
-                support_ratio = total_support_area / base_area if base_area > 0 else 0.0
+                support_ratio = min(1.0, round(total_support_area / base_area, 6)) if base_area > 0 else 0.0
                 min_ratio = cargo.stacking_policy.min_support_ratio if cargo else 0.70
 
                 if support_ratio < min_ratio - eps:
@@ -669,8 +733,7 @@ class IndependentGlobalValidator:
             # --- Stacking on Top, Bearing & Pressure Limits ---
             upper_boxes = []
             upper_weight = 0.0
-            top_z_key = round(z + dz, 3)
-            candidate_uppers = z_bottom_map.get(top_z_key, [])
+            candidate_uppers = get_supported_candidates(z + dz)
 
             for j in candidate_uppers:
                 if i == j:
@@ -707,7 +770,7 @@ class IndependentGlobalValidator:
                         ViolationDetail(
                             violation_type=ViolationType.BEARING_EXCEEDED,
                             severity=ViolationSeverity.FATAL,
-                            message=f"Placement {p['placement_id']} (SKU: {sku_id}) upper bearing weight ({upper_weight:.1f} kg) exceeds limit ({max_bearing:.1f} kg)",
+                            message=f"Placement {p['placement_id']} (SKU: {sku_id}) bearing weight ({upper_weight:.1f} kg) exceeds limit ({max_bearing:.1f} kg)",
                             sku_id=sku_id,
                             placement_id=p["placement_id"],
                             placement_index=i,
@@ -715,11 +778,10 @@ class IndependentGlobalValidator:
                         )
                     )
 
-            # 3. Pressure check
+            # 3. Surface Pressure Limit check
             if cargo and cargo.stacking_policy.max_pressure_kg_m2 is not None:
                 max_pressure = cargo.stacking_policy.max_pressure_kg_m2
-                top_area = dx * dy
-                pressure = upper_weight / top_area if top_area > 0 else 0.0
+                pressure = upper_weight / (dx * dy) if (dx * dy) > 0 else 0.0
                 if pressure > max_pressure + eps:
                     stability_violations.append(
                         ViolationDetail(
@@ -733,10 +795,13 @@ class IndependentGlobalValidator:
                         )
                     )
 
-            # 4. Vertical Stack layers check
+            # 4. Vertical Stack layers check (Exact DAG Longest Path DP)
             if cargo and cargo.stacking_policy.max_stack_layers is not None:
                 max_layers = cargo.stacking_policy.max_stack_layers
-                stack_depth = self._compute_stack_column_depth(i, placements, same_sku_only=True, z_top_map=z_top_map)
+                stack_depth = self._compute_stack_column_depth(
+                    i, placements, same_sku_only=True,
+                    get_supporting_fn=get_supporting_candidates, memo=stack_depth_memo
+                )
                 if stack_depth > max_layers:
                     rule_violations.append(
                         ViolationDetail(
@@ -757,41 +822,53 @@ class IndependentGlobalValidator:
         index: int,
         placements: List[Dict[str, Any]],
         same_sku_only: bool = False,
-        z_top_map: Optional[Dict[float, List[int]]] = None,
+        get_supporting_fn: Optional[Any] = None,
+        memo: Optional[Dict[int, int]] = None,
     ) -> int:
-        """Count the contiguous vertical stack containing ``index`` using fast Z-index lookup."""
+        """
+        Computes the maximum continuous vertical same-SKU stack chain height supporting ``index``
+        via DAG dynamic programming (longest path traversal).
+        """
+        if memo is not None and index in memo:
+            return memo[index]
+
         p = placements[index]
         x, y, z = p["x"], p["y"], p["z"]
         dx, dy = p["dx"], p["dy"]
         sku_id = p["sku_id"]
         eps = self.geom_epsilon
 
-        layers = 1
-        curr_z = z
+        if z <= eps:
+            if memo is not None:
+                memo[index] = 1
+            return 1
 
-        while curr_z > eps:
-            found_below = False
-            curr_z_key = round(curr_z, 3)
-            candidates = z_top_map.get(curr_z_key, []) if z_top_map is not None else range(len(placements))
-            for j in candidates:
-                if j == index:
-                    continue
-                p2 = placements[j]
-                if same_sku_only and p2["sku_id"] != sku_id:
-                    continue
-                if abs(p2["z"] + p2["dz"] - curr_z) <= eps:
-                    ox = min(x + dx, p2["x"] + p2["dx"]) - max(x, p2["x"])
-                    if ox > eps:
-                        oy = min(y + dy, p2["y"] + p2["dy"]) - max(y, p2["y"])
-                        if oy > eps:
-                            layers += 1
-                            curr_z = p2["z"]
-                            found_below = True
-                            break
-            if not found_below:
-                break
+        max_lower_depth = 0
+        candidates = get_supporting_fn(z) if get_supporting_fn is not None else range(len(placements))
+        for j in candidates:
+            if j == index:
+                continue
+            p2 = placements[j]
+            if same_sku_only and p2["sku_id"] != sku_id:
+                continue
+            ox = min(x + dx, p2["x"] + p2["dx"]) - max(x, p2["x"])
+            if ox > eps:
+                oy = min(y + dy, p2["y"] + p2["dy"]) - max(y, p2["y"])
+                if oy > eps:
+                    overlap_area = ox * oy
+                    min_base = min(dx * dy, p2["dx"] * p2["dy"])
+                    if overlap_area >= 0.15 * min_base:
+                        depth_j = self._compute_stack_column_depth(
+                            j, placements, same_sku_only=same_sku_only,
+                            get_supporting_fn=get_supporting_fn, memo=memo
+                        )
+                        if depth_j > max_lower_depth:
+                            max_lower_depth = depth_j
 
-        return layers
+        res = 1 + max_lower_depth
+        if memo is not None:
+            memo[index] = res
+        return res
 
     # -------------------------------------------------------------------------
     # Independent Cavity & Residual Space Topologic Analysis
@@ -821,20 +898,17 @@ class IndependentGlobalValidator:
                 "fragmentation_score": 0.0,
             }
 
-        cargo_vol = sum(p["dx"] * p["dy"] * p["dz"] for p in placements)
+        # 1. Define 3D voxel grid resolution and dimensions
+        res_step = max(0.01, float(self.grid_resolution))
+        nx = max(1, int(math.ceil(c_lx / res_step)))
+        ny = max(1, int(math.ceil(c_ly / res_step)))
+        nz = max(1, int(math.ceil(c_lz / res_step)))
+        dx_cell = c_lx / nx
+        dy_cell = c_ly / ny
+        dz_cell = c_lz / nz
+        cell_vol = dx_cell * dy_cell * dz_cell
 
-        # If enclosed cavity check is not requested, return analytical volume in O(1)
-        if self.max_allowed_cavity_volume is None:
-            return {
-                "enclosed_cavity_count": 0,
-                "enclosed_cavity_volume": 0.0,
-                "reachable_residual_volume": round(max(0.0, total_container_vol - cargo_vol), 6),
-                "dead_space_volume": 0.0,
-                "sliver_volume": 0.0,
-                "fragmentation_score": 0.0,
-            }
-
-        # 1. Rasterize placements onto 3D grid: 0 = Free, 1 = Occupied
+        # 2. Rasterize placements onto 3D grid: 0 = Free, 1 = Occupied
         grid = bytearray(nx * ny * nz)
         eps = self.geom_epsilon
 
@@ -992,6 +1066,19 @@ class IndependentGlobalValidator:
         norm: List[Dict[str, Any]] = []
         for i, p in enumerate(placements):
             if hasattr(p, "position") and hasattr(p, "orientation"):
+                raw_ctx = getattr(p, "context", PlacementContext.GENERAL)
+                if isinstance(raw_ctx, str):
+                    upper_ctx = raw_ctx.upper()
+                    if "TOP" in upper_ctx:
+                        context = PlacementContext.TOP_FILL
+                    elif "DOOR" in upper_ctx:
+                        context = PlacementContext.DOOR_SEAL
+                    elif "GAP" in upper_ctx or "CAVITY" in upper_ctx:
+                        context = PlacementContext.GAP_FILL
+                    else:
+                        context = PlacementContext.GENERAL
+                else:
+                    context = raw_ctx
                 norm.append({
                     "placement_id": getattr(p, "placement_id", f"p_{i}"),
                     "instance_id": getattr(p, "instance_id", f"inst_{i}"),
@@ -1003,7 +1090,7 @@ class IndependentGlobalValidator:
                     "dy": float(p.orientation.dy),
                     "dz": float(p.orientation.dz),
                     "weight_kg": float(getattr(p, "weight_kg", 0.0)),
-                    "context": getattr(p, "context", PlacementContext.GENERAL),
+                    "context": context,
                     "step_index": getattr(p, "step_index", i + 1),
                 })
             elif isinstance(p, dict):
@@ -1024,7 +1111,19 @@ class IndependentGlobalValidator:
                 weight_kg = float(p.get("weight_kg", p.get("weight", 0.0)))
                 sku_id = str(p.get("sku_id", p.get("sku", f"SKU_{i}")))
                 placement_id = str(p.get("placement_id", p.get("id", f"p_{i}")))
-                context = p.get("context", PlacementContext.GENERAL)
+                raw_ctx = p.get("context", p.get("tag", PlacementContext.GENERAL))
+                if isinstance(raw_ctx, str):
+                    upper_ctx = raw_ctx.upper()
+                    if "TOP" in upper_ctx:
+                        context = PlacementContext.TOP_FILL
+                    elif "DOOR" in upper_ctx:
+                        context = PlacementContext.DOOR_SEAL
+                    elif "GAP" in upper_ctx or "CAVITY" in upper_ctx:
+                        context = PlacementContext.GAP_FILL
+                    else:
+                        context = PlacementContext.GENERAL
+                else:
+                    context = raw_ctx
 
                 norm.append({
                     "placement_id": placement_id,

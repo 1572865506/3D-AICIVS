@@ -188,8 +188,23 @@ class TestBLK002ElasticDoor(unittest.TestCase):
             door_zone_length_m=0.4,
             rear_zone_length_m=0.3,
         )
+        cargo = [
+            CargoSKU(
+                sku_id="SKU-02",
+                name="21.5 Display",
+                box=BoxDim(x=0.553, y=0.080, z=0.355),
+                weight_kg=8.4,
+                quantity=QuantityPlan(required=30),
+                packing_roles=(PackingRole.DOOR_SEAL,),
+                target_zone=ZoneType.DOOR,
+            ),
+            self.sku_03,
+            self.sku_04,
+            self.sku_14,
+            self.sku_05,
+        ]
         solver = BaselineGreedySolver(seed=42, max_candidates_per_step=100)
-        solution = solver.solve(small_container, self.all_cargo)
+        solution = solver.solve(small_container, cargo)
 
         self.assertTrue(solution.validation_result.is_valid)
         self.assertGreater(solution.placed_count, 0)

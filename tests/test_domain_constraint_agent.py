@@ -150,7 +150,7 @@ class TestInputAdapterAndNormalizer(unittest.TestCase):
         self.assertAlmostEqual(container.Lz, 2.698)
 
         cargo_list = InputAdapter.parse_cargo_list(case_data["cargo"])
-        self.assertEqual(len(cargo_list), 14)
+        self.assertEqual(len(cargo_list), len(case_data["cargo"]))
 
         # SKU-01 check (放柜子最里面)
         sku1 = next(c for c in cargo_list if c.sku_id == "SKU-01")

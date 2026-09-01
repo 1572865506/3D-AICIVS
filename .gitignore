@@ -14,3 +14,13 @@ __pycache__/
 .env
 .env.local
 .env.*.local
+
+# Generated diagnostic snapshots & mock images
+artifacts/*.jpg
+artifacts/*.png
+artifacts/*_FINAL_LAYOUT.json
+artifacts/*_WALL_LAYOUT.json
+artifacts/*_SEQUENCE_PLANS.json
+artifacts/*_CANDIDATES.json
+artifacts/*_CARGO_POOL.json
+

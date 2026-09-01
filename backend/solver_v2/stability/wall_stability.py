@@ -7,6 +7,7 @@ Evaluates stability of transverse packing walls / vertical columns along the lon
 - Tipping moment resistance under transport deceleration
 - Container rear inner wall and side wall bracing
 """
+from enum import Enum
 from typing import Dict, List, Tuple, Optional, Set, Any
 import math
 
@@ -16,19 +17,55 @@ from backend.solver_v2.stability.models import StabilityState, WallStabilityRepo
 from backend.solver_v2.geometry.aabb import DEFAULT_GEOM_EPSILON
 
 
+class TransportMode(Enum):
+    """
+    Standard International Freight Acceleration Profiles (ISO 1496-1 / EN 12195-1 / IMO CTU Code):
+    - ROAD_STANDARD (ISO/EN 12195-1): 0.5g braking
+    - ROAD_EMERGENCY (EN 12195-1 / DIN EN 283): 0.8g emergency braking
+    - RAIL_INTERMODAL (UIC 592 / AAR): 1.0g shunting / longitudinal impact
+    - MARITIME_ISO1496 (IMO/ILO/UNECE CTU Code): 0.4g pitch/roll surge
+    """
+    ROAD_STANDARD = "ROAD_STANDARD"
+    ROAD_EMERGENCY = "ROAD_EMERGENCY"
+    RAIL_INTERMODAL = "RAIL_INTERMODAL"
+    MARITIME_ISO1496 = "MARITIME_ISO1496"
+
+
+TRANSPORT_ACCELERATION_G: Dict[TransportMode, float] = {
+    TransportMode.ROAD_STANDARD: 0.5,
+    TransportMode.ROAD_EMERGENCY: 0.8,
+    TransportMode.RAIL_INTERMODAL: 1.0,
+    TransportMode.MARITIME_ISO1496: 0.4,
+}
+
+
 class WallStabilityEvaluator:
     """
     Evaluates transverse wall stability and tipping risk along longitudinal container body.
+    Supports configurable ISO 1496-1 / EN 12195-1 transport mode acceleration profiles.
     """
 
     def __init__(
         self,
         slice_tolerance_m: float = 0.3,
         deceleration_g: float = 0.5,
+        transport_mode: Optional[TransportMode] = None,
+        max_ht_ratio_warning: float = 3.0,
+        max_ht_ratio_fatal: float = 4.0,
+        min_tipping_moment_ratio_warning: float = 1.0,
+        min_tipping_moment_ratio_fatal: float = 0.8,
         geom_epsilon: float = DEFAULT_GEOM_EPSILON,
     ):
         self.slice_tolerance_m = slice_tolerance_m
-        self.deceleration_g = deceleration_g
+        if transport_mode is not None:
+            self.deceleration_g = TRANSPORT_ACCELERATION_G.get(transport_mode, deceleration_g)
+        else:
+            self.deceleration_g = deceleration_g
+        self.transport_mode = transport_mode
+        self.max_ht_ratio_warning = max_ht_ratio_warning
+        self.max_ht_ratio_fatal = max_ht_ratio_fatal
+        self.min_tipping_moment_ratio_warning = min_tipping_moment_ratio_warning
+        self.min_tipping_moment_ratio_fatal = min_tipping_moment_ratio_fatal
         self.geom_epsilon = geom_epsilon
 
     def evaluate_walls(
@@ -160,12 +197,12 @@ class WallStabilityEvaluator:
 
         # Evaluate Stability State
         reasons: List[str] = []
-        if ht_ratio > 4.0 and not rear_wall_braced and tipping_moment_ratio < 0.8:
+        if ht_ratio > self.max_ht_ratio_fatal and not rear_wall_braced and tipping_moment_ratio < self.min_tipping_moment_ratio_fatal:
             state = StabilityState.UNSTABLE
-            reasons.append(f"Tall slender wall (H/T={ht_ratio:.1f}) with high tipping risk (moment ratio={tipping_moment_ratio:.2f})")
-        elif ht_ratio > 3.0 and tipping_moment_ratio < 1.0:
+            reasons.append(f"Tall slender wall (H/T={ht_ratio:.1f} > {self.max_ht_ratio_fatal:.1f}) with high tipping risk (moment ratio={tipping_moment_ratio:.2f} < {self.min_tipping_moment_ratio_fatal:.2f})")
+        elif ht_ratio > self.max_ht_ratio_warning and tipping_moment_ratio < self.min_tipping_moment_ratio_warning:
             state = StabilityState.WARNING
-            reasons.append(f"High wall slenderness (H/T={ht_ratio:.1f}), tipping ratio={tipping_moment_ratio:.2f}")
+            reasons.append(f"High wall slenderness (H/T={ht_ratio:.1f} > {self.max_ht_ratio_warning:.1f}), tipping ratio={tipping_moment_ratio:.2f} < {self.min_tipping_moment_ratio_warning:.2f}")
         elif rear_wall_braced or (side_left_braced and side_right_braced):
             state = StabilityState.SELF_STABLE
             reasons.append(f"Wall firmly braced (H/T={ht_ratio:.1f}, tipping ratio={tipping_moment_ratio:.2f})")

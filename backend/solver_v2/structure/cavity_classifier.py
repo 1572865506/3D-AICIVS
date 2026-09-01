@@ -18,6 +18,9 @@ import math
 from backend.solver_v2.domain.models import ContainerSpec, Placement, Point3D, CargoSKU
 from backend.solver_v2.geometry.aabb import AABB, DEFAULT_GEOM_EPSILON
 
+DEFAULT_VOXEL_RES_M: float = 0.08
+DEFAULT_MAX_ENCLOSED_VOID_VOL_M3: float = 0.015
+
 
 class CavityType(Enum):
     """Classification of internal and frontier voids."""

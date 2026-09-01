@@ -203,6 +203,15 @@ class AdaptiveZoneManager:
                 if boundary and boundary.intersects_box(x, y, z, dx, dy, dz, eps):
                     return False, f"Forbidden zone violation: SKU '{sku.sku_id}' intersects {forbidden.value}"
 
+        # 3. Door zone lockout: non-door cargo must not exceed latest_safe_main_x
+        if (
+            PackingRole.DOOR_SEAL not in sku.packing_roles
+            and sku.target_zone != ZoneType.DOOR
+            and (sku.cargo_profile is None or (ZoneType.DOOR not in sku.cargo_profile.zone_policy.allowed and ZoneType.DOOR not in sku.cargo_profile.zone_policy.preferred))
+        ):
+            if box_max_x > safe_limit + eps:
+                return False, f"Door zone lockout: SKU '{sku.sku_id}' (non-door) penetrates door zone [{safe_limit:.3f}, {self.container.Lx:.3f}]"
+
         return True, None
 
     def compute_zone_affinity_score(

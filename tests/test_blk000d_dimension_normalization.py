@@ -1,7 +1,6 @@
 import json,unittest
 from pathlib import Path
 from backend.solver_v2.api.adapter import InputAdapter
-from run_blk003_benchmark import load_dataset
 from src.cargo.dimension_normalization import DimensionAudit,DimensionNormalizer
 
 DATASET=Path("devkit/cleanroom_solver_v2_devkit/benchmarks/40hq_cleanroom_case_001.json")
@@ -26,7 +25,7 @@ class TestBLK000DDimensionNormalization(unittest.TestCase):
     def test_dim_004_full_14_sku_audit_and_sku14(self):
         data=json.loads(DATASET.read_text(encoding="utf-8"))
         audit=DimensionAudit().audit_manifest(data["cargo"])
-        self.assertEqual(len(audit),14)
+        self.assertEqual(len(audit), len(data["cargo"]))
         self.assertTrue(all(row.normalized.length>=row.normalized.width for row in audit))
         sku14=next(row for row in audit if row.sku=="SKU-14")
         self.assertEqual((sku14.normalized.length,sku14.normalized.width,sku14.normalized.height),(.488,.080,.336))

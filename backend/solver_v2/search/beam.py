@@ -825,9 +825,14 @@ class BoundedBeamSearchEngine:
                         break
                 self.telemetry["wall_plan_search"]["beam_pruned"] += max(0, len(pruned) - len(unique_nodes))
             else:
-                seen_keys: Set[Tuple[int, int]] = set()
+                seen_keys: Set[Any] = set()
                 for cand_node in expansion_candidates:
-                    key = (int(cand_node.total_volume * 10), int(cand_node.last_max_x * 10))
+                    key = (
+                        len(cand_node.placements),
+                        int(cand_node.total_volume * 100),
+                        int(cand_node.last_max_x * 100),
+                        tuple(sorted((p.sku_id, round(p.position.x, 2), round(p.position.y, 2), round(p.position.z, 2)) for p in cand_node.placements[-3:]))
+                    )
                     if key not in seen_keys:
                         seen_keys.add(key)
                         unique_nodes.append(cand_node)
@@ -1136,29 +1141,20 @@ class BoundedBeamSearchEngine:
     @staticmethod
     def _is_better_node(a: BeamNode, b: BeamNode) -> bool:
         """
-        Determines if node A is strictly superior to node B based on Search Objective:
-        1. Total Cargo Volume (primary metric)
-        2. Longitudinal X progression (farthest forward advancement)
-        3. Cumulative Score
-        4. Placed Count (tie-breaker)
+        Determines if node A is strictly superior to node B based on Search Objective.
+        Unified with beam priority sorting key: (total_volume, last_max_x, cumulative_score, placed_count)
         """
-        # Primary: Total Volume (0.05 m3 tolerance)
-        if a.total_volume > b.total_volume + 0.05:
-            return True
-        if b.total_volume > a.total_volume + 0.05:
-            return False
+        # Primary: Total Volume
+        if abs(a.total_volume - b.total_volume) > 1e-4:
+            return a.total_volume > b.total_volume
 
-        # Secondary: X Advancement (0.10 m tolerance)
-        if a.last_max_x > b.last_max_x + 0.10:
-            return True
-        if b.last_max_x > a.last_max_x + 0.10:
-            return False
+        # Secondary: X Advancement
+        if abs(a.last_max_x - b.last_max_x) > 1e-3:
+            return a.last_max_x > b.last_max_x
 
         # Tertiary: Cumulative Score
-        if a.cumulative_score > b.cumulative_score + 1.0:
-            return True
-        if b.cumulative_score > a.cumulative_score + 1.0:
-            return False
+        if abs(a.cumulative_score - b.cumulative_score) > 1e-2:
+            return a.cumulative_score > b.cumulative_score
 
         # Lowest Tie-breaker: Placed Count
         return a.placed_count > b.placed_count

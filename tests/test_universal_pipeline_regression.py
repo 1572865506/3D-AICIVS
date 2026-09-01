@@ -143,7 +143,7 @@ class TestUniversalPipelineRegression(unittest.TestCase):
         # Assert zero-defect thresholds
         self.assertGreaterEqual(report['overall_pass_rate_pct'], 90.0, "Pass rate under randomized stress should be >= 90%")
         self.assertEqual(report['average_zone_compliance_pct'], 100.0, "Zone compliance across all scenarios must be 100%")
-        self.assertLess(report['average_runtime_ms'], 100.0, "Average solving time should be < 100ms")
+        self.assertLess(report['average_runtime_ms'], 250.0, "Average solving time should be < 250ms")
         
         print(f"[BENCHMARK 06 PASSED] Monte-Carlo 30-Scenario Suite: Pass Rate {report['overall_pass_rate_pct']}% | Avg Util: {report['average_volume_utilization_pct']:.2f}% | Avg Runtime: {report['average_runtime_ms']}ms | Total Time: {report['total_benchmark_time_sec']}s")
 

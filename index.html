@@ -2072,7 +2072,7 @@
             </span>
           </div>
           <div class="kpi-item" style="padding: 4px 10px;">
-            <span class="cache-status-badge" id="hud-cache-badge" title="BLK007D Backend Mode">
+            <span class="cache-status-badge" id="hud-cache-badge" title="3D-AICIVS 智能算柜引擎">
               <span class="cache-pulse-dot" id="cache-dot"></span>
               <span id="txt-cache-badge">🟡 后端状态检测中</span>
             </span>
@@ -3873,8 +3873,8 @@
     }
 
     // --- CLIENT-SIDE SPATIAL COORDINATE CACHE ENGINE ---
-    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V41_ROTATED_BULKHEAD_';
-    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V41_ROTATED_BULKHEAD';
+    const CACHE_PREFIX = '3D_AICIVS_PACKING_CACHE_V42_FLUSH_BULKHEAD_';
+    const APP_STATE_KEY = '3D_AICIVS_APP_STATE_V42_FLUSH_BULKHEAD';
 
     // Auto purge obsolete localStorage caches from older versions
     (function purgeObsoleteCaches() {
@@ -3882,7 +3882,7 @@
         const keysToRemove = [];
         for (let i = 0; i < localStorage.length; i++) {
           const k = localStorage.key(i);
-          if (k && k.startsWith('3D_AICIVS_') && !k.includes('V41_ROTATED_BULKHEAD')) {
+          if (k && k.startsWith('3D_AICIVS_') && !k.includes('V42_FLUSH_BULKHEAD')) {
             keysToRemove.push(k);
           }
         }
@@ -5719,7 +5719,7 @@
         badge.style.color = '#7c3aed'; badge.title = '显式 ?mode=mock；未调用后端';
       } else if (status === 'ONLINE') {
         text.textContent = '🟢 后端算柜服务在线'; dot.style.background = '#22c55e';
-        badge.style.color = '#059669'; badge.title = 'BLK007D Backend Mode / BLK007C API';
+        badge.style.color = '#059669'; badge.title = '3D-AICIVS 智能算柜引擎在线';
       } else if (status === 'OFFLINE') {
         text.textContent = '🔴 后端算柜服务不可用'; dot.style.background = '#ef4444';
         badge.style.color = '#dc2626'; badge.title = '请检查后端服务、VITE_LOADING_API_URL 和网络连接';
@@ -5860,7 +5860,7 @@
       const cacheTxt = document.getElementById('txt-cache-badge');
       const cacheDot = document.getElementById('cache-dot');
 
-      prog.step(2, mode === 'MOCK' ? '读取 BLK007C Mock LoadingResult…' : `提交后端算柜任务（${activeManifest.length} 种 SKU · ${currentSpec.code || ''}）…`);
+      prog.step(2, mode === 'MOCK' ? '读取离线预设装载方案…' : `提交 3D-AICIVS 后端算柜任务（${activeManifest.length} 种 SKU · ${currentSpec.code || ''}）…`);
       await nextPaint();
       let loadingResult;
       try {
@@ -5900,7 +5900,7 @@
         if (isInputConstraint) {
           console.warn('[3D-AICIVS] 算柜输入约束未满足:', err.message || err);
         } else {
-          console.error('[3D-AICIVS] BLK007D backend request failed:', err);
+          console.error('[3D-AICIVS] 后端算柜请求异常:', err);
           window.reportAppError(err, {
             source: 'BACKEND_API', operation: 'CALCULATE_LOADING', type: errorType,
             status: err && err.status != null ? err.status : null
@@ -5922,11 +5922,11 @@
           },
           INVALID_RESULT: {
             title: '后端结果无效',
-            message: '后端服务在线，但返回结果无法通过 BLK007C 数据校验。'
+            message: '后端服务在线，但返回结果无法通过 3D 全局数据校验。'
           },
           SCHEMA_ERROR: {
             title: '接口数据不兼容',
-            message: '后端服务在线，但请求或响应不符合 BLK007C Contract。'
+            message: '后端服务在线，但请求或响应不符合数据规范。'
           },
           NETWORK_ERROR: {
             title: '后端连接失败',
@@ -5961,11 +5961,11 @@
           cacheBadge.style.background = '#f5f3ff';
           cacheBadge.style.borderColor = '#c4b5fd';
           cacheDot.style.background = '#8b5cf6';
-          cacheTxt.textContent = '🟣 Mock Offline Mode';
+          cacheTxt.textContent = '🟣 离线推演模式';
         }
       }
 
-      prog.step(3, `按 LoadingResult.scene.objects 重建 3D 场景（${loadingResult.cargo.length} 箱）…`);
+      prog.step(3, `正在根据全局推演数据重建 3D 场景（${loadingResult.cargo.length} 箱）…`);
       await nextPaint();
       try {
         applyBackendLoadingResult(loadingResult, usableDim, activeManifest, currentSpec);
@@ -5980,7 +5980,7 @@
 
         if (forceRecompute) {
           const unplaced = activePackingResult?.totalUnplacedCount || 0;
-          showToast(`${mode === 'MOCK' ? 'Mock' : '后端'}算柜结果已加载：${activePackingResult.totalCount} 箱，利用率 ${activePackingResult.utilization}%${unplaced ? `，未装 ${unplaced} 箱` : ''}`, unplaced ? 'warning' : 'success');
+          showToast(`${mode === 'MOCK' ? '离线' : '3D-AICIVS 后端'}算柜结果已加载：${activePackingResult.totalCount} 箱，利用率 ${activePackingResult.utilization}%${unplaced ? `，未装 ${unplaced} 箱` : ''}`, unplaced ? 'warning' : 'success');
         }
 
         console.log('[3D-AICIVS] 3D scene rebuild complete. Boxes:', boxMeshes.length, 'Util:', activePackingResult.utilization + '%');
@@ -5990,7 +5990,7 @@
         updateCalculationStateUI();
 
         // 进度卡收尾
-        prog.finish(true, `${mode === 'MOCK' ? 'BLK007C Mock' : 'BLK007C Backend API'} · 共 ${activePackingResult.totalCount} 箱 · 利用率 ${activePackingResult.utilization}% · 总耗时 ${prog.elapsedSec().toFixed(1)}s`);
+        prog.finish(true, `${mode === 'MOCK' ? '离线推演引擎' : '3D-AICIVS 智能算柜引擎'} · 共 ${activePackingResult.totalCount} 箱 · 利用率 ${activePackingResult.utilization}% · 总耗时 ${prog.elapsedSec().toFixed(1)}s`);
         setRunBusy(false);
       } catch (renderErr) {
         console.error('[3D-AICIVS] 3D 场景渲染异常:', renderErr);
@@ -7436,7 +7436,7 @@
       if (isPackingAnimating) return;
       const loadingResult = window.activeLoadingResult;
       if (!loadingResult) {
-        showToast('当前没有 BLK007C LoadingResult，无法播放后端装载动画', 'warning');
+        showToast('当前没有装载推演方案，无法播放装载动画', 'warning');
         return;
       }
       isPackingAnimating = true;

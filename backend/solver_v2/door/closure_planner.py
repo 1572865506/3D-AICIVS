@@ -320,13 +320,23 @@ class DoorClosurePlanner:
         qty_mgr: Any,
         door_seal_skus: List[CargoSKU],
         contact_graph: Optional[ContactGraph] = None,
-        max_deploy_items: int = 46,
+        max_deploy_items: Optional[int] = None,
     ) -> DoorDeploymentResult:
         """
         Actively plans and places DoorReservePool cartons to cooperatively close the door zone.
         Pushes cargo past door_closure_start_x, covers the front face, and eliminates residual gap.
+        Dynamically adapts anchor sampling and item capacity across arbitrary container dimensions.
         """
         from backend.solver_v2.orientation.manager import OrientationEngine
+
+        # Dynamic capacity calculation based on container dimensions and door zone volume
+        if max_deploy_items is None or max_deploy_items <= 0:
+            door_len = max(0.5, self.container.Lx - self.door_zone_x_start)
+            min_box_vol = min((s.box.volume for s in door_seal_skus), default=0.03) if door_seal_skus else 0.03
+            est_capacity = int(math.ceil((door_len * self.container.Ly * self.container.Lz * 0.85) / max(1e-4, min_box_vol)))
+            effective_max_items = max(60, est_capacity)
+        else:
+            effective_max_items = max_deploy_items
 
         eps = self.geom_epsilon
         cur_max_x = world_state.max_x
@@ -381,7 +391,7 @@ class DoorClosurePlanner:
         step_base = len(world_state.placements)
         anchors_set: Set[Tuple[float, float, float]] = set()
 
-        while len(deployed_placements) < max_deploy_items:
+        while len(deployed_placements) < effective_max_items:
             # 1. Check remaining reserve SKUs
             eligible_skus = [
                 s for s in door_seal_skus
@@ -412,10 +422,22 @@ class DoorClosurePlanner:
                 if ep.x >= self.transition_zone_x_start - 0.2:
                     anchors_set.add((round(ep.x, 4), round(ep.y, 4), round(ep.z, 4)))
 
-            # Floor anchors across width at front X
+            # Floor anchors dynamically sampled across width at front X
             max_x_seen = max((p.max_x for p in world_state.placements), default=cur_max_x)
-            for y_samp in [0.0, 0.35, 0.45, 0.70, 0.80, 1.05, 1.15, 1.40, 1.50, 1.75, 1.85, 2.10]:
-                if y_samp < self.container.Ly - 0.1:
+            min_dy = min((min(s.box.x, s.box.y) for s in eligible_skus), default=0.30)
+            y_step = max(0.10, min(0.35, min_dy))
+            num_y_steps = max(2, int(math.ceil(self.container.Ly / y_step)))
+            y_samples = set([round(k * (self.container.Ly / num_y_steps), 4) for k in range(num_y_steps)])
+            for s in eligible_skus:
+                for dy_cand in [s.box.x, s.box.y]:
+                    if dy_cand < self.container.Ly:
+                        curr_y = 0.0
+                        while curr_y < self.container.Ly - 0.05:
+                            y_samples.add(round(curr_y, 4))
+                            curr_y += dy_cand
+
+            for y_samp in sorted(y_samples):
+                if y_samp < self.container.Ly - 0.05:
                     anchors_set.add((round(max_x_seen, 4), round(y_samp, 4), 0.0))
 
             door_anchors = [

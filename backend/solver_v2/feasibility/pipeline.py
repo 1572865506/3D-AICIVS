@@ -154,7 +154,7 @@ class HardValidationPipeline:
                         lower_placements.append(p_below)
 
             base_area = dx * dy
-            support_ratio = (total_support_area / base_area) if base_area > 0 else 0.0
+            support_ratio = min(1.0, (total_support_area / base_area)) if base_area > 0 else 0.0
             min_ratio = sku.stacking_policy.min_support_ratio
 
             if support_ratio < min_ratio - eps:

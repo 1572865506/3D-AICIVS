@@ -268,7 +268,9 @@ class LoadingSequencePlanner:
         door_ids = [p.placement_id for p in placements if p.context == PlacementContext.DOOR_SEAL]
         for door_id in door_ids:
             door = nodes[door_id]
-            for p in placements:
+            door_corridor = AABB(0.0, door.min_y, door.min_z, max(0.0, door.min_x), door.max_y, door.max_z)
+            for item in final_index.query_intersect(door_corridor):
+                p = item.data
                 overlap_y = min(p.max_y, door.max_y) - max(p.min_y, door.min_y)
                 overlap_z = min(p.max_z, door.max_z) - max(p.min_z, door.min_z)
                 requires_passage = (
@@ -430,8 +432,6 @@ class LoadingSequencePlanner:
                 report=self.item_stability.evaluate_placement(p,self.catalog.get(p.sku_id),loaded.support_graph,loaded.contact_graph,self.container)
                 thin_unbraced = report.slenderness > 2.5 and not report.has_lateral_bracing and chosen_group is None
                 if not report.is_stable or thin_unbraced: unstable.append(pid)
-            cluster_reports=self.cluster_stability.evaluate_clusters(loaded.placements,loaded.contact_graph,self.container)
-            cluster_ok=all(r.is_stable for r in cluster_reports)
             group_requires_debt = bool(chosen_group and any(
                 graph.nodes[pid].orientation.dz /
                 max(min(graph.nodes[pid].orientation.dx, graph.nodes[pid].orientation.dy), .01) > 2.5
@@ -442,7 +442,10 @@ class LoadingSequencePlanner:
                     tuple(chosen), "thin pair requires consecutive placement",
                     step_index, step_index, self.config.max_stability_debt_steps, step_index,
                 ))
+            cluster_ok = True
             if unstable:
+                cluster_reports = self.cluster_stability.evaluate_clusters(loaded.placements, loaded.contact_graph, self.container)
+                cluster_ok = all(r.is_stable for r in cluster_reports)
                 if chosen_group and cluster_ok:
                     if not group_requires_debt:
                         debts.append(TemporaryStabilityDebt(tuple(unstable),"paired cargo requires consecutive bracing",step_index,step_index,1,step_index))

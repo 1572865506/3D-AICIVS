@@ -329,7 +329,7 @@ class TestIndependentGlobalValidator(unittest.TestCase):
         res = self.validator.validate(
             container=self.container,
             placements=[p_std_at_door],
-            cargo_list=[self.sku_std],
+            cargo_list=[self.sku_std, self.sku_door_seal],
         )
         self.assertFalse(res.is_valid)
         self.assertIn(ViolationType.DOOR_LOCKOUT_VIOLATION.value, res.rejection_reasons)
@@ -549,6 +549,125 @@ class TestIndependentGlobalValidator(unittest.TestCase):
         self.assertFalse(res.is_valid)
         self.assertIn("COLLISION_OVERLAP_DETECTED", res.rejection_reasons)
         self.assertGreater(res.metrics["penetration_volume"], 0.0)
+
+    def test_p0_1_cavity_volume_activation_unit_test(self):
+        """
+        P0-1 Guardrail: When max_allowed_cavity_volume is activated on IndependentGlobalValidator,
+        3D voxel flood-fill must execute without crash and reject trapped cavities.
+        """
+        active_cavity_validator = IndependentGlobalValidator(max_allowed_cavity_volume=0.015)
+        
+        sku_wall = CargoSKU(
+            sku_id="SKU_WALL",
+            name="Wall Structure",
+            box=BoxDim(1.0, 2.4, 2.6),
+            weight_kg=500.0,
+            quantity=QuantityPlan(required=1),
+        )
+        
+        # Construct an enclosed hollow cavity behind a sealed cargo wall
+        p_wall = Placement(
+            placement_id="p_wall_seal",
+            instance_id="inst_wall",
+            sku_id="SKU_WALL",
+            position=Point3D(3.0, 0.0, 0.0),
+            orientation=Orientation3D(dx=1.0, dy=2.4, dz=2.6),
+            weight_kg=500.0,
+            context=PlacementContext.MAIN_WALL,
+        )
+        
+        res = active_cavity_validator.validate(
+            container=self.container,
+            placements=[p_wall],
+            cargo_list=[sku_wall],
+        )
+        
+        # Must execute without KeyError/NameError crash and reject due to trapped space
+        self.assertFalse(res.is_valid)
+        self.assertIn("ENCLOSED_CAVITY_LIMIT_EXCEEDED", res.rejection_reasons)
+        self.assertGreater(res.metrics["enclosed_cavity_volume"], 10.0)
+
+    def test_dag_stack_column_depth_multi_box_support(self):
+        """
+        P1-3 Guardrail: DAG DP must trace the longest support chain in multi-box support,
+        not stopping greedily on shorter branches.
+        """
+        sku_stack_limited = CargoSKU(
+            sku_id="SKU_STACK3",
+            name="Stack Limited Box",
+            box=BoxDim(0.5, 0.5, 0.3),
+            weight_kg=10.0,
+            quantity=QuantityPlan(required=10),
+            stacking_policy=StackingPolicy(max_stack_layers=3),
+        )
+        
+        # Pillar 1 (Left): 4 boxes tall (depth=4) -> z: 0.0, 0.3, 0.6, 0.9
+        # Pillar 2 (Right): 1 box on platform -> at x=0.4, z=0.9
+        # Top Box: at x=0.2, z=1.2 (spanning across both Pillar 1 and Pillar 2)
+        placements = [
+            Placement("p0", "i0", "SKU_STACK3", Point3D(0.0, 0.0, 0.0), Orientation3D(0.5, 0.5, 0.3), 10.0, PlacementContext.MAIN_WALL),
+            Placement("p1", "i1", "SKU_STACK3", Point3D(0.0, 0.0, 0.3), Orientation3D(0.5, 0.5, 0.3), 10.0, PlacementContext.MAIN_WALL),
+            Placement("p2", "i2", "SKU_STACK3", Point3D(0.0, 0.0, 0.6), Orientation3D(0.5, 0.5, 0.3), 10.0, PlacementContext.MAIN_WALL),
+            Placement("p3", "i3", "SKU_STACK3", Point3D(0.0, 0.0, 0.9), Orientation3D(0.5, 0.5, 0.3), 10.0, PlacementContext.MAIN_WALL),
+            Placement("p4", "i4", "SKU_STACK3", Point3D(0.4, 0.0, 0.9), Orientation3D(0.5, 0.5, 0.3), 10.0, PlacementContext.MAIN_WALL),
+            Placement("p5", "i5", "SKU_STACK3", Point3D(0.2, 0.0, 1.2), Orientation3D(0.5, 0.5, 0.3), 10.0, PlacementContext.MAIN_WALL),
+        ]
+        
+        res = self.validator.validate(
+            container=self.container,
+            placements=placements,
+            cargo_list=[sku_stack_limited],
+        )
+        
+        # Max stack depth is 5 layers (exceeding limit of 3)
+        self.assertFalse(res.is_valid)
+        self.assertIn(ViolationType.STACK_LIMIT_VIOLATION.value, res.rejection_reasons)
+
+    def test_stepped_support_ratio_multi_box_contact(self):
+        """
+        P1-2 Guardrail: Upper box resting across two coplanar lower boxes must have
+        combined support area aggregated correctly and capped at 1.0 (100%).
+        """
+        sku_cube = CargoSKU(
+            sku_id="SKU_CUBE",
+            name="Cube Unit",
+            box=BoxDim(0.5, 0.5, 0.5),
+            weight_kg=10.0,
+            quantity=QuantityPlan(required=3),
+        )
+        p_lower1 = Placement("pl1", "i1", "SKU_CUBE", Point3D(0.0, 0.0, 0.0), Orientation3D(0.5, 0.5, 0.5), 10.0, PlacementContext.MAIN_WALL)
+        p_lower2 = Placement("pl2", "i2", "SKU_CUBE", Point3D(0.5, 0.0, 0.0), Orientation3D(0.5, 0.5, 0.5), 10.0, PlacementContext.MAIN_WALL)
+        # Upper box centered across both lower boxes
+        p_upper = Placement("pu1", "i3", "SKU_CUBE", Point3D(0.25, 0.0, 0.5), Orientation3D(0.5, 0.5, 0.5), 10.0, PlacementContext.MAIN_WALL)
+        
+        res = self.validator.validate(
+            container=self.container,
+            placements=[p_lower1, p_lower2, p_upper],
+            cargo_list=[sku_cube],
+        )
+        self.assertTrue(res.is_valid)
+
+    def test_square_and_cube_symmetric_orientations(self):
+        """
+        P2-5 Guardrail: Square-base and cube cargo must resolve orientation checks
+        without symmetric dimension collision or false rejections.
+        """
+        sku_square = CargoSKU(
+            sku_id="SKU_SQUARE",
+            name="Square Base Item",
+            box=BoxDim(0.4, 0.4, 0.6),
+            weight_kg=10.0,
+            quantity=QuantityPlan(required=2),
+        )
+        p_sq1 = Placement("psq1", "i1", "SKU_SQUARE", Point3D(0.0, 0.0, 0.0), Orientation3D(0.4, 0.4, 0.6), 10.0, PlacementContext.MAIN_WALL)
+        p_sq2 = Placement("psq2", "i2", "SKU_SQUARE", Point3D(0.4, 0.0, 0.0), Orientation3D(0.4, 0.4, 0.6), 10.0, PlacementContext.MAIN_WALL)
+        
+        res = self.validator.validate(
+            container=self.container,
+            placements=[p_sq1, p_sq2],
+            cargo_list=[sku_square],
+        )
+        self.assertTrue(res.is_valid)
 
 
 if __name__ == "__main__":

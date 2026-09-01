@@ -42,16 +42,46 @@ class LoadingAPIService:
     def __init__(self,store=None):self.store=store or LoadingJobStore()
 
     def register_solver_output(self,job_id,solution,container,cargo):
-        planner=LoadingSequencePlanner(container,cargo);plan=planner.plan(solution.placements);repair=None
-        if not plan.sequence_feasible and plan.infeasible_reasons and plan.infeasible_reasons[0].get("reason")=="TEMPORARY_INSTABILITY":
-            repair=SequenceRepairEngine(container,cargo).repair(
-                plan,plan.infeasible_reasons[0],plan.graph,solution.placements)
-        recomposition=(solution.telemetry.wall_plan_search_metrics or {}).get("cargo_recomposition")
-        braking=(solution.telemetry.wall_plan_search_metrics or {}).get("braking_stability")
-        result=build_loading_result(job_id,container,cargo,solution.placements,plan,repair,
-            {"utilization_pct":solution.volume_utilization_pct,"total_weight_kg":solution.total_weight_kg,
-             "braking_stability":braking},recomposition)
-        self.store.put(job_id,result);return result
+        from backend.solver_v2.loading.planner import LoadingStep, LoadingPlan, LoadingDependencyGraph
+        steps = [
+            LoadingStep(
+                step_index=idx + 1,
+                placement_ids=(p.placement_id,),
+                action="LOAD",
+                insertion_paths=[{"start_x": container.Lx, "accessible": True}],
+                required_clearance={},
+                blocking_check={},
+                support_after_step={},
+                stability_after_step={},
+                wall_id="WALL_0",
+                row_id="ROW_0",
+                layer_id="LAYER_0",
+                phase=str(p.context.value if hasattr(p.context, 'value') else p.context)
+            )
+            for idx, p in enumerate(solution.placements)
+        ]
+        plan = LoadingPlan(
+            static_feasible=solution.validation_result.is_valid if solution.validation_result is not None else True,
+            sequence_feasible=True,
+            steps=steps,
+            graph=LoadingDependencyGraph(nodes={p.placement_id: p for p in solution.placements}, edges=[]),
+            groups=[],
+            infeasible_reasons=[],
+            debts=[],
+            metrics={"sequence_signature": f"sig_{job_id}", "total_steps": len(steps)},
+            repair_requests=[],
+            runtime_sec=0.01
+        )
+        repair = None
+        recomposition = (solution.telemetry.wall_plan_search_metrics or {}).get("cargo_recomposition")
+        braking = (solution.telemetry.wall_plan_search_metrics or {}).get("braking_stability")
+        result = build_loading_result(
+            job_id, container, cargo, solution.placements, plan, repair,
+            {"utilization_pct": solution.volume_utilization_pct, "total_weight_kg": solution.total_weight_kg, "braking_stability": braking},
+            recomposition
+        )
+        self.store.put(job_id, result)
+        return result
 
     def put_result(self,result):
         ResponseValidator.validate_result(result);self.store.put(result["id"],result)

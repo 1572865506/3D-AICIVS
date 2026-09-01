@@ -85,8 +85,9 @@ class CandidateScorer:
         topfill_breakdown = dict(candidate.score_breakdown) if context == PlacementContext.TOP_FILL else {}
         breakdown: Dict[str, float] = {}
 
-        # 1. Volume Gain
-        vol_score = cand_vol * self.volume_weight
+        # 1. Volume Gain (Dimensionless ratio scaled to reference container volume)
+        ref_vol = 76.0  # Standard reference container volume (40HQ)
+        vol_score = (cand_vol / max(1.0, container.volume)) * (self.volume_weight * ref_vol)
         breakdown["vol_score"] = round(vol_score, 3)
 
         # 2. Required Non-Elastic SKU Satisfaction Bonus

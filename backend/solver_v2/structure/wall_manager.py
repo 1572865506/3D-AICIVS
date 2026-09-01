@@ -9,6 +9,11 @@ import math
 from backend.solver_v2.domain.models import ContainerSpec, Placement, Point3D, CargoSKU
 from backend.solver_v2.geometry.aabb import AABB, DEFAULT_GEOM_EPSILON
 from backend.solver_v2.structure.wall_surface import WallSurfaceMap, WallSurfaceMetrics
+from backend.solver_v2.structure.cavity_classifier import (
+    AdvancedCavityClassifier,
+    DEFAULT_VOXEL_RES_M,
+    DEFAULT_MAX_ENCLOSED_VOID_VOL_M3
+)
 
 
 @dataclass(frozen=True)
@@ -33,48 +38,49 @@ class WallSlice:
     slice_index: int
     min_x: float
     max_x: float
-    thickness: float
-    placements: Tuple[Placement, ...]
-    occupancy_ratio: float
-    is_complete: bool
+    thickness: float = 0.0
+    placements: Tuple[Placement, ...] = ()
+    occupancy_ratio: float = 0.0
+    is_complete: bool = False
     cross_section_area_m2: float = 0.0
     frontier_area_m2: float = 0.0
     is_micro_slice: bool = False
+    thickness_m: float = 0.0
+    occupied_volume_m3: float = 0.0
+    void_volume_m3: float = 0.0
+    density: float = 0.0
 
 
 class CavityVoidDetector:
     """
     Bad Case 001 regression avoidance detector.
     Detects internal enclosed hollow cavities surrounded by cargo walls/container boundaries.
+    Standardized on AdvancedCavityClassifier multi-tier voxel engine.
     """
 
     def __init__(
         self,
         container: ContainerSpec,
-        voxel_res_m: float = 0.10,
+        voxel_res_m: float = DEFAULT_VOXEL_RES_M,
         geom_epsilon: float = DEFAULT_GEOM_EPSILON,
     ):
         self.container = container
         self.res = voxel_res_m
         self.geom_epsilon = geom_epsilon
-
-        self.nx = max(1, int(math.ceil(container.Lx / self.res)))
-        self.ny = max(1, int(math.ceil(container.Ly / self.res)))
-        self.nz = max(1, int(math.ceil(container.Lz / self.res)))
+        self.classifier = AdvancedCavityClassifier(
+            container=container,
+            voxel_res_m=voxel_res_m,
+            geom_epsilon=geom_epsilon,
+        )
 
     def detect_enclosed_voids(
         self,
         placements: List[Placement],
-        max_allowed_void_vol_m3: float = 0.02,
+        max_allowed_void_vol_m3: float = DEFAULT_MAX_ENCLOSED_VOID_VOL_M3,
     ) -> EnclosedVoidReport:
         """
         Runs 3D flood-fill reachability analysis to identify any enclosed, unreachable hollow voids
         behind the loading frontier.
-        
-        A voxel is considered an ENCLOSED VOID if:
-        1. It is empty (not occupied by any cargo placement).
-        2. Its x coordinate is <= the current cargo frontier max_x (it lies behind the active front).
-        3. It cannot be reached by a 3D flood-fill starting from the open loading doorway (x = Lx) or roof.
         """
         if not placements:
             return EnclosedVoidReport(
@@ -86,100 +92,32 @@ class CavityVoidDetector:
                 rejection_reason=None,
             )
 
-        # 1. Rasterize placements onto 3D voxel grid (0 = empty, 1 = occupied)
-        grid = [[[0 for _ in range(self.nz)] for _ in range(self.ny)] for _ in range(self.nx)]
+        report = self.classifier.classify_cavities(
+            placements=placements,
+            max_allowed_enclosed_vol=max_allowed_void_vol_m3,
+        )
 
-        max_cargo_x = 0.0
-        for p in placements:
-            aabb = AABB.from_placement(p)
-            max_cargo_x = max(max_cargo_x, aabb.max_x)
+        enclosed = report.enclosed_cavities
+        total_vol = report.enclosed_volume_m3
+        max_single_vol = max((c.volume_m3 for c in enclosed), default=0.0)
+        has_voids = (total_vol > max_allowed_void_vol_m3) or bool(enclosed)
 
-            ix_start = max(0, int(aabb.min_x // self.res))
-            ix_end = min(self.nx, int(math.ceil(aabb.max_x / self.res)))
-            iy_start = max(0, int(aabb.min_y // self.res))
-            iy_end = min(self.ny, int(math.ceil(aabb.max_y / self.res)))
-            iz_start = max(0, int(aabb.min_z // self.res))
-            iz_end = min(self.nz, int(math.ceil(aabb.max_z / self.res)))
-
-            for ix in range(ix_start, ix_end):
-                for iy in range(iy_start, iy_end):
-                    for iz in range(iz_start, iz_end):
-                        grid[ix][iy][iz] = 1
-
-        frontier_ix = min(self.nx, int(math.ceil(max_cargo_x / self.res)))
-
-        # 2. 3D Flood-Fill from open front (x >= frontier_ix), roof (z = nz - 1), and door (x = nx - 1)
-        queue: List[Tuple[int, int, int]] = []
-
-        for ix in range(self.nx):
-            for iy in range(self.ny):
-                for iz in range(self.nz):
-                    if ix >= frontier_ix or ix == self.nx - 1 or iz == self.nz - 1:
-                        if grid[ix][iy][iz] == 0:
-                            grid[ix][iy][iz] = 2  # Reachable air
-                            queue.append((ix, iy, iz))
-
-        # BFS expansion in 6 directions
-        neighbors = [(1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)]
-        while queue:
-            cx, cy, cz = queue.pop(0)
-            for dx, dy, dz in neighbors:
-                nx = cx + dx
-                ny = cy + dy
-                nz = cz + dz
-                if 0 <= nx < self.nx and 0 <= ny < self.ny and 0 <= nz < self.nz:
-                    if grid[nx][ny][nz] == 0:
-                        grid[nx][ny][nz] = 2  # Marked as reachable
-                        queue.append((nx, ny, nz))
-
-        # 3. Any empty voxel behind frontier (ix < frontier_ix) that remained unvisited (grid == 0)
-        # is an internal enclosed cavity/void.
-        voxel_vol = self.res ** 3
-        void_components: List[int] = []
-
-        visited_voids: Set[Tuple[int, int, int]] = set()
-
-        for ix in range(frontier_ix):
-            for iy in range(self.ny):
-                for iz in range(self.nz):
-                    if grid[ix][iy][iz] == 0 and (ix, iy, iz) not in visited_voids:
-                        cluster_size = 0
-                        void_q = [(ix, iy, iz)]
-                        visited_voids.add((ix, iy, iz))
-
-                        while void_q:
-                            vx, vy, vz = void_q.pop(0)
-                            cluster_size += 1
-                            for dx, dy, dz in neighbors:
-                                nnx, nny, nnz = vx + dx, vy + dy, vz + dz
-                                if 0 <= nnx < frontier_ix and 0 <= nny < self.ny and 0 <= nnz < self.nz:
-                                    if grid[nnx][nny][nnz] == 0 and (nnx, nny, nnz) not in visited_voids:
-                                        visited_voids.add((nnx, nny, nnz))
-                                        void_q.append((nnx, nny, nnz))
-
-                        void_components.append(cluster_size)
-
-        total_void_voxels = sum(void_components)
-        total_void_vol = total_void_voxels * voxel_vol
-        max_single_void_vol = (max(void_components) * voxel_vol) if void_components else 0.0
-
-        has_voids = total_void_vol > max_allowed_void_vol_m3
-        penalty = total_void_vol * 1500.0
-
-        reason = None
+        penalty = 0.0
+        rejection_reason = None
         if has_voids:
-            reason = (
-                f"Bad Case 001 Violation: Detected {len(void_components)} internal enclosed voids "
-                f"(total volume={total_void_vol:.4f}m^3, max single void={max_single_void_vol:.4f}m^3)"
+            penalty = 100.0 + total_vol * 500.0
+            rejection_reason = (
+                f"Bad Case 001 Violation: Enclosed hollow voids detected ({len(enclosed)} regions, "
+                f"total volume {total_vol:.4f} m³ > max allowed {max_allowed_void_vol_m3:.4f} m³)"
             )
 
         return EnclosedVoidReport(
             has_enclosed_voids=has_voids,
-            void_count=len(void_components),
-            total_void_volume_m3=round(total_void_vol, 5),
-            max_single_void_volume_m3=round(max_single_void_vol, 5),
+            void_count=len(enclosed),
+            total_void_volume_m3=round(total_vol, 5),
+            max_single_void_volume_m3=round(max_single_vol, 5),
             enclosed_void_penalty=round(penalty, 2),
-            rejection_reason=reason,
+            rejection_reason=rejection_reason,
         )
 
 

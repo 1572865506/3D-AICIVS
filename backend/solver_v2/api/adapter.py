@@ -54,21 +54,17 @@ class InputNormalizer:
         # 1. Rear / Inner wall detection
         if re.search(r'最里面|最内|后部|rear|deep|inner', req, re.IGNORECASE):
             roles.append(PackingRole.FOUNDATION)
-            if re.search(r'必须在后|仅限后区|only\s*rear', req, re.IGNORECASE):
-                zone = ZoneType.REAR
+            zone = ZoneType.REAR
 
         # 2. Door seal detection
         elif re.search(r'封柜门|封门|门端|门区|door|front', req, re.IGNORECASE):
-            # Door seal is a packing capability/conditional constraint, not a hard spatial trap.
             roles.append(PackingRole.DOOR_SEAL)
-            if re.search(r'必须在门|仅限门区|only\s*door', req, re.IGNORECASE):
-                zone = ZoneType.DOOR
+            zone = ZoneType.DOOR
 
         # 3. Middle / Central detection
         elif re.search(r'放中间|中间|中部|mid|middle|center', req, re.IGNORECASE):
             roles.append(PackingRole.MAIN_WALL)
-            if re.search(r'必须在中间|仅限中区|only\s*middle', req, re.IGNORECASE):
-                zone = ZoneType.MIDDLE
+            zone = ZoneType.MIDDLE
 
         if not roles:
             roles.append(PackingRole.MAIN_WALL)

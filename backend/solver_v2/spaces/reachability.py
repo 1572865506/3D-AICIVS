@@ -229,7 +229,11 @@ class ReachabilityAnalyzer:
             ems_count=len(active_ems),
         )
 
-        classified_boxes = self._classify_free_boxes(active_ems, remaining_skus, min_sku_dim_x, min_sku_dim_y, min_sku_dim_z)
+        classified_boxes = self._classify_free_boxes(
+            active_ems, remaining_skus, min_sku_dim_x, min_sku_dim_y, min_sku_dim_z,
+            unreachable_volume=unreachable_volume,
+            frontier_x=max((p.max_x for p in placements), default=0.0)
+        )
         return metrics, classified_boxes
 
     def _get_min_sku_dims(self, remaining_skus: Optional[List[CargoSKU]]) -> Tuple[float, float, float]:
@@ -276,12 +280,22 @@ class ReachabilityAnalyzer:
         min_x: float,
         min_y: float,
         min_z: float,
+        unreachable_volume: float = 0.0,
+        frontier_x: float = 0.0,
     ) -> List[FreeSpaceBox]:
-        """Classifies each EMS into SpaceClass category."""
+        """Classifies each EMS into SpaceClass category with accurate door reachability."""
         boxes: List[FreeSpaceBox] = []
         for i, aabb in enumerate(ems_list):
-            if aabb.dx < min_x or aabb.dy < min_y or aabb.dz < min_z:
+            is_sliver = (aabb.dx < min_x or aabb.dy < min_y or aabb.dz < min_z)
+            is_reachable = (
+                aabb.max_x >= frontier_x - self.geom_epsilon or
+                aabb.max_x >= self.container.Lx - 0.2 or
+                unreachable_volume <= self.geom_epsilon
+            )
+            if is_sliver:
                 sclass = SpaceClass.SLIVER
+            elif not is_reachable:
+                sclass = SpaceClass.ENCLOSED_CAVITY
             else:
                 sclass = SpaceClass.OPEN_USEFUL
 
@@ -289,7 +303,7 @@ class ReachabilityAnalyzer:
                 space_id=f"ems_{i}",
                 aabb=aabb,
                 space_class=sclass,
-                is_reachable_from_door=True,
+                is_reachable_from_door=is_reachable,
                 fit_sku_count=len(remaining_skus) if remaining_skus else 1,
             ))
         return boxes
