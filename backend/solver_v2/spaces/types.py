@@ -19,6 +19,7 @@ class SpaceClass(str, Enum):
     OPEN_LOW_QUALITY = "OPEN_LOW_QUALITY"      # Open but poor aspect ratio or small
     REACHABLE_CAVITY = "REACHABLE_CAVITY"      # Semi-enclosed recess, but accessible from door
     UNREACHABLE_CAVITY = "UNREACHABLE_CAVITY"  # Enclosed/blocked void, inaccessible from door
+    ENCLOSED_CAVITY = "UNREACHABLE_CAVITY"     # Alias for UNREACHABLE_CAVITY
     SLIVER = "SLIVER"                          # Narrow slot/gap smaller than minimum cargo dimension
     DEAD_SPACE = "DEAD_SPACE"                  # Free space where no remaining SKU can physically fit
 

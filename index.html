@@ -248,6 +248,49 @@
       background: var(--primary);
       box-shadow: 0 4px 14px var(--primary-glow);
     }
+    .btn-header-icon {
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--slate-600);
+      border: 1px solid var(--slate-200);
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border-radius: 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+    .btn-header-icon:hover {
+      background: #ffffff;
+      color: #ef4444;
+      border-color: #fca5a5;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(239, 68, 68, 0.15);
+    }
+    .btn-header-icon:active {
+      transform: scale(0.94);
+    }
+    .model-gen-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: #4338ca;
+      background: #e0e7ff;
+      border: 1px solid #c7d2fe;
+      padding: 4px 8px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      letter-spacing: -0.2px;
+      box-shadow: 0 1px 3px rgba(79, 70, 229, 0.08);
+      user-select: none;
+    }
+
     .btn-action-pill.secondary {
       background: rgba(255, 255, 255, 0.88);
       color: var(--slate-700);
@@ -409,26 +452,45 @@
       transform: scale(1.2);
     }
 
-    /* Edge-Aligned Transparent SKU Anchor Dock spanning from right of center island to right screen edge */
+    /* Edge-Aligned Transparent SKU Anchor Dock with generous gap from center operation island */
     .sku-anchor-panel {
       position: absolute;
       right: 20px;
-      left: calc(50% + 340px); /* Generous gap away from center controls island */
+      left: calc(50% + 390px); /* 390px = 340px (half island width) + 50px generous safety margin gap */
       bottom: 4px;
-      pointer-events: auto;
-      max-height: 94px; /* Max 3 rows */
+      max-height: 88px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 5px;
       scrollbar-width: thin;
       scrollbar-color: rgba(203, 213, 225, 0.6) transparent;
-      background: transparent; /* No container background */
-      border: none;             /* No container border */
-      box-shadow: none;         /* No container shadow */
+      background: transparent;
       backdrop-filter: none;
-      padding-right: 4px;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0 4px 0 0;
+      pointer-events: auto;
       z-index: 20;
+    }
+
+    @media (max-width: 1480px) {
+      .sku-anchor-panel {
+        left: calc(50% + 360px);
+        right: 12px;
+        max-height: 80px;
+      }
+      .anchor-chip {
+        padding: 2px 6px;
+        font-size: 9.5px;
+      }
+    }
+
+    @media (max-width: 1280px) {
+      .sku-anchor-panel {
+        display: none; /* Hide floating anchor chips on compact/laptop screens to give 100% clean breathability to center controls */
+      }
     }
 
     /* Micro CoG Toggle Button in Top HUD */
@@ -467,13 +529,6 @@
       background: #94a3b8;
     }
 
-    @media (max-width: 1200px) {
-      .sku-anchor-panel {
-        left: auto;
-        right: 16px;
-        max-width: 320px;
-      }
-    }
     .sku-anchor-panel::-webkit-scrollbar { width: 4px; }
     .sku-anchor-panel::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.5); border-radius: 2px; }
 
@@ -886,10 +941,60 @@
       background: rgba(248, 250, 252, 0.85);
       border: 1px solid rgba(226, 232, 240, 0.9);
       border-radius: 10px;
-      padding: 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: padding 0.25s ease, background 0.25s ease;
+      position: relative;
+    }
+    .section-card.collapsible .section-label {
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0;
+    }
+    .section-card.collapsible .section-label:hover {
+      color: var(--primary);
+    }
+    .section-chevron {
+      width: 14px;
+      height: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      color: var(--slate-400);
+      flex-shrink: 0;
+    }
+    .section-content-wrapper {
+      display: grid;
+      grid-template-rows: 1fr;
+      transition: grid-template-rows 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+      opacity: 1;
+    }
+    .section-content-inner {
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       gap: 10px;
+    }
+    .section-card.collapsed {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      background: rgba(241, 245, 249, 0.75);
+      border-color: rgba(226, 232, 240, 0.85);
+      gap: 0;
+    }
+    .section-card.collapsed .section-content-wrapper {
+      grid-template-rows: 0fr;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .section-card.collapsed .section-chevron {
+      transform: rotate(-90deg);
     }
 
     .section-label {
@@ -1231,12 +1336,8 @@
       display: flex;
       flex-direction: column;
       gap: 7px;
-      max-height: 280px;
-      overflow-y: auto;
       padding-right: 2px;
     }
-    .sku-list::-webkit-scrollbar { width: 4px; }
-    .sku-list::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 2px; }
 
     /* SKU Empty State Card */
     .sku-empty-card {
@@ -2074,7 +2175,7 @@
           <div class="kpi-item" style="padding: 4px 10px;">
             <span class="cache-status-badge" id="hud-cache-badge" title="3D-AICIVS 智能算柜引擎">
               <span class="cache-pulse-dot" id="cache-dot"></span>
-              <span id="txt-cache-badge">🟡 后端状态检测中</span>
+              <span id="txt-cache-badge">状态检测中</span>
             </span>
           </div>
         </div>
@@ -2082,9 +2183,24 @@
 
       <!-- Header Action Buttons -->
       <div class="header-actions interactive">
+        <!-- Algorithm Model Generation Badge -->
+        <div class="model-gen-badge" id="hud-model-badge" title="当前算法引擎内核代数：Gen 5.2 (第一性原理5阶段分级通用内核)">
+          <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#6366f1;"></span>
+          <span>Gen 5.2</span>
+        </div>
+
+        <!-- Clean Cache Quick Action Icon Button -->
+        <button class="btn-header-icon" id="btn-clean-cache" onclick="clearAllAppCaches()" title="一键清理所有本地计算与状态缓存并重置">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <polyline points="23 20 23 14 17 14"></polyline>
+            <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
+          </svg>
+        </button>
+
         <a href="/algorithm_space.html" target="_blank" class="btn-action-pill" id="btn-open-algo-space" style="background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); color: #ffffff; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 12px rgba(37,99,235,0.3);">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-          <span style="font-weight: 700;">📐 算法空间 (Algorithm Space)</span>
+          <span style="font-weight: 700;">算法空间</span>
         </a>
 
         <button class="btn-action-pill secondary active" id="btn-toggle-left" onclick="toggleLeftDrawer()">
@@ -2118,67 +2234,91 @@
         <!-- 1. Affinity Weight -->
         <div class="weight-row">
           <div class="weight-meta">
-            <span>📦 品类同构聚合权重</span>
+            <span style="display:flex; align-items:center; gap:5px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              <span>品类同构聚合权重</span>
+            </span>
             <span class="weight-val" id="val-weight-affinity">3000</span>
           </div>
           <input type="range" class="range-input" id="rng-weight-affinity" min="0" max="8000" step="100" value="3000" oninput="updateWeightVal('affinity', this.value)">
-          <div style="font-size: 9.5px; color: #94a3b8;">同 SKU 相邻成团排布的吸引力</div>
+          <div style="font-size: 9.5px; color: #64748b;">同 SKU 相邻成团排布的吸引力</div>
         </div>
 
         <!-- 2. Vertical Stacking Weight -->
         <div class="weight-row">
           <div class="weight-meta">
-            <span>🏗️ 立柱垂直成栋堆叠权重</span>
+            <span style="display:flex; align-items:center; gap:5px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+              <span>立柱垂直成栋堆叠权重</span>
+            </span>
             <span class="weight-val" id="val-weight-verticalStack">3500</span>
           </div>
           <input type="range" class="range-input" id="rng-weight-verticalStack" min="0" max="8000" step="100" value="3500" oninput="updateWeightVal('verticalStack', this.value)">
-          <div style="font-size: 9.5px; color: #94a3b8;">优先将单列连续叠装至柜顶的倾向</div>
+          <div style="font-size: 9.5px; color: #64748b;">优先将单列连续叠装至柜顶的倾向</div>
         </div>
 
         <!-- 3. Wall Slicing Strictness -->
         <div class="weight-row">
           <div class="weight-meta">
-            <span>🧱 横向整墙切片推进刚性</span>
+            <span style="display:flex; align-items:center; gap:5px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+              <span>横向整墙切片推进刚性</span>
+            </span>
             <span class="weight-val" id="val-weight-wallSlicing">50000</span>
           </div>
           <input type="range" class="range-input" id="rng-weight-wallSlicing" min="5000" max="100000" step="1000" value="50000" oninput="updateWeightVal('wallSlicing', this.value)">
-          <div style="font-size: 9.5px; color: #94a3b8;">铺满宽度 Z 截面后再向前推进 X 的惩罚刚性</div>
+          <div style="font-size: 9.5px; color: #64748b;">铺满宽度 Z 截面后再向前推进 X 的惩罚刚性</div>
         </div>
 
         <!-- 4. Notch Leveling Priority -->
         <div class="weight-row">
           <div class="weight-meta">
-            <span>📐 切片前沿凹口填平敏锐度</span>
+            <span style="display:flex; align-items:center; gap:5px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              <span>切片前沿凹口填平敏锐度</span>
+            </span>
             <span class="weight-val" id="val-weight-notchLeveling">2500</span>
           </div>
           <input type="range" class="range-input" id="rng-weight-notchLeveling" min="0" max="8000" step="100" value="2500" oninput="updateWeightVal('notchLeveling', this.value)">
-          <div style="font-size: 9.5px; color: #94a3b8;">识别并优先回填前切片凹陷缺口的强度</div>
+          <div style="font-size: 9.5px; color: #64748b;">识别并优先回填前切片凹陷缺口的强度</div>
         </div>
 
         <!-- 5. CoG Balance Bias Weight -->
         <div class="weight-row">
           <div class="weight-meta">
-            <span>⚖️ 3D 轴荷配平物理偏置权重</span>
+            <span style="display:flex; align-items:center; gap:5px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
+              <span>3D 轴荷配平物理偏置权重</span>
+            </span>
             <span class="weight-val" id="val-weight-cogBalance">1500</span>
           </div>
           <input type="range" class="range-input" id="rng-weight-cogBalance" min="0" max="5000" step="100" value="1500" oninput="updateWeightVal('cogBalance', this.value)">
-          <div style="font-size: 9.5px; color: #94a3b8;">前后重心与重轻分区的物理引力系数</div>
+          <div style="font-size: 9.5px; color: #64748b;">前后重心与重轻分区的物理引力系数</div>
         </div>
 
         <!-- 6. Door Safety Weight -->
         <div class="weight-row">
           <div class="weight-meta">
-            <span>🚪 柜门防倾倒朝向锁定严格度</span>
+            <span style="display:flex; align-items:center; gap:5px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2"><path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"/><path d="M2 20h20"/><circle cx="14" cy="12" r="1"/></svg>
+              <span>柜门防倾倒朝向锁定严格度</span>
+            </span>
             <span class="weight-val" id="val-weight-doorSafety">1200</span>
           </div>
           <input type="range" class="range-input" id="rng-weight-doorSafety" min="0" max="5000" step="100" value="1200" oninput="updateWeightVal('doorSafety', this.value)">
-          <div style="font-size: 9.5px; color: #94a3b8;">靠近柜门位置强制长边沿纵深锁定的严苛度</div>
+          <div style="font-size: 9.5px; color: #64748b;">靠近柜门位置强制长边沿纵深锁定的严苛度</div>
         </div>
       </div>
 
       <div class="weights-footer">
-        <button class="btn-island-action" style="flex:1; justify-content:center;" onclick="resetAlgorithmWeights()">🔄 恢复推荐</button>
-        <button class="btn-island-action primary" style="flex:1.6; justify-content:center;" onclick="applyAlgorithmWeights()">⚡ 应用并重算</button>
+        <button class="btn-island-action" style="flex:1; justify-content:center;" onclick="resetAlgorithmWeights()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          <span>恢复推荐</span>
+        </button>
+        <button class="btn-island-action primary" style="flex:1.6; justify-content:center;" onclick="applyAlgorithmWeights()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span>应用并重算</span>
+        </button>
       </div>
     </div>
 
@@ -2192,73 +2332,107 @@
         <button class="close-btn" onclick="toggleLeftDrawer()">✕</button>
       </div>
 
-      <div class="drawer-scroll-body">
+      <div class="drawer-scroll-body" id="left-drawer-scroll-body">
         <!-- 1. Container Models -->
-        <div class="section-card">
-          <div class="section-label">
+        <div class="section-card collapsible" id="sec-card-container">
+          <div class="section-label" onclick="toggleSectionCard('sec-card-container')">
             <span>ISO 集装箱柜型选择</span>
+            <span class="section-chevron">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </span>
           </div>
-          <div class="chip-grid-4">
-            <button class="btn-chip active" id="btn-type-40hq" onclick="switchContainerType('40HQ')">40HQ</button>
-            <button class="btn-chip" id="btn-type-40gp" onclick="switchContainerType('40GP')">40GP</button>
-            <button class="btn-chip" id="btn-type-20gp" onclick="switchContainerType('20GP')">20GP</button>
-            <button class="btn-chip" id="btn-type-45hq" onclick="switchContainerType('45HQ')">45HQ</button>
-          </div>
-          <div class="spec-table">
-            <div class="spec-item"><span class="spec-k">外部尺寸:</span><span class="spec-v" id="spec-ext">12.192 × 2.438 × 2.896 m</span></div>
-            <div class="spec-item"><span class="spec-k">可用净空:</span><span class="spec-v" id="spec-int">12.032 × 2.352 × 2.698 m</span></div>
-            <div class="spec-item"><span class="spec-k">标准容积:</span><span class="spec-v" id="spec-vol">76.4 m³</span></div>
-            <div class="spec-item"><span class="spec-k">限重载重:</span><span class="spec-v" id="spec-payload">28,600 kg (28.6 吨)</span></div>
+          <div class="section-content-wrapper">
+            <div class="section-content-inner">
+              <div class="chip-grid-4">
+                <button class="btn-chip active" id="btn-type-40hq" onclick="switchContainerType('40HQ')">40HQ</button>
+                <button class="btn-chip" id="btn-type-40gp" onclick="switchContainerType('40GP')">40GP</button>
+                <button class="btn-chip" id="btn-type-20gp" onclick="switchContainerType('20GP')">20GP</button>
+                <button class="btn-chip" id="btn-type-45hq" onclick="switchContainerType('45HQ')">45HQ</button>
+              </div>
+              <div class="spec-table">
+                <div class="spec-item"><span class="spec-k">外部尺寸:</span><span class="spec-v" id="spec-ext">12.192 × 2.438 × 2.896 m</span></div>
+                <div class="spec-item"><span class="spec-k">可用净空:</span><span class="spec-v" id="spec-int">12.032 × 2.352 × 2.698 m</span></div>
+                <div class="spec-item"><span class="spec-k">标准容积:</span><span class="spec-v" id="spec-vol">76.4 m³</span></div>
+                <div class="spec-item"><span class="spec-k">限重载重:</span><span class="spec-v" id="spec-payload">28,600 kg (28.6 吨)</span></div>
+              </div>
+            </div>
           </div>
         </div>
 
         <!-- 2. Smart Excel Upload & Manifest Import -->
-        <div class="section-card">
-          <div class="section-label">
+        <div class="section-card collapsible" id="sec-card-upload">
+          <div class="section-label" onclick="toggleSectionCard('sec-card-upload')">
             <span>智能表格导入 (Excel / CSV)</span>
-            <span style="font-size: 9.5px; color: var(--primary); cursor: pointer;" onclick="downloadExactTemplate()">📥 导出产线标准模板</span>
+            <span class="section-chevron">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </span>
           </div>
-          
-          <div class="upload-zone" id="drop-zone" onclick="document.getElementById('excel-file-input').click()">
-            <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv, .txt" style="display: none;" onchange="handleExcelFileUpload(this.files[0])">
-            <svg class="upload-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            <div class="upload-text-main">点击或拖拽上传清洗表格 (.xlsx / .csv)</div>
-            <div class="upload-text-sub">深度适配「产品名、长(m)、宽(m)、高(m)、单件毛重、数量、摆放要求」</div>
+          <div class="section-content-wrapper">
+            <div class="section-content-inner">
+              <div style="display:flex; justify-content:flex-end;">
+                <span style="font-size: 9.5px; color: var(--primary); cursor: pointer; display: flex; align-items: center; gap: 4px;" onclick="downloadExactTemplate()">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>导出产线标准模板</span>
+                </span>
+              </div>
+              
+              <div class="upload-zone" id="drop-zone" onclick="document.getElementById('excel-file-input').click()">
+                <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv, .txt" style="display: none;" onchange="handleExcelFileUpload(this.files[0])">
+                <svg class="upload-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <div class="upload-text-main">点击或拖拽上传清洗表格 (.xlsx / .csv)</div>
+                <div class="upload-text-sub">深度适配「产品名、长(m)、宽(m)、高(m)、单件毛重、数量、摆放要求」</div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- 3. AI Packing Calculation -->
-        <div class="section-card">
-          <div class="section-label">
-            <span>AI 算柜排布策略</span>
+        <!-- 3. AI Packing Calculation (STICKY POSITIONED AT TOP OF SCROLL) -->
+        <div class="section-card" id="sec-card-strategy" style="position: sticky; top: 0; z-index: 10; box-shadow: 0 4px 14px -4px rgba(15, 23, 42, 0.08); border-color: rgba(147, 197, 253, 0.6); background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(8px);">
+          <div class="section-label" style="cursor:default; margin-bottom: 4px;">
+            <span style="display:flex; align-items:center; gap:5px; color:#1e293b; font-weight:800;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>AI 算柜排布策略</span>
+            </span>
+            <span style="font-size:9.5px; color:#059669; font-weight:700; background:#ecfdf5; padding:1px 6px; border-radius:4px; border:1px solid #a7f3d0;">吸顶常驻</span>
           </div>
-          <div class="chip-grid-2">
-            <button class="btn-chip active" id="btn-strat-cluster" onclick="setPackingStrategy('cluster')">🧱 同品聚合+重力支撑 (推荐)</button>
-            <button class="btn-chip" id="btn-strat-mec" onclick="setPackingStrategy('mec')">⚡ 紧凑空闲块 (MEC)</button>
-          </div>
-          <div class="chip-grid-2">
-            <button class="btn-chip active" id="btn-gap-zero" onclick="setGapSpacing(0)">0% 紧密零间隙</button>
-            <button class="btn-chip" id="btn-gap-subtle" onclick="setGapSpacing(0.01)">1cm 宽松装卸</button>
-          </div>
-
-          <!-- CoG Axle Load Balancing Switch -->
-          <div class="param-row" style="margin-top: 6px; padding: 6px 8px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
-            <div class="param-meta" style="margin-bottom: 4px;">
-              <span style="font-size: 11px; font-weight: 700; color: #1e293b;">⚖️ 载荷偏置平衡优化 (CoG)</span>
-              <span class="param-val" id="val-cog-mode" style="font-size: 10.5px; font-weight: 800; color: #059669;">已开启</span>
+          <div class="section-content-inner">
+            <div class="chip-grid-2">
+              <button class="btn-chip active" id="btn-strat-cluster" onclick="setPackingStrategy('cluster')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right:4px;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                <span>同品聚合+重力支撑</span>
+              </button>
+              <button class="btn-chip" id="btn-strat-mec" onclick="setPackingStrategy('mec')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right:4px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span>紧凑空闲块 (MEC)</span>
+              </button>
             </div>
             <div class="chip-grid-2">
-              <button class="btn-chip active" id="btn-cog-bal-on" onclick="setCoGBalancingMode(true)">开启配平 (按重分区)</button>
-              <button class="btn-chip" id="btn-cog-bal-off" onclick="setCoGBalancingMode(false)">关闭 (纯空间推进)</button>
+              <button class="btn-chip active" id="btn-gap-zero" onclick="setGapSpacing(0)">0% 紧密零间隙</button>
+              <button class="btn-chip" id="btn-gap-subtle" onclick="setGapSpacing(0.01)">1cm 宽松装卸</button>
             </div>
-          </div>
 
-          <button class="btn-island-action primary" id="btn-run-packing" style="width: 100%; justify-content: center; padding: 9px; margin-top: 6px;" onclick="runSmartPackingAlgorithm(true)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            <span>开始 AI 算柜</span>
-          </button>
-          <div id="calculation-state-note" style="margin-top:6px; padding:6px 8px; border-radius:7px; background:#f8fafc; color:#64748b; font-size:10px; font-weight:700; text-align:center;">
-            请先准备货单，再手动点击开始算柜
+            <!-- CoG Axle Load Balancing Switch -->
+            <div class="param-row" style="margin-top: 2px; padding: 6px 8px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+              <div class="param-meta" style="margin-bottom: 4px;">
+                <span style="font-size: 11px; font-weight: 700; color: #1e293b; display:flex; align-items:center; gap:4px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
+                  <span>载荷偏置平衡优化 (CoG)</span>
+                </span>
+                <span class="param-val" id="val-cog-mode" style="font-size: 10.5px; font-weight: 800; color: #059669;">已开启</span>
+              </div>
+              <div class="chip-grid-2">
+                <button class="btn-chip active" id="btn-cog-bal-on" onclick="setCoGBalancingMode(true)">开启配平 (按重分区)</button>
+                <button class="btn-chip" id="btn-cog-bal-off" onclick="setCoGBalancingMode(false)">关闭 (纯空间推进)</button>
+              </div>
+            </div>
+
+            <button class="btn-island-action primary" id="btn-run-packing" style="width: 100%; justify-content: center; padding: 9px; margin-top: 2px;" onclick="runSmartPackingAlgorithm(true)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>开始 AI 算柜</span>
+            </button>
+            <div id="calculation-state-note" style="margin-top:2px; padding:6px 8px; border-radius:7px; background:#f8fafc; color:#64748b; font-size:10px; font-weight:700; text-align:center;">
+              请先准备货单，再手动点击开始算柜
+            </div>
           </div>
         </div>
 
@@ -2270,10 +2444,22 @@
           </div>
 
           <div class="chip-grid-2">
-            <button class="btn-chip active" id="btn-pre-production" onclick="loadManifestPreset('production')">🖥️ 真实产线混装单 (15种)</button>
-            <button class="btn-chip" id="btn-pre-standard" onclick="loadManifestPreset('standard')">📦 标准跨境单</button>
-            <button class="btn-chip" id="btn-pre-heavy" onclick="loadManifestPreset('heavy')">⚙️ 重型汽配单</button>
-            <button class="btn-chip" id="btn-pre-pallets" onclick="loadManifestPreset('pallets')">🪵 标准打托单</button>
+            <button class="btn-chip active" id="btn-pre-production" onclick="loadManifestPreset('production')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right:4px;"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              <span>真实产线混装单 (15种)</span>
+            </button>
+            <button class="btn-chip" id="btn-pre-standard" onclick="loadManifestPreset('standard')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right:4px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              <span>标准跨境单</span>
+            </button>
+            <button class="btn-chip" id="btn-pre-heavy" onclick="loadManifestPreset('heavy')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right:4px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              <span>重型汽配单</span>
+            </button>
+            <button class="btn-chip" id="btn-pre-pallets" onclick="loadManifestPreset('pallets')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right:4px;"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              <span>标准打托单</span>
+            </button>
           </div>
 
           <!-- Luxury Manifest Toolbar -->
@@ -2289,12 +2475,15 @@
                   <span>全选</span>
                 </button>
                 <button class="tool-action-btn" onclick="invertManifestSelection()">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                   <span>反选</span>
                 </button>
                 <button class="tool-action-btn danger-subtle" id="btn-delete-selected-skus" onclick="deleteSelectedSKUs()">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                   <span>删除选中</span>
                 </button>
                 <button class="tool-action-btn danger-solid" onclick="clearManifest()">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
                   <span>清空货单</span>
                 </button>
                 <button class="tool-action-btn" onclick="selectAllSKUs(false)">
@@ -2306,8 +2495,14 @@
               <div style="display:flex; align-items:center; gap:5px; margin-left:auto;">
                 <span style="font-size:10px; color:var(--slate-500); font-weight:700;">未选模式:</span>
                 <div class="seg-pill-group">
-                  <button class="seg-pill active" id="mode-pill-ghost" onclick="updateUnselectedDisplayMode('ghost')">👻 幽灵</button>
-                  <button class="seg-pill" id="mode-pill-hide" onclick="updateUnselectedDisplayMode('hide')">🚫 隐藏</button>
+                  <button class="seg-pill active" id="mode-pill-ghost" onclick="updateUnselectedDisplayMode('ghost')">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right:2px;"><circle cx="12" cy="12" r="10" stroke-dasharray="2 2"/></svg>
+                    <span>幽灵</span>
+                  </button>
+                  <button class="seg-pill" id="mode-pill-hide" onclick="updateUnselectedDisplayMode('hide')">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right:2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    <span>隐藏</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -2463,11 +2658,11 @@
           <button class="btn-slice-reset" onclick="resetSlicingTimeline()" title="恢复完整装载视图">🔄 重置切片</button>
         </div>
         <div class="slice-slider-row">
-          <span class="slice-end-label left" title="柜门端开门口 (X=L)">🚪 柜门端 (12.03m)</span>
+          <span class="slice-end-label left" title="柜门端开门口 (X=L)">柜门端 (12.03m)</span>
           <div class="slice-slider-wrapper">
             <input type="range" class="slice-range-input" id="slice-depth-slider" min="0" max="100" step="0.2" value="0" oninput="onSlicingTimelineChange(this.value)">
           </div>
-          <span class="slice-end-label right" id="slice-deep-label" title="柜尾最深处 (X=0)">0.00m 📦 (最深内壁)</span>
+          <span class="slice-end-label right" id="slice-deep-label" title="柜尾最深处 (X=0)">0.00m (最深内壁)</span>
         </div>
       </div>
 
@@ -2493,7 +2688,7 @@
         </button>
 
         <button class="btn-island-action" id="btn-orientation-mode" onclick="togglePackageOrientationMode()" title="切换真实包装贴图与产品向上方向辅助线">
-          <span>📦</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
           <span id="txt-orientation-mode">真实贴图</span>
         </button>
 
@@ -2604,7 +2799,8 @@
         <button class="btn-island-action" onclick="closeImportModal()">取消</button>
         <div style="display:flex; gap:8px;">
           <button class="btn-island-action primary" onclick="applyImportedManifest(false)" style="color:white; font-weight:700;">
-            📋 保存为货单草稿（等待手动算柜）
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" style="margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span>保存为货单草稿（等待手动算柜）</span>
           </button>
         </div>
       </div>
@@ -2643,9 +2839,9 @@
             <span class="form-hint">影响进深前后装载区位</span>
           </label>
           <select id="sku-edit-req" class="custom-select">
-            <option value="放柜子最里面">📍 放柜子最里面 (Deep Inside / Rear - 优先置于箱体深处)</option>
-            <option value="放中间">🏢 放中间 (Middle Section - 紧密排布于货柜中段)</option>
-            <option value="封柜门">🚪 封柜门 (Front / Door End - 作为门端封箱与防倾挡板)</option>
+            <option value="放柜子最里面">放柜子最里面 (Deep Inside / Rear - 优先置于箱体深处)</option>
+            <option value="放中间">放中间 (Middle Section - 紧密排布于货柜中段)</option>
+            <option value="封柜门">封柜门 (Front / Door End - 作为门端封箱与防倾挡板)</option>
           </select>
         </div>
 
@@ -2656,10 +2852,10 @@
             <span class="form-hint">保护封箱胶带与直立标</span>
           </label>
           <select id="sku-edit-ori" class="custom-select">
-            <option value="upright">⬆️ 仅允许立放 (Upright Only - 正立偏航90°旋转，封箱胶带向上)</option>
-            <option value="allow_flat">📦 允许平放 (Allow Flat - 允许大面积朝下平铺，降低重心)</option>
-            <option value="allow_side">📑 允许侧卧 (Allow Side - 允许窄侧面竖直放置)</option>
-            <option value="any">🔄 任意翻转 (Any - 全开放 6 个空间朝向)</option>
+            <option value="upright">仅允许立放 (Upright Only - 正立偏航90°旋转，封箱胶带向上)</option>
+            <option value="allow_flat">允许平放 (Allow Flat - 允许大面积朝下平铺，降低重心)</option>
+            <option value="allow_side">允许侧卧 (Allow Side - 允许窄侧面竖直放置)</option>
+            <option value="any">任意翻转 (Any - 全开放 6 个空间朝向)</option>
           </select>
         </div>
 
@@ -2699,8 +2895,8 @@
             <span>3. 模块五超容弹性核减策略 (Capacity Rule)</span>
           </label>
           <select id="sku-edit-elastic" class="custom-select">
-            <option value="false">🔒 刚性必装件 (Mandatory - 100% 满额履约装完)</option>
-            <option value="true">⚡ 弹性缓冲件 (Elastic - 装不下时自动填满柜容并核减)</option>
+            <option value="false">刚性必装件 (Mandatory - 100% 满额履约装完)</option>
+            <option value="true">弹性缓冲件 (Elastic - 装不下时自动填满柜容并核减)</option>
           </select>
         </div>
 
@@ -2806,9 +3002,9 @@
         <div class="form-field">
           <label class="form-label">1. 货柜纵向摆放区间要求</label>
           <select id="sku-add-req" class="custom-select">
-            <option value="放中间" selected>🏢 放中间 (Middle Section - 紧密排布于货柜中段)</option>
-            <option value="放柜子最里面">📍 放柜子最里面 (Deep Inside / Rear - 优先置于箱体深处)</option>
-            <option value="封柜门">🚪 封柜门 (Front / Door End - 作为门端封箱与防倾挡板)</option>
+            <option value="放中间" selected>放中间 (Middle Section - 紧密排布于货柜中段)</option>
+            <option value="放柜子最里面">放柜子最里面 (Deep Inside / Rear - 优先置于箱体深处)</option>
+            <option value="封柜门">封柜门 (Front / Door End - 作为门端封箱与防倾挡板)</option>
           </select>
         </div>
 
@@ -2816,10 +3012,10 @@
         <div class="form-field">
           <label class="form-label">2. 翻转朝向权限</label>
           <select id="sku-add-ori" class="custom-select">
-            <option value="upright" selected>⬆️ 仅允许立放 (Upright Only - 正立偏航90°旋转，封箱胶带向上)</option>
-            <option value="allow_flat">📦 允许平放 (Allow Flat - 允许大面积朝下平铺，降低重心)</option>
-            <option value="allow_side">📑 允许侧卧 (Allow Side - 允许窄侧面竖直放置)</option>
-            <option value="any">🔄 任意翻转 (Any - 全开放 6 个空间朝向)</option>
+            <option value="upright" selected>仅允许立放 (Upright Only - 正立偏航90°旋转，封箱胶带向上)</option>
+            <option value="allow_flat">允许平放 (Allow Flat - 允许大面积朝下平铺，降低重心)</option>
+            <option value="allow_side">允许侧卧 (Allow Side - 允许窄侧面竖直放置)</option>
+            <option value="any">任意翻转 (Any - 全开放 6 个空间朝向)</option>
           </select>
         </div>
 
@@ -4039,6 +4235,33 @@
       } catch (e) {}
     }
 
+    window.clearAllAppCaches = function() {
+      try {
+        let count = 0;
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && (k.startsWith('3D_AICIVS_') || k.includes('CACHE') || k.includes('STATE'))) {
+            keysToRemove.push(k);
+          }
+        }
+        keysToRemove.forEach(k => {
+          localStorage.removeItem(k);
+          count++;
+        });
+
+        // Clear in-memory scene & result
+        clearPackingResultAndScene();
+        markManifestDirty('User requested cache clean', true);
+
+        showToast(`已成功清理 ${count} 项本地计算缓存与持久化状态！`, 'success', '🧹 缓存已清理');
+        console.log(`[3D-AICIVS] Manual full cache flush: ${count} keys removed.`);
+      } catch (e) {
+        console.error('[3D-AICIVS] Failed to flush caches:', e);
+        showToast('清理缓存失败: ' + e.message, 'warning');
+      }
+    };
+
     // --- INTERACTIVE SELECTION & ISOLATION STATE ---
     let selectedSKUs = new Set();
     let hoveredSKU = null;
@@ -4774,6 +4997,8 @@
           handleBoxSelection(e);
         }
       });
+
+      setupDrawerScrollAccordion();
 
       animate();
     }
@@ -5715,17 +5940,21 @@
       const dot = document.getElementById('cache-dot');
       if (!badge || !text || !dot) return;
       if (mockMode) {
-        text.textContent = '🟣 Mock Offline Mode'; dot.style.background = '#8b5cf6';
-        badge.style.color = '#7c3aed'; badge.title = '显式 ?mode=mock；未调用后端';
+        text.textContent = '离线 Mock 模式'; dot.style.background = '#8b5cf6';
+        badge.style.color = '#7c3aed'; badge.style.background = '#f5f3ff'; badge.style.borderColor = '#ddd6fe';
+        badge.title = '显式 ?mode=mock；未调用后端';
       } else if (status === 'ONLINE') {
-        text.textContent = '🟢 后端算柜服务在线'; dot.style.background = '#22c55e';
-        badge.style.color = '#059669'; badge.title = '3D-AICIVS 智能算柜引擎在线';
+        text.textContent = '服务在线'; dot.style.background = '#10b981';
+        badge.style.color = '#059669'; badge.style.background = '#ecfdf5'; badge.style.borderColor = '#a7f3d0';
+        badge.title = '3D-AICIVS 智能算柜引擎连接正常';
       } else if (status === 'OFFLINE') {
-        text.textContent = '🔴 后端算柜服务不可用'; dot.style.background = '#ef4444';
-        badge.style.color = '#dc2626'; badge.title = '请检查后端服务、VITE_LOADING_API_URL 和网络连接';
+        text.textContent = '服务离线'; dot.style.background = '#ef4444';
+        badge.style.color = '#dc2626'; badge.style.background = '#fef2f2'; badge.style.borderColor = '#fecaca';
+        badge.title = '后端服务未启动或连接异常';
       } else {
-        text.textContent = '🟡 后端状态检测中'; dot.style.background = '#f59e0b';
-        badge.style.color = '#b45309'; badge.title = '正在请求 /api/v1/loading/health';
+        text.textContent = '状态检测中'; dot.style.background = '#f59e0b';
+        badge.style.color = '#b45309'; badge.style.background = '#fffbeb'; badge.style.borderColor = '#fde68a';
+        badge.title = '正在检测算柜服务状态...';
       }
     }
     function createPackingProgress() {
@@ -5951,17 +6180,17 @@
 
       if (cacheBadge && cacheTxt && cacheDot) {
         if (mode === 'BACKEND') {
-          cacheBadge.style.color = '#1d4ed8';
-          cacheBadge.style.background = '#eff6ff';
-          cacheBadge.style.borderColor = '#93c5fd';
-          cacheDot.style.background = '#3b82f6';
-          cacheTxt.textContent = '🟢 后端算柜服务在线';
+          cacheBadge.style.color = '#059669';
+          cacheBadge.style.background = '#ecfdf5';
+          cacheBadge.style.borderColor = '#a7f3d0';
+          cacheDot.style.background = '#10b981';
+          cacheTxt.textContent = '服务在线';
         } else {
           cacheBadge.style.color = '#7c3aed';
           cacheBadge.style.background = '#f5f3ff';
-          cacheBadge.style.borderColor = '#c4b5fd';
+          cacheBadge.style.borderColor = '#ddd6fe';
           cacheDot.style.background = '#8b5cf6';
-          cacheTxt.textContent = '🟣 离线推演模式';
+          cacheTxt.textContent = '离线 Mock 模式';
         }
       }
 
@@ -7192,7 +7421,65 @@
       document.body.removeChild(a);
     }
 
-    // --- 11. WORKBENCH DRAWER TOGGLES & STUDIO CONTROLS ---
+    // --- 11. WORKBENCH DRAWER TOGGLES & COLLAPSIBLE ACCORDION SYSTEM ---
+    window.toggleSectionCard = function(cardId, forceState) {
+      const card = document.getElementById(cardId);
+      if (!card) return;
+      if (typeof forceState === 'boolean') {
+        card.classList.toggle('collapsed', !forceState);
+      } else {
+        card.classList.toggle('collapsed');
+      }
+    };
+
+    function setupDrawerScrollAccordion() {
+      const scrollBody = document.getElementById('left-drawer-scroll-body');
+      if (!scrollBody) return;
+
+      const secContainer = document.getElementById('sec-card-container');
+      const secUpload = document.getElementById('sec-card-upload');
+
+      let lastScrollTop = 0;
+      let ticking = false;
+
+      scrollBody.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            const st = scrollBody.scrollTop;
+            const delta = st - lastScrollTop;
+
+            if (delta > 3) {
+              // 正在向下滚动：依次折叠上方「柜型选择」和「表格导入」
+              if (st > 15 && secContainer && !secContainer.classList.contains('collapsed')) {
+                secContainer.classList.add('collapsed');
+              }
+              if (st > 45 && secUpload && !secUpload.classList.contains('collapsed')) {
+                secUpload.classList.add('collapsed');
+              }
+            } else if (delta < -3) {
+              // 正在向上回滚：当接近顶部时逐步展开
+              if (st < 60 && secUpload && secUpload.classList.contains('collapsed')) {
+                secUpload.classList.remove('collapsed');
+              }
+              if (st <= 8 && secContainer && secContainer.classList.contains('collapsed')) {
+                secContainer.classList.remove('collapsed');
+              }
+            }
+
+            // 到达最顶部时全部展开复位
+            if (st <= 2) {
+              if (secContainer) secContainer.classList.remove('collapsed');
+              if (secUpload) secUpload.classList.remove('collapsed');
+            }
+
+            lastScrollTop = Math.max(0, st);
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+    }
+
     window.toggleLeftDrawer = function() {
       const drawer = document.getElementById('left-drawer');
       const btn = document.getElementById('btn-toggle-left');
@@ -7741,30 +8028,31 @@
       isRaycastDirty = true;
     }
 
-    // --- SMART VIEWPORT MAGNETIC REBOUND & AUTO-CENTERING SYSTEM ---
+    // --- SMART VIEWPORT OUT-OF-BOUNDS AUTO-REBOUND TO CENTER ---
     const DEFAULT_CONTAINER_CENTER = new THREE.Vector3(0, 1.45, 0);
 
     function enforceViewportBoundaries() {
       if (!controls || !camera || !currentSpec) return;
       DEFAULT_CONTAINER_CENTER.y = currentSpec.extH / 2;
 
-      // 1. If user is currently dragging/orbiting, calculate soft spring tension
       const targetPos = controls.target;
       const distFromCenter = targetPos.distanceTo(DEFAULT_CONTAINER_CENTER);
-      const maxPanThreshold = (currentSpec.cameraDist || 15.0) * 0.45;
+      
+      // 允许用户自由平移放大查看任意局部细节。当平移距离超出模型边界（> 10.0米，即模型已大部分/完全移出视野中心）时，松开鼠标平滑回弹到中心
+      const outOfBoundsThreshold = Math.max((currentSpec.extL || 12.0) * 0.75, 9.0);
 
       if (!isOrbiting) {
-        // When user releases touch/mouse and object is offset, smoothly interpolate back to center
-        if (distFromCenter > 0.005) {
-          const reboundSpeed = distFromCenter > maxPanThreshold ? 0.08 : 0.045;
-          controls.target.lerp(DEFAULT_CONTAINER_CENTER, reboundSpeed);
+        // 当用户松开鼠标且模型已被拖出视口时，平滑自动回弹回正中心 (0, extH/2, 0)
+        if (distFromCenter > outOfBoundsThreshold) {
+          controls.target.lerp(DEFAULT_CONTAINER_CENTER, 0.06);
           isCameraDirty = true;
         }
       } else {
-        // If dragged too far beyond boundary (> maxPanThreshold), apply magnetic rubber-band drag limit
-        if (distFromCenter > maxPanThreshold) {
-          const excess = distFromCenter - maxPanThreshold;
-          const correction = targetPos.clone().sub(DEFAULT_CONTAINER_CENTER).normalize().multiplyScalar(excess * 0.15);
+        // 拖拽过程中，如果超出极端距离（> 20m），施加柔和阻尼限制防止彻底迷失
+        const hardLimit = outOfBoundsThreshold * 1.8;
+        if (distFromCenter > hardLimit) {
+          const excess = distFromCenter - hardLimit;
+          const correction = targetPos.clone().sub(DEFAULT_CONTAINER_CENTER).normalize().multiplyScalar(excess * 0.25);
           targetPos.sub(correction);
           isCameraDirty = true;
         }

@@ -233,7 +233,13 @@ class UniversalHierarchicalSolver:
         ]
 
         for target_zone, sku_group in zone_sequence:
-            companion_pool = [c for c in cargo_list if c.zone_preference != target_zone]
+            # Companion pool must respect zone boundaries (DO NOT place DOOR cargo in INNER zone)
+            if target_zone == UniversalZone.INNER:
+                companion_pool = [c for c in middle_group if c.zone_preference != UniversalZone.DOOR]
+            elif target_zone == UniversalZone.MIDDLE:
+                companion_pool = [c for c in cargo_list if c.zone_preference != UniversalZone.DOOR]
+            else:
+                companion_pool = [c for c in cargo_list if c.zone_preference != UniversalZone.INNER]
             
             if target_zone == UniversalZone.DOOR:
                 max_zone_x = round(self.cL - 0.04, 4)
