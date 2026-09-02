@@ -19,17 +19,22 @@ import math
 import time
 from typing import Any, Dict, List, Optional, Tuple, Set
 
-from src.unified_pipeline.model.UniversalCargoTensor import (
+from backend.solver_v2.domain.models import (
     UniversalCargoTensor,
     UniversalZone,
     ContainerDimensions,
-    OrientationSpec
+    OrientationSpec,
+    ContainerSpec,
+    BoxDim,
+    CargoSKU,
+    QuantityPlan,
+    ZoneType,
+    PackingRole,
+    OrientationPolicy,
+    PlacementContext,
 )
 from backend.solver_v2.validation.independent_validator import IndependentGlobalValidator
-from backend.solver_v2.domain.models import (
-    ContainerSpec, BoxDim, CargoSKU, QuantityPlan,
-    ZoneType, PackingRole, OrientationPolicy, PlacementContext
-)
+
 
 
 @dataclass
@@ -396,10 +401,12 @@ class UniversalHierarchicalSolver:
 
                     if rem_headroom >= 0.08:
                         top_pool = sku_group if is_door else (sku_group + companion_pool)
-                        top_pool = [tc for tc in top_pool if remaining_qty[tc.sku_id] > 0]
+                        top_pool = [tc for tc in top_pool if remaining_qty[tc.sku_id] > 0 and not tc.must_be_on_floor]
                         top_pool.sort(key=lambda tc: (-remaining_qty[tc.sku_id], tc.volume_m3))
                         for tc in top_pool:
                             if remaining_qty[tc.sku_id] <= 0:
+                                continue
+                            if tc.max_stack_layers and tc.sku_id == col_sku.sku_id and c_layers_z >= tc.max_stack_layers:
                                 continue
                             for to in self._get_permitted_orientations(tc):
                                 if to.dx <= (strip_l + 1e-4) and to.dy <= (strip_w + 1e-4) and to.dz <= (rem_headroom + 1e-4):
@@ -407,7 +414,12 @@ class UniversalHierarchicalSolver:
                                     tcy = max(1, int((strip_w + 1e-4) / to.dy))
                                     tlz = max(1, int((rem_headroom + 1e-4) / to.dz))
                                     if tc.max_stack_layers:
-                                        tlz = min(tlz, tc.max_stack_layers)
+                                        if tc.sku_id == col_sku.sku_id:
+                                            tlz = min(tlz, max(0, tc.max_stack_layers - c_layers_z))
+                                        else:
+                                            tlz = min(tlz, tc.max_stack_layers)
+                                    if tlz <= 0:
+                                        continue
                                     t_need = trx * tcy * tlz
                                     t_avail = remaining_qty[tc.sku_id]
                                     if t_avail > 0:
@@ -476,6 +488,8 @@ class UniversalHierarchicalSolver:
 
                 for c in unplaced:
                     if remaining_qty[c.sku_id] <= 0:
+                        continue
+                    if c.must_be_on_floor and az > 1e-3:
                         continue
                     if is_door_zone and c.zone_preference != UniversalZone.DOOR:
                         continue

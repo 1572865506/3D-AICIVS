@@ -128,7 +128,7 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                     seed = int(payload.get('randomSeed', 42))
                     time_budget = float(payload.get('timeBudgetSec', 20.0))
                     version_num = int(payload.get('version', 1))
-                    solution_id = payload.get('solutionId', f"sol_{int(time.time()*1000)}")
+                    solution_id = f"sol_{int(time.time()*1000)}_{os.urandom(4).hex()}"
 
                     profile_map = {
                         'FAST': SearchProfile.FAST,
@@ -146,47 +146,91 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                     from src.unified_pipeline.model.UniversalCargoTensor import UniversalCargoTensor, UniversalZone, ContainerDimensions
                     from src.unified_pipeline.engine.UniversalHierarchicalSolver import UniversalHierarchicalSolver
                     from solver_v2.solver.baseline_solver import SolverSolution, SolverTelemetry
-                    from solver_v2.domain.models import Placement, Point3D, Orientation3D, PlacementContext
+                    from solver_v2.domain.models import Placement, Point3D, Orientation3D, PlacementContext, ZoneType
                     from solver_v2.validation.independent_validator import IndependentGlobalValidator
 
                     universal_cargo = []
                     sku_weights = {}
+                    import re
+                    cargo_profiles = payload.get('cargoProfiles', {}) if isinstance(payload.get('cargoProfiles'), dict) else {}
                     for idx, s in enumerate(cargo_skus):
                         raw_item = raw_manifest[idx] if idx < len(raw_manifest) and isinstance(raw_manifest[idx], dict) else {}
-                        req = raw_item.get('requirement', '') or raw_item.get('source_requirement_text', '') or getattr(s, 'source_requirement_text', '') or ''
+                        req = str(raw_item.get('requirement', '') or raw_item.get('source_requirement_text', '') or getattr(s, 'source_requirement_text', '') or '').strip()
+                        
+                        profile_ref = raw_item.get('profileRef')
+                        if profile_ref and profile_ref in cargo_profiles:
+                            profile = cargo_profiles[profile_ref]
+                        else:
+                            profile = raw_item.get('cargoProfile') if isinstance(raw_item.get('cargoProfile'), dict) else {}
+
+                        zone_policy = profile.get('zonePolicy', {}) if isinstance(profile.get('zonePolicy'), dict) else {}
+                        placement_policy = profile.get('placementPolicy', {}) if isinstance(profile.get('placementPolicy'), dict) else {}
+                        stack_policy = profile.get('stackPolicy', {}) if isinstance(profile.get('stackPolicy'), dict) else {}
+                        ori_policy = profile.get('orientationPolicy', {}) if isinstance(profile.get('orientationPolicy'), dict) else {}
+
+                        roles = [str(r).upper() for r in (placement_policy.get('packingRoles') or getattr(s, 'packing_roles', ()))]
+                        zones = [str(z).upper() for z in (zone_policy.get('required', []) + zone_policy.get('preferred', []))]
+
+                        # Zone Preference parsing without hardcoded SKU id overrides
                         zp = UniversalZone.FLEXIBLE
-                        if '最里面' in req or '里面' in req or '内' in req:
-                            zp = UniversalZone.INNER
-                        elif '封柜门' in req or '门' in req or '外' in req:
+                        if (getattr(s, 'target_zone', None) == ZoneType.DOOR or 
+                            'DOOR' in zones or 'DOOR_SEAL' in roles or 
+                            raw_item.get('allowDoorZone') is True or raw_item.get('doorAllowed') is True or
+                            re.search(r'封柜门|封门|门区|门端|door', req, re.I)):
                             zp = UniversalZone.DOOR
-                        elif '中间' in req or '中' in req:
+                        elif (getattr(s, 'target_zone', None) == ZoneType.REAR or 
+                              'INNER' in zones or 'REAR' in zones or 'FOUNDATION' in roles or
+                              re.search(r'最里面|最内|后部|rear|inner|deep', req, re.I)):
+                            zp = UniversalZone.INNER
+                        elif (getattr(s, 'target_zone', None) == ZoneType.MIDDLE or 
+                              'MIDDLE' in zones or 'CENTER' in zones or 'MAIN_WALL' in roles or
+                              re.search(r'中间|中部|放中间|mid|center', req, re.I)):
                             zp = UniversalZone.MIDDLE
                         else:
-                            if s.sku_id in ['SKU-01', 'SKU-15']:
-                                zp = UniversalZone.INNER
-                            elif s.sku_id in ['SKU-02', 'SKU-03', 'SKU-04', 'SKU-14']:
-                                zp = UniversalZone.DOOR
-                            else:
-                                zp = UniversalZone.MIDDLE
-                        
+                            zp = UniversalZone.MIDDLE
+
                         sku_weights[s.sku_id] = s.weight_kg
-                        src_dict = raw_item.get('source', {}) if isinstance(raw_item.get('source'), dict) else {}
-                        allow_flat = raw_item.get('allow_flat') or raw_item.get('allowFlat') or src_dict.get('allow_flat') or src_dict.get('allowFlat') or (hasattr(s, 'orientation_policy') and getattr(s.orientation_policy, 'allow_flat', False))
-                        allow_side = raw_item.get('allow_side') or raw_item.get('allowSide') or src_dict.get('allow_side') or src_dict.get('allowSide') or False
                         
+                        # Orientation Parsing
+                        allowed_ori = str(raw_item.get('allowedOrientation', '') or '').lower()
+                        allow_flat = (
+                            allowed_ori in ('allow_flat', 'any') or
+                            raw_item.get('allow_flat') is True or
+                            raw_item.get('allowFlat') is True or
+                            ori_policy.get('allowFlat') is True or
+                            (hasattr(s, 'orientation_policy') and getattr(s.orientation_policy, 'allow_flat', False) and allowed_ori != 'upright')
+                        )
+                        allow_side = (
+                            allowed_ori in ('allow_side', 'any') or
+                            raw_item.get('allow_side') is True or
+                            raw_item.get('allowSide') is True or
+                            ori_policy.get('allowSide') is True or
+                            (hasattr(s, 'orientation_policy') and getattr(s.orientation_policy, 'allow_side', False) and allowed_ori != 'upright')
+                        )
+
+                        # Stacking policy parsing
+                        must_be_on_floor = bool(
+                            raw_item.get('mustBeOnFloor') or 
+                            raw_item.get('must_be_on_floor') or 
+                            stack_policy.get('mustBeOnFloor') or 
+                            (hasattr(s, 'stacking_policy') and getattr(s.stacking_policy, 'must_be_on_floor', False))
+                        )
                         max_stack = (
                             raw_item.get('max_stack_layers') or 
                             raw_item.get('maxStackLayers') or 
                             raw_item.get('max_stack') or
-                            src_dict.get('max_stack_layers') or
-                            src_dict.get('maxStackLayers') or
+                            stack_policy.get('maxStackLayers') or
                             (hasattr(s, 'stacking_policy') and getattr(s.stacking_policy, 'max_stack_layers', None))
                         )
                         if max_stack is not None:
                             try:
                                 max_stack = int(max_stack)
+                                if max_stack <= 0:
+                                    max_stack = None
                             except (ValueError, TypeError):
                                 max_stack = None
+
+                        qty_req = int(raw_item.get('quantity') or getattr(s.quantity, 'required', 0))
 
                         universal_cargo.append(UniversalCargoTensor(
                             sku_id=s.sku_id,
@@ -195,13 +239,18 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                             width=min(s.box.x, s.box.y),
                             height=s.box.z,
                             weight_kg=s.weight_kg,
-                            quantity_required=s.quantity.required,
+                            quantity_required=qty_req,
                             zone_preference=zp,
                             allow_flat=bool(allow_flat),
                             allow_side=bool(allow_side),
                             max_stack_layers=max_stack,
+                            must_be_on_floor=must_be_on_floor,
                             raw_requirement=req
                         ))
+                    print("[SERVER-DEBUG] Parsed cargo tensors:")
+                    for c in universal_cargo:
+                        if c.sku_id in ['SKU-05', 'SKU-07']:
+                            print(f"  {c.sku_id}: zone={c.zone_preference.name}, flat={c.allow_flat}, side={c.allow_side}, max_stack={c.max_stack_layers}, floor={c.must_be_on_floor}")
 
                     c_dims = ContainerDimensions(
                         code=container_spec.code,

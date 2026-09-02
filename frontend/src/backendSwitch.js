@@ -70,7 +70,7 @@
     const timer = setTimeout(() => controller.abort(), timeoutMs || LOADING_JOB_TIMEOUT_MS);
     try {
       let response;
-      try { response = await root.fetch(`${configuredBase()}${path}`, Object.assign({}, init || {}, { signal: controller.signal })); }
+      try { response = await root.fetch(`${configuredBase()}${path}`, Object.assign({ cache: 'no-store' }, init || {}, { signal: controller.signal })); }
       catch (error) {
         if (error && error.name === 'AbortError') throw new BackendError(ErrorType.TIMEOUT, 'Backend request timed out');
         throw new BackendError(ErrorType.NETWORK_ERROR, error && error.message ? error.message : 'Network request failed');
