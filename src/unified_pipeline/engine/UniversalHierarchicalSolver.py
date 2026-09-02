@@ -257,15 +257,18 @@ class UniversalHierarchicalSolver:
                 if avail_x <= 0.05:
                     break
 
-                # Pick primary SKU prioritizing remaining quantity and volume
-                active_skus.sort(key=lambda c: (
-                    -remaining_qty[c.sku_id],
+                # Sort: SKUs with substantial bulk volume/qty lead slices.
+                # Tail SKUs with very small quantities should NOT open an empty slice if bulk SKUs exist!
+                bulk_skus = [c for c in active_skus if remaining_qty[c.sku_id] >= 8 or (c.volume_m3 * remaining_qty[c.sku_id] >= 0.8)]
+                candidates_to_lead = bulk_skus if bulk_skus else active_skus
+                candidates_to_lead.sort(key=lambda c: (
+                    -(remaining_qty[c.sku_id] / max(1, c.quantity_required)),
                     -(c.volume_m3 * remaining_qty[c.sku_id]),
                     -c.density_kg_m3
                 ))
 
                 chosen_candidate = None
-                for cand_sku in active_skus:
+                for cand_sku in candidates_to_lead:
                     c_oris = self._get_permitted_orientations(cand_sku)
                     c_oris.sort(key=lambda o: (int(self.cW / o.dy) * o.dy / self.cW) * 0.65 + o.dx * 0.35, reverse=True)
                     for o in c_oris:
@@ -307,7 +310,8 @@ class UniversalHierarchicalSolver:
                             if o.dy <= (rem_w + 1e-4) and o.dx <= (delta_x + 1e-4):
                                 cols_fit = int((rem_w + 1e-4) / o.dy)
                                 cov = (cols_fit * o.dy) / rem_w
-                                score = cov * 0.70 + (0.30 if cand.sku_id == primary_sku.sku_id else 0.10)
+                                rem_ratio = remaining_qty[cand.sku_id] / max(1, cand.quantity_required)
+                                score = cov * 0.55 + (0.25 if cand.sku_id == primary_sku.sku_id else 0.05) + rem_ratio * 0.20
                                 if score > best_score:
                                     best_score = score
                                     col_sku = cand
@@ -392,6 +396,8 @@ class UniversalHierarchicalSolver:
 
                     if rem_headroom >= 0.08:
                         top_pool = sku_group if is_door else (sku_group + companion_pool)
+                        top_pool = [tc for tc in top_pool if remaining_qty[tc.sku_id] > 0]
+                        top_pool.sort(key=lambda tc: (-remaining_qty[tc.sku_id], tc.volume_m3))
                         for tc in top_pool:
                             if remaining_qty[tc.sku_id] <= 0:
                                 continue
@@ -447,12 +453,12 @@ class UniversalHierarchicalSolver:
         # -------------------------------------------------------------
         # PASS 4: All-Space 3D Spatial Grid Cavity Backfilling (Iterative)
         # -------------------------------------------------------------
-        for round_idx in range(5):
+        for round_idx in range(10):
             placed_in_round = 0
             unplaced = [c for c in cargo_list if remaining_qty[c.sku_id] > 0]
             if not unplaced:
                 break
-            unplaced.sort(key=lambda c: (-c.volume_m3, -c.density_kg_m3))
+            unplaced.sort(key=lambda c: (-remaining_qty[c.sku_id], -c.volume_m3))
 
             anchors: Set[Tuple[float, float, float]] = {(0.0, 0.0, 0.0)}
             for p in placements:
@@ -501,6 +507,10 @@ class UniversalHierarchicalSolver:
                                 remaining_qty[c.sku_id] -= 1
                                 step_idx += 1
                                 placed_in_round += 1
+                                anchors.add((round(cand['x'] + cand['dx'], 4), round(cand['y'], 4), round(cand['z'], 4)))
+                                anchors.add((round(cand['x'], 4), round(cand['y'] + cand['dy'], 4), round(cand['z'], 4)))
+                                anchors.add((round(cand['x'], 4), round(cand['y'], 4), round(cand['z'] + cand['dz'], 4)))
+                                anchors.add((round(cand['x'] + cand['dx'], 4), round(cand['y'] + cand['dy'], 4), round(cand['z'], 4)))
                                 break
             if placed_in_round == 0:
                 break
