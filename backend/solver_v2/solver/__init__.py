@@ -7,10 +7,13 @@ from backend.solver_v2.solver.baseline_solver import (
     SolverTelemetry,
     SolverSolution,
 )
+from backend.solver_v2.solver.unified_solver import UnifiedSolver
 
 __all__ = [
     "CandidateScorer",
     "BaselineGreedySolver",
     "SolverTelemetry",
     "SolverSolution",
+    "UnifiedSolver",
 ]
+
