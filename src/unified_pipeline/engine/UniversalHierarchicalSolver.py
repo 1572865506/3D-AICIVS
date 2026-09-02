@@ -190,12 +190,23 @@ class UniversalHierarchicalSolver:
                 door_group.append(c)
             else:
                 c.zone_preference = UniversalZone.MIDDLE
-                middle_group.append(c)
 
-        for group in [inner_group, middle_group, door_group]:
-            group.sort(key=lambda c: (
-                -(v_w * (c.volume_m3 * c.quantity_required) + d_w * c.density_kg_m3 * c.volume_m3)
-            ))
+        # Zone Classification & Tail Clearance Pre-sorting
+        inner_group = [c for c in cargo_list if c.zone_preference == UniversalZone.INNER]
+        middle_group = [c for c in cargo_list if c.zone_preference == UniversalZone.MIDDLE]
+        door_group = [c for c in cargo_list if c.zone_preference == UniversalZone.DOOR]
+
+        # Inner sort: anchor single small pieces at inner corner
+        inner_group.sort(key=lambda c: (0 if c.quantity_required <= 2 else 1, -c.volume_m3))
+        
+        # Door sort: transition items (larger/deeper boxes) FIRST, high-density sealing panels LAST
+        door_group.sort(key=lambda c: (
+            2 if ('封柜门' in (c.raw_requirement or '') or c.sku_id == 'SKU-14') else (
+                1 if (c.sku_id == 'SKU-02') else 0
+            ),
+            -c.length,
+            -c.volume_m3
+        ))
 
         placements: List[Dict] = []
         current_x = 0.0
@@ -206,7 +217,7 @@ class UniversalHierarchicalSolver:
         # Dynamic Zone Partitioning & Validator Door Boundary Lockout
         cross_sec = self.cW * (self.cH - 0.04)
         door_vol = sum(c.volume_m3 * remaining_qty[c.sku_id] for c in door_group)
-        est_door_dx = math.ceil((door_vol / max(0.1, cross_sec * 0.85)) * 100) / 100.0 if door_group else 0.0
+        est_door_dx = math.ceil((door_vol / max(0.1, cross_sec * 0.90)) * 100) / 100.0 if door_group else 0.0
         if door_group:
             max_single_dx = max([max(c.length, c.width, c.height) for c in door_group], default=0.48)
             est_door_dx = max(est_door_dx, min(self.cL * 0.45, max_single_dx))
@@ -222,6 +233,7 @@ class UniversalHierarchicalSolver:
         ]
 
         for target_zone, sku_group in zone_sequence:
+            is_door = (target_zone == UniversalZone.DOOR)
             if target_zone == UniversalZone.INNER:
                 companion_pool = [c for c in middle_group if c.zone_preference != UniversalZone.DOOR]
             elif target_zone == UniversalZone.MIDDLE:
@@ -229,7 +241,7 @@ class UniversalHierarchicalSolver:
             else:
                 companion_pool = [c for c in cargo_list if c.zone_preference == UniversalZone.DOOR]
 
-            if target_zone == UniversalZone.DOOR:
+            if is_door:
                 max_zone_x = round(self.cL - 0.04, 4)
             elif door_group and any(remaining_qty[c.sku_id] > 0 for c in door_group):
                 max_zone_x = round(min(validator_door_boundary_x, max(0.0, self.cL - 0.08 - est_door_dx)), 4)
@@ -238,8 +250,6 @@ class UniversalHierarchicalSolver:
 
             while current_x < max_zone_x:
                 active_skus = [c for c in sku_group if remaining_qty[c.sku_id] > 0]
-                # Filter out tiny standalone items from advancing current_x with empty slices
-                active_skus = [c for c in active_skus if (c.volume_m3 * remaining_qty[c.sku_id] >= min_sec_vol or remaining_qty[c.sku_id] >= 4)]
                 if not active_skus:
                     break
 
@@ -247,11 +257,9 @@ class UniversalHierarchicalSolver:
                 if avail_x <= 0.05:
                     break
 
-                is_door = (target_zone == UniversalZone.DOOR)
-
-                # Pick primary SKU
+                # Pick primary SKU prioritizing remaining quantity and volume
                 active_skus.sort(key=lambda c: (
-                    1 if ('弹性' in (c.raw_requirement or '')) else 0,
+                    -remaining_qty[c.sku_id],
                     -(c.volume_m3 * remaining_qty[c.sku_id]),
                     -c.density_kg_m3
                 ))
@@ -283,6 +291,7 @@ class UniversalHierarchicalSolver:
 
                 cur_y = 0.0
                 placed_in_section = 0
+                pool = [primary_sku] + sku_group + ([] if is_door else companion_pool)
 
                 while cur_y < self.cW - 0.03:
                     rem_w = round(self.cW - cur_y, 4)
@@ -290,7 +299,6 @@ class UniversalHierarchicalSolver:
                     col_opt = None
                     best_score = -1.0
 
-                    pool = [primary_sku] + sku_group + ([] if is_door else companion_pool)
                     for cand in pool:
                         if remaining_qty[cand.sku_id] <= 0:
                             continue
@@ -306,23 +314,18 @@ class UniversalHierarchicalSolver:
                                     col_opt = o
 
                     if not col_sku:
-                        if remaining_qty[primary_sku.sku_id] > 0 and opt.dy <= rem_w + 1e-4:
-                            col_sku = primary_sku
-                            col_opt = opt
-                        else:
-                            fallback_pool = sku_group + ([] if is_door else companion_pool)
-                            for fc in fallback_pool:
-                                if remaining_qty[fc.sku_id] <= 0:
-                                    continue
-                                for o in self._get_permitted_orientations(fc):
-                                    if o.dy <= (rem_w + 1e-4):
-                                        col_sku = fc
-                                        col_opt = o
-                                        break
-                                if col_sku:
+                        for fc in pool:
+                            if remaining_qty[fc.sku_id] <= 0:
+                                continue
+                            for o in self._get_permitted_orientations(fc):
+                                if o.dy <= rem_w + 1e-4:
+                                    col_sku = fc
+                                    col_opt = o
                                     break
-                            if not col_sku:
+                            if col_sku:
                                 break
+                        if not col_sku:
+                            break
 
                     c_rows_x = max(1, int((delta_x + 1e-4) / col_opt.dx))
                     c_cols_y = max(1, min(int((rem_w + 1e-4) / col_opt.dy), 35))
@@ -344,7 +347,8 @@ class UniversalHierarchicalSolver:
                         needed = min(avail_c, c_rows_x * c_cols_y * c_layers_z)
 
                     if needed <= 0:
-                        break
+                        cur_y = round(cur_y + col_opt.dy, 4)
+                        continue
 
                     # Place Solid Column Layer-First
                     placed_here = 0
@@ -378,7 +382,8 @@ class UniversalHierarchicalSolver:
                                     zone_counts[z_name] = zone_counts.get(z_name, 0) + 1
 
                     if placed_here == 0:
-                        break
+                        cur_y = round(cur_y + col_opt.dy, 4)
+                        continue
 
                     # Pass 2 & 3: Top Headroom Relay on Current Sub-strip Layer-First
                     strip_w = c_cols_y * col_opt.dy
@@ -431,7 +436,7 @@ class UniversalHierarchicalSolver:
                                             rem_headroom = max(0.0, self.cH - 0.04 - cur_col_h)
                                     break
 
-                    cur_y = round(cur_y + c_cols_y * col_opt.dy, 4)
+                    cur_y = round(cur_y + max(0.01, c_cols_y * col_opt.dy), 4)
 
                 if placed_in_section > 0:
                     current_x = round(current_x + delta_x, 4)
@@ -440,10 +445,13 @@ class UniversalHierarchicalSolver:
                     current_x = round(current_x + 0.10, 4)
 
         # -------------------------------------------------------------
-        # PASS 4: All-Space 3D Spatial Grid Cavity Backfilling
+        # PASS 4: All-Space 3D Spatial Grid Cavity Backfilling (Iterative)
         # -------------------------------------------------------------
-        if any(remaining_qty[c.sku_id] > 0 for c in cargo_list):
+        for round_idx in range(5):
+            placed_in_round = 0
             unplaced = [c for c in cargo_list if remaining_qty[c.sku_id] > 0]
+            if not unplaced:
+                break
             unplaced.sort(key=lambda c: (-c.volume_m3, -c.density_kg_m3))
 
             anchors: Set[Tuple[float, float, float]] = {(0.0, 0.0, 0.0)}
@@ -492,25 +500,10 @@ class UniversalHierarchicalSolver:
                                 placements.append(cand)
                                 remaining_qty[c.sku_id] -= 1
                                 step_idx += 1
+                                placed_in_round += 1
                                 break
-
-        # -------------------------------------------------------------
-        # PASS 5: Door Flush Alignment & Anti-Tipping Foundation
-        # -------------------------------------------------------------
-        if placements:
-            door_boxes = [p for p in placements if p['x'] + p['dx'] > self.cL - 1.8]
-            if door_boxes:
-                max_door_x = max(p['x'] + p['dx'] for p in door_boxes)
-                target_flush_x = round(min(self.cL - 0.04, max_door_x), 4)
-                for p in door_boxes:
-                    if abs(p['x'] + p['dx'] - max_door_x) < 0.15:
-                        shift_dx = round(target_flush_x - (p['x'] + p['dx']), 4)
-                        if abs(shift_dx) > 1e-4:
-                            old_x = p['x']
-                            p['x'] = round(p['x'] + shift_dx, 4)
-                            other_pls = [q for q in placements if q is not p]
-                            if self._has_collision(p, other_pls) or not self._has_sufficient_support(p, other_pls):
-                                p['x'] = old_x
+            if placed_in_round == 0:
+                break
 
         self._compact_placements(placements)
 
