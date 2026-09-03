@@ -4498,6 +4498,50 @@
     let packageOrientationDisplayMode = window.BLK007F78.DisplayMode.PHYSICAL;
     let orientationAssistLine = null;
 
+    // 3D Highlight & Hover High-Contrast Outline Stroke System
+    const unitBoxEdgesGeoInner = new THREE.EdgesGeometry(new THREE.BoxGeometry(1.003, 1.003, 1.003));
+    const unitBoxEdgesGeoOuter = new THREE.EdgesGeometry(new THREE.BoxGeometry(1.008, 1.008, 1.008));
+    const highlightOutlineMaterial = new THREE.LineBasicMaterial({
+      color: 0x00f0ff, // Vibrant electric cyan / sky blue outline
+      linewidth: 2,
+      transparent: true,
+      opacity: 0.95,
+      depthTest: true
+    });
+    const hoverSingleOutlineMaterial = new THREE.LineBasicMaterial({
+      color: 0xffeb3b, // Ultra-bright neon yellow/gold for direct mouse raycast target box
+      linewidth: 3,
+      transparent: true,
+      opacity: 1.0,
+      depthTest: true
+    });
+
+    function attachOutlineStrokeToMesh(mesh) {
+      if (!mesh) return null;
+      const outlineGroup = new THREE.Group();
+      outlineGroup.name = 'highlightOutlineStroke';
+      const lineInner = new THREE.LineSegments(unitBoxEdgesGeoInner, highlightOutlineMaterial);
+      const lineOuter = new THREE.LineSegments(unitBoxEdgesGeoOuter, highlightOutlineMaterial);
+      outlineGroup.add(lineInner);
+      outlineGroup.add(lineOuter);
+      outlineGroup.visible = false;
+      mesh.add(outlineGroup);
+      mesh.userData.outlineStroke = outlineGroup;
+      mesh.userData.outlineLines = [lineInner, lineOuter];
+      return outlineGroup;
+    }
+
+    function setMeshOutlineState(mesh, isHighlighted, isHoverSingle = false) {
+      if (!mesh || !mesh.userData || !mesh.userData.outlineStroke) return;
+      mesh.userData.outlineStroke.visible = Boolean(isHighlighted && mesh.visible);
+      if (isHighlighted) {
+        const mat = isHoverSingle ? hoverSingleOutlineMaterial : highlightOutlineMaterial;
+        if (mesh.userData.outlineLines) {
+          mesh.userData.outlineLines.forEach(l => { l.material = mat; });
+        }
+      }
+    }
+
     let dynamicWalls = [];
     let dynamicDoorComponents = [];
     let dynamicSkeletons = [];
@@ -5721,6 +5765,7 @@
           maxX: item.x + item.w
         };
 
+        attachOutlineStrokeToMesh(boxMesh);
         cargoGroup.add(boxMesh);
         boxMeshes.push(boxMesh);
       });
@@ -5825,6 +5870,7 @@
           rawH: object.scale[2], rawZ: object.position[1] - object.scale[1] / 2,
           rawD: object.scale[1], maxX: rawX + object.scale[0]
         };
+        attachOutlineStrokeToMesh(mesh);
         cargoGroup.add(mesh);
         boxMeshes.push(mesh);
       });
@@ -7145,6 +7191,11 @@
         if (isVisible) {
           const targetMats = isSolid ? box.userData.skuMaterials.solidMats : box.userData.skuMaterials.ghostMats;
           if (box.material !== targetMats) box.material = targetMats;
+
+          const isTargetSku = (hasHover && sku === hoveredSKU) || (hasFilter && selectedSKUs.has(sku));
+          setMeshOutlineState(box, isTargetSku, false);
+        } else {
+          setMeshOutlineState(box, false, false);
         }
       });
 
@@ -7987,12 +8038,14 @@
             hoveredBox.userData.skuMaterials.solidMats.forEach(m => {
               if (m.emissive) m.emissive.setHex(isSel ? 0x1e3a8a : 0x000000);
             });
+            setMeshOutlineState(hoveredBox, isSel, false);
           }
           hoveredBox = hit;
           if (hoveredBox && hoveredBox.userData.skuMaterials) {
             hoveredBox.userData.skuMaterials.solidMats.forEach(m => {
               if (m.emissive) m.emissive.setHex(0x38bdf8);
             });
+            setMeshOutlineState(hoveredBox, true, true);
           }
 
           const d = hit.userData;
@@ -8006,6 +8059,7 @@
             hoveredBox.userData.skuMaterials.solidMats.forEach(m => {
               if (m.emissive) m.emissive.setHex(isSel ? 0x1e3a8a : 0x000000);
             });
+            setMeshOutlineState(hoveredBox, isSel, false);
           }
           hoveredBox = null;
           if (!hoveredSKU) {
