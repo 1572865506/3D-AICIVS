@@ -33,13 +33,32 @@ from backend.solver_v2.domain.models import (
     ZonePolicy,
     ZoneType,
 )
-from src.cargo.dimension_normalization import DimensionNormalizer
 
 
 class InputNormalizer:
     """
     Normalizes legacy/UI inputs (dimensions, weights, requirements).
     """
+
+    @staticmethod
+    def normalize_box_dim(source: Dict[str, Any]) -> BoxDim:
+        """
+        Normalizes product length/width/height into canonical container axes (x >= y).
+        """
+        if "dimensions" in source:
+            d = source["dimensions"]
+            first = float(d["length"])
+            second = float(d["width"])
+            height = float(d["height"])
+        else:
+            first = float(source.get("w", source.get("x", 0.1)))
+            second = float(source.get("d", source.get("y", 0.1)))
+            height = float(source.get("h", source.get("z", 0.1)))
+        return BoxDim(
+            x=max(first, second),
+            y=min(first, second),
+            z=height,
+        )
 
     @staticmethod
     def parse_zone_and_roles(requirement_text: str) -> Tuple[Optional[ZoneType], Tuple[PackingRole, ...]]:
@@ -350,10 +369,7 @@ class InputAdapter:
             name = str(item.get('name', src.get('name', sku_id)))
 
             # Normalize product L/W/H before mapping onto canonical X/Y/Z.
-            dimension_audit = DimensionNormalizer().normalize_source(
-                src, sku_id, any(token in name.lower() for token in ('显示器','monitor','display','屏'))
-            )
-            box = dimension_audit.normalized.to_box_dim()
+            box = InputNormalizer.normalize_box_dim(src)
 
             # Weight (in kg)
             weight_kg = float(src.get('weight', src.get('weightKg', 1.0)))

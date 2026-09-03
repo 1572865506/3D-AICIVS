@@ -148,10 +148,14 @@ class BaselineGreedySolver:
         seed: int = 42,
         grid_resolution: float = 0.2,
         max_candidates_per_step: int = 300,
+        scorer: Optional[CandidateScorer] = None,
+        validator_pipeline: Optional[HardValidationPipeline] = None,
     ):
         self.seed = seed
         self.grid_resolution = grid_resolution
         self.max_candidates_per_step = max_candidates_per_step
+        self.scorer = scorer
+        self.validator_pipeline = validator_pipeline
 
     def solve(
         self,
@@ -175,8 +179,8 @@ class BaselineGreedySolver:
         qty_mgr = QuantityManager(cargo_list=cargo_list)
         res_mgr = SpatialReservationManager()
         candidate_gen = CandidateGenerator()
-        validator_pipeline = HardValidationPipeline()
-        scorer = CandidateScorer()
+        validator_pipeline = self.validator_pipeline if self.validator_pipeline is not None else HardValidationPipeline()
+        scorer = self.scorer if self.scorer is not None else CandidateScorer()
         topfill_planner = TopFillPlanner(container, orientation_engine=orientation_engine)
 
         door_seal_skus = [s for s in cargo_list if PackingRole.DOOR_SEAL in s.packing_roles or s.target_zone == ZoneType.DOOR]

@@ -23,7 +23,6 @@ from industrial_packer import IndustrialSmartContainerPacker
 from solver_v2.api.adapter import InputAdapter, OutputAdapter
 from solver_v2.solver.baseline_solver import BaselineGreedySolver
 from solver_v2.search.engine import HierarchicalSearchSolver
-from src.solver.integration.door import DoorIntegratedSolver
 from solver_v2.search.config import SearchConfig, SearchProfile
 from backend.api.service import DEFAULT_LOADING_API
 from backend.api.error_response import classify_api_exception
@@ -58,10 +57,29 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
         self._send_cors_headers()
         super().end_headers()
 
+    def do_HEAD(self):
+        if self.path in ('/api/v1/pack', '/api/v2/pack', '/api/v1/loading/jobs'):
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            if self.path == '/api/v2/pack':
+                self.send_header('X-Solver-Version', 'v2.0.0')
+            self.end_headers()
+            return
+        if self.path in ('/api/v1/health', '/api/v2/health', '/api/v1/loading/health'):
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            if self.path == '/api/v2/health':
+                self.send_header('X-Solver-Version', 'v2.0.0')
+            self.end_headers()
+            return
+        super().do_HEAD()
+
     def do_GET(self):
         if self.path in ('/api/v1/health', '/api/v2/health', '/api/v1/loading/health'):
             self.send_response(200)
             self.send_header('Content-Type', 'application/json; charset=utf-8')
+            if self.path == '/api/v2/health':
+                self.send_header('X-Solver-Version', 'v2.0.0')
             self.end_headers()
             health_data = {
                 'status': 'ok',
@@ -143,170 +161,11 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                         time_budget_sec=time_budget,
                         seed=seed,
                     )
-                    from src.unified_pipeline.model.UniversalCargoTensor import UniversalCargoTensor, UniversalZone, ContainerDimensions
-                    from src.unified_pipeline.engine.UniversalHierarchicalSolver import UniversalHierarchicalSolver
-                    from solver_v2.solver.baseline_solver import SolverSolution, SolverTelemetry
-                    from solver_v2.domain.models import Placement, Point3D, Orientation3D, PlacementContext, ZoneType
-                    from solver_v2.validation.independent_validator import IndependentGlobalValidator
-
-                    universal_cargo = []
-                    sku_weights = {}
-                    import re
-                    cargo_profiles = payload.get('cargoProfiles', {}) if isinstance(payload.get('cargoProfiles'), dict) else {}
-                    for idx, s in enumerate(cargo_skus):
-                        raw_item = raw_manifest[idx] if idx < len(raw_manifest) and isinstance(raw_manifest[idx], dict) else {}
-                        req = str(raw_item.get('requirement', '') or raw_item.get('source_requirement_text', '') or getattr(s, 'source_requirement_text', '') or '').strip()
-                        
-                        profile_ref = raw_item.get('profileRef')
-                        if profile_ref and profile_ref in cargo_profiles:
-                            profile = cargo_profiles[profile_ref]
-                        else:
-                            profile = raw_item.get('cargoProfile') if isinstance(raw_item.get('cargoProfile'), dict) else {}
-
-                        zone_policy = profile.get('zonePolicy', {}) if isinstance(profile.get('zonePolicy'), dict) else {}
-                        placement_policy = profile.get('placementPolicy', {}) if isinstance(profile.get('placementPolicy'), dict) else {}
-                        stack_policy = profile.get('stackPolicy', {}) if isinstance(profile.get('stackPolicy'), dict) else {}
-                        ori_policy = profile.get('orientationPolicy', {}) if isinstance(profile.get('orientationPolicy'), dict) else {}
-
-                        roles = [str(r).upper() for r in (placement_policy.get('packingRoles') or getattr(s, 'packing_roles', ()))]
-                        zones = [str(z).upper() for z in (zone_policy.get('required', []) + zone_policy.get('preferred', []))]
-
-                        # Zone Preference parsing without hardcoded SKU id overrides
-                        zp = UniversalZone.FLEXIBLE
-                        if (getattr(s, 'target_zone', None) == ZoneType.DOOR or 
-                            'DOOR' in zones or 'DOOR_SEAL' in roles or 
-                            raw_item.get('allowDoorZone') is True or raw_item.get('doorAllowed') is True or
-                            re.search(r'封柜门|封门|门区|门端|door', req, re.I)):
-                            zp = UniversalZone.DOOR
-                        elif (getattr(s, 'target_zone', None) == ZoneType.REAR or 
-                              'INNER' in zones or 'REAR' in zones or 'FOUNDATION' in roles or
-                              re.search(r'最里面|最内|后部|rear|inner|deep', req, re.I)):
-                            zp = UniversalZone.INNER
-                        elif (getattr(s, 'target_zone', None) == ZoneType.MIDDLE or 
-                              'MIDDLE' in zones or 'CENTER' in zones or 'MAIN_WALL' in roles or
-                              re.search(r'中间|中部|放中间|mid|center', req, re.I)):
-                            zp = UniversalZone.MIDDLE
-                        else:
-                            zp = UniversalZone.MIDDLE
-
-                        sku_weights[s.sku_id] = s.weight_kg
-                        
-                        # Orientation Parsing
-                        allowed_ori = str(raw_item.get('allowedOrientation', '') or '').lower()
-                        allow_flat = (
-                            allowed_ori in ('allow_flat', 'any') or
-                            raw_item.get('allow_flat') is True or
-                            raw_item.get('allowFlat') is True or
-                            ori_policy.get('allowFlat') is True or
-                            (hasattr(s, 'orientation_policy') and getattr(s.orientation_policy, 'allow_flat', False) and allowed_ori != 'upright')
-                        )
-                        allow_side = (
-                            allowed_ori in ('allow_side', 'any') or
-                            raw_item.get('allow_side') is True or
-                            raw_item.get('allowSide') is True or
-                            ori_policy.get('allowSide') is True or
-                            (hasattr(s, 'orientation_policy') and getattr(s.orientation_policy, 'allow_side', False) and allowed_ori != 'upright')
-                        )
-
-                        # Stacking policy parsing
-                        must_be_on_floor = bool(
-                            raw_item.get('mustBeOnFloor') or 
-                            raw_item.get('must_be_on_floor') or 
-                            stack_policy.get('mustBeOnFloor') or 
-                            (hasattr(s, 'stacking_policy') and getattr(s.stacking_policy, 'must_be_on_floor', False))
-                        )
-                        max_stack = (
-                            raw_item.get('max_stack_layers') or 
-                            raw_item.get('maxStackLayers') or 
-                            raw_item.get('max_stack') or
-                            stack_policy.get('maxStackLayers') or
-                            (hasattr(s, 'stacking_policy') and getattr(s.stacking_policy, 'max_stack_layers', None))
-                        )
-                        if max_stack is not None:
-                            try:
-                                max_stack = int(max_stack)
-                                if max_stack <= 0:
-                                    max_stack = None
-                            except (ValueError, TypeError):
-                                max_stack = None
-
-                        qty_req = int(raw_item.get('quantity') or getattr(s.quantity, 'required', 0))
-
-                        universal_cargo.append(UniversalCargoTensor(
-                            sku_id=s.sku_id,
-                            name=s.name,
-                            length=max(s.box.x, s.box.y),
-                            width=min(s.box.x, s.box.y),
-                            height=s.box.z,
-                            weight_kg=s.weight_kg,
-                            quantity_required=qty_req,
-                            zone_preference=zp,
-                            allow_flat=bool(allow_flat),
-                            allow_side=bool(allow_side),
-                            max_stack_layers=max_stack,
-                            must_be_on_floor=must_be_on_floor,
-                            raw_requirement=req
-                        ))
-                    print("[SERVER-DEBUG] Parsed cargo tensors:")
-                    for c in universal_cargo:
-                        if c.sku_id in ['SKU-05', 'SKU-07']:
-                            print(f"  {c.sku_id}: zone={c.zone_preference.name}, flat={c.allow_flat}, side={c.allow_side}, max_stack={c.max_stack_layers}, floor={c.must_be_on_floor}")
-
-                    c_dims = ContainerDimensions(
-                        code=container_spec.code,
-                        length=container_spec.Lx,
-                        width=container_spec.Ly,
-                        height=container_spec.Lz,
-                        max_payload_kg=container_spec.max_payload_kg
-                    )
-                    solver = UniversalHierarchicalSolver(container=c_dims)
-                    raw_placements, metrics = solver.solve(universal_cargo)
-
-                    final_placements = []
-                    for idx, p in enumerate(raw_placements):
-                        w = sku_weights.get(p['sku_id'], 10.0)
-                        raw_c = p.get('context', p.get('tag', 'MAIN_WALL'))
-                        if isinstance(raw_c, str):
-                            if 'TOP' in raw_c.upper():
-                                ctx = PlacementContext.TOP_FILL
-                            elif 'DOOR' in raw_c.upper():
-                                ctx = PlacementContext.DOOR_SEAL
-                            elif 'GAP' in raw_c.upper() or 'CAVITY' in raw_c.upper():
-                                ctx = PlacementContext.GAP_FILL
-                            else:
-                                ctx = PlacementContext.MAIN_WALL
-                        else:
-                            ctx = raw_c
-                        final_placements.append(Placement(
-                            placement_id=f"p_{idx:04d}",
-                            instance_id=f"inst_{idx:04d}",
-                            sku_id=p['sku_id'],
-                            position=Point3D(p['x'], p['y'], p['z']),
-                            orientation=Orientation3D(p['dx'], p['dy'], p['dz'], name=p.get('orientation', 'UPRIGHT_NORMAL')),
-                            weight_kg=w,
-                            context=ctx,
-                            step_index=p.get('step', idx + 1)
-                        ))
-
-                    val_result = IndependentGlobalValidator.validate(
-                        container=container_spec,
-                        placements=final_placements,
-                        cargo_list=cargo_skus
-                    )
+                    from backend.solver_v2.solver.unified_solver import UnifiedSolver
+                    solver = UnifiedSolver(container_spec)
+                    solution = solver.solve(cargo_skus, mode=mode_str, seed=seed, time_budget=time_budget)
 
                     elapsed_ms = (time.perf_counter() - t_start) * 1000.0
-
-                    solution = SolverSolution(
-                        status="SUCCESS",
-                        container=container_spec,
-                        placements=final_placements,
-                        placed_count=len(final_placements),
-                        unplaced_count=max(0, sum(s.quantity.required for s in cargo_skus) - len(final_placements)),
-                        volume_utilization_pct=val_result.metrics.get("volume_utilization_pct", metrics.get("utilization_pct", 0.0)),
-                        total_weight_kg=val_result.metrics.get("total_cargo_weight_kg", metrics.get("weight_loaded_kg", 0.0)),
-                        validation_result=val_result,
-                        telemetry=SolverTelemetry(runtime_ms=elapsed_ms)
-                    )
 
                     # Output full response (includes V2 schema and visualizer placedBoxes)
                     result = OutputAdapter.to_legacy_response(
@@ -335,6 +194,7 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
 
                     self.send_response(200)
                     self.send_header('Content-Type', 'application/json; charset=utf-8')
+                    self.send_header('X-Solver-Version', 'v2.0.0')
                     self.end_headers()
                     self.wfile.write(json.dumps(result, ensure_ascii=False).encode('utf-8'))
                     return

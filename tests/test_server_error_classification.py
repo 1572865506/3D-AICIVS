@@ -17,6 +17,27 @@ class ApiErrorClassificationTests(unittest.TestCase):
         status, payload = classify_api_exception(RuntimeError("unexpected"))
         self.assertEqual(status, 500)
         self.assertEqual(payload["category"], "INTERNAL_ERROR")
+        self.assertFalse(payload["success"])
+        self.assertIn("details", payload)
+
+    def test_json_decode_error_classification(self):
+        import json
+        try:
+            json.loads("{bad_json}")
+        except json.JSONDecodeError as exc:
+            status, payload = classify_api_exception(exc)
+            self.assertEqual(status, 400)
+            self.assertFalse(payload["success"])
+            self.assertEqual(payload["code"], "INPUT_VALIDATION_ERROR")
+            self.assertIn("line", payload["details"])
+            self.assertIn("col", payload["details"])
+
+    def test_value_error_classification(self):
+        status, payload = classify_api_exception(ValueError("Invalid dimensions: width must be positive"))
+        self.assertEqual(status, 400)
+        self.assertFalse(payload["success"])
+        self.assertEqual(payload["code"], "INPUT_VALIDATION_ERROR")
+        self.assertEqual(payload["details"]["exception_type"], "ValueError")
 
 
 if __name__ == "__main__":

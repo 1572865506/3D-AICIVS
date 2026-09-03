@@ -315,6 +315,10 @@ class ZonePolicy:
     required: Tuple[ZoneType, ...] = ()
     forbidden: Tuple[ZoneType, ...] = ()
 
+    @property
+    def allowed(self) -> Tuple[ZoneType, ...]:
+        return self.required + self.preferred
+
 
 @dataclass(frozen=True)
 class HandlingPolicy:

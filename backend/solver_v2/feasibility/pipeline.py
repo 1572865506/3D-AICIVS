@@ -37,9 +37,15 @@ class HardValidationPipeline:
     Fast, stateless hard validation pipeline for candidate placements.
     """
 
-    def __init__(self, geom_epsilon: float = DEFAULT_GEOM_EPSILON):
+    def __init__(
+        self,
+        geom_epsilon: float = DEFAULT_GEOM_EPSILON,
+        max_allowed_cavity_volume: Optional[float] = None,
+    ):
         self.geom_epsilon = geom_epsilon
+        self.max_allowed_cavity_volume = max_allowed_cavity_volume
         self.rejection_counts: Dict[str, int] = defaultdict(int)
+        self._residual_scorer = None
 
     def is_feasible(
         self,
@@ -217,5 +223,21 @@ class HardValidationPipeline:
                     return False, f"Stack depth ({layers_below + 1}) exceeds max layers ({max_layers})"
 
             record("support_graph_ms", support_started)
+        # 12. Enclosed Cavity Hard Threshold Check (Step 5.3)
+        if self.max_allowed_cavity_volume is not None and world_state.container is not None:
+            cavity_started = time.perf_counter()
+            if self._residual_scorer is None or self._residual_scorer.container is not world_state.container:
+                from backend.solver_v2.spaces.residual_quality import ResidualQualityScorer
+                self._residual_scorer = ResidualQualityScorer(container=world_state.container)
+            
+            rq_res = self._residual_scorer.evaluate_detailed(
+                world_state=world_state,
+                candidate_placement=candidate,
+            )
+            new_cavity_volume = rq_res.enclosed_cavity_volume
+            record("cavity_validation_ms", cavity_started)
+            if new_cavity_volume > self.max_allowed_cavity_volume:
+                self.rejection_counts["ENCLOSED_CAVITY_EXCEEDED"] += 1
+                return False, f"ENCLOSED_CAVITY_EXCEEDED: Cavity volume {new_cavity_volume:.4f}m3 exceeds allowed {self.max_allowed_cavity_volume:.4f}m3"
 
         return True, None

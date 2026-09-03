@@ -1,138 +1,100 @@
 {
-  "report_type": "3D-AICIVS Phase 2 Solver Baseline & Regression Report",
-  "generated_at": "2026-09-03 15:14:57",
-  "status": "PASS",
-  "benchmark_14sku_comparison": {
-    "legacy_baseline": {
-      "solver": "Legacy V1.0 (Unoptimized)",
-      "placed_count": 1317,
-      "volume_utilization_pct": 72.7746,
-      "collisions": 0
-    },
-    "phase2_optimized": {
-      "solver": "Phase 2 Solver (GlobalPlan + MultiStart + WallOptimization)",
-      "placed_count": 1418,
-      "volume_utilization_pct": 81.5975,
-      "runtime_ms": 7026.47,
-      "collisions": 0,
-      "violations": 97
-    },
-    "delta": {
-      "placed_count_diff": 101,
-      "placed_count_pct_change": 7.67,
-      "utilization_diff_percentage_points": 8.8229,
-      "utilization_ratio_vs_legacy": 1.1212
-    },
-    "acceptance_evaluation": {
-      "utilization_target_ge_78pct": {
-        "target": ">= 78.0%",
-        "actual": "81.60%",
-        "passed": true
-      },
-      "utilization_improvement_ge_5pp": {
-        "target": ">= +5.0 pp",
-        "actual": "+8.82 pp",
-        "passed": true
-      },
-      "no_regression_ge_98pct_of_legacy": {
-        "target": ">= 98.0% of legacy",
-        "actual": "112.12%",
-        "passed": true
-      },
-      "zero_collisions": {
-        "target": "== 0",
-        "actual": 0,
-        "passed": true
-      }
-    }
-  },
-  "benchmark_suite_summary": [
+  "suite_name": "3D-AICIVS Standard Benchmark Suite",
+  "version": "1.0",
+  "total_cases": 5,
+  "passed_cases": 5,
+  "all_zero_collisions": true,
+  "summary": [
     {
       "case_id": "14-SKU-1845",
       "case_name": "14-SKU-1845 (当前基线)",
-      "placed_count": 1418,
+      "placed_count": 2092,
       "requested_cartons": 2145,
-      "utilization": 81.6,
+      "utilization": 88.02,
       "collisions": 0,
-      "violations": 97,
-      "runtime_ms": 7026.47,
+      "violations": 0,
+      "runtime_ms": 10520.03,
       "status": "PASS"
     },
     {
       "case_id": "SINGLE-LARGE-BOX",
       "case_name": "单一大箱 SKU (测极限堆叠)",
-      "placed_count": 54,
+      "placed_count": 60,
       "requested_cartons": 70,
-      "utilization": 82.31,
+      "utilization": 91.46,
       "collisions": 0,
       "violations": 0,
-      "runtime_ms": 2396.02,
+      "runtime_ms": 37.4,
       "status": "PASS"
     },
     {
       "case_id": "ALL-ELASTIC-SKUS",
       "case_name": "全弹性件 (测核减逻辑)",
-      "placed_count": 432,
+      "placed_count": 1026,
       "requested_cartons": 3200,
-      "utilization": 79.21,
+      "utilization": 86.05,
       "collisions": 0,
       "violations": 0,
-      "runtime_ms": 4159.22,
+      "runtime_ms": 1760.91,
       "status": "PASS"
     },
     {
       "case_id": "DOOR-DENSE-SKUS",
       "case_name": "门区密集 (测门区封门)",
-      "placed_count": 756,
+      "placed_count": 980,
       "requested_cartons": 980,
-      "utilization": 65.26,
+      "utilization": 69.75,
       "collisions": 0,
-      "violations": 43,
-      "runtime_ms": 5767.24,
+      "violations": 0,
+      "runtime_ms": 2864.76,
       "status": "PASS"
     },
     {
       "case_id": "MIXED-HETEROGENEOUS",
       "case_name": "混合异尺寸 (测空间利用)",
-      "placed_count": 538,
+      "placed_count": 810,
       "requested_cartons": 810,
-      "utilization": 62.24,
+      "utilization": 70.43,
       "collisions": 0,
-      "violations": 55,
-      "runtime_ms": 6158.21,
+      "violations": 0,
+      "runtime_ms": 2100.76,
       "status": "PASS"
     }
   ],
-  "all_cases_detailed": {
+  "results": {
     "14-SKU-1845": {
       "case_id": "14-SKU-1845",
       "case_name": "14-SKU-1845 (当前基线)",
       "description": "14-SKU standard baseline cleanroom case 001",
       "requested_cartons": 2145,
-      "placed_count": 1418,
-      "unplaced_count": 727,
-      "utilization": 81.6,
-      "volume_utilization_pct": 81.5975,
-      "runtime_ms": 7026.47,
+      "placed_count": 2092,
+      "unplaced_count": 53,
+      "utilization": 88.02,
+      "volume_utilization_pct": 88.0203,
+      "runtime_ms": 10520.03,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
       "out_of_bounds_count": 0,
-      "violations": 97,
-      "fatal_violations": 97,
+      "violations": 0,
+      "fatal_violations": 0,
       "is_valid": true,
-      "summary": {}
+      "summary": {
+        "placedCount": 2092,
+        "unplacedCount": 53,
+        "utilization": 88.0203280198401
+      }
     },
     "SINGLE-LARGE-BOX": {
       "case_id": "SINGLE-LARGE-BOX",
       "case_name": "单一大箱 SKU (测极限堆叠)",
       "description": "Single large carton SKU for monolithic block stacking and extreme volume utilization",
       "requested_cartons": 70,
-      "placed_count": 54,
-      "unplaced_count": 16,
-      "utilization": 82.31,
-      "volume_utilization_pct": 82.3105,
-      "runtime_ms": 2396.02,
+      "placed_count": 60,
+      "unplaced_count": 10,
+      "utilization": 91.46,
+      "volume_utilization_pct": 91.4561,
+      "runtime_ms": 37.4,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -140,18 +102,22 @@
       "violations": 0,
       "fatal_violations": 0,
       "is_valid": true,
-      "summary": {}
+      "summary": {
+        "placedCount": 60,
+        "unplacedCount": 10,
+        "utilization": 91.45606622457511
+      }
     },
     "ALL-ELASTIC-SKUS": {
       "case_id": "ALL-ELASTIC-SKUS",
       "case_name": "全弹性件 (测核减逻辑)",
       "description": "All elastic SKUs with overcapacity demand testing automated trimming and zero overflow",
       "requested_cartons": 3200,
-      "placed_count": 432,
-      "unplaced_count": 2768,
-      "utilization": 79.21,
-      "volume_utilization_pct": 79.2127,
-      "runtime_ms": 4159.22,
+      "placed_count": 1026,
+      "unplaced_count": 2174,
+      "utilization": 86.05,
+      "volume_utilization_pct": 86.0495,
+      "runtime_ms": 1760.91,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -159,91 +125,92 @@
       "violations": 0,
       "fatal_violations": 0,
       "is_valid": true,
-      "summary": {}
+      "summary": {
+        "placedCount": 1026,
+        "unplacedCount": 2174,
+        "utilization": 86.04948660930715
+      }
     },
     "DOOR-DENSE-SKUS": {
       "case_id": "DOOR-DENSE-SKUS",
       "case_name": "门区密集 (测门区封门)",
       "description": "Dense door-seal items testing door safety zone (rear 1.2m), wall closure, and anti-toppling",
       "requested_cartons": 980,
-      "placed_count": 756,
-      "unplaced_count": 224,
-      "utilization": 65.26,
-      "volume_utilization_pct": 65.2622,
-      "runtime_ms": 5767.24,
+      "placed_count": 980,
+      "unplaced_count": 0,
+      "utilization": 69.75,
+      "volume_utilization_pct": 69.7518,
+      "runtime_ms": 2864.76,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
       "out_of_bounds_count": 0,
-      "violations": 43,
-      "fatal_violations": 43,
+      "violations": 0,
+      "fatal_violations": 0,
       "is_valid": true,
-      "summary": {}
+      "summary": {
+        "placedCount": 980,
+        "unplacedCount": 0,
+        "utilization": 69.75179242951019
+      }
     },
     "MIXED-HETEROGENEOUS": {
       "case_id": "MIXED-HETEROGENEOUS",
       "case_name": "混合异尺寸 (测空间利用)",
       "description": "Highly heterogeneous SKU dimensions testing multi-depth wall slicing, top filling, and compact space utilization",
       "requested_cartons": 810,
-      "placed_count": 538,
-      "unplaced_count": 272,
-      "utilization": 62.24,
-      "volume_utilization_pct": 62.2413,
-      "runtime_ms": 6158.21,
+      "placed_count": 810,
+      "unplaced_count": 0,
+      "utilization": 70.43,
+      "volume_utilization_pct": 70.4281,
+      "runtime_ms": 2100.76,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
       "out_of_bounds_count": 0,
-      "violations": 55,
-      "fatal_violations": 55,
+      "violations": 0,
+      "fatal_violations": 0,
       "is_valid": true,
-      "summary": {}
+      "summary": {
+        "placedCount": 810,
+        "unplacedCount": 0,
+        "utilization": 70.42809948278841
+      }
     }
-  },
-  "bad_case_001_audit": {
-    "case_name": "BAD_CASE_001",
-    "description": "Wall Hollow + Collision / Dead Space Fragmentation",
-    "tested_solver": "Legacy V1.7",
-    "placed_count": 1418,
-    "unplaced_count": 727,
-    "overlap_pair_count": 0,
-    "penetration_volume": 0.0,
-    "out_of_bounds_count": 0,
-    "notes": [
-      "Legacy solver leaves 496 cartons of SKU-14 unplaced due to rigid column slicing and tail-assembly fragmentation.",
-      "Visual artifacts show dead space and wall hollows in tail sections.",
-      "V2 Acceptance requires overlap_pair_count == 0, penetration_volume == 0, and enclosed cavity detection/mitigation."
-    ]
   },
   "14-SKU-1845": {
     "case_id": "14-SKU-1845",
     "case_name": "14-SKU-1845 (当前基线)",
     "description": "14-SKU standard baseline cleanroom case 001",
     "requested_cartons": 2145,
-    "placed_count": 1418,
-    "unplaced_count": 727,
-    "utilization": 81.6,
-    "volume_utilization_pct": 81.5975,
-    "runtime_ms": 7026.47,
+    "placed_count": 2092,
+    "unplaced_count": 53,
+    "utilization": 88.02,
+    "volume_utilization_pct": 88.0203,
+    "runtime_ms": 10520.03,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
     "out_of_bounds_count": 0,
-    "violations": 97,
-    "fatal_violations": 97,
+    "violations": 0,
+    "fatal_violations": 0,
     "is_valid": true,
-    "summary": {}
+    "summary": {
+      "placedCount": 2092,
+      "unplacedCount": 53,
+      "utilization": 88.0203280198401
+    }
   },
   "SINGLE-LARGE-BOX": {
     "case_id": "SINGLE-LARGE-BOX",
     "case_name": "单一大箱 SKU (测极限堆叠)",
     "description": "Single large carton SKU for monolithic block stacking and extreme volume utilization",
     "requested_cartons": 70,
-    "placed_count": 54,
-    "unplaced_count": 16,
-    "utilization": 82.31,
-    "volume_utilization_pct": 82.3105,
-    "runtime_ms": 2396.02,
+    "placed_count": 60,
+    "unplaced_count": 10,
+    "utilization": 91.46,
+    "volume_utilization_pct": 91.4561,
+    "runtime_ms": 37.4,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -251,18 +218,22 @@
     "violations": 0,
     "fatal_violations": 0,
     "is_valid": true,
-    "summary": {}
+    "summary": {
+      "placedCount": 60,
+      "unplacedCount": 10,
+      "utilization": 91.45606622457511
+    }
   },
   "ALL-ELASTIC-SKUS": {
     "case_id": "ALL-ELASTIC-SKUS",
     "case_name": "全弹性件 (测核减逻辑)",
     "description": "All elastic SKUs with overcapacity demand testing automated trimming and zero overflow",
     "requested_cartons": 3200,
-    "placed_count": 432,
-    "unplaced_count": 2768,
-    "utilization": 79.21,
-    "volume_utilization_pct": 79.2127,
-    "runtime_ms": 4159.22,
+    "placed_count": 1026,
+    "unplaced_count": 2174,
+    "utilization": 86.05,
+    "volume_utilization_pct": 86.0495,
+    "runtime_ms": 1760.91,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -270,44 +241,56 @@
     "violations": 0,
     "fatal_violations": 0,
     "is_valid": true,
-    "summary": {}
+    "summary": {
+      "placedCount": 1026,
+      "unplacedCount": 2174,
+      "utilization": 86.04948660930715
+    }
   },
   "DOOR-DENSE-SKUS": {
     "case_id": "DOOR-DENSE-SKUS",
     "case_name": "门区密集 (测门区封门)",
     "description": "Dense door-seal items testing door safety zone (rear 1.2m), wall closure, and anti-toppling",
     "requested_cartons": 980,
-    "placed_count": 756,
-    "unplaced_count": 224,
-    "utilization": 65.26,
-    "volume_utilization_pct": 65.2622,
-    "runtime_ms": 5767.24,
+    "placed_count": 980,
+    "unplaced_count": 0,
+    "utilization": 69.75,
+    "volume_utilization_pct": 69.7518,
+    "runtime_ms": 2864.76,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
     "out_of_bounds_count": 0,
-    "violations": 43,
-    "fatal_violations": 43,
+    "violations": 0,
+    "fatal_violations": 0,
     "is_valid": true,
-    "summary": {}
+    "summary": {
+      "placedCount": 980,
+      "unplacedCount": 0,
+      "utilization": 69.75179242951019
+    }
   },
   "MIXED-HETEROGENEOUS": {
     "case_id": "MIXED-HETEROGENEOUS",
     "case_name": "混合异尺寸 (测空间利用)",
     "description": "Highly heterogeneous SKU dimensions testing multi-depth wall slicing, top filling, and compact space utilization",
     "requested_cartons": 810,
-    "placed_count": 538,
-    "unplaced_count": 272,
-    "utilization": 62.24,
-    "volume_utilization_pct": 62.2413,
-    "runtime_ms": 6158.21,
+    "placed_count": 810,
+    "unplaced_count": 0,
+    "utilization": 70.43,
+    "volume_utilization_pct": 70.4281,
+    "runtime_ms": 2100.76,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
     "out_of_bounds_count": 0,
-    "violations": 55,
-    "fatal_violations": 55,
+    "violations": 0,
+    "fatal_violations": 0,
     "is_valid": true,
-    "summary": {}
+    "summary": {
+      "placedCount": 810,
+      "unplacedCount": 0,
+      "utilization": 70.42809948278841
+    }
   }
 }

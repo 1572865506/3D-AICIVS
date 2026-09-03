@@ -43,7 +43,7 @@ from backend.solver_v2.search.config import SearchConfig, SearchProfile
 from backend.solver_v2.search.multi_start import MultiStartManager, MultiStartConfig
 from backend.solver_v2.search.beam import BoundedBeamSearchEngine
 from backend.solver_v2.search.local_search import LocalSearchOptimizer
-from backend.solver_v2.topfill.planner import TopFillPlanner
+from backend.solver_v2.topfill.planner import TopFillPlanner, TopFillDeploymentResult
 from backend.solver_v2.topfill.terminal_repair import (
     TerminalRepairConfig, TerminalTopFillRepairOptimizer,
 )
@@ -163,6 +163,13 @@ class HierarchicalSearchSolver:
         best_placed_count = -1
         best_volume_util = -1.0
         best_score = -float("inf")
+
+        # Warm-start baseline: if a valid incumbent is provided, establish it as the initial best solution
+        if incumbent is not None and incumbent.validation_result.is_valid:
+            best_solution = copy.deepcopy(incumbent)
+            best_placed_count = incumbent.placed_count
+            best_volume_util = incumbent.volume_utilization_pct
+            best_score = incumbent.volume_utilization_pct * 100.0 + (incumbent.placed_count * 10.0)
 
         for run_idx, strat in enumerate(strategies):
             # Check deadline
@@ -285,14 +292,18 @@ class HierarchicalSearchSolver:
                     ) * 1000.0
                 return result
 
-            if cfg.wall_plan_search_mode == "GLOBAL_SEARCH":
-                deploy_res = deploy_terminal_door()
-                topfill_deploy = deploy_terminal_topfill()
-                bt["wall_plan_search"]["phase_history"] = [
-                    "MAIN", "TRANSITION", "DOOR", "TOP_FILL", "COMPLETE",
-                ]
+            if time.perf_counter() < deadline:
+                if cfg.wall_plan_search_mode == "GLOBAL_SEARCH":
+                    deploy_res = deploy_terminal_door()
+                    topfill_deploy = deploy_terminal_topfill()
+                    bt["wall_plan_search"]["phase_history"] = [
+                        "MAIN", "TRANSITION", "DOOR", "TOP_FILL", "COMPLETE",
+                    ]
+                else:
+                    topfill_deploy = deploy_terminal_topfill()
+                    deploy_res = deploy_terminal_door()
             else:
-                topfill_deploy = deploy_terminal_topfill()
+                topfill_deploy = TopFillDeploymentResult()
                 deploy_res = deploy_terminal_door()
 
             # 4c. BLK-006E is an explicit terminal-only neighborhood.  It runs
@@ -503,19 +514,24 @@ class HierarchicalSearchSolver:
         telemetry.runtime_ms = elapsed_ms
 
         if best_solution is None:
-            # Fallback empty solution
-            val_empty = IndependentGlobalValidator.validate(container=container, placements=[], cargo_list=cargo_list)
-            best_solution = SolverSolution(
-                status="EMPTY",
-                container=container,
-                placements=[],
-                placed_count=0,
-                unplaced_count=total_required_items,
-                volume_utilization_pct=0.0,
-                total_weight_kg=0.0,
-                validation_result=val_empty,
-                telemetry=SolverTelemetry(runtime_ms=elapsed_ms),
-            )
+            if incumbent is not None and incumbent.validation_result.is_valid:
+                best_solution = copy.deepcopy(incumbent)
+            else:
+                # Fallback empty solution
+                val_empty = IndependentGlobalValidator.validate(container=container, placements=[], cargo_list=cargo_list)
+                best_solution = SolverSolution(
+                    status="EMPTY",
+                    container=container,
+                    placements=[],
+                    placed_count=0,
+                    unplaced_count=total_required_items,
+                    volume_utilization_pct=0.0,
+                    total_weight_kg=0.0,
+                    validation_result=val_empty,
+                    telemetry=SolverTelemetry(runtime_ms=elapsed_ms),
+                )
+        elif incumbent is not None and incumbent.validation_result.is_valid and incumbent.volume_utilization_pct > best_solution.volume_utilization_pct:
+            best_solution = copy.deepcopy(incumbent)
 
         # A partial GLOBAL state is diagnostic only and is never a production
         # result. Fall back through the preserved legacy path using an isolated

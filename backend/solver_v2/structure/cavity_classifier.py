@@ -13,6 +13,7 @@ Also implements Anti-Bridge Rules to prevent spanning across wide internal cavit
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import List, Tuple, Optional, Dict, Any, Set
+from collections import deque
 import math
 
 from backend.solver_v2.domain.models import ContainerSpec, Placement, Point3D, CargoSKU
@@ -219,7 +220,7 @@ class AdvancedCavityClassifier:
                             )
 
         # 2. 3D Flood Fill from Exterior (Open doorway at x = nx - 1 and roof at iz = nz - 1)
-        queue: List[Tuple[int, int, int]] = []
+        queue = deque()
         for ix in range(self.nx):
             for iy in range(self.ny):
                 for iz in range(self.nz):
@@ -230,7 +231,7 @@ class AdvancedCavityClassifier:
 
         neighbors = [(1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)]
         while queue:
-            cx, cy, cz = queue.pop(0)
+            cx, cy, cz = queue.popleft()
             for dx, dy, dz in neighbors:
                 nx = cx + dx
                 ny = cy + dy
@@ -290,10 +291,10 @@ class AdvancedCavityClassifier:
                         is_reachable_comp = val in (3, 4)
                         comp_voxels = [(ix, iy, iz)]
                         visited_voxels.add((ix, iy, iz))
-                        q = [(ix, iy, iz)]
+                        q = deque([(ix, iy, iz)])
 
                         while q:
-                            vx, vy, vz = q.pop(0)
+                            vx, vy, vz = q.popleft()
                             for dx, dy, dz in neighbors:
                                 nnx, nny, nnz = vx + dx, vy + dy, vz + dz
                                 if 0 <= nnx < self.nx and 0 <= nny < self.ny and 0 <= nnz < self.nz:

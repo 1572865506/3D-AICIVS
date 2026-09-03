@@ -70,6 +70,10 @@ class FreeSpaceEngine:
         """Returns current list of Empty Maximal Spaces."""
         return self.ems_manager.spaces
 
+    def get_all_ems(self) -> List[AABB]:
+        """Returns current list of Empty Maximal Spaces."""
+        return self.ems_manager.spaces
+
     @property
     def extreme_points(self) -> List[ExtremePoint]:
         """Returns current list of 3D Extreme Points (candidate anchor positions)."""

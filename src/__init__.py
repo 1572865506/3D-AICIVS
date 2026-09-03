@@ -14,3 +14,9 @@ Migration Timeline:
 Refer to `docs/MIGRATION_V1_TO_V2.md` for full migration specifications.
 """
 
+import warnings
+warnings.warn(
+    "src/ package is deprecated. Use backend.solver_v2 instead. "
+    "Will be removed in v3.0.",
+    DeprecationWarning, stacklevel=2
+)

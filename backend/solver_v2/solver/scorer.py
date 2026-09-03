@@ -26,6 +26,7 @@ from backend.solver_v2.geometry.aabb import AABB, DEFAULT_GEOM_EPSILON
 from backend.solver_v2.candidates.generator import CandidatePlacement
 from backend.solver_v2.world.state import WorldState
 from backend.solver_v2.spaces.engine import FreeSpaceEngine
+from backend.solver_v2.spaces.residual_quality import ResidualQualityScorer
 from backend.solver_v2.zones.manager import AdaptiveZoneManager
 from backend.solver_v2.door.elastic_frontier import ElasticDoorFrontier, ProbeStatus
 
@@ -49,6 +50,8 @@ class CandidateScorer:
         layer_completion_weight: float = 25.0,
         cavity_creation_penalty_weight: float = 50.0,
         isolated_box_penalty_weight: float = 30.0,
+        residual_scorer: Optional[ResidualQualityScorer] = None,
+        residual_quality_weight: float = 1.0,
     ):
         self.volume_weight = volume_weight
         self.residual_weight = residual_weight
@@ -62,6 +65,8 @@ class CandidateScorer:
         self.layer_completion_weight = layer_completion_weight
         self.cavity_creation_penalty_weight = cavity_creation_penalty_weight
         self.isolated_box_penalty_weight = isolated_box_penalty_weight
+        self.residual_scorer = residual_scorer
+        self.residual_quality_weight = residual_quality_weight
 
     def score_candidate(
         self,
@@ -118,6 +123,29 @@ class CandidateScorer:
         res_metrics = space_engine.evaluate_candidate_residual(temp_placement, remaining_skus)
         residual_score = res_metrics.compute_quality_score() * self.residual_weight
         breakdown["residual_score"] = round(residual_score, 3)
+
+        # 4b. Advanced Residual Quality & Cavity Prevention Scorer
+        residual_quality_component = 0.0
+        if self.residual_scorer is None and world_state.container is not None:
+            self.residual_scorer = ResidualQualityScorer(container=world_state.container)
+
+        if self.residual_scorer is not None and self.residual_quality_weight > 0.0:
+            rq_res = self.residual_scorer.evaluate_detailed(
+                world_state=world_state,
+                candidate_placement=candidate,
+                remaining_skus=remaining_skus,
+            )
+            # Normalize baseline score relative to container volume to align with vol_score scale
+            # Cavity volume penalty and critical cavity penalties are strong active suppressors
+            cavity_pen = rq_res.enclosed_cavity_volume * 150.0
+            crit_pen = 200.0 if rq_res.has_critical_cavity else 0.0
+            norm_score = (rq_res.score / max(1.0, container.volume)) * 20.0 - cavity_pen - crit_pen
+            residual_quality_component = norm_score * self.residual_quality_weight
+            breakdown["residual_quality_score"] = round(residual_quality_component, 3)
+            breakdown["enclosed_cavity_volume"] = round(rq_res.enclosed_cavity_volume, 4)
+            breakdown["useful_open_volume"] = round(rq_res.useful_open_volume, 4)
+            if rq_res.has_critical_cavity:
+                breakdown["critical_cavity_penalty"] = -round(crit_pen * self.residual_quality_weight, 3)
 
         # 5. Zone Affinity Bonus
         zone_score = zone_mgr.compute_zone_affinity_score(sku, x, y, z, dx, dy, dz)
@@ -244,6 +272,7 @@ class CandidateScorer:
             + required_bonus
             + compactness_score
             + residual_score
+            + residual_quality_component
             + zone_score
             + wall_continuity_bonus
             + row_completion_bonus

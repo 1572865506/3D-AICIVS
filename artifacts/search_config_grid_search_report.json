@@ -1,0 +1,819 @@
+{
+  "benchmark": "14-SKU Canonical Benchmark (40HQ)",
+  "total_combinations": 48,
+  "grid_space": {
+    "beam_width": [
+      3,
+      5,
+      8,
+      12
+    ],
+    "multi_start_runs": [
+      3,
+      5,
+      8
+    ],
+    "enable_local_search": [
+      true,
+      false
+    ],
+    "terminal_topfill_repair_enabled": [
+      true,
+      false
+    ]
+  },
+  "incumbent_baseline": {
+    "placed_count": 1845,
+    "utilization_pct": 81.8458,
+    "is_valid": true,
+    "runtime_sec": 11.46
+  },
+  "optimal_balanced_config": {
+    "params": {
+      "beam_width": 3,
+      "multi_start_runs": 3,
+      "enable_local_search": true,
+      "terminal_topfill_repair_enabled": true,
+      "time_budget_sec": 15.0
+    },
+    "placed_count": 1845,
+    "utilization_pct": 81.85,
+    "runtime_sec": 17.09,
+    "is_valid": true,
+    "violations_count": 0,
+    "acceptance_criteria_met": {
+      "utilization_gt_75": true,
+      "time_lt_20s": true
+    }
+  },
+  "results": [
+    {
+      "run_index": 1,
+      "params": {
+        "beam_width": 3,
+        "multi_start_runs": 3,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 39471.89,
+      "runtime_sec": 39.47,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 2,
+      "params": {
+        "beam_width": 3,
+        "multi_start_runs": 3,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 41255.93,
+      "runtime_sec": 41.26,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 3,
+      "params": {
+        "beam_width": 3,
+        "multi_start_runs": 3,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 41839.69,
+      "runtime_sec": 41.84,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 4,
+      "params": {
+        "beam_width": 3,
+        "multi_start_runs": 3,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 39626.01,
+      "runtime_sec": 39.63,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 5,
+      "params": {
+        "beam_width": 3,
+        "multi_start_runs": 5,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 36646.23,
+      "runtime_sec": 36.65,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 6,
+      "params": {
+        "beam_width": 3,
+        "multi_start_runs": 5,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 38382.76,
+      "runtime_sec": 38.38,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 7,
+      "params": {
+        "beam_width": 3,
+        "multi_start_runs": 5,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 41680.84,
+      "runtime_sec": 41.68,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 8,
+      "params": {
+        "beam_width": 3,
+        "multi_start_runs": 5,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 44126.43,
+      "runtime_sec": 44.13,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 9,
+      "params": {
+        "beam_width": 3,
+        "multi_start_runs": 8,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 44102.99,
+      "runtime_sec": 44.1,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 10,
+      "params": {
+        "beam_width": 3,
+        "multi_start_runs": 8,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 39583.37,
+      "runtime_sec": 39.58,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 11,
+      "params": {
+        "beam_width": 3,
+        "multi_start_runs": 8,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 39186.55,
+      "runtime_sec": 39.19,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 12,
+      "params": {
+        "beam_width": 3,
+        "multi_start_runs": 8,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 38580.49,
+      "runtime_sec": 38.58,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 13,
+      "params": {
+        "beam_width": 5,
+        "multi_start_runs": 3,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 42927.09,
+      "runtime_sec": 42.93,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 14,
+      "params": {
+        "beam_width": 5,
+        "multi_start_runs": 3,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 43313.08,
+      "runtime_sec": 43.31,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 15,
+      "params": {
+        "beam_width": 5,
+        "multi_start_runs": 3,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 42270.07,
+      "runtime_sec": 42.27,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 16,
+      "params": {
+        "beam_width": 5,
+        "multi_start_runs": 3,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 45262.21,
+      "runtime_sec": 45.26,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 17,
+      "params": {
+        "beam_width": 5,
+        "multi_start_runs": 5,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 44207.28,
+      "runtime_sec": 44.21,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 18,
+      "params": {
+        "beam_width": 5,
+        "multi_start_runs": 5,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 41337.98,
+      "runtime_sec": 41.34,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 19,
+      "params": {
+        "beam_width": 5,
+        "multi_start_runs": 5,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 39885.64,
+      "runtime_sec": 39.89,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 20,
+      "params": {
+        "beam_width": 5,
+        "multi_start_runs": 5,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 36462.6,
+      "runtime_sec": 36.46,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 21,
+      "params": {
+        "beam_width": 5,
+        "multi_start_runs": 8,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 35073.12,
+      "runtime_sec": 35.07,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 22,
+      "params": {
+        "beam_width": 5,
+        "multi_start_runs": 8,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 39598.92,
+      "runtime_sec": 39.6,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 23,
+      "params": {
+        "beam_width": 5,
+        "multi_start_runs": 8,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 43727.55,
+      "runtime_sec": 43.73,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 24,
+      "params": {
+        "beam_width": 5,
+        "multi_start_runs": 8,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 43557.52,
+      "runtime_sec": 43.56,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 25,
+      "params": {
+        "beam_width": 8,
+        "multi_start_runs": 3,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 40184.0,
+      "runtime_sec": 40.18,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 26,
+      "params": {
+        "beam_width": 8,
+        "multi_start_runs": 3,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 41473.56,
+      "runtime_sec": 41.47,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 27,
+      "params": {
+        "beam_width": 8,
+        "multi_start_runs": 3,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 43827.15,
+      "runtime_sec": 43.83,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 28,
+      "params": {
+        "beam_width": 8,
+        "multi_start_runs": 3,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 43105.06,
+      "runtime_sec": 43.11,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 29,
+      "params": {
+        "beam_width": 8,
+        "multi_start_runs": 5,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 39990.08,
+      "runtime_sec": 39.99,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 30,
+      "params": {
+        "beam_width": 8,
+        "multi_start_runs": 5,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 40709.94,
+      "runtime_sec": 40.71,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 31,
+      "params": {
+        "beam_width": 8,
+        "multi_start_runs": 5,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 44875.07,
+      "runtime_sec": 44.88,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 32,
+      "params": {
+        "beam_width": 8,
+        "multi_start_runs": 5,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 42856.63,
+      "runtime_sec": 42.86,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 33,
+      "params": {
+        "beam_width": 8,
+        "multi_start_runs": 8,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 38888.3,
+      "runtime_sec": 38.89,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 34,
+      "params": {
+        "beam_width": 8,
+        "multi_start_runs": 8,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 37293.52,
+      "runtime_sec": 37.29,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 35,
+      "params": {
+        "beam_width": 8,
+        "multi_start_runs": 8,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 38374.73,
+      "runtime_sec": 38.37,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 36,
+      "params": {
+        "beam_width": 8,
+        "multi_start_runs": 8,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 38568.58,
+      "runtime_sec": 38.57,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 37,
+      "params": {
+        "beam_width": 12,
+        "multi_start_runs": 3,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 41055.8,
+      "runtime_sec": 41.06,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 38,
+      "params": {
+        "beam_width": 12,
+        "multi_start_runs": 3,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 44985.9,
+      "runtime_sec": 44.99,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 39,
+      "params": {
+        "beam_width": 12,
+        "multi_start_runs": 3,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 41888.13,
+      "runtime_sec": 41.89,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 40,
+      "params": {
+        "beam_width": 12,
+        "multi_start_runs": 3,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 41899.01,
+      "runtime_sec": 41.9,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 41,
+      "params": {
+        "beam_width": 12,
+        "multi_start_runs": 5,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 41961.23,
+      "runtime_sec": 41.96,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 42,
+      "params": {
+        "beam_width": 12,
+        "multi_start_runs": 5,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 43773.48,
+      "runtime_sec": 43.77,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 43,
+      "params": {
+        "beam_width": 12,
+        "multi_start_runs": 5,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 42466.81,
+      "runtime_sec": 42.47,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 44,
+      "params": {
+        "beam_width": 12,
+        "multi_start_runs": 5,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 42547.95,
+      "runtime_sec": 42.55,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 45,
+      "params": {
+        "beam_width": 12,
+        "multi_start_runs": 8,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 43208.02,
+      "runtime_sec": 43.21,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 46,
+      "params": {
+        "beam_width": 12,
+        "multi_start_runs": 8,
+        "enable_local_search": true,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 42716.69,
+      "runtime_sec": 42.72,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 47,
+      "params": {
+        "beam_width": 12,
+        "multi_start_runs": 8,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": true,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 44992.77,
+      "runtime_sec": 44.99,
+      "is_valid": true,
+      "violations_count": 0
+    },
+    {
+      "run_index": 48,
+      "params": {
+        "beam_width": 12,
+        "multi_start_runs": 8,
+        "enable_local_search": false,
+        "terminal_topfill_repair_enabled": false,
+        "time_budget_sec": 5.0
+      },
+      "placed_count": 1845,
+      "utilization_pct": 81.8458,
+      "runtime_ms": 37248.35,
+      "runtime_sec": 37.25,
+      "is_valid": true,
+      "violations_count": 0
+    }
+  ]
+}

@@ -11,6 +11,11 @@ from backend.solver_v2.spaces.ems import EMSManager
 from backend.solver_v2.spaces.extreme_points import ExtremePointsManager
 from backend.solver_v2.spaces.reachability import ReachabilityAnalyzer
 from backend.solver_v2.spaces.engine import FreeSpaceEngine
+from backend.solver_v2.spaces.residual_quality import (
+    ResidualQualityScorer,
+    ResidualQualityWeights,
+    ResidualQualityResult,
+)
 
 __all__ = [
     "SpaceClass",
@@ -21,4 +26,7 @@ __all__ = [
     "ExtremePointsManager",
     "ReachabilityAnalyzer",
     "FreeSpaceEngine",
+    "ResidualQualityScorer",
+    "ResidualQualityWeights",
+    "ResidualQualityResult",
 ]
