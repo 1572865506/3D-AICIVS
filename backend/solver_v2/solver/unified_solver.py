@@ -795,6 +795,7 @@ class UnifiedSolver:
                         max_cy = max(1, min(int((max_y_bound - ay + 1e-4) / o.dy), 12))
                         max_lz = max(1, min(int((max_z_bound - az + 1e-4) / o.dz), 10))
                         if c.max_stack_layers:
+                            col_layers = sum(1 for q in placements if abs(q['x'] - ax) < 0.05 and abs(q['y'] - ay) < 0.05 and q['sku_id'] == c.sku_id and q['z'] <= az + 1e-4)
                             max_lz = min(max_lz, max(1, c.max_stack_layers - col_layers))
 
                         placed_block = 0
