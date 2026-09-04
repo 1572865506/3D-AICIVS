@@ -4199,7 +4199,7 @@
     }
 
     // --- LOADING RESULT PERSISTENT CACHE ---
-    const CACHED_LOADING_RESULT_KEY = '3D_AICIVS_CACHED_LOADING_RESULT_V40_CORRECT_ORIENTATION';
+    const CACHED_LOADING_RESULT_KEY = '3D_AICIVS_CACHED_LOADING_RESULT_V42_FLUSH_BULKHEAD';
 
     function saveLoadingResultCache(loadingResult, usableDim, manifest, spec) {
       try {
@@ -4241,7 +4241,11 @@
           calculationStatus = window.ManifestWorkflow.CalculationStatus.READY;
           isCameraDirty = true;
           isRaycastDirty = true;
-          console.log('[3D-AICIVS] 已从本地缓存自动恢复算柜结果:', payload.loadingResult.cargo.length, '箱');
+          updateAdaptiveCutaway();
+          renderManifestUI();
+          renderAnchorRibbon();
+          updateBoxVisibilityAndMaterials();
+          console.log('[3D-AICIVS] 已从本地缓存自动恢复算柜结果与 3D 渲染:', payload.loadingResult.cargo.length, '箱');
           return true;
         }
       } catch (e) {
