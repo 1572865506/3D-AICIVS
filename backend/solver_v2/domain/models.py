@@ -542,6 +542,7 @@ class UniversalCargoTensor:
     category: str = "GENERAL"
     color: str = "#3b82f6"
     raw_requirement: str = ""
+    is_elastic: bool = False
 
     # Derived physics features
     volume_m3: float = 0.0

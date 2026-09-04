@@ -7,7 +7,7 @@ Guarantees clean-room V2 interface taking ContainerSpec + List[CargoSKU] and ret
 from dataclasses import dataclass, field
 import math
 import time
-from typing import Any, Dict, List, Optional, Tuple, Set
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, Tuple
 
 from backend.solver_v2.domain.models import (
     ContainerSpec,
@@ -30,8 +30,190 @@ from backend.solver_v2.validation.independent_validator import IndependentGlobal
 from backend.solver_v2.validation.types import ValidationResult
 from backend.solver_v2.solver.baseline_solver import SolverSolution, SolverTelemetry
 from backend.solver_v2.solver.composite_strip import CompositeStripBuilder
+from backend.solver_v2.stability.tipping_moment import TippingMomentAnalyzer
 from backend.solver_v2.geometry.aabb import AABB
 from backend.solver_v2.geometry.spatial_index import SpatialIndex
+
+
+@dataclass(frozen=True)
+class PlacementAction:
+    """Atomic placement proposal emitted by a proposer."""
+    action_id: str
+    source_proposer: str                        # "DOOR" | "INTERIOR" | "TOP_RESIDUAL"
+    placements: Tuple[Dict[str, Any], ...]      # Tuple of candidate placements to commit together
+    consumed_quantities: Mapping[str, int]      # SKU IDs and counts consumed
+    metadata: Dict[str, Any] = field(default_factory=dict)  # Features for lexicographic ranking
+
+
+@dataclass
+class LayoutState:
+    """
+    Immutable snapshot of the container layout state S_t.
+    Transitions MUST occur via spawn_child(action).
+    """
+    container: ContainerSpec
+    cL: float
+    cW: float
+    cH: float
+    placements: Tuple[Dict[str, Any], ...]
+    remaining_qty: Dict[str, int]
+    current_x: float
+    door_boundary_x: float
+    step_idx: int = 1
+    spatial_idx: Optional[SpatialIndex] = None
+
+    @classmethod
+    def create_initial_state(
+        cls,
+        container: ContainerSpec,
+        cargo_list: Sequence[UniversalCargoTensor],
+        door_boundary_x: float,
+    ) -> "LayoutState":
+        rem_qty = {c.sku_id: c.quantity_required for c in cargo_list}
+        return cls(
+            container=container,
+            cL=round(container.Lx, 4),
+            cW=round(container.Ly, 4),
+            cH=round(container.Lz, 4),
+            placements=(),
+            remaining_qty=rem_qty,
+            current_x=0.0,
+            door_boundary_x=door_boundary_x,
+            step_idx=1,
+            spatial_idx=SpatialIndex(cell_size=0.5),
+        )
+
+    def spawn_child(self, action: PlacementAction) -> "LayoutState":
+        new_rem_qty = dict(self.remaining_qty)
+        for sid, cnt in action.consumed_quantities.items():
+            new_rem_qty[sid] = max(0, new_rem_qty.get(sid, 0) - cnt)
+
+        new_placements = list(self.placements)
+        new_spatial_idx = SpatialIndex(cell_size=0.5)
+        for p in new_placements:
+            aabb = AABB(
+                min_x=p["x"], min_y=p["y"], min_z=p["z"],
+                max_x=round(p["x"] + p["dx"], 4),
+                max_y=round(p["y"] + p["dy"], 4),
+                max_z=round(p["z"] + p["dz"], 4),
+            )
+            new_spatial_idx.insert(f"item_{p['step']}_{p['x']}_{p['y']}_{p['z']}", aabb, p)
+
+        max_committed_x = self.current_x
+        curr_step = self.step_idx
+
+        for p in action.placements:
+            p_comm = dict(p)
+            p_comm["step"] = curr_step
+            curr_step += 1
+            new_placements.append(p_comm)
+            max_committed_x = max(max_committed_x, p_comm["x"] + p_comm["dx"])
+
+            aabb = AABB(
+                min_x=p_comm["x"], min_y=p_comm["y"], min_z=p_comm["z"],
+                max_x=round(p_comm["x"] + p_comm["dx"], 4),
+                max_y=round(p_comm["y"] + p_comm["dy"], 4),
+                max_z=round(p_comm["z"] + p_comm["dz"], 4),
+            )
+            new_spatial_idx.insert(f"item_{p_comm['step']}_{p_comm['x']}_{p_comm['y']}_{p_comm['z']}", aabb, p_comm)
+
+        return LayoutState(
+            container=self.container,
+            cL=self.cL,
+            cW=self.cW,
+            cH=self.cH,
+            placements=tuple(new_placements),
+            remaining_qty=new_rem_qty,
+            current_x=round(max_committed_x, 4),
+            door_boundary_x=self.door_boundary_x,
+            step_idx=curr_step,
+            spatial_idx=new_spatial_idx,
+        )
+
+
+class FastActionGate:
+    """Lightweight, pure functional hard gates for proposed actions."""
+
+    @staticmethod
+    def is_action_feasible(state: LayoutState, action: PlacementAction) -> bool:
+        temp_placements = list(state.placements)
+        eps = 1e-4
+
+        for p in action.placements:
+            if (p["x"] < -eps or p["y"] < -eps or p["z"] < -eps or
+                p["x"] + p["dx"] > state.cL + eps or
+                p["y"] + p["dy"] > state.cW + eps or
+                p["z"] + p["dz"] > state.cH + eps):
+                return False
+
+            cx0, cx1 = p["x"] + eps, p["x"] + p["dx"] - eps
+            cy0, cy1 = p["y"] + eps, p["y"] + p["dy"] - eps
+            cz0, cz1 = p["z"] + eps, p["z"] + p["dz"] - eps
+            for other in temp_placements:
+                ox0, ox1 = other["x"], other["x"] + other["dx"]
+                oy0, oy1 = other["y"], other["y"] + other["dy"]
+                oz0, oz1 = other["z"], other["z"] + other["dz"]
+                if (cx0 < ox1 and cx1 > ox0 and
+                    cy0 < oy1 and cy1 > oy0 and
+                    cz0 < oz1 and cz1 > oz0):
+                    return False
+
+            if p["z"] >= 1e-3:
+                cand_area = p["dx"] * p["dy"]
+                support_area = 0.0
+                cand_z = round(p["z"], 4)
+                for other in temp_placements:
+                    if abs(round(other["z"] + other["dz"], 4) - cand_z) < 1e-3:
+                        ix0 = max(p["x"], other["x"])
+                        ix1 = min(p["x"] + p["dx"], other["x"] + other["dx"])
+                        iy0 = max(p["y"], other["y"])
+                        iy1 = min(p["y"] + p["dy"], other["y"] + other["dy"])
+                        if ix1 > ix0 + 1e-4 and iy1 > iy0 + 1e-4:
+                            support_area += (ix1 - ix0) * (iy1 - iy0)
+                if (support_area / max(1e-6, cand_area)) < 0.70 - 1e-4:
+                    return False
+
+            dx, dz = p["dx"], p["dz"]
+            if dz > 1e-6:
+                if (2.0 * dx / dz) < 1.5 - 1e-4:
+                    if p["x"] + p["dx"] < state.cL - 0.04 - 1e-4:
+                        target_x = p["x"] + p["dx"]
+                        min_y_ov = 0.20 * p["dy"]
+                        min_z_ov = 0.20 * p["dz"]
+                        supported_forward = False
+                        for other in temp_placements:
+                            if abs(other["x"] - target_x) <= 0.03:
+                                y_ov = min(p["y"] + p["dy"], other["y"] + other["dy"]) - max(p["y"], other["y"])
+                                z_ov = min(p["z"] + p["dz"], other["z"] + other["dz"]) - max(p["z"], other["z"])
+                                if y_ov >= min_y_ov - eps and z_ov >= min_z_ov - eps:
+                                    supported_forward = True
+                                    break
+                        if not supported_forward:
+                            return False
+
+            temp_placements.append(p)
+
+        return True
+
+
+class LexicographicObjective:
+    """Strict hierarchical objective comparator."""
+
+    @staticmethod
+    def rank_key(action: PlacementAction) -> Tuple:
+        vol = sum(p["dx"] * p["dy"] * p["dz"] for p in action.placements)
+        box_count = len(action.placements)
+        stab_tier = action.metadata.get("stability_tier", 1)
+        continuity = action.metadata.get("continuity", 1.0)
+        flatness = action.metadata.get("flatness", 1.0)
+
+        return (
+            stab_tier,
+            continuity,
+            flatness,
+            round(vol, 4),
+            box_count,
+        )
 
 
 @dataclass
@@ -86,6 +268,7 @@ class UnifiedSolver:
             allow_side = s.orientation_policy.allow_side
             max_stack = s.stacking_policy.max_stack_layers
             must_be_on_floor = getattr(s.stacking_policy, 'must_be_on_floor', False)
+            is_elastic = getattr(s.quantity, 'is_elastic', False) or '可以减少' in req or '可减少' in req or '少放' in req
 
             tensor_list.append(UniversalCargoTensor(
                 sku_id=s.sku_id,
@@ -101,6 +284,7 @@ class UnifiedSolver:
                 max_stack_layers=max_stack,
                 must_be_on_floor=must_be_on_floor,
                 raw_requirement=req,
+                is_elastic=is_elastic,
             ))
         return tensor_list
 
@@ -158,7 +342,20 @@ class UnifiedSolver:
         best_metrics: Dict = {}
         best_score = -float("inf")
 
-        for trial_idx, trial_cfg in enumerate(trials):
+        # Select trials based on mode and time budget
+        if mode == "FAST":
+            active_trials = trials[:2]
+        elif mode == "BALANCED":
+            active_trials = trials[:4]
+        else:
+            active_trials = trials
+
+        max_time_budget = float(time_budget or 18.0)
+
+        for trial_idx, trial_cfg in enumerate(active_trials):
+            if trial_idx > 0 and (time.perf_counter() - t0) >= max_time_budget:
+                break
+
             trial_placements, trial_raw_metrics = self._solve_single_trial(tensor_cargo_list, trial_cfg)
 
             val_result = IndependentGlobalValidator.validate(
@@ -181,8 +378,8 @@ class UnifiedSolver:
                     "trial_idx": trial_idx,
                     "trial_name": trial_cfg["name"],
                 }
-                # Early stop only if 100% items placed with high utilization
-                if val_result.is_valid and len(trial_placements) >= total_req_count and util > 85.0:
+                # Early stop if 100% items placed and valid
+                if val_result.is_valid and len(trial_placements) >= total_req_count:
                     break
 
         elapsed_ms = round((time.perf_counter() - t0) * 1000.0, 2)
@@ -329,7 +526,10 @@ class UnifiedSolver:
                                             "tag": "DOOR_SEAL" if is_door else "TOP_FILL",
                                             "context": "DOOR_SEAL" if is_door else "TOP_FILL"
                                         }
-                                        if not self._has_collision(t_pos, placements) and self._has_sufficient_support(t_pos, placements):
+                                        if (not self._has_collision(t_pos, placements) and 
+                                            self._has_sufficient_support(t_pos, placements) and 
+                                            self._check_layer_height_consistency(t_pos, placements) and 
+                                            self._is_placement_tipping_safe(t_pos, placements)):
                                             self._add_placement(t_pos, placements)
                                             remaining_qty[tc.sku_id] -= 1
                                             t_pl += 1
@@ -391,10 +591,12 @@ class UnifiedSolver:
         # Inner sort: anchor single small pieces at inner corner
         inner_group.sort(key=lambda c: (0 if c.quantity_required <= 2 else 1, -c.volume_m3))
         
-        # Door sort: transition items (larger/deeper boxes) FIRST, high-density sealing panels LAST
+        # Door sort: transition items FIRST, then rigid sealing panels, elastic/filler items LAST
         door_group.sort(key=lambda c: (
-            2 if ('封柜门' in (c.raw_requirement or '') or c.sku_id == 'SKU-14') else (
-                1 if (c.sku_id == 'SKU-02') else 0
+            3 if getattr(c, 'is_elastic', False) else (
+                2 if ('封柜门' in (c.raw_requirement or '') and c.sku_id != 'SKU-02') else (
+                    1 if (c.sku_id == 'SKU-02') else 0
+                )
             ),
             -c.length,
             -c.volume_m3
@@ -407,19 +609,40 @@ class UnifiedSolver:
         walls_count = 0
         zone_counts = {"INNER": 0, "MIDDLE": 0, "DOOR": 0}
 
-        # Dynamic Zone Partitioning & Validator Door Boundary Lockout
+        # Initialize Authoritative LayoutState (S0)
+        current_state = LayoutState.create_initial_state(
+            container=self.container,
+            cargo_list=cargo_list,
+            door_boundary_x=round(self.cL - 0.04, 4),
+        )
+
+
+        # Dynamic Zone Partitioning & Validator Door Boundary Lockout (Discrete Modular Reservation)
         cross_sec = self.cW * (self.cH - 0.04)
-        door_vol = sum(c.volume_m3 * remaining_qty[c.sku_id] for c in door_group)
-        est_door_dx = math.ceil((door_vol / max(0.1, cross_sec * 0.90)) * 100) / 100.0 if door_group else 0.0
+        rigid_door_group = [c for c in door_group if not getattr(c, 'is_elastic', False)]
+        door_vol = sum(c.volume_m3 * remaining_qty[c.sku_id] for c in rigid_door_group)
+        est_door_dx = math.ceil((door_vol / max(0.1, cross_sec * 0.90)) * 100) / 100.0 if rigid_door_group else 0.0
         door_reserve_ratio = trial_cfg.get("door_reserve_ratio", None)
         if door_group:
-            max_single_dx = max([max(c.length, c.width, c.height) for c in door_group], default=0.48)
+            # Discrete modular reservation: calculate discrete thickness of door SKUs (prioritizing rigid ones)
+            target_res_group = rigid_door_group if rigid_door_group else door_group
+            door_dx_candidates = []
+            for dc in target_res_group:
+                for d_ori in self._get_permitted_orientations(dc):
+                    door_dx_candidates.append(d_ori.dx)
+            primary_door_dx = min(door_dx_candidates) if door_dx_candidates else 0.40
+            max_single_dx = max([max(c.length, c.width, c.height) for c in target_res_group], default=0.48)
+
             if door_reserve_ratio is not None:
                 ratio_dx = round(self.cL * float(door_reserve_ratio), 4)
                 est_door_dx = max(est_door_dx, ratio_dx)
             else:
-                est_door_dx = max(est_door_dx, min(self.cL * 0.45, max_single_dx))
-            validator_door_len = round(max(max_single_dx * 1.5, est_door_dx), 4)
+                est_door_dx = max(est_door_dx, max_single_dx)
+
+            # Quantize door reservation to exact integer multiples of primary_door_dx
+            modular_rows = max(1, math.ceil((est_door_dx - 1e-4) / primary_door_dx))
+            modular_door_len = round(modular_rows * primary_door_dx, 4)
+            validator_door_len = round(max(est_door_dx, max_single_dx * 1.2, modular_door_len), 4)
             validator_door_boundary_x = round(self.cL - validator_door_len, 4)
         else:
             validator_door_boundary_x = round(self.cL - 0.04, 4)
@@ -447,7 +670,7 @@ class UnifiedSolver:
 
             if is_door:
                 max_zone_x = round(self.cL - 0.04, 4)
-            elif door_group and any(remaining_qty[c.sku_id] > 0 for c in door_group):
+            elif rigid_door_group and any(remaining_qty[c.sku_id] > 0 for c in rigid_door_group):
                 max_zone_x = round(min(validator_door_boundary_x, max(0.0, self.cL - 0.08 - est_door_dx)), 4)
             else:
                 max_zone_x = validator_door_boundary_x
@@ -498,7 +721,12 @@ class UnifiedSolver:
                 chosen_candidate = None
                 for cand_sku in candidates_to_lead:
                     c_oris = self._get_permitted_orientations(cand_sku)
-                    c_oris.sort(key=lambda o: (int(self.cW / o.dy) * o.dy / self.cW) * 0.65 + o.dx * 0.35, reverse=True)
+                    rem_q = remaining_qty[cand_sku.sku_id]
+                    # If remaining quantity is small (tail residual) or avail_x is restricted, allow sorting by smaller dx to fit gap
+                    if avail_x < 0.60 or rem_q <= 40:
+                        c_oris.sort(key=lambda o: (1 if o.dx <= avail_x + 1e-4 else 0, (int(self.cW / o.dy) * o.dy / self.cW) * 0.50 - o.dx * 0.50), reverse=True)
+                    else:
+                        c_oris.sort(key=lambda o: (int(self.cW / o.dy) * o.dy / self.cW) * 0.65 + o.dx * 0.35, reverse=True)
                     for o in c_oris:
                         if o.dx <= avail_x + 1e-4:
                             chosen_candidate = (cand_sku, o)
@@ -516,7 +744,7 @@ class UnifiedSolver:
 
                 min_rows = 2 if (opt.dx < 0.22 and avail_p >= per_row_cap * 2) else 1
                 eff_max_rows = min(max_rows_cfg, 4 if is_door else max_rows_cfg)
-                rows_x = max(min_rows, min(max(1, avail_p // per_row_cap), eff_max_rows))
+                rows_x = max(min_rows, min(max(1, avail_p // per_row_cap) if avail_p >= per_row_cap else 1, eff_max_rows))
                 if rows_x * opt.dx > avail_x:
                     rows_x = max(1, int(avail_x / opt.dx))
                 delta_x = round(rows_x * opt.dx, 4)
@@ -592,7 +820,9 @@ class UnifiedSolver:
                                                     "tag": tag_val,
                                                     "context": tag_val
                                                 }
-                                                if not self._has_collision(cand_pos, placements) and self._has_sufficient_support(cand_pos, placements):
+                                                if (not self._has_collision(cand_pos, placements) and 
+                                                    self._has_sufficient_support(cand_pos, placements) and 
+                                                    self._is_placement_tipping_safe(cand_pos, placements)):
                                                     self._add_placement(cand_pos, placements)
                                                     remaining_qty[sub_col.sku_id] -= 1
                                                     sub_placed += 1
@@ -629,7 +859,7 @@ class UnifiedSolver:
                     if not col_sku:
                         for fc in pool:
                             if remaining_qty[fc.sku_id] <= 0:
-                                continue
+                                break
                             for o in self._get_permitted_orientations(fc):
                                 if o.dy <= rem_w + 1e-4:
                                     col_sku = fc
@@ -685,7 +915,9 @@ class UnifiedSolver:
                                     "tag": tag_val,
                                     "context": tag_val
                                 }
-                                if not self._has_collision(cand_pos, placements) and self._has_sufficient_support(cand_pos, placements):
+                                if (not self._has_collision(cand_pos, placements) and 
+                                    self._has_sufficient_support(cand_pos, placements) and 
+                                    self._is_placement_tipping_safe(cand_pos, placements)):
                                     self._add_placement(cand_pos, placements)
                                     remaining_qty[col_sku.sku_id] -= 1
                                     placed_here += 1
@@ -825,7 +1057,9 @@ class UnifiedSolver:
                                         'tag': tag_val,
                                         'context': tag_val
                                     }
-                                    if not self._has_collision(cand, placements) and self._has_sufficient_support(cand, placements):
+                                    if (not self._has_collision(cand, placements) and 
+                                        self._has_sufficient_support(cand, placements) and 
+                                        self._is_placement_tipping_safe(cand, placements)):
                                         self._add_placement(cand, placements)
                                         remaining_qty[c.sku_id] -= 1
                                         step_idx += 1
@@ -846,6 +1080,22 @@ class UnifiedSolver:
                         break
             if placed_in_round == 0:
                 break
+        # PASS 5: Tipping Stability Audit and Automated Repair (TIP-03)
+        self._spatial_idx = None
+        tipping_analyzer = TippingMomentAnalyzer(
+            container_length=self.cL,
+            container_width=self.cW,
+            container_height=self.cH,
+            decel_g=0.5,
+            min_safety_factor=1.5,
+        )
+        placements = tipping_analyzer.audit_and_repair(
+            placements=placements,
+            cargo_list=cargo_list,
+            remaining_qty=remaining_qty,
+            has_collision_fn=self._has_collision,
+            has_support_fn=self._has_sufficient_support,
+        )
 
         self._compact_placements(placements)
 
@@ -919,17 +1169,298 @@ class UnifiedSolver:
                         return False
         return True
 
+    def _compute_convex_hull(self, points: List[Tuple[float, float]]) -> List[Tuple[float, float]]:
+        """Computes the 2D convex hull of a set of points using Monotone Chain algorithm."""
+        pts = sorted(list(set(points)))
+        if len(pts) <= 2:
+            return pts
+
+        def cross(o: Tuple[float, float], a: Tuple[float, float], b: Tuple[float, float]) -> float:
+            return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+        lower = []
+        for p in pts:
+            while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 1e-9:
+                lower.pop()
+            lower.append(p)
+
+        upper = []
+        for p in reversed(pts):
+            while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 1e-9:
+                upper.pop()
+            upper.append(p)
+
+        return lower[:-1] + upper[:-1]
+
+    def _point_segment_distance(self, px: float, py: float, x1: float, y1: float, x2: float, y2: float) -> float:
+        """Calculates the minimum Euclidean distance from point (px, py) to segment (x1, y1)-(x2, y2)."""
+        dx = x2 - x1
+        dy = y2 - y1
+        l2 = dx * dx + dy * dy
+        if l2 <= 1e-9:
+            return math.hypot(px - x1, py - y1)
+        t = max(0.0, min(1.0, ((px - x1) * dx + (py - y1) * dy) / l2))
+        proj_x = x1 + t * dx
+        proj_y = y1 + t * dy
+        return math.hypot(px - proj_x, py - proj_y)
+
+    def _check_cog_projection(self, cand: Dict, placements: List[Dict], margin_ratio_x: float = 0.03, margin_ratio_y: float = 0.03) -> bool:
+        """
+        TIP-01: Center of Gravity (CoG) projection safety check.
+        Checks if the CoG XY projection (cx + dx/2, cy + dy/2) falls inside the convex hull of
+        the actual contact support surfaces, and maintains a minimum safety margin to hull edges.
+        """
+        if cand["z"] < 1e-3:
+            return True
+
+        cx0, cx1 = cand["x"], cand["x"] + cand["dx"]
+        cy0, cy1 = cand["y"], cand["y"] + cand["dy"]
+        cog_x = cx0 + cand["dx"] / 2.0
+        cog_y = cy0 + cand["dy"] / 2.0
+
+        # Query local lower layer candidates using SpatialIndex if active
+        if getattr(self, "_spatial_idx", None) is not None and len(self._spatial_idx) > 0:
+            query_aabb = AABB(
+                min_x=cand["x"],
+                min_y=cand["y"],
+                min_z=cand["z"] - 0.05,
+                max_x=cand["x"] + cand["dx"],
+                max_y=cand["y"] + cand["dy"],
+                max_z=cand["z"] + 0.05,
+            )
+            cand_ids = self._spatial_idx.query_candidate_ids(query_aabb, expand_eps=0.05)
+            relevant_placements = [self._spatial_idx.get_item(cid).data for cid in cand_ids if self._spatial_idx.get_item(cid) is not None and self._spatial_idx.get_item(cid).data is not None]
+        else:
+            relevant_placements = placements
+
+        contact_points: List[Tuple[float, float]] = []
+        for p in relevant_placements:
+            if abs(round(p["z"] + p["dz"], 4) - round(cand["z"], 4)) < 1e-3:
+                ix0 = max(cx0, p["x"])
+                ix1 = min(cx1, p["x"] + p["dx"])
+                iy0 = max(cy0, p["y"])
+                iy1 = min(cy1, p["y"] + p["dy"])
+                if ix1 > ix0 + 1e-4 and iy1 > iy0 + 1e-4:
+                    contact_points.extend([
+                        (round(ix0, 4), round(iy0, 4)),
+                        (round(ix1, 4), round(iy0, 4)),
+                        (round(ix1, 4), round(iy1, 4)),
+                        (round(ix0, 4), round(iy1, 4)),
+                    ])
+
+        # Fast path: check single supporting rectangle or compute bounding box
+        if len(contact_points) == 4:
+            # Axis-aligned bounding box from single supporting carton
+            min_ix = min(pt[0] for pt in contact_points)
+            max_ix = max(pt[0] for pt in contact_points)
+            min_iy = min(pt[1] for pt in contact_points)
+            max_iy = max(pt[1] for pt in contact_points)
+            margin_x = cand["dx"] * margin_ratio_x
+            margin_y = cand["dy"] * margin_ratio_y
+            return (cog_x >= min_ix + margin_x - 1e-4 and
+                    cog_x <= max_ix - margin_x + 1e-4 and
+                    cog_y >= min_iy + margin_y - 1e-4 and
+                    cog_y <= max_iy - margin_y + 1e-4)
+
+        hull = self._compute_convex_hull(contact_points)
+        if len(hull) < 3:
+            return False
+
+        # 1. Point-in-polygon check (for convex hull in CCW order)
+        n = len(hull)
+        min_edge_dist = float("inf")
+        margin_x = cand["dx"] * margin_ratio_x
+        margin_y = cand["dy"] * margin_ratio_y
+        min_margin = min(margin_x, margin_y)
+
+        for i in range(n):
+            p1 = hull[i]
+            p2 = hull[(i + 1) % n]
+            # Cross product to verify point is on the left of edge (p1 -> p2)
+            cp = (p2[0] - p1[0]) * (cog_y - p1[1]) - (p2[1] - p1[1]) * (cog_x - p1[0])
+            if cp < -1e-5:
+                return False
+            
+            dist = self._point_segment_distance(cog_x, cog_y, p1[0], p1[1], p2[0], p2[1])
+            if dist < min_edge_dist:
+                min_edge_dist = dist
+
+        return min_edge_dist >= (min_margin - 1e-4)
+
+    def _check_lateral_stability(self, cand: Dict, placements: List[Dict]) -> bool:
+        """
+        TIP-02: Lateral stability and slenderness ratio check for tall/slender cartons.
+        Prevents tall, slender boxes from tipping over when unsupported along their slender axis.
+        """
+        dx, dy, dz = cand["dx"], cand["dy"], cand["dz"]
+        if dx <= 1e-4 or dy <= 1e-4:
+            return True
+
+        slenderness_y = dz / dy
+        slenderness_x = dz / dx
+
+        # Thresholds based on layer height and wall proximity
+        is_ground = (cand["z"] < 1e-3)
+        near_y_wall = (cand["y"] <= 0.02 or (cand["y"] + dy) >= self.cW - 0.02)
+        near_x_wall = (cand["x"] <= 0.02)
+
+        # Baseline threshold: ground free-standing allows up to 2.5 (relaxed to 3.5 near wall), upper layer requires <= 2.0
+        thresh_base_y = 3.5 if (is_ground and near_y_wall) else (2.5 if is_ground else 2.0)
+        thresh_base_x = 3.5 if (is_ground and near_x_wall) else (2.5 if is_ground else 2.0)
+
+        needs_y_constraint = (slenderness_y > thresh_base_y)
+        needs_x_constraint = (slenderness_x > thresh_base_x)
+
+        if not needs_y_constraint and not needs_x_constraint:
+            return True
+
+        cx0, cx1 = cand["x"], cand["x"] + dx
+        cy0, cy1 = cand["y"], cand["y"] + dy
+        cz0, cz1 = cand["z"], cand["z"] + dz
+
+        has_y_neg = (cy0 <= 0.02)
+        has_y_pos = (cy1 >= self.cW - 0.02)
+        has_x_neg = (cx0 <= 0.02)
+        has_x_pos = False
+
+        min_x_overlap = 0.05 * dx
+        min_y_overlap = 0.05 * dy
+        min_z_overlap = 0.20 * dz
+
+        # Query local surrounding candidates using SpatialIndex if active
+        if getattr(self, "_spatial_idx", None) is not None and len(self._spatial_idx) > 0:
+            query_aabb = AABB(
+                min_x=cand["x"] - 0.05,
+                min_y=cand["y"] - 0.05,
+                min_z=cand["z"],
+                max_x=cand["x"] + cand["dx"] + 0.05,
+                max_y=cand["y"] + cand["dy"] + 0.05,
+                max_z=cand["z"] + cand["dz"],
+            )
+            cand_ids = self._spatial_idx.query_candidate_ids(query_aabb, expand_eps=0.05)
+            relevant_placements = [self._spatial_idx.get_item(cid).data for cid in cand_ids if self._spatial_idx.get_item(cid) is not None and self._spatial_idx.get_item(cid).data is not None]
+        else:
+            relevant_placements = placements
+
+        for p in relevant_placements:
+            px0, px1 = p["x"], p["x"] + p["dx"]
+            py0, py1 = p["y"], p["y"] + p["dy"]
+            pz0, pz1 = p["z"], p["z"] + p["dz"]
+
+            # Check vertical overlap
+            z_ov = min(cz1, pz1) - max(cz0, pz0)
+            if z_ov < min_z_overlap - 1e-4:
+                continue
+
+            x_ov = min(cx1, px1) - max(cx0, px0)
+            y_ov = min(cy1, py1) - max(cy0, py0)
+
+            # Check Y- neighbor (p is at the -Y side of cand)
+            if not has_y_neg and abs(py1 - cy0) <= 0.03 and x_ov >= min_x_overlap - 1e-4:
+                has_y_neg = True
+
+            # Check Y+ neighbor (p is at the +Y side of cand)
+            if not has_y_pos and abs(py0 - cy1) <= 0.03 and x_ov >= min_x_overlap - 1e-4:
+                has_y_pos = True
+
+            # Check X- neighbor (p is at the -X side of cand)
+            if not has_x_neg and abs(px1 - cx0) <= 0.03 and y_ov >= min_y_overlap - 1e-4:
+                has_x_neg = True
+
+            # Check X+ neighbor (p is at the +X side of cand)
+            if not has_x_pos and abs(px0 - cx1) <= 0.03 and y_ov >= min_y_overlap - 1e-4:
+                has_x_pos = True
+
+        if needs_y_constraint:
+            if not is_ground:
+                # Upper layer slender box requires at least one constraint (or both if extremely slender)
+                if slenderness_y > 3.0 and not (has_y_neg and has_y_pos):
+                    return False
+                if not (has_y_neg or has_y_pos):
+                    return False
+            else:
+                if not (has_y_neg or has_y_pos):
+                    return False
+
+        if needs_x_constraint:
+            if not is_ground:
+                if slenderness_x > 3.0 and not (has_x_neg and has_x_pos):
+                    return False
+                if not (has_x_neg or has_x_pos):
+                    return False
+            else:
+                if not (has_x_neg or has_x_pos):
+                    return False
+
+        return True
+
+    def _is_placement_tipping_safe(self, cand: Dict, placements: List[Dict]) -> bool:
+        """
+        PRE-CHECK GATE: Rigid-body longitudinal tipping moment & overturning safety check.
+        Enforces SF = 2.0 * dx / dz >= 1.5 when the carton is exposed (no forward neighbor or container door).
+        Prevents unstable cartons from being committed, eliminating destructive post-placement mutations.
+        """
+        dx, dz = cand["dx"], cand["dz"]
+        if dz <= 1e-6:
+            return True
+
+        # Intrinsic rigid-body safety factor under 0.5g deceleration: SF = dx / (0.5 * dz) = 2.0 * dx / dz
+        intrinsic_sf = (2.0 * dx) / dz
+        if intrinsic_sf >= 1.5 - 1e-4:
+            return True
+
+        # Close to container door (+X boundary) provides rigid forward support
+        if cand["x"] + cand["dx"] >= self.cL - 0.04 - 1e-4:
+            return True
+
+        # Check for forward support touching in +X
+        target_x = cand["x"] + cand["dx"]
+        min_y_ov = 0.20 * cand["dy"]
+        min_z_ov = 0.20 * cand["dz"]
+        eps = 1e-4
+
+        for other in placements:
+            if abs(other["x"] - target_x) <= 0.03:
+                y_ov = min(cand["y"] + cand["dy"], other["y"] + other["dy"]) - max(cand["y"], other["y"])
+                z_ov = min(cand["z"] + cand["dz"], other["z"] + other["dz"]) - max(cand["z"], other["z"])
+                if y_ov >= min_y_ov - eps and z_ov >= min_z_ov - eps:
+                    return True
+
+        return False
+
     def _has_sufficient_support(self, cand: Dict, placements: List[Dict], min_ratio: float = 0.70) -> bool:
         if cand["z"] < 1e-3:
             return True
+
         cx0, cx1 = cand["x"], cand["x"] + cand["dx"]
         cy0, cy1 = cand["y"], cand["y"] + cand["dy"]
         cand_area = cand["dx"] * cand["dy"]
         if cand_area <= 1e-6:
             return True
         
+        # Query local lower layer candidates using SpatialIndex if active
+        if getattr(self, "_spatial_idx", None) is not None and len(self._spatial_idx) > 0:
+            query_aabb = AABB(
+                min_x=cand["x"],
+                min_y=cand["y"],
+                min_z=cand["z"] - 0.05,
+                max_x=cand["x"] + cand["dx"],
+                max_y=cand["y"] + cand["dy"],
+                max_z=cand["z"] + 0.05,
+            )
+            cand_ids = self._spatial_idx.query_candidate_ids(query_aabb, expand_eps=0.05)
+            relevant_placements = [self._spatial_idx.get_item(cid).data for cid in cand_ids if self._spatial_idx.get_item(cid) is not None and self._spatial_idx.get_item(cid).data is not None]
+        else:
+            cand_z_round = round(cand["z"], 4)
+            relevant_placements = [
+                p for p in placements
+                if abs(round(p["z"] + p["dz"], 4) - cand_z_round) < 1e-3 and
+                   abs(p["x"] - cand["x"]) <= cand["dx"] + 0.1 and
+                   abs(p["y"] - cand["y"]) <= cand["dy"] + 0.1
+            ]
+
         support_area = 0.0
-        for p in placements:
+        for p in relevant_placements:
             if abs(round(p["z"] + p["dz"], 4) - round(cand["z"], 4)) < 1e-3:
                 ix0 = max(cx0, p["x"])
                 ix1 = min(cx1, p["x"] + p["dx"])
@@ -937,7 +1468,10 @@ class UnifiedSolver:
                 iy1 = min(cy1, p["y"] + p["dy"])
                 if ix1 > ix0 + 1e-4 and iy1 > iy0 + 1e-4:
                     support_area += (ix1 - ix0) * (iy1 - iy0)
-        return (support_area / cand_area) >= (min_ratio - 1e-4)
+        if (support_area / cand_area) < (min_ratio - 1e-4):
+            return False
+
+        return self._check_cog_projection(cand, relevant_placements)
 
     def _compact_placements(self, placements: List[Dict]) -> int:
         placements.sort(key=lambda p: (round(p["x"], 4), round(p["y"], 4), round(p["z"], 4)))

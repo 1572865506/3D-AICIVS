@@ -212,6 +212,7 @@ class IndependentGlobalValidator:
             door_zone_len,
             rear_zone_len,
             compiled_constraints,
+            options=options,
         )
         if r_viols:
             constraint_violations.extend(r_viols)
@@ -573,6 +574,7 @@ class IndependentGlobalValidator:
         door_zone_len: float,
         rear_zone_len: float,
         compiled_constraints: Optional[Dict[str, Any]],
+        options: Optional[Dict[str, Any]] = None,
     ) -> Tuple[List[ViolationDetail], List[ViolationDetail]]:
         """
         Validates business rules and physical mechanics using vertical Z-spatial indexing:
@@ -814,6 +816,51 @@ class IndependentGlobalValidator:
                             extra_data={"stack_depth": stack_depth, "max_layers": max_layers},
                         )
                     )
+
+            # 5. Gate 11: Tipping Moment and Overturning Safety Check (TIP-03)
+            # Check if carton is at the exposed front (no forward neighbor) and lacks overturning stability
+            check_tipping = True
+            if options is not None and "tipping_moment_constraint" in options:
+                check_tipping = bool(options["tipping_moment_constraint"])
+            elif compiled_constraints is not None and "tipping_moment_constraint" in compiled_constraints:
+                check_tipping = bool(compiled_constraints["tipping_moment_constraint"])
+
+            if check_tipping:
+                is_at_door = (x + dx >= c_lx - 0.04 - eps)
+                if not is_at_door:
+                    # Fast pre-check: if carton itself has SF >= 1.5, it is self-stable under 0.5g deceleration!
+                    sf = (2.0 * dx / dz) if dz > 1e-6 else float("inf")
+                    if sf < 1.5 - eps:
+                        # Check for physical forward support from another carton touching in +X
+                        has_forward_support = False
+                        min_y_ov = 0.20 * dy
+                        min_z_ov = 0.20 * dz
+                        target_x = x + dx
+                        for j, p2 in enumerate(placements):
+                            if i == j:
+                                continue
+                            if abs(p2["x"] - target_x) <= 0.03:
+                                y_ov = min(y + dy, p2["y"] + p2["dy"]) - max(y, p2["y"])
+                                z_ov = min(z + dz, p2["z"] + p2["dz"]) - max(z, p2["z"])
+                                if y_ov >= min_y_ov - eps and z_ov >= min_z_ov - eps:
+                                    has_forward_support = True
+                                    break
+
+                        if not has_forward_support:
+                            stability_violations.append(
+                                ViolationDetail(
+                                    violation_type=ViolationType.UNSTABLE_PLACEMENT,
+                                    severity=ViolationSeverity.FATAL,
+                                    message=(
+                                        f"Placement {p['placement_id']} (SKU: {sku_id}) has no forward support and "
+                                        f"fails tipping moment safety factor check (SF={sf:.2f} < 1.50)"
+                                    ),
+                                    sku_id=sku_id,
+                                    placement_id=p["placement_id"],
+                                    placement_index=i,
+                                    extra_data={"safety_factor": sf, "min_safety_factor": 1.5},
+                                )
+                            )
 
         return rule_violations, stability_violations
 

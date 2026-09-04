@@ -261,27 +261,111 @@ class DoorClosurePlanner:
                     f"Door reserve pool was never deployed into door closure (reserve_deployed={reserve_deployed})"
                 )
 
-        # 7. Anti-Toppling Stability
+        # 7. Anti-Toppling Stability (TIP-04: Thrust-Chain Group Tipping Moment Analysis)
+        cg = contact_graph
+        if cg is None:
+            cg = ContactGraph(container=self.container, geom_epsilon=eps)
+            for p in placements:
+                cg.add_placement(p)
+
         stable_door_items = 0
         for p in front_items:
             slenderness_x = p.orientation.dz / max(1e-4, p.orientation.dx)
             is_floor = p.min_z <= eps
+            back_contacts = cg.get_contacts_in_direction(p.placement_id, ContactDirection.BACK)
+            has_rear_support = len(back_contacts) > 0 or p.min_x <= eps
 
-            has_rear_support = False
-            if contact_graph is not None:
-                back_contacts = contact_graph.get_contacts_in_direction(p.placement_id, ContactDirection.BACK)
-                has_rear_support = len(back_contacts) > 0 or p.min_x <= eps
-            else:
-                has_rear_support = p.min_x > 0.0
-
-            if slenderness_x <= 3.0 or (is_floor and has_rear_support) or has_rear_support:
+            if (slenderness_x <= 2.0) or (is_floor and has_rear_support) or has_rear_support:
                 stable_door_items += 1
 
         anti_toppling_ratio = (stable_door_items / len(front_items)) if front_items else 1.0
-        if reached_door_zone and anti_toppling_ratio < 0.60:
-            reasons.append(
-                f"Door front anti-toppling risk: stable ratio {anti_toppling_ratio:.1%} < required 60%"
-            )
+
+        # Detailed Rigid Thrust-Chain Moment Analysis (TIP-04)
+        # Fast screen: triggered when reached_door_zone and (anti_toppling_ratio < 0.80 or full container evaluation)
+        tipping_hazard_detected = False
+        min_group_sf = float("inf")
+
+        if reached_door_zone and front_items:
+            # Build local contact graph if not provided
+            cg = contact_graph
+            if cg is None:
+                cg = ContactGraph(container=self.container, geom_epsilon=eps)
+                for p in placements:
+                    cg.add_placement(p)
+
+            # Build connected components of door front items via touching contacts
+            front_ids = {p.placement_id for p in front_items}
+            placement_lookup = {p.placement_id: p for p in front_items}
+            visited: Set[str] = set()
+            components: List[List[Placement]] = []
+
+            for pid in front_ids:
+                if pid in visited:
+                    continue
+                comp: List[Placement] = []
+                queue = [pid]
+                visited.add(pid)
+                while queue:
+                    curr_id = queue.pop(0)
+                    if curr_id in placement_lookup:
+                        comp.append(placement_lookup[curr_id])
+                    # Traverse all touching neighbors within front_items
+                    for edge in cg.get_contacts(curr_id):
+                        neighbor_id = edge.node_b
+                        if neighbor_id in front_ids and neighbor_id not in visited:
+                            visited.add(neighbor_id)
+                            queue.append(neighbor_id)
+                if comp:
+                    components.append(comp)
+
+            # Evaluate each connected thrust chain component
+            for comp in components:
+                total_w = sum(p.weight_kg for p in comp)
+                if total_w <= 1e-6:
+                    total_w = float(len(comp)) * 10.0  # Fallback default weight
+
+                # Combined Center of Gravity
+                weighted_x = sum((p.position.x + p.orientation.dx / 2.0) * (p.weight_kg if p.weight_kg > 0 else 10.0) for p in comp)
+                weighted_z = sum((p.position.z + p.orientation.dz / 2.0) * (p.weight_kg if p.weight_kg > 0 else 10.0) for p in comp)
+                sum_w = sum((p.weight_kg if p.weight_kg > 0 else 10.0) for p in comp)
+
+                cog_x = weighted_x / sum_w
+                cog_z = weighted_z / sum_w
+
+                # Check if group is rear-supported against the container inner body
+                group_has_rear_brace = any(
+                    (p.position.x <= eps or len(cg.get_contacts_in_direction(p.placement_id, ContactDirection.BACK)) > 0)
+                    for p in comp
+                )
+
+                # Overturning axis: Door sill line (x = Lx, z = 0)
+                # M_stable = W_total * (Lx - CoG_x)
+                # M_tip = W_total * 0.5g * CoG_z
+                dist_to_door = max(0.0, self.container.Lx - cog_x)
+                m_stable = total_w * dist_to_door
+                m_tip = total_w * 0.5 * max(1e-4, cog_z)
+
+                if group_has_rear_brace:
+                    sf_group = float("inf")
+                else:
+                    sf_group = (m_stable / m_tip) if m_tip > 1e-6 else float("inf")
+
+                if sf_group < min_group_sf:
+                    min_group_sf = sf_group
+
+                # SF < 1.5 indicates overturning hazard upon door opening
+                if sf_group < 1.5 - eps:
+                    tipping_hazard_detected = True
+
+        if reached_door_zone:
+            if anti_toppling_ratio < 0.60 and tipping_hazard_detected:
+                reasons.append(
+                    f"Door front anti-toppling risk: stable ratio {anti_toppling_ratio:.1%} < required 60% and group SF {min_group_sf:.2f} < 1.50"
+                )
+            elif anti_toppling_ratio < 0.80 and tipping_hazard_detected:
+                reasons.append(
+                    f"Door front thrust-chain tipping hazard: group safety factor {min_group_sf:.2f} < 1.50"
+                )
 
         # 8. Composite Readiness Score (0 to 100)
         clearance_score = 20.0 if clearance_margin <= 0.50 and clearance_margin >= min_clearance_m else 0.0

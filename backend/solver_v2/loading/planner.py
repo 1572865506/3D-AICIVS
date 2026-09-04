@@ -327,7 +327,7 @@ class LoadingSequencePlanner:
         static_feasible: Optional[bool] = None,
     ) -> LoadingPlan:
         started=time.perf_counter(); placements=list(placements)
-        static=(IndependentGlobalValidator.validate(self.container, placements, self.cargo).is_valid
+        static=(IndependentGlobalValidator.validate(self.container, placements, self.cargo, options={"tipping_moment_constraint": False}).is_valid
                 if static_feasible is None else static_feasible)
         if prepared_graph is not None and prepared_membership is not None and prepared_groups is not None:
             graph=prepared_graph;membership=prepared_membership;groups=list(prepared_groups)

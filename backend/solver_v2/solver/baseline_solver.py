@@ -46,6 +46,7 @@ from backend.solver_v2.door.closure_planner import DoorClosurePlanner, DoorReadi
 from backend.solver_v2.validation.independent_validator import IndependentGlobalValidator
 from backend.solver_v2.validation.types import ValidationResult
 from backend.solver_v2.topfill.planner import TopFillPlanner
+from backend.solver_v2.stability.tipping_moment import TippingMomentAnalyzer
 
 
 @dataclass

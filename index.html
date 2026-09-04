@@ -2511,6 +2511,10 @@
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                   <span>取消选择</span>
                 </button>
+                <button class="tool-action-btn" onclick="copyCurrentSKUData()" title="一键复制当前SKU货单数据JSON，供本地跑测或分享">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <span>复制SKU数据</span>
+                </button>
                 <span class="manifest-count-badge" id="manifest-selection-count">已选 0 / 0</span>
               </div>
               <div style="display:flex; align-items:center; gap:5px; margin-left:auto;">
@@ -6978,6 +6982,71 @@
       renderAnchorRibbon();
       markManifestDirty('MANIFEST_CLEARED', true);
       showToast('货单已清空，当前为空柜草稿。', 'success');
+    };
+
+    window.copyCurrentSKUData = function() {
+      if (!activeManifest || activeManifest.length === 0) {
+        showToast('当前货单为空，无法复制SKU数据', 'warning');
+        return;
+      }
+      const exportData = {
+        exportedAt: new Date().toISOString(),
+        containerSeed: {
+          type: "40HQ",
+          inner: {
+            x: 12.032,
+            y: 2.352,
+            z: 2.698
+          }
+        },
+        skuCount: activeManifest.length,
+        totalQuantity: activeManifest.reduce((sum, item) => sum + Number(item.quantity || 0), 0),
+        cargo: activeManifest.map(sku => ({
+          sku: sku.sku,
+          name: sku.name,
+          source: {
+            w: parseFloat(sku.w),
+            d: parseFloat(sku.d),
+            h: parseFloat(sku.h),
+            weight: parseFloat(sku.weight),
+            quantity: parseInt(sku.quantity, 10),
+            requirement: sku.requirement || '放中间'
+          },
+          allowedOrientation: sku.allowedOrientation || 'default',
+          maxStackLayers: sku.maxStackLayers || null,
+          maxPressureKgM2: sku.maxPressureKgM2 || null,
+          isElastic: !!sku.isElastic
+        }))
+      };
+
+      const jsonStr = JSON.stringify(exportData, null, 2);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(jsonStr).then(() => {
+          showToast(`已成功复制 ${activeManifest.length} 种 SKU 数据至剪贴板！`, 'success');
+        }).catch(err => {
+          fallbackCopyText(jsonStr);
+        });
+      } else {
+        fallbackCopyText(jsonStr);
+      }
+
+      function fallbackCopyText(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          showToast(`已复制 ${activeManifest.length} 种 SKU 数据至剪贴板！`, 'success');
+        } catch (err) {
+          showToast('复制失败，请手动在控制台查看导出数据', 'danger');
+          console.log('SKU_DATA_EXPORT:', text);
+        }
+        document.body.removeChild(textArea);
+      }
     };
 
     window.resetSKUSelection = function() {

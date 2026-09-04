@@ -833,3 +833,368 @@ class CompositeStripBuilder:
             sku_counts=sku_counts,
             is_valid=True,
         )
+
+
+@dataclass(frozen=True)
+class OrientationVariant:
+    """A concrete geometric orientation candidate for an SKU."""
+    sku_id: str
+    sku_name: str
+    ori_name: str
+    dx: float               # longitudinal thickness (X-axis)
+    dy: float               # lateral width (Y-axis)
+    dz: float               # vertical height (Z-axis)
+    weight_kg: float
+    max_stack: int          # stacking layer limit
+    is_upright: bool
+    is_flat: bool
+    is_side: bool
+    is_slender: bool        # True if thin / high aspect ratio (dx < 0.20 or dz/dx > 2.2)
+    zone_preference: Any = None
+    is_elastic: bool = False
+
+
+@dataclass
+class PatternColumnSpec:
+    """A single column specification within a section wall pattern."""
+    variant: OrientationVariant
+    num_cols_y: int         # number of carton columns across Y
+    num_rows_x: int         # number of carton rows along X (dx * num_rows_x ≈ target_depth)
+    num_layers_z: int       # vertical stack layers along Z
+    y_start: float          # starting Y coordinate in container
+    col_width: float        # num_cols_y * variant.dy
+    col_depth: float        # num_rows_x * variant.dx
+    col_height: float       # num_layers_z * variant.dz
+    total_cartons: int      # num_cols_y * num_rows_x * num_layers_z
+    total_weight_kg: float
+
+
+@dataclass
+class SectionWallPattern:
+    """A complete flush-faced cross-section wall pattern."""
+    pattern_id: str
+    columns: List[PatternColumnSpec]
+    total_width: float      # sum of col_width across Y
+    flush_depth: float      # target advance depth (max col_depth)
+    min_col_depth: float    # minimum col_depth (for depth alignment check)
+    depth_alignment_ratio: float  # min_col_depth / flush_depth
+    coverage_ratio: float   # total_width / container_width
+    score: float            # composite fitness score
+    has_slender_columns: bool
+    sku_counts: Dict[str, int] = field(default_factory=dict)
+
+
+class WidthPatternEngine:
+    """
+    Exact Width Pattern Generator using Combinatorial Knapsack & Depth Synchronization.
+    """
+
+    def __init__(
+        self,
+        container_width: float = 2.350,
+        container_height: float = 2.690,
+        container_length: float = 12.024,
+        geom_epsilon: float = 1e-4,
+    ):
+        self.cW = container_width
+        self.cH = container_height
+        self.cL = container_length
+        self.geom_epsilon = geom_epsilon
+
+    def extract_orientation_variants(
+        self,
+        cargo_pool: Sequence[Union[CargoSKU, UniversalCargoTensor]],
+        remaining_qty: Dict[str, int],
+        max_depth_limit: float = 1.20,
+    ) -> List[OrientationVariant]:
+        """Expands all legal orientation variants for available SKUs."""
+        variants: List[OrientationVariant] = []
+
+        for c in cargo_pool:
+            sku_id = getattr(c, "sku_id", "")
+            if not sku_id or remaining_qty.get(sku_id, 0) <= 0:
+                continue
+
+            sku_name = getattr(c, "name", sku_id)
+            weight_kg = getattr(c, "weight_kg", 0.0)
+            is_elastic = getattr(c, "is_elastic", False)
+            c_zp = getattr(c, "zone_preference", None)
+
+            max_stack = 99
+            if hasattr(c, "max_stack_layers") and c.max_stack_layers:
+                max_stack = c.max_stack_layers
+            elif hasattr(c, "stacking_policy") and c.stacking_policy and c.stacking_policy.max_stack_layers:
+                max_stack = c.stacking_policy.max_stack_layers
+
+            oris_raw: List[Tuple[str, float, float, float, bool, bool, bool]] = []
+            if isinstance(c, UniversalCargoTensor):
+                for o in c.orientations:
+                    oris_raw.append((o.name, o.dx, o.dy, o.dz, o.is_upright, o.is_flat, o.is_side))
+            elif isinstance(c, CargoSKU):
+                bx, by, bz = c.box.x, c.box.y, c.box.z
+                oris_raw.append(("UPRIGHT_NORMAL", bx, by, bz, True, False, False))
+                if abs(bx - by) > self.geom_epsilon:
+                    oris_raw.append(("UPRIGHT_ROTATED", by, bx, bz, True, False, False))
+                if c.orientation_policy.allow_flat:
+                    oris_raw.append(("FLAT_NORMAL", bx, bz, by, False, True, False))
+                    if abs(bx - bz) > self.geom_epsilon:
+                        oris_raw.append(("FLAT_ROTATED", bz, bx, by, False, True, False))
+            else:
+                lx = getattr(c, "length", getattr(c, "x", 0.4))
+                wy = getattr(c, "width", getattr(c, "y", 0.4))
+                hz = getattr(c, "height", getattr(c, "z", 0.4))
+                oris_raw.append(("UPRIGHT_NORMAL", lx, wy, hz, True, False, False))
+                if abs(lx - wy) > self.geom_epsilon:
+                    oris_raw.append(("UPRIGHT_ROTATED", wy, lx, hz, True, False, False))
+
+            for ori_name, dx, dy, dz, is_up, is_fl, is_sd in oris_raw:
+                if dy > self.cW or dz > (self.cH - 0.04) or dx > max_depth_limit:
+                    continue
+
+                is_slender = (dx < 0.20) or ((dz / max(1e-4, dx)) > 2.2)
+
+                variants.append(
+                    OrientationVariant(
+                        sku_id=sku_id,
+                        sku_name=sku_name,
+                        ori_name=ori_name,
+                        dx=round(dx, 4),
+                        dy=round(dy, 4),
+                        dz=round(dz, 4),
+                        weight_kg=weight_kg,
+                        max_stack=max_stack,
+                        is_upright=is_up,
+                        is_flat=is_fl,
+                        is_side=is_sd,
+                        is_slender=is_slender,
+                        zone_preference=c_zp,
+                        is_elastic=is_elastic,
+                    )
+                )
+
+        return variants
+
+    def generate_patterns(
+        self,
+        variants: List[OrientationVariant],
+        remaining_qty: Dict[str, int],
+        available_x: float,
+        target_width: Optional[float] = None,
+        excluded_pattern_ids: Optional[Set[str]] = None,
+    ) -> List[SectionWallPattern]:
+        """Generates candidate SectionWallPatterns filling target_width with depth synchronization."""
+        if target_width is None:
+            target_width = self.cW
+        if excluded_pattern_ids is None:
+            excluded_pattern_ids = set()
+
+        if not variants or target_width < 0.20:
+            return []
+
+        unique_variants: List[OrientationVariant] = []
+        seen_geo: Set[Tuple[str, float, float, float]] = set()
+        for v in variants:
+            key = (v.sku_id, v.dx, v.dy, v.dz)
+            if key not in seen_geo and remaining_qty.get(v.sku_id, 0) > 0:
+                seen_geo.add(key)
+                unique_variants.append(v)
+
+        patterns: List[SectionWallPattern] = []
+
+        # 1. Single-SKU Patterns
+        for v in unique_variants:
+            avail_q = remaining_qty.get(v.sku_id, 0)
+            if avail_q <= 0 or v.dy > target_width:
+                continue
+
+            max_cols = int(target_width // v.dy)
+            for cols in range(max_cols, 0, -1):
+                col_w = round(cols * v.dy, 4)
+                cov = col_w / target_width
+                if cov < 0.70:
+                    break
+
+                max_layers = min(v.max_stack, int((self.cH - 0.04) // v.dz))
+                if max_layers < 1:
+                    continue
+
+                max_rows_x = min(4, max(1, int(available_x // v.dx)))
+                for rows in range(max_rows_x, 0, -1):
+                    needed = cols * rows * max_layers
+                    layers = max_layers
+                    if needed > avail_q:
+                        layers = max(1, avail_q // (cols * rows))
+                    actual_needed = cols * rows * layers
+                    if actual_needed <= 0 or actual_needed > avail_q:
+                        continue
+
+                    col_spec = PatternColumnSpec(
+                        variant=v,
+                        num_cols_y=cols,
+                        num_rows_x=rows,
+                        num_layers_z=layers,
+                        y_start=0.0,
+                        col_width=col_w,
+                        col_depth=round(rows * v.dx, 4),
+                        col_height=round(layers * v.dz, 4),
+                        total_cartons=actual_needed,
+                        total_weight_kg=round(actual_needed * v.weight_kg, 2),
+                    )
+
+                    pid = f"PAT_S_{v.sku_id}_{v.ori_name}_C{cols}_R{rows}_L{layers}"
+                    if pid in excluded_pattern_ids:
+                        continue
+
+                    score = cov * 60.0 + (col_w * col_spec.col_depth * col_spec.col_height) * 20.0 + (10.0 if not v.is_slender else 0.0)
+                    pat = SectionWallPattern(
+                        pattern_id=pid,
+                        columns=[col_spec],
+                        total_width=col_w,
+                        flush_depth=col_spec.col_depth,
+                        min_col_depth=col_spec.col_depth,
+                        depth_alignment_ratio=1.0,
+                        coverage_ratio=round(cov, 4),
+                        score=round(score, 4),
+                        has_slender_columns=v.is_slender,
+                        sku_counts={v.sku_id: actual_needed},
+                    )
+                    patterns.append(pat)
+
+        # 2. Multi-SKU Combinatorial Patterns (Pair complementing)
+        num_v = len(unique_variants)
+        for i in range(num_v):
+            v1 = unique_variants[i]
+            q1 = remaining_qty.get(v1.sku_id, 0)
+            if q1 <= 0 or v1.dy > target_width:
+                continue
+
+            max_c1 = min(6, int(target_width // v1.dy))
+            for c1 in range(1, max_c1 + 1):
+                w1 = round(c1 * v1.dy, 4)
+                rem_w1 = round(target_width - w1, 4)
+                if rem_w1 < 0.10:
+                    continue
+
+                for j in range(i + 1, num_v):
+                    v2 = unique_variants[j]
+                    q2 = remaining_qty.get(v2.sku_id, 0)
+                    if q2 <= 0 or v2.dy > rem_w1:
+                        continue
+
+                    max_c2 = min(6, int(rem_w1 // v2.dy))
+                    for c2 in range(1, max_c2 + 1):
+                        w2 = round(c2 * v2.dy, 4)
+                        tot_w = round(w1 + w2, 4)
+                        cov = tot_w / target_width
+
+                        if cov >= 0.90:
+                            r1, r2, sync_depth, min_depth, align_ratio = self._find_depth_synchronization(
+                                v1.dx, v2.dx, available_x
+                            )
+                            if align_ratio < 0.70:
+                                continue
+
+                            lz1 = min(v1.max_stack, int((self.cH - 0.04) // v1.dz))
+                            lz2 = min(v2.max_stack, int((self.cH - 0.04) // v2.dz))
+
+                            tot1 = c1 * r1 * lz1
+                            tot2 = c2 * r2 * lz2
+                            if tot1 > q1:
+                                lz1 = max(1, q1 // (c1 * r1))
+                                tot1 = c1 * r1 * lz1
+                            if tot2 > q2:
+                                lz2 = max(1, q2 // (c2 * r2))
+                                tot2 = c2 * r2 * lz2
+
+                            if tot1 <= 0 or tot1 > q1 or tot2 <= 0 or tot2 > q2:
+                                continue
+
+                            col1 = PatternColumnSpec(
+                                variant=v1,
+                                num_cols_y=c1,
+                                num_rows_x=r1,
+                                num_layers_z=lz1,
+                                y_start=0.0,
+                                col_width=w1,
+                                col_depth=round(r1 * v1.dx, 4),
+                                col_height=round(lz1 * v1.dz, 4),
+                                total_cartons=tot1,
+                                total_weight_kg=round(tot1 * v1.weight_kg, 2),
+                            )
+                            col2 = PatternColumnSpec(
+                                variant=v2,
+                                num_cols_y=c2,
+                                num_rows_x=r2,
+                                num_layers_z=lz2,
+                                y_start=w1,
+                                col_width=w2,
+                                col_depth=round(r2 * v2.dx, 4),
+                                col_height=round(lz2 * v2.dz, 4),
+                                total_cartons=tot2,
+                                total_weight_kg=round(tot2 * v2.weight_kg, 2),
+                            )
+
+                            pid = f"PAT_P_{v1.sku_id}_{v1.ori_name}_C{c1}_R{r1}+{v2.sku_id}_{v2.ori_name}_C{c2}_R{r2}"
+                            if pid in excluded_pattern_ids:
+                                continue
+
+                            vol1 = col1.col_width * col1.col_depth * col1.col_height
+                            vol2 = col2.col_width * col2.col_depth * col2.col_height
+                            score = (
+                                cov * 70.0
+                                + align_ratio * 30.0
+                                + (vol1 + vol2) * 15.0
+                                - (10.0 if (v1.is_slender or v2.is_slender) else 0.0)
+                            )
+
+                            pat = SectionWallPattern(
+                                pattern_id=pid,
+                                columns=[col1, col2],
+                                total_width=tot_w,
+                                flush_depth=sync_depth,
+                                min_col_depth=min_depth,
+                                depth_alignment_ratio=round(align_ratio, 4),
+                                coverage_ratio=round(cov, 4),
+                                score=round(score, 4),
+                                has_slender_columns=(v1.is_slender or v2.is_slender),
+                                sku_counts={v1.sku_id: tot1, v2.sku_id: tot2},
+                            )
+                            patterns.append(pat)
+
+        patterns.sort(key=lambda p: p.score, reverse=True)
+        return patterns
+
+    def _find_depth_synchronization(
+        self,
+        dx1: float,
+        dx2: float,
+        max_x: float,
+    ) -> Tuple[int, int, float, float, float]:
+        """Finds row counts (r1, r2) minimizing |r1*dx1 - r2*dx2| within max_x."""
+        best_r1 = 1
+        best_r2 = 1
+        best_diff = float("inf")
+        best_max_d = max(dx1, dx2)
+        best_min_d = min(dx1, dx2)
+
+        max_r1 = min(6, max(1, int(max_x // dx1)))
+        max_r2 = min(6, max(1, int(max_x // dx2)))
+
+        for r1 in range(1, max_r1 + 1):
+            d1 = r1 * dx1
+            for r2 in range(1, max_r2 + 1):
+                d2 = r2 * dx2
+                cur_max = max(d1, d2)
+                cur_min = min(d1, d2)
+                diff = cur_max - cur_min
+
+                if cur_max <= max_x + self.geom_epsilon:
+                    if diff < best_diff:
+                        best_diff = diff
+                        best_r1 = r1
+                        best_r2 = r2
+                        best_max_d = cur_max
+                        best_min_d = cur_min
+
+        align_ratio = best_min_d / max(1e-4, best_max_d)
+        return best_r1, best_r2, round(best_max_d, 4), round(best_min_d, 4), round(align_ratio, 4)
