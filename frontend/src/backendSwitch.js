@@ -67,11 +67,24 @@
 
   async function requestJson(path, init, timeoutMs) {
     const controller = new AbortController();
+    const userSignal = init && init.signal;
+    if (userSignal) {
+      if (userSignal.aborted) {
+        throw new BackendError(ErrorType.ABORTED || 'ABORTED', '用户已终止算柜推演');
+      }
+      userSignal.addEventListener('abort', () => controller.abort());
+    }
     const timer = setTimeout(() => controller.abort(), timeoutMs || LOADING_JOB_TIMEOUT_MS);
     try {
       let response;
-      try { response = await root.fetch(`${configuredBase()}${path}`, Object.assign({ cache: 'no-store' }, init || {}, { signal: controller.signal })); }
+      const fetchInit = Object.assign({ cache: 'no-store' }, init || {}, { signal: controller.signal });
+      delete fetchInit.signal; // ensure single signal attached
+      fetchInit.signal = controller.signal;
+      try { response = await root.fetch(`${configuredBase()}${path}`, fetchInit); }
       catch (error) {
+        if (userSignal && userSignal.aborted) {
+          throw new BackendError(ErrorType.ABORTED || 'ABORTED', '用户已终止算柜推演');
+        }
         if (error && error.name === 'AbortError') throw new BackendError(ErrorType.TIMEOUT, 'Backend request timed out');
         throw new BackendError(ErrorType.NETWORK_ERROR, error && error.message ? error.message : 'Network request failed');
       }
@@ -97,16 +110,17 @@
     } catch (_) { return BackendStatus.OFFLINE; }
   }
 
-  async function createJob(payload) {
+  async function createJob(payload, options = {}) {
     const result = await requestJson('/loading/jobs', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
+      signal: options.signal
     }, LOADING_JOB_TIMEOUT_MS);
     if (!result || typeof result.job_id !== 'string') throw new BackendError(ErrorType.INVALID_RESULT, 'Create-job response has no job_id');
     return result.job_id;
   }
 
-  async function getResult(jobId) {
-    return validateLoadingResult(await requestJson(`/loading/${encodeURIComponent(jobId)}`, {}, LOADING_JOB_TIMEOUT_MS));
+  async function getResult(jobId, options = {}) {
+    return validateLoadingResult(await requestJson(`/loading/${encodeURIComponent(jobId)}`, { signal: options.signal }, LOADING_JOB_TIMEOUT_MS));
   }
 
   async function getHighlight(jobId, type, id) {
@@ -121,10 +135,10 @@
     return validateLoadingResult(await response.json());
   }
 
-  async function calculate(payload) {
+  async function calculate(payload, options = {}) {
     if (getMode() === CalculationMode.MOCK) return loadMock();
-    const jobId = await createJob(payload);
-    return getResult(jobId);
+    const jobId = await createJob(payload, options);
+    return getResult(jobId, options);
   }
 
   function sceneObjects(result) {

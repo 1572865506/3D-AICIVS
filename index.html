@@ -1706,6 +1706,27 @@
       font-size: 11px; font-weight: 700; color: #93c5fd;
       font-variant-numeric: tabular-nums;
     }
+    .pp-abort-btn {
+      margin-left: 10px;
+      padding: 3px 9px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fca5a5;
+      background: rgba(239, 68, 68, 0.22);
+      border: 1px solid rgba(248, 113, 113, 0.45);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .pp-abort-btn:hover {
+      background: rgba(239, 68, 68, 0.45);
+      border-color: #ef4444;
+      color: #ffffff;
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.35);
+    }
     .pp-steps { margin: 10px 0 0; display: flex; flex-direction: column; gap: 5px; }
     .pp-step {
       display: flex; align-items: center; gap: 7px;
@@ -5020,14 +5041,15 @@
         updateBackendStatus('OFFLINE');
       });
 
-      if (!cacheRestored) {
-        if (activeManifest.length > 0) {
-          console.log('[3D-AICIVS] 首次进入或无缓存，自动触发初始 3D 算柜推演与渲染...');
-          runSmartPackingAlgorithm(false);
-        } else {
-          clearPackingResultAndScene();
-        }
+      if (cacheRestored) {
+        calculationStatus = window.ManifestWorkflow.CalculationStatus.READY;
+        console.log('[3D-AICIVS] 页面加载完成，已从缓存恢复 3D 装载场景');
+      } else {
+        calculationStatus = window.ManifestWorkflow.CalculationStatus.DIRTY;
+        clearPackingResultAndScene();
+        console.log('[3D-AICIVS] 页面加载完成，待计算（点击“开始计算”触发）');
       }
+      updateCalculationStateUI();
 
       raycaster = new THREE.Raycaster();
       mouse = new THREE.Vector2();
@@ -6003,6 +6025,32 @@
         badge.title = '正在检测算柜服务状态...';
       }
     }
+    let activePackingAbortController = null;
+    let __currentPackingProgress = null;
+
+    window.abortPackingCalculation = function() {
+      console.log('[3D-AICIVS] 用户手动终止算柜推演...');
+      if (activePackingAbortController) {
+        try { activePackingAbortController.abort(); } catch (_) {}
+        activePackingAbortController = null;
+      }
+      currentSolutionEpoch++;
+      if (__currentPackingProgress) {
+        __currentPackingProgress.finish(false, '已终止算柜推演', 200);
+      }
+      const runBtn = document.getElementById('btn-run-packing');
+      if (runBtn) {
+        runBtn.disabled = false;
+        runBtn.style.opacity = '';
+        runBtn.style.pointerEvents = '';
+        const runBtnLabel = runBtn.querySelector('span');
+        if (runBtnLabel) runBtnLabel.textContent = '开始计算';
+      }
+      calculationStatus = window.ManifestWorkflow.CalculationStatus.DIRTY;
+      updateCalculationStateUI();
+      showToast('已由用户手动终止算柜推演。', 'info', '算柜已终止');
+    };
+
     function createPackingProgress() {
       const runId = ++__packingProgressRunId;
       document.getElementById('packing-progress-overlay')?.remove();
@@ -6016,6 +6064,7 @@
             <span class="pp-spinner"></span>
             <span class="pp-title">AI 算柜推演中…</span>
             <span class="pp-elapsed">0.0s</span>
+            <button type="button" class="pp-abort-btn" onclick="window.abortPackingCalculation()" title="终止当前算柜计算">✕ 终止</button>
           </div>
           <div class="pp-steps">
             <div class="pp-step" data-step="1"><span class="pp-dot"></span><span>提交参数请求（策略 / 间距 / 配平）</span></div>
@@ -6067,7 +6116,7 @@
             titleEl.textContent = '✓ 算柜完成';
           } else {
             card.classList.add('err');
-            titleEl.textContent = '算柜失败';
+            titleEl.textContent = summary && summary.includes('终止') ? '已终止算柜' : '算柜失败';
           }
           if (summary) noteEl.textContent = summary;
           setTimeout(() => {
@@ -6107,10 +6156,17 @@
       calculationStatus = window.ManifestWorkflow.CalculationStatus.RUNNING;
       updateCalculationStateUI();
 
+      // Reset and create new abort controller
+      if (activePackingAbortController) {
+        try { activePackingAbortController.abort(); } catch (_) {}
+      }
+      activePackingAbortController = new AbortController();
+
       // Increment request epoch for stale update rejection
       const thisEpoch = ++currentSolutionEpoch;
 
       const prog = createPackingProgress();
+      __currentPackingProgress = prog;
       const runBtn = document.getElementById('btn-run-packing');
       const runBtnLabel = runBtn ? runBtn.querySelector('span') : null;
       const setRunBusy = (busy) => {
@@ -6162,7 +6218,7 @@
             rearZoneLengthM: 1.0
           },
           sku: activeManifest
-        });
+        }, { signal: activePackingAbortController.signal });
         if (thisEpoch < currentSolutionEpoch || requestedRevision !== manifestRevision) {
           console.warn('[3D-AICIVS] 请求已被后续任务取代，终止渲染');
           calculationStatus = window.ManifestWorkflow.CalculationStatus.DIRTY;
@@ -6171,6 +6227,12 @@
         }
       } catch (err) {
         const errorType = err && err.type ? err.type : 'NETWORK_ERROR';
+        if (errorType === 'ABORTED' || (err && err.message && (err.message.includes('终止') || err.message.includes('abort') || err.message.includes('AbortError')))) {
+          console.log('[3D-AICIVS] 算柜任务已取消/终止');
+          prog.finish(false, '已终止算柜推演', 200);
+          setRunBusy(false);
+          return;
+        }
         const isInputConstraint = errorType === 'INPUT_CONSTRAINT';
         if (isInputConstraint) {
           console.warn('[3D-AICIVS] 算柜输入约束未满足:', err.message || err);
