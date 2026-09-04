@@ -951,7 +951,11 @@ class WidthPatternEngine:
                 if dy > self.cW or dz > (self.cH - 0.04) or dx > max_depth_limit:
                     continue
 
-                is_slender = (dx < 0.20) or ((dz / max(1e-4, dx)) > 2.2)
+                # Rigorous dimensionless overturning aspect ratio: column height / base depth
+                # If maximum possible stack height divided by single-box depth along X exceeds critical threshold (2.2),
+                # it is tagged as potentially slender, to be evaluated dynamically by column depth r*dx in actual patterns.
+                estimated_col_h = min(max_stack * dz, self.cH)
+                is_slender = (estimated_col_h / max(1e-4, dx)) > 2.2
 
                 variants.append(
                     OrientationVariant(
