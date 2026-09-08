@@ -123,13 +123,52 @@ def parse_manifest_data(raw_data: Any) -> Tuple[ContainerSpec, List[CargoSKU]]:
             zone = ZoneType.DOOR
             roles.append(PackingRole.DOOR_SEAL)
 
-        from backend.solver_v2.domain.models import OrientationPolicy, StackingPolicy
+        # Parse cargoProfiles if provided
+        profiles_raw = raw_data.get("cargoProfiles", {})
+        profile_ref = item.get("cargoProfileRef", "")
+        profile_data = profiles_raw.get(profile_ref, {}) if profile_ref else {}
+
+        from backend.solver_v2.domain.models import (
+            OrientationPolicy,
+            StackingPolicy,
+            CargoProfile,
+            OrientationRule,
+            OrientationRegion,
+            OrientationMode,
+            PolicySource,
+        )
 
         ori = item.get("allowedOrientation", "default")
         allow_flat = ori in ("allow_flat", "any") or bool(item.get("allowFlat"))
         allow_side = ori in ("allow_side", "any")
 
+        # Check profile orientation rules for conditional flat / upright
+        explicit_rules = []
+        if profile_data:
+            ori_pol_data = profile_data.get("orientationPolicy", {})
+            for r in ori_pol_data.get("rules", []):
+                r_ori_str = r.get("orientation", "UPRIGHT")
+                r_mode = OrientationMode.FLAT if r_ori_str == "FLAT" else (OrientationMode.SIDE if r_ori_str == "SIDE" else OrientationMode.UPRIGHT)
+                if r_mode == OrientationMode.FLAT:
+                    allow_flat = True
+                elif r_mode == OrientationMode.SIDE:
+                    allow_side = True
+                regions = tuple(OrientationRegion(reg) for reg in r.get("allowedRegions", ["MAIN_BODY"]))
+                explicit_rules.append(
+                    OrientationRule(
+                        orientation=r_mode,
+                        allowed_regions=regions,
+                        min_support_ratio=r.get("minSupportRatio"),
+                        max_top_fill_layers=r.get("maxTopFillLayers"),
+                        min_base_height=r.get("minBaseHeight"),
+                        max_base_height=r.get("maxBaseHeight"),
+                        condition=r.get("condition", "ALWAYS"),
+                    )
+                )
+
         max_layers = item.get("maxStackLayers")
+        if max_layers is None and profile_data:
+            max_layers = profile_data.get("stackPolicy", {}).get("maxStackLayers")
         if max_layers is not None:
             try:
                 max_layers = int(max_layers)
@@ -139,6 +178,7 @@ def parse_manifest_data(raw_data: Any) -> Tuple[ContainerSpec, List[CargoSKU]]:
         is_elastic = bool(
             item.get("isElastic")
             or src.get("isElastic")
+            or (profile_data.get("placementPolicy", {}).get("reductionAllowed", False))
             or "可以减少" in req
             or "可减少" in req
             or "少放" in req
@@ -157,6 +197,7 @@ def parse_manifest_data(raw_data: Any) -> Tuple[ContainerSpec, List[CargoSKU]]:
                 allow_upright=True,
                 allow_flat=allow_flat,
                 allow_side=allow_side,
+                rules=tuple(explicit_rules),
             ),
             stacking_policy=StackingPolicy(max_stack_layers=max_layers),
         )
@@ -189,10 +230,11 @@ def run_benchmark(container: ContainerSpec, cargo: List[CargoSKU]) -> Dict[str, 
             "dz": p.orientation.dz,
             "weight_kg": p.weight_kg,
             "orientation": p.orientation.name,
+            "context": p.context.name if hasattr(p.context, "name") else str(p.context),
             "step": p.step_index,
         })
 
-    val_res = validator.validate(c_dim, placements_dict)
+    val_res = validator.validate(c_dim, placements_dict, cargo_list=cargo)
 
     total_cargo_volume = sum(
         s.box.x * s.box.y * s.box.z * s.quantity.required for s in cargo
