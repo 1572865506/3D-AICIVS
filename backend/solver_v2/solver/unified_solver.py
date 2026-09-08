@@ -29,7 +29,13 @@ from backend.solver_v2.domain.models import (
 from backend.solver_v2.validation.independent_validator import IndependentGlobalValidator
 from backend.solver_v2.validation.types import ValidationResult
 from backend.solver_v2.solver.baseline_solver import SolverSolution, SolverTelemetry
-from backend.solver_v2.solver.composite_strip import CompositeStripBuilder
+from backend.solver_v2.solver.composite_strip import (
+    CompositeStripBuilder,
+    WidthPatternEngine,
+    SectionWallPattern,
+    PatternColumnSpec,
+    OrientationVariant,
+)
 from backend.solver_v2.stability.tipping_moment import TippingMomentAnalyzer
 from backend.solver_v2.geometry.aabb import AABB
 from backend.solver_v2.geometry.spatial_index import SpatialIndex
@@ -253,6 +259,11 @@ class UnifiedSolver:
         self.cW = round(self.container.Ly, 4)
         self.cH = round(self.container.Lz, 4)
         self.composite_builder = CompositeStripBuilder()
+        self.pattern_engine = WidthPatternEngine(
+            container_width=self.cW,
+            container_height=self.cH,
+            container_length=self.cL,
+        )
 
     def _convert_cargo_skus_to_tensors(self, cargo_list: List[CargoSKU]) -> List[UniversalCargoTensor]:
         tensor_list: List[UniversalCargoTensor] = []
@@ -564,6 +575,19 @@ class UnifiedSolver:
             )
             self._spatial_idx.insert(f"item_{len(placements)}_{cand['x']}_{cand['y']}_{cand['z']}", aabb, cand)
 
+    def _rebuild_spatial_index(self, placements: List[Dict]) -> None:
+        self._spatial_idx = SpatialIndex(cell_size=0.5)
+        for idx, p in enumerate(placements):
+            aabb = AABB(
+                min_x=p["x"],
+                min_y=p["y"],
+                min_z=p["z"],
+                max_x=round(p["x"] + p["dx"], 4),
+                max_y=round(p["y"] + p["dy"], 4),
+                max_z=round(p["z"] + p["dz"], 4),
+            )
+            self._spatial_idx.insert(f"item_{idx}_{p['x']}_{p['y']}_{p['z']}", aabb, p)
+
     def _solve_single_trial(self, cargo_list: List[UniversalCargoTensor], trial_cfg: Dict[str, Any]) -> Tuple[List[Dict], Dict]:
         remaining_qty: Dict[str, int] = {c.sku_id: c.quantity_required for c in cargo_list}
 
@@ -591,15 +615,11 @@ class UnifiedSolver:
         # Inner sort: anchor single small pieces at inner corner
         inner_group.sort(key=lambda c: (0 if c.quantity_required <= 2 else 1, -c.volume_m3))
         
-        # Door sort: transition items FIRST, then rigid sealing panels, elastic/filler items LAST
+        # Door sort: rigid sealing panels FIRST (sorted by unit volume descending), elastic/filler items LAST
         door_group.sort(key=lambda c: (
-            3 if getattr(c, 'is_elastic', False) else (
-                2 if ('封柜门' in (c.raw_requirement or '') and c.sku_id != 'SKU-02') else (
-                    1 if (c.sku_id == 'SKU-02') else 0
-                )
-            ),
+            1 if getattr(c, 'is_elastic', False) else 0,
+            -c.volume_m3,
             -c.length,
-            -c.volume_m3
         ))
 
         placements: List[Dict] = []
@@ -684,6 +704,199 @@ class UnifiedSolver:
                 if avail_x <= 0.05:
                     break
 
+                # --- STEP 0: Corner Anchor for single small pieces in INNER zone ---
+                if target_zone == UniversalZone.INNER and current_x < 0.05:
+                    corner_skus = [c for c in active_skus if c.quantity_required <= 2]
+                    for c_sku in corner_skus:
+                        if remaining_qty[c_sku.sku_id] <= 0:
+                            continue
+                        c_oris = self._get_permitted_orientations(c_sku)
+                        for o in c_oris:
+                            cand_pos = {
+                                "sku_id": c_sku.sku_id,
+                                "x": round(current_x, 4),
+                                "y": 0.0,
+                                "z": 0.0,
+                                "dx": o.dx, "dy": o.dy, "dz": o.dz,
+                                "weight_kg": c_sku.weight_kg,
+                                "orientation": o.name,
+                                "step": step_idx,
+                                "tag": "CORNER_ANCHOR",
+                                "context": "FOUNDATION"
+                            }
+                            if (not self._has_collision(cand_pos, placements) and
+                                self._has_sufficient_support(cand_pos, placements) and
+                                self._is_placement_tipping_safe(cand_pos, placements)):
+                                self._add_placement(cand_pos, placements)
+                                remaining_qty[c_sku.sku_id] -= 1
+                                step_idx += 1
+                                zone_counts["INNER"] = zone_counts.get("INNER", 0) + 1
+                                break
+
+                # --- STEP 1: Attempt Section-Width Pattern (WidthPatternEngine) ---
+                pattern_pool = [c for c in sku_group if remaining_qty[c.sku_id] > 0]
+                if not is_door:
+                    pattern_pool += [c for c in companion_pool if remaining_qty.get(c.sku_id, 0) > 0]
+                elif any(remaining_qty.get(c.sku_id, 0) > 0 and not getattr(c, 'is_elastic', False) for c in sku_group):
+                    # In door zone, while non-elastic rigid items (SKU-02, SKU-03, SKU-04) remain unplaced,
+                    # restrict pattern pool to non-elastic items (+ companion elastic only as pair-fillers)
+                    # to prevent elastic filler items (SKU-14) from prematurely consuming longitudinal depth.
+                    pass
+
+                pattern_placed = False
+                pattern_variants = self.pattern_engine.extract_orientation_variants(
+                    cargo_pool=pattern_pool,
+                    remaining_qty=remaining_qty,
+                    max_depth_limit=min(avail_x, 1.20),
+                )
+                if pattern_variants:
+                    cand_patterns = self.pattern_engine.generate_patterns(
+                        variants=pattern_variants,
+                        remaining_qty=remaining_qty,
+                        available_x=avail_x,
+                        target_width=self.cW,
+                    )
+                    # Filter patterns with high coverage (>= 84%)
+                    viable_patterns = [p for p in cand_patterns if p.coverage_ratio >= 0.84]
+
+                    # Prioritize patterns containing unplaced bulk items, non-elastic items, and zero-fulfillment SKUs
+                    viable_patterns.sort(
+                        key=lambda p: (
+                            # Penalize pure elastic patterns (e.g. single-SKU SKU-14) if any non-elastic SKU still has remaining items
+                            0 if (
+                                any(remaining_qty.get(c.sku_id, 0) > 0 and not getattr(c, 'is_elastic', False) for c in sku_group)
+                                and all(getattr(next((c for c in pattern_pool if c.sku_id == sid), None), 'is_elastic', False) for sid in p.sku_counts)
+                            ) else 1,
+                            # Strongly prioritize patterns that contain active non-elastic SKUs that currently have 0 placements
+                            1 if any(
+                                not getattr(c, 'is_elastic', False)
+                                and remaining_qty.get(c.sku_id, 0) == getattr(c, 'quantity_required', 0)
+                                for c in pattern_pool if c.sku_id in p.sku_counts
+                            ) else 0,
+                            # Prefer patterns with non-elastic SKUs over purely elastic SKUs
+                            1 if any(not getattr(c, 'is_elastic', False) for c in pattern_pool if c.sku_id in p.sku_counts) else 0,
+                            # Strongly prioritize SKUs with the highest remaining ratio (e.g. SKU-04, SKU-03, SKU-02)
+                            max([remaining_qty.get(sid, 0) / max(1, next((c.quantity_required for c in pattern_pool if c.sku_id == sid), 1)) for sid in p.sku_counts] or [0.0]),
+                            # Prefer higher total packed volume in this pattern wall
+                            sum(p.sku_counts.get(c.sku_id, 0) * c.volume_m3 for c in pattern_pool),
+                            p.score
+                        ),
+                        reverse=True
+                    )
+
+                    for pat in viable_patterns:
+                        # Transaction Snapshot before attempting pattern wall
+                        tx_snapshot = {
+                            "placements_len": len(placements),
+                            "remaining_qty": dict(remaining_qty),
+                            "current_x": current_x,
+                            "step_idx": step_idx,
+                            "zone_counts": dict(zone_counts),
+                        }
+
+                        wall_items = 0
+                        pat_success = True
+
+                        for col in pat.columns:
+                            col_y = round(col.y_start, 4)
+                            col_placed = 0
+
+                            for lz in range(col.num_layers_z):
+                                for rx in range(col.num_rows_x):
+                                    for cy in range(col.num_cols_y):
+                                        if remaining_qty.get(col.variant.sku_id, 0) <= 0:
+                                            break
+                                        is_flat = col.variant.is_flat
+                                        tag_val = "DOOR_SEAL" if is_door else ("GAP_FILL" if is_flat else "MAIN_WALL")
+                                        cand_pos = {
+                                            "sku_id": col.variant.sku_id,
+                                            "x": round(current_x + rx * col.variant.dx, 4),
+                                            "y": round(col_y + cy * col.variant.dy, 4),
+                                            "z": round(lz * col.variant.dz, 4),
+                                            "dx": col.variant.dx,
+                                            "dy": col.variant.dy,
+                                            "dz": col.variant.dz,
+                                            "weight_kg": col.variant.weight_kg,
+                                            "orientation": col.variant.ori_name,
+                                            "step": step_idx,
+                                            "tag": tag_val,
+                                            "context": tag_val,
+                                        }
+
+                                        # Tipping evaluation:
+                                        # 1. If carton is backed by another row in the same column in +X (rx < col.num_rows_x - 1), it has forward support
+                                        # 2. If at container door (+X boundary >= cL - 0.04), door gives rigid support
+                                        # 3. Otherwise, check if carton has intrinsic SF >= 1.5 or is supported by forward neighbor in placements
+                                        is_tipping_safe = (
+                                            (rx < col.num_rows_x - 1)
+                                            or (cand_pos["x"] + cand_pos["dx"] >= self.cL - 0.04 - 1e-4)
+                                            or self._is_placement_tipping_safe(cand_pos, placements)
+                                        )
+
+                                        if (not self._has_collision(cand_pos, placements) and
+                                            self._has_sufficient_support(cand_pos, placements) and
+                                            is_tipping_safe):
+                                            self._add_placement(cand_pos, placements)
+                                            remaining_qty[col.variant.sku_id] -= 1
+                                            col_placed += 1
+                                            wall_items += 1
+                                            step_idx += 1
+                                            z_name = "DOOR" if is_door else ("INNER" if target_zone == UniversalZone.INNER else "MIDDLE")
+                                            zone_counts[z_name] = zone_counts.get(z_name, 0) + 1
+                                        else:
+                                            # If any core box in pattern fails hard safety, abort pattern
+                                            pat_success = False
+                                            break
+                                    if not pat_success:
+                                        break
+                                if not pat_success:
+                                    break
+
+                            # Headroom relay for this column if there is residual vertical headroom
+                            if pat_success and col_placed > 0:
+                                col_h = round(col.num_layers_z * col.variant.dz, 4)
+                                col_h, relay_cnt, step_idx = self._relay_headroom_for_profile(
+                                    current_x=current_x,
+                                    base_y=col_y,
+                                    strip_l=col.col_depth,
+                                    strip_w=col.col_width,
+                                    base_h=col_h,
+                                    sku_group=sku_group,
+                                    companion_pool=companion_pool,
+                                    is_door=is_door,
+                                    target_zone=target_zone,
+                                    remaining_qty=remaining_qty,
+                                    placements=placements,
+                                    zone_counts=zone_counts,
+                                    step_idx=step_idx,
+                                    sort_mode=sort_mode,
+                                )
+                                wall_items += relay_cnt
+
+                            if not pat_success:
+                                break
+
+                        if pat_success and wall_items > 0:
+                            # Successfully committed pattern wall transaction!
+                            current_x = round(current_x + pat.flush_depth, 4)
+                            walls_count += 1
+                            pattern_placed = True
+                            break
+                        else:
+                            # Transaction Rollback
+                            del placements[tx_snapshot["placements_len"]:]
+                            remaining_qty.clear()
+                            remaining_qty.update(tx_snapshot["remaining_qty"])
+                            current_x = tx_snapshot["current_x"]
+                            step_idx = tx_snapshot["step_idx"]
+                            zone_counts.clear()
+                            zone_counts.update(tx_snapshot["zone_counts"])
+                            self._rebuild_spatial_index(placements)
+
+                if pattern_placed:
+                    continue
+
+                # --- STEP 2: Fallback to Column-by-Column Greedy / Composite Strip ---
                 # Sort: SKUs with substantial bulk volume/qty lead slices according to trial config
                 bulk_skus = [
                     c for c in active_skus

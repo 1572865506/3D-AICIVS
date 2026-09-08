@@ -1072,11 +1072,11 @@ class WidthPatternEngine:
             if q1 <= 0 or v1.dy > target_width:
                 continue
 
-            max_c1 = min(6, int(target_width // v1.dy))
+            max_c1 = min(30, int(target_width // v1.dy))
             for c1 in range(1, max_c1 + 1):
                 w1 = round(c1 * v1.dy, 4)
                 rem_w1 = round(target_width - w1, 4)
-                if rem_w1 < 0.10:
+                if rem_w1 < 0.05:
                     continue
 
                 for j in range(i + 1, num_v):
@@ -1085,17 +1085,17 @@ class WidthPatternEngine:
                     if q2 <= 0 or v2.dy > rem_w1:
                         continue
 
-                    max_c2 = min(6, int(rem_w1 // v2.dy))
+                    max_c2 = min(30, int(rem_w1 // v2.dy))
                     for c2 in range(1, max_c2 + 1):
                         w2 = round(c2 * v2.dy, 4)
                         tot_w = round(w1 + w2, 4)
                         cov = tot_w / target_width
 
-                        if cov >= 0.90:
+                        if cov >= 0.85:
                             r1, r2, sync_depth, min_depth, align_ratio = self._find_depth_synchronization(
                                 v1.dx, v2.dx, available_x
                             )
-                            if align_ratio < 0.70:
+                            if align_ratio < 0.65:
                                 continue
 
                             lz1 = min(v1.max_stack, int((self.cH - 0.04) // v1.dz))
