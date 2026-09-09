@@ -1,0 +1,16 @@
+{
+    "case_id": "TALL-SLENDER-TIPPING",
+    "case_name": "高瘦箱倾覆 (测TIP安全)",
+    "description": "Tests tall slender boxes (dz/dx>3) for tipping safety - no unsupported tall placements or voids",
+    "container": {
+        "usable": {"L": 12.032, "W": 2.352, "H": 2.698},
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {"sku": "TALL-01", "name": "高柜体A", "w": 0.400, "d": 0.300, "h": 1.200, "weight": 18.0, "quantity": 60},
+        {"sku": "TALL-02", "name": "高柜体B", "w": 0.350, "d": 0.250, "h": 0.900, "weight": 12.0, "quantity": 80},
+        {"sku": "LOW-01", "name": "矮宽底座", "w": 0.800, "d": 0.600, "h": 0.200, "weight": 20.0, "quantity": 100},
+        {"sku": "FILL-01", "name": "间隙填充", "w": 0.300, "d": 0.200, "h": 0.200, "weight": 3.0,
+         "quantity": 300, "requirement": "按需调节", "isElastic": true}
+    ]
+}

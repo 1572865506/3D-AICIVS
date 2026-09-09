@@ -50,6 +50,7 @@ BENCHMARK_14SKU_PATH = os.path.join(
     PROJECT_ROOT, "devkit", "cleanroom_solver_v2_devkit", "benchmarks", "40hq_cleanroom_case_001.json"
 )
 OUTPUT_RESULTS_PATH = os.path.join(PROJECT_ROOT, "tests", "benchmark_results.json")
+CASES_DIR = os.path.join(PROJECT_ROOT, "tests", "cases")
 
 # Canonical 40HQ Container Specifications
 DEFAULT_40HQ_SPEC = {
@@ -395,6 +396,103 @@ def execute_benchmark_case(
         if getattr(v, "severity", None) and str(getattr(v, "severity", "")).endswith("FATAL")
     ])
 
+    # --- SKU 履行度与刚性/弹性合规审计 ---
+    sku_counts: Dict[str, int] = {}
+    for p in sol.placements:
+        sid = getattr(p, "sku_id", "") or (p.get("sku_id") if isinstance(p, dict) else "")
+        if sid:
+            sku_counts[sid] = sku_counts.get(sid, 0) + 1
+
+    rigid_req = 0
+    rigid_placed = 0
+    elastic_req = 0
+    elastic_placed = 0
+    starved_skus = []
+    sku_fulfillment_details = {}
+
+    for c in v2_cargos:
+        sid = c.sku_id
+        is_elastic = getattr(c, "is_elastic", False)
+        req_q = c.quantity.required
+        p_count = sku_counts.get(sid, 0)
+        c_rate = round(p_count / max(1, req_q) * 100.0, 1)
+
+        sku_fulfillment_details[sid] = {
+            "name": c.name,
+            "is_elastic": is_elastic,
+            "required": req_q,
+            "placed": p_count,
+            "completion_pct": c_rate
+        }
+
+        if is_elastic:
+            elastic_req += req_q
+            elastic_placed += p_count
+        else:
+            rigid_req += req_q
+            rigid_placed += p_count
+            if p_count == 0 and req_q > 0:
+                starved_skus.append(sid)
+
+    rigid_comp_pct = round(rigid_placed / max(1, rigid_req) * 100.0, 2)
+    elastic_comp_pct = round(elastic_placed / max(1, elastic_req) * 100.0, 2) if elastic_req > 0 else 0.0
+    
+    # 异常判断：当存在刚性SKU未装完（<99%），却塞入了大量弹性件（>0件）
+    priority_inversion = bool(rigid_comp_pct < 99.0 and elastic_placed > 0)
+
+    # --- 细分约束审计分类 ---
+    audit_breakdown = {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0,
+    }
+
+    for v in val_report.violations:
+        v_type = str(getattr(v, "violation_type", ""))
+        msg = str(getattr(v, "message", "")).lower()
+        if "ORIENTATION" in v_type:
+            audit_breakdown["orientation_violations"] += 1
+        elif "FLOOR" in v_type:
+            audit_breakdown["floor_only_violations"] += 1
+        elif "TOP_STACK" in v_type or "no_top" in msg:
+            audit_breakdown["top_stack_violations"] += 1
+        elif "BEARING" in v_type or "pressure" in msg:
+            audit_breakdown["bearing_violations"] += 1
+        elif "STACK_LIMIT" in v_type or "layer" in msg:
+            audit_breakdown["stack_layer_violations"] += 1
+        elif "SUPPORT" in v_type or "floating" in msg or "unsupported" in msg:
+            audit_breakdown["support_floating_violations"] += 1
+        elif "DOOR_LOCKOUT" in v_type or "door" in msg:
+            audit_breakdown["door_lockout_violations"] += 1
+        elif "ZONE" in v_type:
+            audit_breakdown["zone_violations"] += 1
+        elif "PAYLOAD" in v_type or "weight" in msg:
+            audit_breakdown["payload_violations"] += 1
+
+    # 综合健康状态评估
+    health_status = "HEALTHY"
+    health_issues = []
+    if total_violations > 0:
+        health_status = "VIOLATED"
+        health_issues.append(f"VIOLATIONS({total_violations})")
+    if overlap_count > 0:
+        health_status = "COLLISION"
+        health_issues.append(f"COLLISIONS({overlap_count})")
+    if priority_inversion:
+        health_issues.append("PRIORITY_INVERSION(弹性侵蚀刚性)")
+        if health_status == "HEALTHY":
+            health_status = "UNHEALTHY_PRIORITY"
+    if starved_skus:
+        health_issues.append(f"STARVATION({len(starved_skus)}SKU未放)")
+        if health_status == "HEALTHY":
+            health_status = "SKU_STARVATION"
+
     return {
         "case_id": case_id,
         "case_name": case_name,
@@ -412,16 +510,97 @@ def execute_benchmark_case(
         "violations": total_violations,
         "fatal_violations": fatal_violations,
         "is_valid": (overlap_count == 0 and oob_count == 0 and total_violations == 0),
+        "health_status": health_status,
+        "health_issues": health_issues,
+        "sku_fulfillment": {
+            "rigid_required": rigid_req,
+            "rigid_placed": rigid_placed,
+            "rigid_completion_pct": rigid_comp_pct,
+            "elastic_required": elastic_req,
+            "elastic_placed": elastic_placed,
+            "elastic_completion_pct": elastic_comp_pct,
+            "priority_inversion": priority_inversion,
+            "starved_skus": starved_skus,
+            "sku_details": sku_fulfillment_details,
+        },
+        "constraint_audit": audit_breakdown,
         "summary": {
             "placedCount": placed_count,
             "unplacedCount": unplaced_count,
-            "utilization": utilization_pct
+            "utilization": utilization_pct,
+            "rigidCompletion": rigid_comp_pct,
+            "healthStatus": health_status
         }
     }
 
 
+def load_json_cases() -> List[Tuple[Dict[str, Any], List[Dict[str, Any]], str, str, str]]:
+    """
+    从 tests/cases/ 目录动态加载 JSON 格式的测试用例。
+    每个 JSON 文件必须包含: case_id, case_name, description, container, cargo。
+    按文件名排序加载，确保用例顺序稳定。
+    """
+    if not os.path.isdir(CASES_DIR):
+        return []
+
+    loaded = []
+    json_files = sorted(f for f in os.listdir(CASES_DIR) if f.endswith(".json"))
+
+    for fname in json_files:
+        fpath = os.path.join(CASES_DIR, fname)
+        try:
+            with open(fpath, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            case_id = data["case_id"]
+            case_name = data.get("case_name", case_id)
+            description = data.get("description", "")
+
+            # 解析容器规格
+            container_raw = data.get("container", {})
+            if isinstance(container_raw, str) and container_raw.upper() in ("40HQ", "40HC"):
+                container_spec = DEFAULT_40HQ_SPEC
+            else:
+                container_spec = {
+                    "usable": {
+                        "L": float(container_raw.get("usable", container_raw).get("L", 12.032)),
+                        "W": float(container_raw.get("usable", container_raw).get("W", 2.352)),
+                        "H": float(container_raw.get("usable", container_raw).get("H", 2.698)),
+                    },
+                    "maxPayloadTons": float(container_raw.get("maxPayloadTons", 26.5))
+                }
+
+            # 解析货物列表
+            cargo_list = []
+            for item in data.get("cargo", []):
+                cargo_entry = {
+                    "sku": item.get("sku", ""),
+                    "name": item.get("name", ""),
+                    "w": float(item.get("w", 0.0)),
+                    "d": float(item.get("d", 0.0)),
+                    "h": float(item.get("h", 0.0)),
+                    "weight": float(item.get("weight", 0.0)),
+                    "quantity": int(item.get("quantity", 0)),
+                    "requirement": item.get("requirement", ""),
+                }
+                # 传递约束字段（如果存在）
+                for key in ("isElastic", "allowDoorZone", "mustBeOnFloor",
+                            "allowStackingOnTop", "allowFlat", "allowSide",
+                            "max_stack_layers", "maxBearingKg", "maxFlatLayers"):
+                    if key in item:
+                        cargo_entry[key] = item[key]
+                cargo_list.append(cargo_entry)
+
+            loaded.append((container_spec, cargo_list, case_id, case_name, description))
+        except Exception as e:
+            print(f"  [WARN] 跳过无效用例文件 {fname}: {e}")
+
+    return loaded
+
+
 def run_benchmark_suite() -> Dict[str, Any]:
-    """Runs all 5 standard benchmark cases and exports benchmark_results.json."""
+    """Runs all benchmark cases (5 hardcoded + dynamic JSON) and exports benchmark_results.json."""
+    # 原有 5 个硬编码用例
     cases = [
         get_benchmark_case_1_14sku(),
         get_benchmark_case_2_single_large(),
@@ -429,6 +608,13 @@ def run_benchmark_suite() -> Dict[str, Any]:
         get_benchmark_case_4_door_dense(),
         get_benchmark_case_5_mixed_heterogeneous(),
     ]
+
+    # 动态加载 tests/cases/ 目录下的 JSON 用例
+    json_cases = load_json_cases()
+    if json_cases:
+        cases.extend(json_cases)
+
+    total_cases = len(cases)
 
     print("=" * 80)
     print("3D-AICIVS Solver Benchmark Suite (TASK-07 / Step 7.1)")
@@ -439,7 +625,7 @@ def run_benchmark_suite() -> Dict[str, Any]:
     all_zero_collisions = True
 
     for i, (spec, cargo, cid, name, desc) in enumerate(cases, 1):
-        print(f"\n[{i}/5] Running: {name} ({cid}) ...")
+        print(f"\n[{i}/{total_cases}] Running: {name} ({cid}) ...")
         t_start = time.time()
         res = execute_benchmark_case(spec, cargo, cid, name, desc)
         t_cost = time.time() - t_start
@@ -454,8 +640,18 @@ def run_benchmark_suite() -> Dict[str, Any]:
         if collisions > 0:
             all_zero_collisions = False
 
-        status_str = "PASS" if collisions == 0 and util > 0 else "FAIL"
-        print(f"  [{status_str}] Placed: {placed}/{req} | Util: {util:.2f}% | Collisions: {collisions} | Viols: {viols} | Time: {rt:.1f}ms")
+        status_str = "PASS" if (collisions == 0 and util > 0 and viols == 0) else ("WARN" if collisions == 0 and util > 0 else "FAIL")
+        
+        # 提取关键履行与审计指标
+        ful = res.get("sku_fulfillment", {})
+        r_comp = ful.get("rigid_completion_pct", 0.0)
+        e_comp = ful.get("elastic_completion_pct", 0.0)
+        h_status = res.get("health_status", "UNKNOWN")
+        h_issues = res.get("health_issues", [])
+        
+        print(f"  [{status_str}] Placed: {placed}/{req} | Util: {util:.2f}% | 刚性SKU履行: {r_comp}% | 弹性完成: {e_comp}% | 违规: {viols} | 耗时: {rt:.1f}ms")
+        if h_issues:
+            print(f"         ⚠️ 审计告警: {', '.join(h_issues)}")
 
         results[res["case_id"]] = res
         summary_list.append({
@@ -464,8 +660,12 @@ def run_benchmark_suite() -> Dict[str, Any]:
             "placed_count": placed,
             "requested_cartons": req,
             "utilization": util,
+            "rigid_completion_pct": r_comp,
+            "elastic_completion_pct": e_comp,
             "collisions": collisions,
             "violations": viols,
+            "health_status": h_status,
+            "health_issues": h_issues,
             "runtime_ms": rt,
             "status": status_str
         })
@@ -486,10 +686,17 @@ def run_benchmark_suite() -> Dict[str, Any]:
     with open(OUTPUT_RESULTS_PATH, "w", encoding="utf-8") as f:
         json.dump(full_output, f, indent=2, ensure_ascii=False)
 
-    print("\n" + "=" * 80)
-    print(f"Benchmark Results saved to: {OUTPUT_RESULTS_PATH}")
-    print(f"Total Cases: {len(cases)} | Passed: {full_output['passed_cases']} | All Collisions=0: {all_zero_collisions}")
-    print("=" * 80)
+    print("\n" + "=" * 110)
+    print("3D-AICIVS 基准测试多维合规审计总结表")
+    print("=" * 110)
+    print(f"{'Case ID':<30} | {'利用率':<8} | {'刚性履行':<8} | {'弹性履行':<8} | {'违规':<5} | {'碰撞':<5} | {'健康状态':<20}")
+    print("-" * 110)
+    for s in summary_list:
+        print(f"{s['case_id']:<30} | {s['utilization']:<7.2f}% | {s['rigid_completion_pct']:<7.1f}% | {s['elastic_completion_pct']:<7.1f}% | {s['violations']:<5} | {s['collisions']:<5} | {s['health_status']:<20}")
+    print("=" * 110)
+    print(f"测试结果已写入: {OUTPUT_RESULTS_PATH}")
+    print(f"总用例: {len(cases)} | 全合规PASS: {full_output['passed_cases']} | 无碰撞: {all_zero_collisions}")
+    print("=" * 110)
 
     return full_output
 
@@ -497,10 +704,10 @@ def run_benchmark_suite() -> Dict[str, Any]:
 class TestBenchmarkSuite(unittest.TestCase):
     """Unittest test cases for Benchmark Suite."""
 
-    def test_run_all_5_benchmarks(self):
+    def test_run_all_benchmarks(self):
         output = run_benchmark_suite()
-        self.assertEqual(output["total_cases"], 5)
-        self.assertEqual(output["passed_cases"], 5)
+        self.assertGreaterEqual(output["total_cases"], 5, "至少包含 5 个硬编码基准用例")
+        self.assertEqual(output["passed_cases"], output["total_cases"], "所有用例必须 PASS")
         self.assertTrue(output["all_zero_collisions"])
 
         for case_id, res in output["results"].items():
@@ -513,4 +720,8 @@ class TestBenchmarkSuite(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    # 支持直接运行（跳过 unittest 框架，直接输出结果表格）
+    if len(sys.argv) > 1 and sys.argv[1] == "--run":
+        run_benchmark_suite()
+    else:
+        unittest.main()

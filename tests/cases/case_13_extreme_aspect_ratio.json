@@ -1,0 +1,19 @@
+{
+    "case_id": "EXTREME-ASPECT-RATIO",
+    "case_name": "极端长宽比 (测朝向+排列)",
+    "description": "Tests extreme aspect ratio items: long planks (2.4m), tubes (1.5m), thin sheets (30mm)",
+    "container": {
+        "usable": {"L": 12.032, "W": 2.352, "H": 2.698},
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {"sku": "PLANK-01", "name": "长条形木板", "w": 2.400, "d": 0.300, "h": 0.050, "weight": 8.0,
+         "quantity": 150, "requirement": "允许旋转"},
+        {"sku": "TUBE-01", "name": "管状件", "w": 1.500, "d": 0.150, "h": 0.150, "weight": 5.0,
+         "quantity": 100, "requirement": "允许旋转"},
+        {"sku": "CUBE-01", "name": "正方体", "w": 0.500, "d": 0.500, "h": 0.500, "weight": 15.0,
+         "quantity": 120},
+        {"sku": "SHEET-01", "name": "薄板件", "w": 0.800, "d": 0.600, "h": 0.030, "weight": 4.0,
+         "quantity": 200, "requirement": "允许旋转"}
+    ]
+}

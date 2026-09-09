@@ -1,0 +1,13 @@
+{
+    "case_id": "OVERWEIGHT-PAYLOAD",
+    "case_name": "超重场景 (测载重限制)",
+    "description": "Tests payload weight limit truncation - total cargo weight far exceeds maxPayloadTons",
+    "container": {
+        "usable": {"L": 12.032, "W": 2.352, "H": 2.698},
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {"sku": "IRON-01", "name": "铸铁件", "w": 0.500, "d": 0.500, "h": 0.300, "weight": 120.0,
+         "quantity": 300, "requirement": "必须平放", "mustBeOnFloor": true}
+    ]
+}

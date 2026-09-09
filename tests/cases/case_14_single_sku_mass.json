@@ -1,0 +1,13 @@
+{
+    "case_id": "SINGLE-SKU-MASS",
+    "case_name": "单SKU大批量 (测性能+极限)",
+    "description": "Single SKU with 10000 small boxes - tests performance scaling and extreme volume packing",
+    "container": {
+        "usable": {"L": 12.032, "W": 2.352, "H": 2.698},
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {"sku": "MASS-01", "name": "标准鞋盒", "w": 0.330, "d": 0.210, "h": 0.120, "weight": 1.2,
+         "quantity": 10000}
+    ]
+}

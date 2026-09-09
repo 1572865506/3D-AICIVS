@@ -1,0 +1,25 @@
+{
+    "case_id": "ALL-CONSTRAINTS-COMBINED",
+    "case_name": "全约束综合 (测系统鲁棒性)",
+    "description": "All constraint types combined: mustBeOnFloor + maxBearing + maxStack + noTopStack + uprightOnly + zones + elastic",
+    "container": {
+        "usable": {"L": 12.032, "W": 2.352, "H": 2.698},
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {"sku": "FLOOR-01", "name": "重型底座", "w": 0.800, "d": 0.600, "h": 0.250, "weight": 50.0,
+         "quantity": 30, "mustBeOnFloor": true, "max_stack_layers": 1, "requirement": "必须平放,重物靠底"},
+        {"sku": "FRAG-01", "name": "精密仪器", "w": 0.600, "d": 0.500, "h": 0.400, "weight": 20.0,
+         "quantity": 40, "maxBearingKg": 25.0, "max_stack_layers": 2, "allowStackingOnTop": false},
+        {"sku": "TALL-01", "name": "竖放面板", "w": 0.900, "d": 0.120, "h": 0.650, "weight": 8.0,
+         "quantity": 100, "allowFlat": false, "requirement": "仅竖放"},
+        {"sku": "INNER-01", "name": "内壁专用", "w": 0.500, "d": 0.400, "h": 0.300, "weight": 12.0,
+         "quantity": 60, "requirement": "最里面"},
+        {"sku": "NORM-01", "name": "普通箱", "w": 0.500, "d": 0.400, "h": 0.350, "weight": 10.0,
+         "quantity": 200},
+        {"sku": "DOOR-01", "name": "封门件", "w": 0.550, "d": 0.080, "h": 0.350, "weight": 5.5,
+         "quantity": 80, "requirement": "封柜门"},
+        {"sku": "ELASTIC-01", "name": "弹性填充", "w": 0.300, "d": 0.200, "h": 0.180, "weight": 2.0,
+         "quantity": 500, "requirement": "按需调节,可以少放", "isElastic": true}
+    ]
+}

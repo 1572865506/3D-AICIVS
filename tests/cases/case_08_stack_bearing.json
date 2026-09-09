@@ -1,0 +1,19 @@
+{
+    "case_id": "STACK-BEARING-CONSTRAINTS",
+    "case_name": "堆叠承重约束 (测约束遵守)",
+    "description": "Tests max_stack_layers, maxBearingKg, and mustBeOnFloor constraints are respected",
+    "container": {
+        "usable": {"L": 12.032, "W": 2.352, "H": 2.698},
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {"sku": "FRAG-01", "name": "易碎精密设备", "w": 0.700, "d": 0.500, "h": 0.400, "weight": 25.0,
+         "quantity": 80, "max_stack_layers": 2, "maxBearingKg": 30.0},
+        {"sku": "HEAVY-01", "name": "重型底座", "w": 0.600, "d": 0.500, "h": 0.300, "weight": 45.0,
+         "quantity": 60, "requirement": "必须平放,重物靠底", "mustBeOnFloor": true},
+        {"sku": "NORM-01", "name": "普通中箱", "w": 0.500, "d": 0.400, "h": 0.350, "weight": 12.0,
+         "quantity": 200},
+        {"sku": "FILL-01", "name": "轻量填充", "w": 0.300, "d": 0.200, "h": 0.150, "weight": 2.0,
+         "quantity": 300, "requirement": "按需调节", "isElastic": true}
+    ]
+}

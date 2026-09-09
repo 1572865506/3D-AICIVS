@@ -1,0 +1,14 @@
+{
+    "case_id": "45HQ-EXTENDED",
+    "case_name": "45HQ超长柜 (测极限长度)",
+    "description": "45HQ extended container testing extreme length wall construction and performance",
+    "container": {
+        "usable": {"L": 13.556, "W": 2.352, "H": 2.698},
+        "maxPayloadTons": 27.6
+    },
+    "cargo": [
+        {"sku": "45HQ-01", "name": "标准箱A", "w": 0.800, "d": 0.500, "h": 0.400, "weight": 15.0, "quantity": 300},
+        {"sku": "45HQ-02", "name": "标准箱B", "w": 0.600, "d": 0.400, "h": 0.350, "weight": 10.0, "quantity": 400},
+        {"sku": "45HQ-03", "name": "封门件", "w": 0.680, "d": 0.120, "h": 0.440, "weight": 6.5, "quantity": 100, "requirement": "封柜门"}
+    ]
+}

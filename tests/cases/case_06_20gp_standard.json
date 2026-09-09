@@ -1,0 +1,14 @@
+{
+    "case_id": "20GP-STANDARD",
+    "case_name": "20GP标准柜 (测短柜装载)",
+    "description": "20GP standard container testing wall construction and door reserve adaptation for shorter containers",
+    "container": {
+        "usable": {"L": 5.898, "W": 2.352, "H": 2.393},
+        "maxPayloadTons": 21.8
+    },
+    "cargo": [
+        {"sku": "20GP-01", "name": "中型纸箱", "w": 0.600, "d": 0.400, "h": 0.350, "weight": 12.0, "quantity": 200},
+        {"sku": "20GP-02", "name": "小配件箱", "w": 0.350, "d": 0.250, "h": 0.200, "weight": 3.5, "quantity": 300},
+        {"sku": "20GP-03", "name": "封门面板", "w": 0.550, "d": 0.080, "h": 0.340, "weight": 5.0, "quantity": 60, "requirement": "封柜门"}
+    ]
+}

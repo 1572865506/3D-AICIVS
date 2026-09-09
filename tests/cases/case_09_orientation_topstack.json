@@ -1,0 +1,19 @@
+{
+    "case_id": "ORIENTATION-TOPSTACK-CONSTRAINTS",
+    "case_name": "朝向与顶叠约束 (测约束组合)",
+    "description": "Tests allowStackingOnTop=false and orientation-only constraints (upright only, no flat/side)",
+    "container": {
+        "usable": {"L": 12.032, "W": 2.352, "H": 2.698},
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {"sku": "NOTOP-01", "name": "精密仪器箱", "w": 0.800, "d": 0.600, "h": 0.500, "weight": 30.0,
+         "quantity": 40, "allowStackingOnTop": false, "requirement": "不可叠放"},
+        {"sku": "UPONLY-01", "name": "液晶面板", "w": 0.900, "d": 0.120, "h": 0.600, "weight": 8.0,
+         "quantity": 120, "allowFlat": false, "allowSide": false, "requirement": "仅竖放"},
+        {"sku": "FREE-01", "name": "自由约束箱", "w": 0.500, "d": 0.400, "h": 0.300, "weight": 10.0,
+         "quantity": 200, "requirement": "允许旋转"},
+        {"sku": "DOOR-01", "name": "封门板", "w": 0.550, "d": 0.080, "h": 0.350, "weight": 5.0,
+         "quantity": 80, "requirement": "封柜门"}
+    ]
+}
