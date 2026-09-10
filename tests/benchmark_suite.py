@@ -412,7 +412,7 @@ def execute_benchmark_case(
 
     for c in v2_cargos:
         sid = c.sku_id
-        is_elastic = getattr(c, "is_elastic", False)
+        is_elastic = c.quantity.is_elastic
         req_q = c.quantity.required
         p_count = sku_counts.get(sid, 0)
         c_rate = round(p_count / max(1, req_q) * 100.0, 1)
@@ -438,7 +438,7 @@ def execute_benchmark_case(
     elastic_comp_pct = round(elastic_placed / max(1, elastic_req) * 100.0, 2) if elastic_req > 0 else 0.0
     
     # 异常判断：当存在刚性SKU未装完（<99%），却塞入了大量弹性件（>0件）
-    priority_inversion = bool(rigid_comp_pct < 99.0 and elastic_placed > 0)
+    priority_inversion = bool(rigid_placed < rigid_req and elastic_placed > 0)
 
     # --- 细分约束审计分类 ---
     audit_breakdown = {
@@ -640,7 +640,7 @@ def run_benchmark_suite() -> Dict[str, Any]:
         if collisions > 0:
             all_zero_collisions = False
 
-        status_str = "PASS" if (collisions == 0 and util > 0 and viols == 0) else ("WARN" if collisions == 0 and util > 0 else "FAIL")
+        status_str = "PASS" if (collisions == 0 and util > 0 and viols == 0 and res["health_status"] == "HEALTHY") else ("WARN" if collisions == 0 and util > 0 else "FAIL")
         
         # 提取关键履行与审计指标
         ful = res.get("sku_fulfillment", {})

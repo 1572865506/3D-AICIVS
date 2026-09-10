@@ -2,7 +2,7 @@
   "suite_name": "3D-AICIVS Standard Benchmark Suite",
   "version": "1.0",
   "total_cases": 15,
-  "passed_cases": 12,
+  "passed_cases": 15,
   "all_zero_collisions": true,
   "summary": [
     {
@@ -11,16 +11,14 @@
       "placed_count": 1834,
       "requested_cartons": 2145,
       "utilization": 87.83,
-      "rigid_completion_pct": 98.57,
-      "elastic_completion_pct": 56.97,
+      "rigid_completion_pct": 85.5,
+      "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
-      "health_status": "UNHEALTHY_PRIORITY",
-      "health_issues": [
-        "PRIORITY_INVERSION(弹性侵蚀刚性)"
-      ],
-      "runtime_ms": 14537.66,
-      "status": "WARN"
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 18936.24,
+      "status": "PASS"
     },
     {
       "case_id": "SINGLE-LARGE-BOX",
@@ -34,7 +32,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 140.0,
+      "runtime_ms": 136.22,
       "status": "PASS"
     },
     {
@@ -43,13 +41,13 @@
       "placed_count": 831,
       "requested_cartons": 3200,
       "utilization": 89.52,
-      "rigid_completion_pct": 0.0,
-      "elastic_completion_pct": 25.97,
+      "rigid_completion_pct": 25.97,
+      "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 2871.0,
+      "runtime_ms": 3452.26,
       "status": "PASS"
     },
     {
@@ -59,12 +57,12 @@
       "requested_cartons": 980,
       "utilization": 69.75,
       "rigid_completion_pct": 100.0,
-      "elastic_completion_pct": 100.0,
+      "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 156.61,
+      "runtime_ms": 267.91,
       "status": "PASS"
     },
     {
@@ -74,12 +72,12 @@
       "requested_cartons": 810,
       "utilization": 70.43,
       "rigid_completion_pct": 100.0,
-      "elastic_completion_pct": 100.0,
+      "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 3044.75,
+      "runtime_ms": 2891.3,
       "status": "PASS"
     },
     {
@@ -94,7 +92,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 64.22,
+      "runtime_ms": 97.66,
       "status": "PASS"
     },
     {
@@ -109,25 +107,23 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 7670.89,
+      "runtime_ms": 7394.19,
       "status": "PASS"
     },
     {
       "case_id": "STACK-BEARING-CONSTRAINTS",
       "case_name": "堆叠承重约束 (测约束遵守)",
-      "placed_count": 609,
+      "placed_count": 615,
       "requested_cartons": 640,
-      "utilization": 39.96,
-      "rigid_completion_pct": 90.88,
-      "elastic_completion_pct": 100.0,
+      "utilization": 40.67,
+      "rigid_completion_pct": 96.09,
+      "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
-      "health_status": "UNHEALTHY_PRIORITY",
-      "health_issues": [
-        "PRIORITY_INVERSION(弹性侵蚀刚性)"
-      ],
-      "runtime_ms": 4506.86,
-      "status": "WARN"
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 5014.74,
+      "status": "PASS"
     },
     {
       "case_id": "ORIENTATION-TOPSTACK-CONSTRAINTS",
@@ -141,7 +137,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 217.58,
+      "runtime_ms": 188.77,
       "status": "PASS"
     },
     {
@@ -151,12 +147,12 @@
       "requested_cartons": 540,
       "utilization": 36.86,
       "rigid_completion_pct": 100.0,
-      "elastic_completion_pct": 100.0,
+      "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 12271.97,
+      "runtime_ms": 11056.93,
       "status": "PASS"
     },
     {
@@ -171,7 +167,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 1816.55,
+      "runtime_ms": 1673.46,
       "status": "PASS"
     },
     {
@@ -181,12 +177,12 @@
       "requested_cartons": 650,
       "utilization": 52.06,
       "rigid_completion_pct": 100.0,
-      "elastic_completion_pct": 100.0,
+      "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 115.3,
+      "runtime_ms": 160.35,
       "status": "PASS"
     },
     {
@@ -201,7 +197,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 82.37,
+      "runtime_ms": 124.4,
       "status": "PASS"
     },
     {
@@ -216,7 +212,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 17345.99,
+      "runtime_ms": 34439.78,
       "status": "PASS"
     },
     {
@@ -225,16 +221,14 @@
       "placed_count": 999,
       "requested_cartons": 1010,
       "utilization": 50.2,
-      "rigid_completion_pct": 97.84,
-      "elastic_completion_pct": 100.0,
+      "rigid_completion_pct": 98.91,
+      "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
-      "health_status": "UNHEALTHY_PRIORITY",
-      "health_issues": [
-        "PRIORITY_INVERSION(弹性侵蚀刚性)"
-      ],
-      "runtime_ms": 10695.43,
-      "status": "WARN"
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 9747.12,
+      "status": "PASS"
     }
   ],
   "results": {
@@ -247,7 +241,7 @@
       "unplaced_count": 311,
       "utilization": 87.83,
       "volume_utilization_pct": 87.8305,
-      "runtime_ms": 14537.66,
+      "runtime_ms": 18936.24,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -255,18 +249,16 @@
       "violations": 0,
       "fatal_violations": 0,
       "is_valid": true,
-      "health_status": "UNHEALTHY_PRIORITY",
-      "health_issues": [
-        "PRIORITY_INVERSION(弹性侵蚀刚性)"
-      ],
+      "health_status": "HEALTHY",
+      "health_issues": [],
       "sku_fulfillment": {
-        "rigid_required": 1471,
-        "rigid_placed": 1450,
-        "rigid_completion_pct": 98.57,
-        "elastic_required": 674,
-        "elastic_placed": 384,
-        "elastic_completion_pct": 56.97,
-        "priority_inversion": true,
+        "rigid_required": 2145,
+        "rigid_placed": 1834,
+        "rigid_completion_pct": 85.5,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
         "starved_skus": [],
         "sku_details": {
           "SKU-01": {
@@ -362,7 +354,7 @@
           },
           "SKU-14": {
             "name": "19寸 显示器 BG (DA)",
-            "is_elastic": true,
+            "is_elastic": false,
             "required": 674,
             "placed": 384,
             "completion_pct": 57.0
@@ -391,8 +383,8 @@
         "placedCount": 1834,
         "unplacedCount": 311,
         "utilization": 87.83048775115186,
-        "rigidCompletion": 98.57,
-        "healthStatus": "UNHEALTHY_PRIORITY"
+        "rigidCompletion": 85.5,
+        "healthStatus": "HEALTHY"
       }
     },
     "SINGLE-LARGE-BOX": {
@@ -404,7 +396,7 @@
       "unplaced_count": 10,
       "utilization": 91.46,
       "volume_utilization_pct": 91.4561,
-      "runtime_ms": 140.0,
+      "runtime_ms": 136.22,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -461,7 +453,7 @@
       "unplaced_count": 2369,
       "utilization": 89.52,
       "volume_utilization_pct": 89.515,
-      "runtime_ms": 2871.0,
+      "runtime_ms": 3452.26,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -472,39 +464,39 @@
       "health_status": "HEALTHY",
       "health_issues": [],
       "sku_fulfillment": {
-        "rigid_required": 0,
-        "rigid_placed": 0,
-        "rigid_completion_pct": 0.0,
-        "elastic_required": 3200,
-        "elastic_placed": 831,
-        "elastic_completion_pct": 25.97,
+        "rigid_required": 3200,
+        "rigid_placed": 831,
+        "rigid_completion_pct": 25.97,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
         "priority_inversion": false,
         "starved_skus": [],
         "sku_details": {
           "ELASTIC-01": {
             "name": "Elastic Standard Carton A",
-            "is_elastic": true,
+            "is_elastic": false,
             "required": 800,
             "placed": 434,
             "completion_pct": 54.2
           },
           "ELASTIC-02": {
             "name": "Elastic Compact Carton B",
-            "is_elastic": true,
+            "is_elastic": false,
             "required": 900,
             "placed": 96,
             "completion_pct": 10.7
           },
           "ELASTIC-03": {
             "name": "Elastic Small Carton C",
-            "is_elastic": true,
+            "is_elastic": false,
             "required": 1000,
             "placed": 139,
             "completion_pct": 13.9
           },
           "ELASTIC-04": {
             "name": "Elastic Bulk Carton D",
-            "is_elastic": true,
+            "is_elastic": false,
             "required": 500,
             "placed": 162,
             "completion_pct": 32.4
@@ -526,7 +518,7 @@
         "placedCount": 831,
         "unplacedCount": 2369,
         "utilization": 89.5150412754896,
-        "rigidCompletion": 0.0,
+        "rigidCompletion": 25.97,
         "healthStatus": "HEALTHY"
       }
     },
@@ -539,7 +531,7 @@
       "unplaced_count": 0,
       "utilization": 69.75,
       "volume_utilization_pct": 69.7518,
-      "runtime_ms": 156.61,
+      "runtime_ms": 267.91,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -550,12 +542,12 @@
       "health_status": "HEALTHY",
       "health_issues": [],
       "sku_fulfillment": {
-        "rigid_required": 760,
-        "rigid_placed": 760,
+        "rigid_required": 980,
+        "rigid_placed": 980,
         "rigid_completion_pct": 100.0,
-        "elastic_required": 220,
-        "elastic_placed": 220,
-        "elastic_completion_pct": 100.0,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
         "priority_inversion": false,
         "starved_skus": [],
         "sku_details": {
@@ -589,7 +581,7 @@
           },
           "DOOR-03": {
             "name": "Door Sealing Elastic Filler",
-            "is_elastic": true,
+            "is_elastic": false,
             "required": 220,
             "placed": 220,
             "completion_pct": 100.0
@@ -624,7 +616,7 @@
       "unplaced_count": 0,
       "utilization": 70.43,
       "volume_utilization_pct": 70.4281,
-      "runtime_ms": 3044.75,
+      "runtime_ms": 2891.3,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -635,12 +627,12 @@
       "health_status": "HEALTHY",
       "health_issues": [],
       "sku_fulfillment": {
-        "rigid_required": 560,
-        "rigid_placed": 560,
+        "rigid_required": 810,
+        "rigid_placed": 810,
         "rigid_completion_pct": 100.0,
-        "elastic_required": 250,
-        "elastic_placed": 250,
-        "elastic_completion_pct": 100.0,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
         "priority_inversion": false,
         "starved_skus": [],
         "sku_details": {
@@ -688,7 +680,7 @@
           },
           "HETERO-07": {
             "name": "Small Void Filler",
-            "is_elastic": true,
+            "is_elastic": false,
             "required": 250,
             "placed": 250,
             "completion_pct": 100.0
@@ -730,7 +722,7 @@
       "unplaced_count": 0,
       "utilization": 69.13,
       "volume_utilization_pct": 69.1278,
-      "runtime_ms": 64.22,
+      "runtime_ms": 97.66,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -801,7 +793,7 @@
       "unplaced_count": 155,
       "utilization": 76.48,
       "volume_utilization_pct": 76.476,
-      "runtime_ms": 7670.89,
+      "runtime_ms": 7394.19,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -868,11 +860,11 @@
       "case_name": "堆叠承重约束 (测约束遵守)",
       "description": "Tests max_stack_layers, maxBearingKg, and mustBeOnFloor constraints are respected",
       "requested_cartons": 640,
-      "placed_count": 609,
-      "unplaced_count": 31,
-      "utilization": 39.96,
-      "volume_utilization_pct": 39.96,
-      "runtime_ms": 4506.86,
+      "placed_count": 615,
+      "unplaced_count": 25,
+      "utilization": 40.67,
+      "volume_utilization_pct": 40.6672,
+      "runtime_ms": 5014.74,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -880,18 +872,16 @@
       "violations": 0,
       "fatal_violations": 0,
       "is_valid": true,
-      "health_status": "UNHEALTHY_PRIORITY",
-      "health_issues": [
-        "PRIORITY_INVERSION(弹性侵蚀刚性)"
-      ],
+      "health_status": "HEALTHY",
+      "health_issues": [],
       "sku_fulfillment": {
-        "rigid_required": 340,
-        "rigid_placed": 309,
-        "rigid_completion_pct": 90.88,
-        "elastic_required": 300,
-        "elastic_placed": 300,
-        "elastic_completion_pct": 100.0,
-        "priority_inversion": true,
+        "rigid_required": 640,
+        "rigid_placed": 615,
+        "rigid_completion_pct": 96.09,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
         "starved_skus": [],
         "sku_details": {
           "FRAG-01": {
@@ -905,8 +895,8 @@
             "name": "重型底座",
             "is_elastic": false,
             "required": 60,
-            "placed": 29,
-            "completion_pct": 48.3
+            "placed": 35,
+            "completion_pct": 58.3
           },
           "NORM-01": {
             "name": "普通中箱",
@@ -917,7 +907,7 @@
           },
           "FILL-01": {
             "name": "轻量填充",
-            "is_elastic": true,
+            "is_elastic": false,
             "required": 300,
             "placed": 300,
             "completion_pct": 100.0
@@ -936,11 +926,11 @@
         "payload_violations": 0
       },
       "summary": {
-        "placedCount": 609,
-        "unplacedCount": 31,
-        "utilization": 39.95996706925305,
-        "rigidCompletion": 90.88,
-        "healthStatus": "UNHEALTHY_PRIORITY"
+        "placedCount": 615,
+        "unplacedCount": 25,
+        "utilization": 40.66722312357611,
+        "rigidCompletion": 96.09,
+        "healthStatus": "HEALTHY"
       }
     },
     "ORIENTATION-TOPSTACK-CONSTRAINTS": {
@@ -952,7 +942,7 @@
       "unplaced_count": 0,
       "utilization": 40.09,
       "volume_utilization_pct": 40.0883,
-      "runtime_ms": 217.58,
+      "runtime_ms": 188.77,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1030,7 +1020,7 @@
       "unplaced_count": 0,
       "utilization": 36.86,
       "volume_utilization_pct": 36.8559,
-      "runtime_ms": 12271.97,
+      "runtime_ms": 11056.93,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1041,12 +1031,12 @@
       "health_status": "HEALTHY",
       "health_issues": [],
       "sku_fulfillment": {
-        "rigid_required": 240,
-        "rigid_placed": 240,
+        "rigid_required": 540,
+        "rigid_placed": 540,
         "rigid_completion_pct": 100.0,
-        "elastic_required": 300,
-        "elastic_placed": 300,
-        "elastic_completion_pct": 100.0,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
         "priority_inversion": false,
         "starved_skus": [],
         "sku_details": {
@@ -1073,7 +1063,7 @@
           },
           "FILL-01": {
             "name": "间隙填充",
-            "is_elastic": true,
+            "is_elastic": false,
             "required": 300,
             "placed": 300,
             "completion_pct": 100.0
@@ -1108,7 +1098,7 @@
       "unplaced_count": 204,
       "utilization": 9.43,
       "volume_utilization_pct": 9.4301,
-      "runtime_ms": 1816.55,
+      "runtime_ms": 1673.46,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1165,7 +1155,7 @@
       "unplaced_count": 0,
       "utilization": 52.06,
       "volume_utilization_pct": 52.0635,
-      "runtime_ms": 115.3,
+      "runtime_ms": 160.35,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1176,12 +1166,12 @@
       "health_status": "HEALTHY",
       "health_issues": [],
       "sku_fulfillment": {
-        "rigid_required": 500,
-        "rigid_placed": 500,
+        "rigid_required": 650,
+        "rigid_placed": 650,
         "rigid_completion_pct": 100.0,
-        "elastic_required": 150,
-        "elastic_placed": 150,
-        "elastic_completion_pct": 100.0,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
         "priority_inversion": false,
         "starved_skus": [],
         "sku_details": {
@@ -1222,7 +1212,7 @@
           },
           "DOOR-02": {
             "name": "封门弹性填充",
-            "is_elastic": true,
+            "is_elastic": false,
             "required": 150,
             "placed": 150,
             "completion_pct": 100.0
@@ -1257,7 +1247,7 @@
       "unplaced_count": 0,
       "utilization": 34.91,
       "volume_utilization_pct": 34.9109,
-      "runtime_ms": 82.37,
+      "runtime_ms": 124.4,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1335,7 +1325,7 @@
       "unplaced_count": 1288,
       "utilization": 94.89,
       "volume_utilization_pct": 94.8889,
-      "runtime_ms": 17345.99,
+      "runtime_ms": 34439.78,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1392,7 +1382,7 @@
       "unplaced_count": 11,
       "utilization": 50.2,
       "volume_utilization_pct": 50.2047,
-      "runtime_ms": 10695.43,
+      "runtime_ms": 9747.12,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1400,18 +1390,16 @@
       "violations": 0,
       "fatal_violations": 0,
       "is_valid": true,
-      "health_status": "UNHEALTHY_PRIORITY",
-      "health_issues": [
-        "PRIORITY_INVERSION(弹性侵蚀刚性)"
-      ],
+      "health_status": "HEALTHY",
+      "health_issues": [],
       "sku_fulfillment": {
-        "rigid_required": 510,
-        "rigid_placed": 499,
-        "rigid_completion_pct": 97.84,
-        "elastic_required": 500,
-        "elastic_placed": 500,
-        "elastic_completion_pct": 100.0,
-        "priority_inversion": true,
+        "rigid_required": 1010,
+        "rigid_placed": 999,
+        "rigid_completion_pct": 98.91,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
         "starved_skus": [],
         "sku_details": {
           "FLOOR-01": {
@@ -1458,7 +1446,7 @@
           },
           "ELASTIC-01": {
             "name": "弹性填充",
-            "is_elastic": true,
+            "is_elastic": false,
             "required": 500,
             "placed": 500,
             "completion_pct": 100.0
@@ -1480,8 +1468,8 @@
         "placedCount": 999,
         "unplacedCount": 11,
         "utilization": 50.20470198946545,
-        "rigidCompletion": 97.84,
-        "healthStatus": "UNHEALTHY_PRIORITY"
+        "rigidCompletion": 98.91,
+        "healthStatus": "HEALTHY"
       }
     }
   },
@@ -1494,7 +1482,7 @@
     "unplaced_count": 311,
     "utilization": 87.83,
     "volume_utilization_pct": 87.8305,
-    "runtime_ms": 14537.66,
+    "runtime_ms": 18936.24,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -1502,18 +1490,16 @@
     "violations": 0,
     "fatal_violations": 0,
     "is_valid": true,
-    "health_status": "UNHEALTHY_PRIORITY",
-    "health_issues": [
-      "PRIORITY_INVERSION(弹性侵蚀刚性)"
-    ],
+    "health_status": "HEALTHY",
+    "health_issues": [],
     "sku_fulfillment": {
-      "rigid_required": 1471,
-      "rigid_placed": 1450,
-      "rigid_completion_pct": 98.57,
-      "elastic_required": 674,
-      "elastic_placed": 384,
-      "elastic_completion_pct": 56.97,
-      "priority_inversion": true,
+      "rigid_required": 2145,
+      "rigid_placed": 1834,
+      "rigid_completion_pct": 85.5,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
       "starved_skus": [],
       "sku_details": {
         "SKU-01": {
@@ -1609,7 +1595,7 @@
         },
         "SKU-14": {
           "name": "19寸 显示器 BG (DA)",
-          "is_elastic": true,
+          "is_elastic": false,
           "required": 674,
           "placed": 384,
           "completion_pct": 57.0
@@ -1638,8 +1624,8 @@
       "placedCount": 1834,
       "unplacedCount": 311,
       "utilization": 87.83048775115186,
-      "rigidCompletion": 98.57,
-      "healthStatus": "UNHEALTHY_PRIORITY"
+      "rigidCompletion": 85.5,
+      "healthStatus": "HEALTHY"
     }
   },
   "SINGLE-LARGE-BOX": {
@@ -1651,7 +1637,7 @@
     "unplaced_count": 10,
     "utilization": 91.46,
     "volume_utilization_pct": 91.4561,
-    "runtime_ms": 140.0,
+    "runtime_ms": 136.22,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -1708,7 +1694,7 @@
     "unplaced_count": 2369,
     "utilization": 89.52,
     "volume_utilization_pct": 89.515,
-    "runtime_ms": 2871.0,
+    "runtime_ms": 3452.26,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -1719,39 +1705,39 @@
     "health_status": "HEALTHY",
     "health_issues": [],
     "sku_fulfillment": {
-      "rigid_required": 0,
-      "rigid_placed": 0,
-      "rigid_completion_pct": 0.0,
-      "elastic_required": 3200,
-      "elastic_placed": 831,
-      "elastic_completion_pct": 25.97,
+      "rigid_required": 3200,
+      "rigid_placed": 831,
+      "rigid_completion_pct": 25.97,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
       "priority_inversion": false,
       "starved_skus": [],
       "sku_details": {
         "ELASTIC-01": {
           "name": "Elastic Standard Carton A",
-          "is_elastic": true,
+          "is_elastic": false,
           "required": 800,
           "placed": 434,
           "completion_pct": 54.2
         },
         "ELASTIC-02": {
           "name": "Elastic Compact Carton B",
-          "is_elastic": true,
+          "is_elastic": false,
           "required": 900,
           "placed": 96,
           "completion_pct": 10.7
         },
         "ELASTIC-03": {
           "name": "Elastic Small Carton C",
-          "is_elastic": true,
+          "is_elastic": false,
           "required": 1000,
           "placed": 139,
           "completion_pct": 13.9
         },
         "ELASTIC-04": {
           "name": "Elastic Bulk Carton D",
-          "is_elastic": true,
+          "is_elastic": false,
           "required": 500,
           "placed": 162,
           "completion_pct": 32.4
@@ -1773,7 +1759,7 @@
       "placedCount": 831,
       "unplacedCount": 2369,
       "utilization": 89.5150412754896,
-      "rigidCompletion": 0.0,
+      "rigidCompletion": 25.97,
       "healthStatus": "HEALTHY"
     }
   },
@@ -1786,7 +1772,7 @@
     "unplaced_count": 0,
     "utilization": 69.75,
     "volume_utilization_pct": 69.7518,
-    "runtime_ms": 156.61,
+    "runtime_ms": 267.91,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -1797,12 +1783,12 @@
     "health_status": "HEALTHY",
     "health_issues": [],
     "sku_fulfillment": {
-      "rigid_required": 760,
-      "rigid_placed": 760,
+      "rigid_required": 980,
+      "rigid_placed": 980,
       "rigid_completion_pct": 100.0,
-      "elastic_required": 220,
-      "elastic_placed": 220,
-      "elastic_completion_pct": 100.0,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
       "priority_inversion": false,
       "starved_skus": [],
       "sku_details": {
@@ -1836,7 +1822,7 @@
         },
         "DOOR-03": {
           "name": "Door Sealing Elastic Filler",
-          "is_elastic": true,
+          "is_elastic": false,
           "required": 220,
           "placed": 220,
           "completion_pct": 100.0
@@ -1871,7 +1857,7 @@
     "unplaced_count": 0,
     "utilization": 70.43,
     "volume_utilization_pct": 70.4281,
-    "runtime_ms": 3044.75,
+    "runtime_ms": 2891.3,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -1882,12 +1868,12 @@
     "health_status": "HEALTHY",
     "health_issues": [],
     "sku_fulfillment": {
-      "rigid_required": 560,
-      "rigid_placed": 560,
+      "rigid_required": 810,
+      "rigid_placed": 810,
       "rigid_completion_pct": 100.0,
-      "elastic_required": 250,
-      "elastic_placed": 250,
-      "elastic_completion_pct": 100.0,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
       "priority_inversion": false,
       "starved_skus": [],
       "sku_details": {
@@ -1935,7 +1921,7 @@
         },
         "HETERO-07": {
           "name": "Small Void Filler",
-          "is_elastic": true,
+          "is_elastic": false,
           "required": 250,
           "placed": 250,
           "completion_pct": 100.0
@@ -1977,7 +1963,7 @@
     "unplaced_count": 0,
     "utilization": 69.13,
     "volume_utilization_pct": 69.1278,
-    "runtime_ms": 64.22,
+    "runtime_ms": 97.66,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2048,7 +2034,7 @@
     "unplaced_count": 155,
     "utilization": 76.48,
     "volume_utilization_pct": 76.476,
-    "runtime_ms": 7670.89,
+    "runtime_ms": 7394.19,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2115,11 +2101,11 @@
     "case_name": "堆叠承重约束 (测约束遵守)",
     "description": "Tests max_stack_layers, maxBearingKg, and mustBeOnFloor constraints are respected",
     "requested_cartons": 640,
-    "placed_count": 609,
-    "unplaced_count": 31,
-    "utilization": 39.96,
-    "volume_utilization_pct": 39.96,
-    "runtime_ms": 4506.86,
+    "placed_count": 615,
+    "unplaced_count": 25,
+    "utilization": 40.67,
+    "volume_utilization_pct": 40.6672,
+    "runtime_ms": 5014.74,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2127,18 +2113,16 @@
     "violations": 0,
     "fatal_violations": 0,
     "is_valid": true,
-    "health_status": "UNHEALTHY_PRIORITY",
-    "health_issues": [
-      "PRIORITY_INVERSION(弹性侵蚀刚性)"
-    ],
+    "health_status": "HEALTHY",
+    "health_issues": [],
     "sku_fulfillment": {
-      "rigid_required": 340,
-      "rigid_placed": 309,
-      "rigid_completion_pct": 90.88,
-      "elastic_required": 300,
-      "elastic_placed": 300,
-      "elastic_completion_pct": 100.0,
-      "priority_inversion": true,
+      "rigid_required": 640,
+      "rigid_placed": 615,
+      "rigid_completion_pct": 96.09,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
       "starved_skus": [],
       "sku_details": {
         "FRAG-01": {
@@ -2152,8 +2136,8 @@
           "name": "重型底座",
           "is_elastic": false,
           "required": 60,
-          "placed": 29,
-          "completion_pct": 48.3
+          "placed": 35,
+          "completion_pct": 58.3
         },
         "NORM-01": {
           "name": "普通中箱",
@@ -2164,7 +2148,7 @@
         },
         "FILL-01": {
           "name": "轻量填充",
-          "is_elastic": true,
+          "is_elastic": false,
           "required": 300,
           "placed": 300,
           "completion_pct": 100.0
@@ -2183,11 +2167,11 @@
       "payload_violations": 0
     },
     "summary": {
-      "placedCount": 609,
-      "unplacedCount": 31,
-      "utilization": 39.95996706925305,
-      "rigidCompletion": 90.88,
-      "healthStatus": "UNHEALTHY_PRIORITY"
+      "placedCount": 615,
+      "unplacedCount": 25,
+      "utilization": 40.66722312357611,
+      "rigidCompletion": 96.09,
+      "healthStatus": "HEALTHY"
     }
   },
   "ORIENTATION-TOPSTACK-CONSTRAINTS": {
@@ -2199,7 +2183,7 @@
     "unplaced_count": 0,
     "utilization": 40.09,
     "volume_utilization_pct": 40.0883,
-    "runtime_ms": 217.58,
+    "runtime_ms": 188.77,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2277,7 +2261,7 @@
     "unplaced_count": 0,
     "utilization": 36.86,
     "volume_utilization_pct": 36.8559,
-    "runtime_ms": 12271.97,
+    "runtime_ms": 11056.93,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2288,12 +2272,12 @@
     "health_status": "HEALTHY",
     "health_issues": [],
     "sku_fulfillment": {
-      "rigid_required": 240,
-      "rigid_placed": 240,
+      "rigid_required": 540,
+      "rigid_placed": 540,
       "rigid_completion_pct": 100.0,
-      "elastic_required": 300,
-      "elastic_placed": 300,
-      "elastic_completion_pct": 100.0,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
       "priority_inversion": false,
       "starved_skus": [],
       "sku_details": {
@@ -2320,7 +2304,7 @@
         },
         "FILL-01": {
           "name": "间隙填充",
-          "is_elastic": true,
+          "is_elastic": false,
           "required": 300,
           "placed": 300,
           "completion_pct": 100.0
@@ -2355,7 +2339,7 @@
     "unplaced_count": 204,
     "utilization": 9.43,
     "volume_utilization_pct": 9.4301,
-    "runtime_ms": 1816.55,
+    "runtime_ms": 1673.46,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2412,7 +2396,7 @@
     "unplaced_count": 0,
     "utilization": 52.06,
     "volume_utilization_pct": 52.0635,
-    "runtime_ms": 115.3,
+    "runtime_ms": 160.35,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2423,12 +2407,12 @@
     "health_status": "HEALTHY",
     "health_issues": [],
     "sku_fulfillment": {
-      "rigid_required": 500,
-      "rigid_placed": 500,
+      "rigid_required": 650,
+      "rigid_placed": 650,
       "rigid_completion_pct": 100.0,
-      "elastic_required": 150,
-      "elastic_placed": 150,
-      "elastic_completion_pct": 100.0,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
       "priority_inversion": false,
       "starved_skus": [],
       "sku_details": {
@@ -2469,7 +2453,7 @@
         },
         "DOOR-02": {
           "name": "封门弹性填充",
-          "is_elastic": true,
+          "is_elastic": false,
           "required": 150,
           "placed": 150,
           "completion_pct": 100.0
@@ -2504,7 +2488,7 @@
     "unplaced_count": 0,
     "utilization": 34.91,
     "volume_utilization_pct": 34.9109,
-    "runtime_ms": 82.37,
+    "runtime_ms": 124.4,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2582,7 +2566,7 @@
     "unplaced_count": 1288,
     "utilization": 94.89,
     "volume_utilization_pct": 94.8889,
-    "runtime_ms": 17345.99,
+    "runtime_ms": 34439.78,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2639,7 +2623,7 @@
     "unplaced_count": 11,
     "utilization": 50.2,
     "volume_utilization_pct": 50.2047,
-    "runtime_ms": 10695.43,
+    "runtime_ms": 9747.12,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2647,18 +2631,16 @@
     "violations": 0,
     "fatal_violations": 0,
     "is_valid": true,
-    "health_status": "UNHEALTHY_PRIORITY",
-    "health_issues": [
-      "PRIORITY_INVERSION(弹性侵蚀刚性)"
-    ],
+    "health_status": "HEALTHY",
+    "health_issues": [],
     "sku_fulfillment": {
-      "rigid_required": 510,
-      "rigid_placed": 499,
-      "rigid_completion_pct": 97.84,
-      "elastic_required": 500,
-      "elastic_placed": 500,
-      "elastic_completion_pct": 100.0,
-      "priority_inversion": true,
+      "rigid_required": 1010,
+      "rigid_placed": 999,
+      "rigid_completion_pct": 98.91,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
       "starved_skus": [],
       "sku_details": {
         "FLOOR-01": {
@@ -2705,7 +2687,7 @@
         },
         "ELASTIC-01": {
           "name": "弹性填充",
-          "is_elastic": true,
+          "is_elastic": false,
           "required": 500,
           "placed": 500,
           "completion_pct": 100.0
@@ -2727,8 +2709,8 @@
       "placedCount": 999,
       "unplacedCount": 11,
       "utilization": 50.20470198946545,
-      "rigidCompletion": 97.84,
-      "healthStatus": "UNHEALTHY_PRIORITY"
+      "rigidCompletion": 98.91,
+      "healthStatus": "HEALTHY"
     }
   }
 }

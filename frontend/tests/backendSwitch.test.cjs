@@ -3,7 +3,9 @@ const assert = require('node:assert/strict');
 
 global.__VITE_LOADING_API_URL__ = 'http://test/api/v1';
 const api = require('../src/backendSwitch.js');
-const fixture = require('../mock/demo_loading_result.json');
+const fixture = structuredClone(require('../mock/demo_loading_result.json'));
+Object.assign(fixture, {contract_version:'audit-repair-1',layout_status:'VALID',
+  validation:{is_valid:true,violations:[]},executable:true,sequence_status:'FEASIBLE'});
 
 test('FEAPI-001 health check', async () => {
   global.fetch = async url => ({ ok: true, status: 200, json: async () => ({ status: url.endsWith('/loading/health') ? 'ok' : 'bad' }) });
@@ -11,7 +13,7 @@ test('FEAPI-001 health check', async () => {
 });
 
 test('FEAPI-002 loading fetch', async () => {
-  global.fetch = async () => ({ ok: true, status: 200, json: async () => fixture });
+  global.fetch = async url => ({ ok: true, status: 200, json: async () => url.endsWith('/status') ? {status:'COMPLETED'} : fixture });
   assert.equal((await api.getResult('demo')).version, 'BLK007C');
 });
 
@@ -82,4 +84,31 @@ test('mode is BACKEND unless mock is explicit', () => {
   assert.equal(api.getMode(''), api.CalculationMode.BACKEND);
   assert.equal(api.getMode('?mode=anything'), api.CalculationMode.BACKEND);
   assert.equal(api.getMode('?mode=mock'), api.CalculationMode.MOCK);
+});
+
+// 旧缓存和无效验证不得恢复成成功方案。
+test('拒绝缺失或无效的验证状态', () => {
+  const invalid=structuredClone(fixture);invalid.validation.is_valid=false;
+  assert.throws(()=>api.validateLoadingResult(invalid));
+  const old=structuredClone(fixture);delete old.contract_version;
+  assert.throws(()=>api.validateLoadingResult(old));
+});
+test('未验证序列不可导出或播放', () => {
+  const preview=structuredClone(fixture);preview.executable=false;preview.sequence_status='NOT_EVALUATED';
+  assert.equal(api.sceneObjects(preview).length,preview.cargo.length);
+  assert.throws(()=>api.animationFrames(preview));
+  assert.throws(()=>api.cargoExportRows(preview));
+});
+
+test('异步任务完成后读取权威结果',async()=>{
+  global.fetch=async url=>({ok:true,status:200,json:async()=>
+    url.endsWith('/jobs') ? {job_id:'test-job'} :
+    url.endsWith('/status') ? {job_id:'test-job',status:'COMPLETED'} : fixture});
+  assert.equal((await api.calculate({})).id,fixture.id);
+});
+test('已取消的调用获得任务ID后取消后台任务',async()=>{
+  const controller=new AbortController();controller.abort();const paths=[];
+  global.fetch=async url=>{paths.push(url);return {ok:true,status:202,json:async()=>({job_id:'cancel-job'})};};
+  await assert.rejects(api.calculate({},{signal:controller.signal}));
+  assert.ok(paths.some(path=>path.endsWith('/cancel-job/cancel')));
 });

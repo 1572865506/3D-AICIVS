@@ -5,6 +5,7 @@ Migrated and unified from UniversalHierarchicalSolver into backend.solver_v2.sol
 Guarantees clean-room V2 interface taking ContainerSpec + List[CargoSKU] and returning SolverSolution.
 """
 from dataclasses import dataclass, field
+from backend.solver_v2.solver.options import SolverOptions, SolverBudgetExceeded
 import math
 import time
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, Tuple
@@ -36,6 +37,7 @@ from backend.solver_v2.solver.composite_strip import (
     PatternColumnSpec,
     OrientationVariant,
 )
+from backend.solver_v2.stability.load_ledger import LoadLedger
 from backend.solver_v2.stability.tipping_moment import TippingMomentAnalyzer
 from backend.solver_v2.geometry.aabb import AABB
 from backend.solver_v2.geometry.spatial_index import SpatialIndex
@@ -258,6 +260,8 @@ class UnifiedSolver:
         self.cL = round(self.container.Lx, 4)
         self.cW = round(self.container.Ly, 4)
         self.cH = round(self.container.Lz, 4)
+        self._load_ledger = LoadLedger()
+        self._uses_load_ledger = True
         self.composite_builder = CompositeStripBuilder()
         self.pattern_engine = WidthPatternEngine(
             container_width=self.cW,
@@ -298,6 +302,7 @@ class UnifiedSolver:
                 is_elastic=is_elastic,
             ))
             setattr(tensor_list[-1], "allow_stacking_on_top", getattr(s.stacking_policy, "allow_stacking_on_top", True))
+            setattr(tensor_list[-1], "max_pressure_kg_m2", s.stacking_policy.max_pressure_kg_m2)
             setattr(tensor_list[-1], "max_bearing_kg", getattr(s.stacking_policy, "max_bearing_kg", None))
             setattr(tensor_list[-1], "sku_obj", s)
         return tensor_list
@@ -315,7 +320,14 @@ class UnifiedSolver:
         Executes multi-trial universal hierarchical sectional packing with adaptive retries.
         Accepts V2 standard ContainerSpec + List[CargoSKU] and returns a SolverSolution.
         """
+        if kwargs:
+            raise ValueError(f'不支持的求解参数: {sorted(kwargs)}')
+        settings = SolverOptions.parse(options, mode=mode, seed=seed, time_budget=time_budget)
+        mode, seed, time_budget = settings.mode, settings.seed, settings.time_budget
         t0 = time.perf_counter()
+        self._deadline = time.monotonic() + time_budget
+        self._search_deadline = time.monotonic() + time_budget * .8
+        self._timed_out = False
         if not cargo_list:
             val_result = IndependentGlobalValidator.validate(
                 container=self.container,
@@ -353,7 +365,8 @@ class UnifiedSolver:
 
         total_req_count = sum(s.quantity.required for s in cargo_list)
         best_raw_placements: List[Dict] = []
-        best_metrics: Dict = {}
+        best_metrics: Dict = {"val_result": IndependentGlobalValidator.validate(self.container, [], cargo_list),
+                              "raw_metrics": {}, "trial_idx": -1, "trial_name": "NONE"}
         best_score = -float("inf")
 
         # Select trials based on mode and time budget
@@ -368,9 +381,18 @@ class UnifiedSolver:
 
         for trial_idx, trial_cfg in enumerate(active_trials):
             if trial_idx > 0 and (time.perf_counter() - t0) >= max_time_budget:
+                self._timed_out = True
                 break
 
-            trial_placements, trial_raw_metrics = self._solve_single_trial(tensor_cargo_list, trial_cfg)
+            self._trial_placements = []
+            try:
+                self._check_budget()
+                trial_placements, trial_raw_metrics = self._solve_single_trial(tensor_cargo_list, trial_cfg)
+            except SolverBudgetExceeded:
+                self._timed_out = True
+                # 中断时保留候选快照，仍须在预留时间内独立验证；不删除已放箱子。
+                trial_placements = list(self._trial_placements)
+                trial_raw_metrics = {}
 
             val_result = IndependentGlobalValidator.validate(
                 container=self.container,
@@ -378,12 +400,15 @@ class UnifiedSolver:
                 cargo_list=cargo_list,
             )
 
+            if time.monotonic() >= self._deadline:
+                self._timed_out = True
+                break
             util = val_result.metrics.get("volume_utilization_pct", 0.0)
             violations = len(val_result.violations)
             placed_vol = val_result.metrics.get("cargo_volume", 0.0)
             score = placed_vol * 100.0 + util - (10000.0 if not val_result.is_valid else 0.0) - violations * 500.0
 
-            if score > best_score or not best_raw_placements:
+            if val_result.is_valid and (score > best_score or not best_raw_placements):
                 best_score = score
                 best_raw_placements = trial_placements
                 best_metrics = {
@@ -395,6 +420,9 @@ class UnifiedSolver:
                 # Early stop if 100% items placed and valid
                 if val_result.is_valid and len(trial_placements) >= total_req_count:
                     break
+
+            if self._timed_out:
+                break
 
         elapsed_ms = round((time.perf_counter() - t0) * 1000.0, 2)
         val_result: ValidationResult = best_metrics["val_result"]
@@ -445,7 +473,10 @@ class UnifiedSolver:
             "VALID_PARTIAL" if val_result.is_valid else "INVALID"
         )
 
+        if self._timed_out:
+            status = "TIMED_OUT"
         telemetry = SolverTelemetry(
+            phases_completed=["TIMED_OUT"] if self._timed_out else ["COMPLETED"],
             runtime_ms=elapsed_ms,
             steps_committed=placed_cnt,
         )
@@ -461,6 +492,10 @@ class UnifiedSolver:
             validation_result=val_result,
             telemetry=telemetry,
         )
+
+    def _check_budget(self):
+        if time.monotonic() >= getattr(self, '_search_deadline', float('inf')):
+            raise SolverBudgetExceeded()
 
     def _get_permitted_orientations(self, c: UniversalCargoTensor) -> List[OrientationSpec]:
         valid: List[OrientationSpec] = []
@@ -500,6 +535,7 @@ class UnifiedSolver:
         total_placed = 0
 
         while rem_headroom >= 0.05:
+            self._check_budget()
             top_pool = sku_group if is_door else (sku_group + companion_pool)
             top_pool = [tc for tc in top_pool if remaining_qty.get(tc.sku_id, 0) > 0]
             if not top_pool:
@@ -515,9 +551,11 @@ class UnifiedSolver:
 
             placed_in_tier = 0
             for tc in top_pool:
+                self._check_budget()
                 if remaining_qty[tc.sku_id] <= 0:
                     continue
                 for to in self._get_permitted_orientations(tc):
+                    self._check_budget()
                     if to.dx <= (strip_l + 1e-4) and to.dy <= (strip_w + 1e-4) and to.dz <= (rem_headroom + 1e-4):
                         trx = max(1, int((strip_l + 1e-4) / to.dx))
                         tcy = max(1, int((strip_w + 1e-4) / to.dy))
@@ -530,8 +568,11 @@ class UnifiedSolver:
                             t_act = min(t_avail, t_need)
                             t_pl = 0
                             for lz in range(tlz):
+                                self._check_budget()
                                 for rx in range(trx):
+                                    self._check_budget()
                                     for cy in range(tcy):
+                                        self._check_budget()
                                         if t_pl >= t_act or remaining_qty[tc.sku_id] <= 0:
                                             break
                                         is_flat = (to.is_flat or "FLAT" in to.name or to.dz <= min(tc.length, tc.width) + 1e-4)
@@ -580,25 +621,11 @@ class UnifiedSolver:
         return cur_h, total_placed, step_idx
 
     def _add_placement(self, cand: Dict, placements: List[Dict]) -> None:
+        if self._uses_load_ledger:
+            self._load_ledger.commit(cand, placements)
         placements.append(cand)
         cand_weight = cand.get("weight_kg", 0.0)
         self._curr_payload_weight = getattr(self, "_curr_payload_weight", 0.0) + cand_weight
-
-        # Accumulate bearing weight on underlying boxes
-        if cand["z"] > 1e-3:
-            eps = 1e-4
-            cx0, cx1 = cand["x"], cand["x"] + cand["dx"]
-            cy0, cy1 = cand["y"], cand["y"] + cand["dy"]
-            cand_area = cand["dx"] * cand["dy"]
-            for p in placements[:-1]:
-                if abs(round(p["z"] + p["dz"], 4) - round(cand["z"], 4)) < 1e-3:
-                    ix0 = max(cx0, p["x"])
-                    ix1 = min(cx1, p["x"] + p["dx"])
-                    iy0 = max(cy0, p["y"])
-                    iy1 = min(cy1, p["y"] + p["dy"])
-                    if ix1 > ix0 + eps and iy1 > iy0 + eps:
-                        contact_frac = ((ix1 - ix0) * (iy1 - iy0)) / max(1e-6, cand_area)
-                        p["_bearing_load"] = p.get("_bearing_load", 0.0) + cand_weight * contact_frac
 
         if getattr(self, "_spatial_idx", None) is not None:
             aabb = AABB(
@@ -612,6 +639,8 @@ class UnifiedSolver:
             self._spatial_idx.insert(f"item_{len(placements)}_{cand['x']}_{cand['y']}_{cand['z']}", aabb, cand)
 
     def _rebuild_spatial_index(self, placements: List[Dict]) -> None:
+        if self._uses_load_ledger:
+            self._load_ledger.rebuild(placements)
         self._spatial_idx = SpatialIndex(cell_size=0.5)
         for idx, p in enumerate(placements):
             aabb = AABB(
@@ -626,7 +655,12 @@ class UnifiedSolver:
 
     def _solve_single_trial(self, cargo_list: List[UniversalCargoTensor], trial_cfg: Dict[str, Any]) -> Tuple[List[Dict], Dict]:
         self._sku_tensor_map = {c.sku_id: c for c in cargo_list}
+        # 无载荷约束时无需维护载荷图，仍由最终验证器检查总重和几何。
+        self._uses_load_ledger = any(getattr(c, 'max_bearing_kg', None) is not None or
+                                    getattr(c, 'max_pressure_kg_m2', None) is not None or
+                                    not getattr(c, 'allow_stacking_on_top', True) for c in cargo_list)
         self._curr_payload_weight = 0.0
+        self._load_ledger = LoadLedger()
         remaining_qty: Dict[str, int] = {c.sku_id: c.quantity_required for c in cargo_list}
 
         inner_group: List[UniversalCargoTensor] = []
@@ -634,6 +668,7 @@ class UnifiedSolver:
         door_group: List[UniversalCargoTensor] = []
 
         for c in cargo_list:
+            self._check_budget()
             zp = c.zone_preference
             req = (c.raw_requirement or "")
             if zp == UniversalZone.INNER or ("最里面" in req or "里面" in req or "内" in req):
@@ -661,6 +696,7 @@ class UnifiedSolver:
         ))
 
         placements: List[Dict] = []
+        self._trial_placements = placements
         self._spatial_idx = SpatialIndex(cell_size=0.5)
         current_x = 0.0
         step_idx = 1
@@ -686,7 +722,9 @@ class UnifiedSolver:
             target_res_group = rigid_door_group if rigid_door_group else door_group
             door_dx_candidates = []
             for dc in target_res_group:
+                self._check_budget()
                 for d_ori in self._get_permitted_orientations(dc):
+                    self._check_budget()
                     door_dx_candidates.append(d_ori.dx)
             primary_door_dx = min(door_dx_candidates) if door_dx_candidates else 0.40
             max_single_dx = max([max(c.length, c.width, c.height) for c in target_res_group], default=0.48)
@@ -718,6 +756,7 @@ class UnifiedSolver:
         max_rows_cfg = trial_cfg.get("max_rows", 6)
 
         for target_zone, sku_group in zone_sequence:
+            self._check_budget()
             is_door = (target_zone == UniversalZone.DOOR)
             if target_zone == UniversalZone.INNER:
                 companion_pool = [c for c in middle_group if c.zone_preference != UniversalZone.DOOR]
@@ -734,6 +773,7 @@ class UnifiedSolver:
                 max_zone_x = validator_door_boundary_x
 
             while current_x < max_zone_x:
+                self._check_budget()
                 active_skus = [c for c in sku_group if remaining_qty[c.sku_id] > 0]
                 if not active_skus:
                     break
@@ -746,10 +786,12 @@ class UnifiedSolver:
                 if (target_zone == UniversalZone.INNER and current_x < 0.05) or (target_zone == UniversalZone.MIDDLE and any(c.quantity_required <= 2 and remaining_qty[c.sku_id] > 0 for c in active_skus)):
                     corner_skus = [c for c in active_skus if c.quantity_required <= 2]
                     for c_sku in corner_skus:
+                        self._check_budget()
                         if remaining_qty[c_sku.sku_id] <= 0:
                             continue
                         c_oris = self._get_permitted_orientations(c_sku)
                         for o in c_oris:
+                            self._check_budget()
                             cand_pos = {
                                 "sku_id": c_sku.sku_id,
                                 "x": round(current_x, 4),
@@ -829,6 +871,7 @@ class UnifiedSolver:
 
                     for pat in viable_patterns:
                         # Transaction Snapshot before attempting pattern wall
+                        self._check_budget()
                         tx_snapshot = {
                             "placements_len": len(placements),
                             "remaining_qty": dict(remaining_qty),
@@ -842,12 +885,16 @@ class UnifiedSolver:
                         pat_success = True
 
                         for col in pat.columns:
+                            self._check_budget()
                             col_y = round(col.y_start, 4)
                             col_placed = 0
 
                             for lz in range(col.num_layers_z):
+                                self._check_budget()
                                 for rx in range(col.num_rows_x):
+                                    self._check_budget()
                                     for cy in range(col.num_cols_y):
+                                        self._check_budget()
                                         if remaining_qty.get(col.variant.sku_id, 0) <= 0:
                                             break
                                         is_flat = col.variant.is_flat
@@ -990,6 +1037,7 @@ class UnifiedSolver:
                 chosen_candidate = None
                 chosen_opt = None
                 for cand_sku in candidates_to_lead:
+                    self._check_budget()
                     c_oris = self._get_permitted_orientations(cand_sku)
                     rem_q = remaining_qty[cand_sku.sku_id]
                     # If remaining quantity is small (tail residual) or avail_x is restricted, allow sorting by smaller dx to fit gap
@@ -998,6 +1046,7 @@ class UnifiedSolver:
                     else:
                         c_oris.sort(key=lambda o: (int(self.cW / o.dy) * o.dy / self.cW) * 0.65 + o.dx * 0.35, reverse=True)
                     for o in c_oris:
+                        self._check_budget()
                         if o.dx <= avail_x + 1e-4 and o.dy <= self.cW - 0.02 and o.dz <= (self.cH - 0.04):
                             chosen_candidate = cand_sku
                             chosen_opt = o
@@ -1031,16 +1080,19 @@ class UnifiedSolver:
                     pool = base_pool
 
                 while cur_y < self.cW - 0.03:
+                    self._check_budget()
                     rem_w = round(self.cW - cur_y, 4)
                     col_sku = None
                     col_opt = None
                     best_score = -1.0
 
                     for cand in pool:
+                        self._check_budget()
                         if remaining_qty[cand.sku_id] <= 0:
                             continue
                         c_oris = self._get_permitted_orientations(cand)
                         for o in c_oris:
+                            self._check_budget()
                             if o.dy <= (rem_w + 1e-4) and o.dx <= (delta_x + 1e-4):
                                 cols_fit = int((rem_w + 1e-4) / o.dy)
                                 cov = (cols_fit * o.dy) / rem_w
@@ -1074,13 +1126,17 @@ class UnifiedSolver:
                             if comp_res.is_valid and comp_res.columns and comp_res.total_cartons > 0:
                                 comp_placed_total = 0
                                 for sub_col in comp_res.columns:
+                                    self._check_budget()
                                     sub_placed = 0
                                     sub_y = round(cur_y + sub_col.y_offset, 4)
                                     sub_h = round(sub_col.nz * sub_col.dz, 4)
 
                                     for lz in range(sub_col.nz):
+                                        self._check_budget()
                                         for rx in range(sub_col.nx):
+                                            self._check_budget()
                                             for cy in range(sub_col.ny):
+                                                self._check_budget()
                                                 if remaining_qty.get(sub_col.sku_id, 0) <= 0:
                                                     break
                                                 is_flat = ("FLAT" in sub_col.orientation_name or sub_col.dz < min(sub_col.dx, sub_col.dy))
@@ -1142,9 +1198,11 @@ class UnifiedSolver:
 
                     if not col_sku:
                         for fc in pool:
+                            self._check_budget()
                             if remaining_qty[fc.sku_id] <= 0:
                                 continue
                             for o in self._get_permitted_orientations(fc):
+                                self._check_budget()
                                 if o.dy <= rem_w + 1e-4:
                                     col_sku = fc
                                     col_opt = o
@@ -1181,8 +1239,11 @@ class UnifiedSolver:
                     placed_here = 0
                     cur_col_h = round(c_layers_z * col_opt.dz, 4)
                     for lz in range(c_layers_z):
+                        self._check_budget()
                         for rx in range(c_rows_x):
+                            self._check_budget()
                             for cy in range(c_cols_y):
+                                self._check_budget()
                                 if placed_here >= needed or remaining_qty[col_sku.sku_id] <= 0:
                                     break
                                 is_flat = (col_opt.is_flat or "FLAT" in col_opt.name or col_opt.dz <= min(col_sku.length, col_sku.width) + 1e-4)
@@ -1251,6 +1312,7 @@ class UnifiedSolver:
 
         # PASS 4: All-Space 3D Spatial Grid Cavity Backfilling (Iterative)
         for round_idx in range(10):
+            self._check_budget()
             placed_in_round = 0
             unplaced = [c for c in cargo_list if remaining_qty[c.sku_id] > 0]
             if not unplaced:
@@ -1268,6 +1330,7 @@ class UnifiedSolver:
 
             anchors: Set[Tuple[float, float, float]] = {(0.0, 0.0, 0.0)}
             for p in placements:
+                self._check_budget()
                 anchors.add((round(p['x'] + p['dx'], 4), round(p['y'], 4), round(p['z'], 4)))
                 anchors.add((round(p['x'], 4), round(p['y'] + p['dy'], 4), round(p['z'], 4)))
                 anchors.add((round(p['x'], 4), round(p['y'], 4), round(p['z'] + p['dz'], 4)))
@@ -1276,12 +1339,14 @@ class UnifiedSolver:
             has_door_skus = any(c.zone_preference == UniversalZone.DOOR for c in cargo_list)
 
             for ax, ay, az in sorted(list(anchors), key=lambda pt: (pt[0], pt[2], pt[1])):
+                self._check_budget()
                 if ax >= self.cL - 0.04 or ay >= self.cW - 0.02 or az >= self.cH - 0.03:
                     continue
                 is_door_zone = (ax >= validator_door_boundary_x - 1e-4) if has_door_skus else False
 
                 placed_at_anchor = False
                 for c in unplaced:
+                    self._check_budget()
                     if remaining_qty[c.sku_id] <= 0:
                         continue
                     if is_door_zone and c.zone_preference != UniversalZone.DOOR:
@@ -1290,6 +1355,7 @@ class UnifiedSolver:
                         continue
 
                     for o in self._get_permitted_orientations(c):
+                        self._check_budget()
                         max_x_bound = validator_door_boundary_x if (has_door_skus and c.zone_preference != UniversalZone.DOOR) else (self.cL - 0.04)
                         max_y_bound = self.cW - 0.02
                         max_z_bound = self.cH - 0.03
@@ -1338,14 +1404,17 @@ class UnifiedSolver:
                         placed_block = 0
                         # Expand micro-block (layers -> rows -> cols)
                         for lz in range(max_lz):
+                            self._check_budget()
                             cur_cand_z = round(az + lz * o.dz, 4)
                             if cur_cand_z + o.dz > max_z_bound + 1e-4:
                                 break
                             for rx in range(max_rx):
+                                self._check_budget()
                                 cur_cand_x = round(ax + rx * o.dx, 4)
                                 if cur_cand_x + o.dx > max_x_bound + 1e-4:
                                     break
                                 for cy in range(max_cy):
+                                    self._check_budget()
                                     if remaining_qty[c.sku_id] <= 0:
                                         break
                                     cur_cand_y = round(ay + cy * o.dy, 4)
@@ -1393,18 +1462,23 @@ class UnifiedSolver:
         if unplaced_rigid:
             potential_anchors = list(reversed(placements))
             for c_rem in unplaced_rigid:
+                self._check_budget()
                 c_oris = self._get_permitted_orientations(c_rem)
                 while remaining_qty[c_rem.sku_id] > 0:
+                    self._check_budget()
                     placed_rigid_item = False
                     for o in c_oris:
+                        self._check_budget()
                         if placed_rigid_item:
                             break
                         # 1. First attempt to anchor along door boundary (rigid support from door against tipping)
                         door_x = round(self.cL - 0.04 - o.dx, 4)
                         max_lz = min(getattr(c_rem, 'max_stack_layers', None) or 99, int((self.cH - 0.04) // o.dz))
                         for lz_step in range(max_lz):
+                            self._check_budget()
                             cz_door = round(lz_step * o.dz, 4)
                             for cy_step in range(int(self.cW // o.dy) + 1):
+                                self._check_budget()
                                 if remaining_qty[c_rem.sku_id] <= 0:
                                     break
                                 cy_door = round(cy_step * o.dy, 4)
@@ -1436,6 +1510,7 @@ class UnifiedSolver:
                         # 2. Next attempt anchoring to existing placed boxes
                         for other in potential_anchors:
                             # For slender items (SF < 1.5), placing in front of other without forward support is unsafe
+                            self._check_budget()
                             is_slender = (2.0 * o.dx / max(1e-4, o.dz)) < 1.5 - 1e-4
                             cand_coords = [
                                 (round(other["x"] - o.dx, 4), round(other["y"], 4), 0.0),
@@ -1446,6 +1521,7 @@ class UnifiedSolver:
                             if not is_slender:
                                 cand_coords.append((round(other["x"] + other["dx"], 4), round(other["y"], 4), round(other["z"], 4)))
                             for cx, cy, cz in cand_coords:
+                                self._check_budget()
                                 if cx < 0.0 or cy < 0.0 or cz < 0.0:
                                     continue
                                 if cx + o.dx > self.cL - 0.02 or cy + o.dy > self.cW - 0.02 or cz + o.dz > self.cH - 0.04:
@@ -1922,46 +1998,12 @@ class UnifiedSolver:
             if cand["z"] > 1e-3:
                 return False
 
-        # 3. Upper bearing check for underlying boxes
-        cand_z = cand["z"]
-        if cand_z > 1e-3:
-            cx0, cx1 = cand["x"], cand["x"] + cand["dx"]
-            cy0, cy1 = cand["y"], cand["y"] + cand["dy"]
-            cand_area = cand["dx"] * cand["dy"]
-            cand_weight = cand.get("weight_kg", c_sku.weight_kg)
-
-            if getattr(self, "_spatial_idx", None) is not None and len(self._spatial_idx) > 0:
-                query_aabb = AABB(
-                    min_x=cand["x"],
-                    min_y=cand["y"],
-                    min_z=cand_z - 0.05,
-                    max_x=cand["x"] + cand["dx"],
-                    max_y=cand["y"] + cand["dy"],
-                    max_z=cand_z + 0.05,
-                )
-                cand_ids = self._spatial_idx.query_candidate_ids(query_aabb, expand_eps=0.05)
-                lowers = [self._spatial_idx.get_item(cid).data for cid in cand_ids if self._spatial_idx.get_item(cid) is not None and self._spatial_idx.get_item(cid).data is not None]
-            else:
-                lowers = placements
-
-            for p in lowers:
-                if abs(round(p["z"] + p["dz"], 4) - round(cand_z, 4)) < 1e-3:
-                    ix0 = max(cx0, p["x"])
-                    ix1 = min(cx1, p["x"] + p["dx"])
-                    iy0 = max(cy0, p["y"])
-                    iy1 = min(cy1, p["y"] + p["dy"])
-                    if ix1 > ix0 + eps and iy1 > iy0 + eps:
-                        under_sku = tensor_map.get(p["sku_id"])
-                        if under_sku:
-                            if not getattr(under_sku, "allow_stacking_on_top", True):
-                                return False
-                            max_bearing = getattr(under_sku, "max_bearing_kg", None)
-                            if max_bearing is not None:
-                                contact_frac = ((ix1 - ix0) * (iy1 - iy0)) / max(1e-6, cand_area)
-                                added_w = cand_weight * contact_frac
-                                curr_bearing = p.get("_bearing_load", 0.0)
-                                if curr_bearing + added_w > max_bearing + eps:
-                                    return False
+        # 对全部下层传播新增载荷，拒绝后不更新账本。
+        if self._uses_load_ledger:
+            if len(self._load_ledger.nodes) != len(placements):
+                self._load_ledger.rebuild(placements)
+            if not self._load_ledger.permits(cand, placements, tensor_map):
+                return False
 
         # 4. Vertical Stack Layers limit check
         max_layers = getattr(c_sku, "max_stack_layers", None)

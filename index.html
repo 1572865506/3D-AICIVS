@@ -2139,6 +2139,7 @@
   <script src="/frontend/src/errorLogReporter.js"></script>
   <script src="/frontend/src/orientationRendering.js"></script>
   <script src="/frontend/src/manifestWorkflow.js"></script>
+  <script src="/frontend/src/inputSafety.js"></script>
   <script src="/frontend/src/backendSwitch.js"></script>
 </head>
 <body>
@@ -2398,6 +2399,7 @@
               </div>
               
               <div class="upload-zone" id="drop-zone" onclick="document.getElementById('excel-file-input').click()">
+                <p>尺寸列可标注 m、cm、mm；未标注时按米解析。</p>
                 <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv, .txt" style="display: none;" onchange="handleExcelFileUpload(this.files[0])">
                 <svg class="upload-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                 <div class="upload-text-main">点击或拖拽上传清洗表格 (.xlsx / .csv)</div>
@@ -4297,14 +4299,11 @@
     let unselectedDisplayMode = 'ghost';
 
     // --- 4. EXCEL/CSV ROBUST PARSER ---
-    function normalizeMetricVal(val) {
-      if (typeof val === 'number') return +val.toFixed(3);
-      if (!val) return 0.5;
-      const num = parseFloat(String(val).replace(/[^\d.]/g, ''));
-      if (isNaN(num) || num <= 0) return 0.5;
-      if (num >= 20 && num < 4000) return +(num / 1000).toFixed(3);
-      return +num.toFixed(3);
+    const escapeHtml = window.InputSafety.escapeHtml;
+    function normalizeMetricVal(val, unit = 'm') {
+      return window.InputSafety.dimension(val, unit);
     }
+
 
     function parseExcelData(binaryData) {
       try {
@@ -4326,9 +4325,9 @@
           row.forEach((h, idx) => {
             if (/序列|序号|id|no/i.test(h)) colSeq = idx;
             else if (/产品名|品名|商品名称|货物名称|name|title/i.test(h)) colName = idx;
-            else if (/长\(m\)|长（m）|^长$|length/i.test(h)) colL = idx;
-            else if (/宽\(m\)|宽（m）|^宽$|width/i.test(h)) colW = idx;
-            else if (/高\(m\)|高（m）|^高$|height/i.test(h)) colH = idx;
+            else if (/^长(?:[（(].*[）)])?$|length/i.test(h)) colL = idx;
+            else if (/^宽(?:[（(].*[）)])?$|width/i.test(h)) colW = idx;
+            else if (/^高(?:[（(].*[）)])?$|height/i.test(h)) colH = idx;
             else if (/单件毛重|毛重|单重|weight|gw/i.test(h)) colWeight = idx;
             else if (/产品数量|数量\(箱\)|数量（箱）|数量|箱数|qty/i.test(h)) colQty = idx;
             else if (/摆放要求|摆放|要求|位置|requirement/i.test(h)) colReq = idx;
@@ -4348,6 +4347,8 @@
         if (colQty === -1) colQty = 6;
         if (colReq === -1) colReq = 8;
 
+        const headers = jsonData[headerRowIdx];
+        const units = [colL, colW, colH].map(col => window.InputSafety.unitFromHeader(headers[col]));
         const parsedItems = [];
         for (let r = headerRowIdx + 1; r < jsonData.length; r++) {
           const row = jsonData[r];
@@ -4359,9 +4360,9 @@
 
           const seqVal = colSeq !== -1 && row[colSeq] ? String(row[colSeq]).trim() : String(r - headerRowIdx);
           const sku = `SKU-${String(seqVal).padStart(2, '0')}`;
-          const l = normalizeMetricVal(row[colL]);
-          const w = normalizeMetricVal(row[colW]);
-          const h = normalizeMetricVal(row[colH]);
+          const l = normalizeMetricVal(row[colL], units[0]);
+          const w = normalizeMetricVal(row[colW], units[1]);
+          const h = normalizeMetricVal(row[colH], units[2]);
           const weight = parseFloat(String(row[colWeight] || '5').replace(/[^\d.]/g, '')) || 5.0;
           const req = colReq !== -1 && row[colReq] ? String(row[colReq]).trim() : '放中间';
 
@@ -4410,11 +4411,11 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><strong>${idx + 1}</strong></td>
-          <td><strong>${item.name}</strong></td>
+          <td><strong>${escapeHtml(item.name)}</strong></td>
           <td>${item.w} × ${item.d} × ${item.h} m</td>
           <td>${item.weight} kg</td>
           <td><span style="color:var(--primary); font-weight:700;">${item.quantity} 箱</span></td>
-          <td><span class="req-tag ${getReqClass(item.requirement)}">${item.requirement}</span></td>
+          <td><span class="req-tag ${getReqClass(item.requirement)}">${escapeHtml(item.requirement)}</span></td>
           <td>
             <button class="tool-action-btn" onclick="openPendingImportSKUSettings(${idx})" style="color:#2563eb;">设置规则</button>
             <span style="display:block;font-size:9px;margin-top:3px;color:${item.cargoProfile ? '#2563eb' : '#64748b'};">${item.cargoProfile ? 'USER_DEFINED' : 'DEFAULT'}</span>
@@ -5908,6 +5909,7 @@
       rebuildOrientationAssist();
 
       const metrics = loadingResult.metrics || {};
+      if (!loadingResult.executable) showToast('布局有效，但装载顺序未验证通过；仅供布局预览。', 'warning');
       const utilization = Number(metrics.utilization_pct || 0);
       const totalWeightKg = Number(metrics.total_weight_kg || loadingResult.cargo.reduce((sum, item) => sum + Number(item.weight_kg || 0), 0));
       document.getElementById('kpi-util').innerHTML = `${utilization.toFixed(2)}<span class="kpi-unit">%</span>`;
@@ -6365,8 +6367,8 @@
       toast.innerHTML = `
         <div class="toast-icon-wrap">${icon}</div>
         <div class="toast-content">
-          <div class="toast-title">${title}</div>
-          <div class="toast-body">${msg}</div>
+          <div class="toast-title">${escapeHtml(title)}</div>
+          <div class="toast-body">${escapeHtml(msg)}</div>
         </div>
         <button class="toast-close" onclick="this.parentElement.remove()" title="关闭提示">✕</button>
       `;
@@ -6498,7 +6500,7 @@
         
         chip.innerHTML = `
           <span class="anchor-dot" style="background:${hexColor};"></span>
-          <span>${item.sku}</span>
+          <span>${escapeHtml(item.sku)}</span>
           <span class="anchor-count-badge" style="${isUnfinished ? 'color:#b45309; background:#fef3c7; font-weight:800; border:1px solid #fcd34d;' : ''}">(${placedCount}/${plannedCount}${isUnfinished ? ' ⚠️' : ''})</span>
         `;
 
@@ -6547,6 +6549,8 @@
       if (countEl) {
         if (activeManifest.length === 0) {
           countEl.innerHTML = '<span style="color:#64748b; font-weight:800;">0 种 SKU • 空货单</span>';
+        } else if (!activePackingResult || calculatedRevision !== manifestRevision) {
+          countEl.textContent = `${activeManifest.length} 种 SKU • 待计算`;
         } else if (totalUnplaced > 0) {
           countEl.innerHTML = `<span style="color:#b45309; font-weight:800;">⚠️ ${activeManifest.length} 种 SKU • 余 ${totalUnplaced} 箱未装完</span>`;
         } else {
@@ -6615,25 +6619,25 @@
         card.innerHTML = `
           <div class="sku-item-head">
             <div class="sku-head-left">
-              <div class="sku-checkbox-custom" id="chk-box-${sku.sku}">
+              <div class="sku-checkbox-custom" id="chk-box-${escapeHtml(sku.sku)}">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.2"><polyline points="20 6 9 17 4 12"/></svg>
               </div>
               <span class="sku-color-ring" style="background:${hexColor};"></span>
-              <span class="sku-code-chip">${sku.sku}</span>
-              <span class="sku-title-txt" title="${sku.name}">${sku.name}</span>
+              <span class="sku-code-chip">${escapeHtml(sku.sku)}</span>
+              <span class="sku-title-txt" title="${escapeHtml(sku.name)}">${escapeHtml(sku.name)}</span>
             </div>
             <div class="sku-actions-group">
               ${statusBadgeHtml}
-              <button class="btn-sku-action" onclick="event.stopPropagation(); openSKUSettingsModal('${sku.sku}')" title="设置此SKU摆放位置、朝向与堆叠层高">
+              <button class="btn-sku-action" data-action="settings" title="设置此SKU摆放位置、朝向与堆叠层高">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
               </button>
-              <button class="btn-sku-action delete" onclick="event.stopPropagation(); deleteSKUItem('${sku.sku}')" title="删除此货物 SKU">
+              <button class="btn-sku-action delete" data-action="delete" title="删除此货物 SKU">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
               </button>
             </div>
           </div>
           <div class="sku-item-tags">
-            <span class="req-tag ${getReqClass(sku.requirement)}">${sku.requirement || '放中间'}</span>
+            <span class="req-tag ${getReqClass(sku.requirement)}">${escapeHtml(sku.requirement || '放中间')}</span>
             ${oriTag}
             ${layerTag}
           </div>
@@ -6643,6 +6647,12 @@
           </div>
         `;
 
+        card.querySelector('[data-action="settings"]').addEventListener('click', event => {
+          event.stopPropagation(); openSKUSettingsModal(sku.sku);
+        });
+        card.querySelector('[data-action="delete"]').addEventListener('click', event => {
+          event.stopPropagation(); deleteSKUItem(sku.sku);
+        });
         card.addEventListener('mouseenter', () => {
           highlightSKUInScene(sku.sku);
           highlightAnchorChip(sku.sku, true);
@@ -7910,6 +7920,10 @@
       const loadingResult = window.activeLoadingResult;
       if (!loadingResult) {
         showToast('当前没有装载推演方案，无法播放装载动画', 'warning');
+        return;
+      }
+      if (!loadingResult.executable || loadingResult.sequence_status !== 'FEASIBLE') {
+        showToast('装载顺序尚未验证通过，当前只能预览布局', 'warning');
         return;
       }
       isPackingAnimating = true;

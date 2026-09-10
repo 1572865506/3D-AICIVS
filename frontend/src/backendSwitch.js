@@ -7,10 +7,7 @@
 
   const CalculationMode = Object.freeze({ BACKEND: 'BACKEND', MOCK: 'MOCK' });
   const BackendStatus = Object.freeze({ ONLINE: 'ONLINE', OFFLINE: 'OFFLINE', CHECKING: 'CHECKING' });
-  // The current production pipeline performs the complete wall, recomposition,
-  // Top Fill and GlobalValidator pass before POST /loading/jobs returns.  The
-  // 14-SKU benchmark normally exceeds two minutes, so the transport timeout
-  // must not be shorter than a valid solver run.
+  // 前端轮询上限；计算硬超时由后台工作进程执行。
   const LOADING_JOB_TIMEOUT_MS = 300000;
   const ErrorType = Object.freeze({
     NETWORK_ERROR: 'NETWORK_ERROR', TIMEOUT: 'TIMEOUT', SERVER_ERROR: 'SERVER_ERROR',
@@ -52,6 +49,11 @@
     if (!value.sequence || !Array.isArray(value.sequence.steps) || !value.repair || !Array.isArray(value.repair.groups)) {
       throw new BackendError(ErrorType.SCHEMA_ERROR, 'Invalid sequence or repair groups');
     }
+    if (!(getMode() === CalculationMode.MOCK && value.demo === true) &&
+        (value.contract_version !== 'audit-repair-1' || value.layout_status !== 'VALID' ||
+        !value.validation || value.validation.is_valid !== true)) {
+      throw new BackendError(ErrorType.INVALID_RESULT, '布局未通过当前版本验证，请重新计算', undefined, value.validation);
+    }
     value.cargo.forEach(item => {
       const product = item.productDimensions;
       const occupied = item.occupiedDimensions;
@@ -68,11 +70,12 @@
   async function requestJson(path, init, timeoutMs) {
     const controller = new AbortController();
     const userSignal = init && init.signal;
+    const abortListener=()=>controller.abort();
     if (userSignal) {
       if (userSignal.aborted) {
         throw new BackendError(ErrorType.ABORTED || 'ABORTED', '用户已终止算柜推演');
       }
-      userSignal.addEventListener('abort', () => controller.abort());
+      userSignal.addEventListener('abort', abortListener, {once:true});
     }
     const timer = setTimeout(() => controller.abort(), timeoutMs || LOADING_JOB_TIMEOUT_MS);
     try {
@@ -100,7 +103,10 @@
       }
       try { return await response.json(); }
       catch (_) { throw new BackendError(ErrorType.INVALID_RESULT, 'Backend returned non-JSON content'); }
-    } finally { clearTimeout(timer); }
+    } finally {
+      clearTimeout(timer);
+      if(userSignal) userSignal.removeEventListener('abort',abortListener);
+    }
   }
 
   async function checkHealth() {
@@ -120,7 +126,27 @@
   }
 
   async function getResult(jobId, options = {}) {
-    return validateLoadingResult(await requestJson(`/loading/${encodeURIComponent(jobId)}`, { signal: options.signal }, LOADING_JOB_TIMEOUT_MS));
+    const path=`/loading/${encodeURIComponent(jobId)}`;
+    const deadline=Date.now()+LOADING_JOB_TIMEOUT_MS;
+    while (Date.now()<deadline) {
+      const job=await requestJson(`${path}/status`,{signal:options.signal},10000);
+      if (job.status === 'COMPLETED' || job.status === 'TIMED_OUT') {
+        try {
+          return validateLoadingResult(await requestJson(path,{signal:options.signal},10000));
+        } catch(error) {
+          if (job.status === 'TIMED_OUT') throw new BackendError(ErrorType.TIMEOUT,'计算超时，尚无可用的验证结果');
+          throw error;
+        }
+      }
+      if (!['QUEUED','RUNNING','FAILED','CANCELLED'].includes(job.status)) {
+        throw new BackendError(ErrorType.SCHEMA_ERROR,'未知任务状态');
+      }
+      if (job.status==='FAILED' || job.status==='CANCELLED') {
+        throw new BackendError(ErrorType.INVALID_RESULT,job.error && job.error.error || `任务 ${job.status}`);
+      }
+      await new Promise(resolve=>setTimeout(resolve,200));
+    }
+    throw new BackendError(ErrorType.TIMEOUT,'等待计算结果超时');
   }
 
   async function getHighlight(jobId, type, id) {
@@ -132,13 +158,23 @@
     try { response = await root.fetch('/frontend/mock/demo_loading_result.json', { cache: 'no-store' }); }
     catch (error) { throw new BackendError(ErrorType.NETWORK_ERROR, error.message || 'Mock file unavailable'); }
     if (!response.ok) throw new BackendError(ErrorType.SERVER_ERROR, `Mock HTTP ${response.status}`, response.status);
-    return validateLoadingResult(await response.json());
+    const demo = await response.json();
+    demo.demo = true; demo.executable = false; demo.sequence_status = 'NOT_EVALUATED';
+    return validateLoadingResult(demo);
   }
 
   async function calculate(payload, options = {}) {
     if (getMode() === CalculationMode.MOCK) return loadMock();
-    const jobId = await createJob(payload, options);
-    return getResult(jobId, options);
+    // 提交不使用用户信号，确保能取得任务 ID 后发送显式取消。
+    const jobId = await createJob(payload);
+    const cancel=()=>requestJson(`/loading/${encodeURIComponent(jobId)}/cancel`,{method:'POST'},5000).catch(()=>{});
+    if (options.signal && options.signal.aborted) {
+      await cancel(); throw new BackendError('ABORTED','用户已终止算柜推演');
+    }
+    if (options.signal) options.signal.addEventListener('abort',cancel,{once:true});
+    try { return await getResult(jobId, options); }
+    catch(error) { await cancel(); throw error; }
+    finally { if (options.signal) options.signal.removeEventListener('abort',cancel); }
   }
 
   function sceneObjects(result) {
@@ -155,7 +191,15 @@
     });
   }
 
+  function assertExecutable(result) {
+    validateLoadingResult(result);
+    if (result.executable !== true || result.sequence_status !== 'FEASIBLE') {
+      throw new BackendError(ErrorType.INVALID_RESULT, '装载顺序尚未验证通过，暂不可执行或导出');
+    }
+  }
+
   function animationFrames(result) {
+    assertExecutable(result);
     return validateLoadingResult(result).animation.frames.map(frame => ({
       step: frame.step, objects: frame.objects.slice(), from: frame.from.slice(), to: frame.to.slice(),
       duration: frame.duration, movements: (frame.movements || []).map(m => ({ object: m.object, from: m.from.slice(), to: m.to.slice() }))
@@ -177,6 +221,7 @@
   // Export-facing rows deliberately use physical product dimensions. Placement
   // AABB remains available under the explicitly named occupied-space columns.
   function cargoExportRows(result) {
+    assertExecutable(result);
     return validateLoadingResult(result).cargo.map(cargo => ({
       SKU: cargo.sku,
       '产品长(mm)': Math.round(cargo.productDimensions.length * 1000),

@@ -57,26 +57,33 @@ REGRESSION_THRESHOLDS = {
 }
 
 
+def assert_reports(current, baseline):
+    """任何用例硬约束或业务门禁失败均阻止发布；基准缺项也不能静默跳过。"""
+    current = current.get('results', current)
+    assert current, "没有基准结果"
+    baseline = baseline.get('results', baseline)
+    for case_id, cur in current.items():
+        assert cur['is_valid'], f"{case_id}: 布局无效"
+        assert cur['violations'] == 0, f"{case_id}: 存在违规"
+        assert cur['overlap_pair_count'] == 0, f"{case_id}: 存在碰撞"
+        fulfillment = cur['sku_fulfillment']
+        assert not fulfillment['starved_skus'], f"{case_id}: SKU 饥饿"
+        assert not fulfillment['priority_inversion'], f"{case_id}: 刚性/弹性优先级倒挂"
+        base = baseline.get(case_id)
+        if isinstance(base, dict) and 'utilization' in base:
+            assert cur['utilization'] >= base['utilization'] * .98, f"{case_id}: 利用率回归"
+            if 'sku_fulfillment' in base:
+                assert fulfillment['rigid_completion_pct'] >= base['sku_fulfillment']['rigid_completion_pct'], f"{case_id}: 刚性履行率回归"
+        else:
+            assert case_id in REGRESSION_THRESHOLDS, f"{case_id}: 缺少基准或阈值"
+            assert cur['utilization'] >= REGRESSION_THRESHOLDS[case_id]['min_util'], f"{case_id}: 未达到阈值"
+    missing = [key for key, value in baseline.items()
+               if isinstance(value, dict) and 'utilization' in value and key not in current]
+    assert not missing, f"基准用例缺失: {missing}"
+
+
 def test_no_regression():
-    """确保新版不低于基线 (Regression Guard Test)."""
-    baseline = load_baseline_data()
-    current = run_benchmark_suite()
-
-    evaluated_count = 0
-    for case_id, base in baseline.items():
-        if isinstance(base, dict) and "utilization" in base and case_id in current:
-            cur = current[case_id]
-            # Ensure utilization >= 98% of baseline
-            assert cur["utilization"] >= base["utilization"] * 0.98, (
-                f"回归: {case_id} 利用率从 {base['utilization']}% 降至 {cur['utilization']}%"
-            )
-            # Ensure 0 collisions / overlap pairs
-            assert cur["overlap_pair_count"] == 0, (
-                f"回归: {case_id} 出现碰撞重叠对: {cur['overlap_pair_count']}"
-            )
-            evaluated_count += 1
-
-    assert evaluated_count >= 5, f"Expected at least 5 benchmark cases evaluated, got {evaluated_count}"
+    assert_reports(run_benchmark_suite(), load_baseline_data())
 
 
 class TestRegressionGuard(unittest.TestCase):

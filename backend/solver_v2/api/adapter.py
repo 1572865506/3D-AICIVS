@@ -5,6 +5,8 @@ IMPORTANT: Free-text normalization and Chinese requirement string parsing is str
 Solver Core receives ONLY strongly typed objects and Enums.
 """
 import re
+import math
+from backend.solver_v2.api.result_status import result_status
 import time
 from typing import Dict, Any, List, Optional, Tuple
 
@@ -344,6 +346,8 @@ class InputAdapter:
         elif 'maxPayloadTons' in raw_container:
             max_payload_kg = float(raw_container['maxPayloadTons']) * 1000.0
 
+        if not math.isfinite(max_payload_kg) or max_payload_kg <= 0:
+            raise ValueError("柜体载重必须为有限正数")
         return ContainerSpec(
             code=str(code),
             inner_dim=BoxDim(x=x, y=y, z=z),
@@ -390,7 +394,11 @@ class InputAdapter:
             profile = InputNormalizer.parse_cargo_profile(profile_raw) if profile_raw is not None else None
 
             # Quantity
-            req_qty = int(src.get('quantity', src.get('qty', 1)))
+            raw_qty = src.get('quantity', src.get('qty', 1))
+            qty_number = float(raw_qty)
+            if not math.isfinite(qty_number) or qty_number < 0 or not qty_number.is_integer():
+                raise ValueError('货物数量必须为非负整数')
+            req_qty = int(qty_number)
             req_text = str(src.get('requirement', ''))
             if profile is not None:
                 is_elastic = profile.placement_policy.reduction_allowed
@@ -447,6 +455,15 @@ class InputAdapter:
             )
             cargo_skus.append(cargo)
 
+        ids = [s.sku_id for s in cargo_skus]
+        if len(ids) != len(set(ids)):
+            raise ValueError('SKU 标识不能重复')
+        for s in cargo_skus:
+            if not math.isfinite(s.weight_kg) or s.weight_kg < 0 or s.quantity.required < 0:
+                raise ValueError('重量必须为有限非负数，数量不能为负数')
+            for value in (s.stacking_policy.max_bearing_kg, s.stacking_policy.max_pressure_kg_m2):
+                if value is not None and (not math.isfinite(value) or value < 0):
+                    raise ValueError('承重与压强上限必须为有限非负数')
         return cargo_skus
 
 
@@ -617,6 +634,7 @@ class OutputAdapter:
             "metrics": metrics,
             "telemetry": telemetry_data,
             "warnings": warn_list,
+            **result_status(solution),
         }
 
     @staticmethod
@@ -696,15 +714,16 @@ class OutputAdapter:
         cog = metrics["cog"]
 
         return {
-            "success": True,
-            "status": "success",
+            "success": v2_resp["validation"]["is_valid"],
+            "status": "success" if v2_resp["validation"]["is_valid"] else "invalid",
+            **result_status(solution),
             "solverVersion": "v2.0.0",
             "solutionId": v2_resp["solutionId"],
             "version": v2_resp["version"],
             "totalCount": metrics["placedCount"],
             "totalPlaced": metrics["placedCount"],
             "totalUnplacedCount": metrics["unplacedCount"],
-            "totalCollisions": 0,
+            "totalCollisions": sum(v["type"] == "COLLISION_OVERLAP" for v in v2_resp["validation"]["violations"]),
             "usedVol": metrics["usedVolumeM3"],
             "utilization": metrics["volumeUtilizationPct"],
             "totalMassKg": metrics["totalWeightKg"],
@@ -713,14 +732,14 @@ class OutputAdapter:
             "isOverweight": metrics["isOverweight"],
             "cog": cog,
             "constraints": {
-                "doorZoneViolations": 0,
-                "pressureBlocked": 0,
-                "supportBlocked": 0,
+                "doorZoneViolations": sum("DOOR" in v["type"] or "ZONE" in v["type"] for v in v2_resp["validation"]["violations"]),
+                "pressureBlocked": sum("PRESSURE" in v["type"] for v in v2_resp["validation"]["violations"]),
+                "supportBlocked": sum("SUPPORT" in v["type"] for v in v2_resp["validation"]["violations"]),
             },
             "flatness": {
-                "maxWallGap": 0.0,
-                "topNotchCount": 0,
-                "maxTopGap": 0.0,
+                "maxWallGap": None,
+                "topNotchCount": None,
+                "maxTopGap": None,
             },
             "placedBoxes": placed_boxes,
             "placements": v2_resp["placements"],

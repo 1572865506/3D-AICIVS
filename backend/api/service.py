@@ -1,5 +1,7 @@
 """Thread-safe in-memory loading-job API and product adapter orchestration."""
+from backend.solver_v2.api.result_status import result_status
 import threading
+import time
 from urllib.parse import parse_qs,urlparse
 
 from backend.api.adapters import LayoutAdapter,RepairAdapter,SceneAdapter,SequenceAdapter
@@ -43,6 +45,13 @@ class LoadingAPIService:
 
     def register_solver_output(self,job_id,solution,container,cargo):
         from backend.solver_v2.loading.planner import LoadingStep, LoadingPlan, LoadingDependencyGraph
+        from backend.solver_v2.validation.sequence_check import check_sequence
+        started = time.monotonic()
+        state = result_status(solution)
+        checked = (check_sequence(container, cargo, solution.placements)
+                   if state['layout_status'] == 'VALID' else
+                   {'status':'NOT_EVALUATED','order':[], 'reasons':['LAYOUT_NOT_VALID']})
+        ordered = checked['order']
         steps = [
             LoadingStep(
                 step_index=idx + 1,
@@ -53,16 +62,16 @@ class LoadingAPIService:
                 blocking_check={},
                 support_after_step={},
                 stability_after_step={},
-                wall_id="WALL_0",
-                row_id="ROW_0",
-                layer_id="LAYER_0",
+                wall_id=None,
+                row_id=None,
+                layer_id=None,
                 phase=str(p.context.value if hasattr(p.context, 'value') else p.context)
             )
-            for idx, p in enumerate(solution.placements)
+            for idx, p in enumerate(ordered)
         ]
         plan = LoadingPlan(
-            static_feasible=solution.validation_result.is_valid if solution.validation_result is not None else True,
-            sequence_feasible=True,
+            static_feasible=solution.validation_result.is_valid if solution.validation_result is not None else False,
+            sequence_feasible=checked['status'] == 'FEASIBLE',
             steps=steps,
             graph=LoadingDependencyGraph(nodes={p.placement_id: p for p in solution.placements}, edges=[]),
             groups=[],
@@ -70,7 +79,7 @@ class LoadingAPIService:
             debts=[],
             metrics={"sequence_signature": f"sig_{job_id}", "total_steps": len(steps)},
             repair_requests=[],
-            runtime_sec=0.01
+            runtime_sec=time.monotonic()-started
         )
         repair = None
         recomposition = (solution.telemetry.wall_plan_search_metrics or {}).get("cargo_recomposition")
@@ -80,6 +89,14 @@ class LoadingAPIService:
             {"utilization_pct": solution.volume_utilization_pct, "total_weight_kg": solution.total_weight_kg, "braking_stability": braking},
             recomposition
         )
+        result.update(result_status(solution))
+        result['sequence_status'] = checked['status']
+        result['sequence']['status'] = checked['status']
+        result['sequence']['reasons'] = checked['reasons']
+        result['sequence']['assumptions'] = checked.get('assumptions', {})
+        result['executable'] = state['layout_status'] == 'VALID' and checked['status'] == 'FEASIBLE'
+        if not result['executable']:
+            result["animation"] = {"frames": [], "total_frames": 0, "playback": "disabled"}
         self.store.put(job_id, result)
         return result
 
@@ -100,6 +117,8 @@ class LoadingAPIService:
         if endpoint=="highlight":
             query=parse_qs(parsed.query);kind=(query.get("type") or ["object"])[0];value=(query.get("id") or [""])[0]
             return 200,get_highlight(record,kind,value)
+        if endpoint in {"export", "animation"} and not record.get("executable", False):
+            return 409,{"error":"RESULT_NOT_EXECUTABLE","layout_status":record.get("layout_status", "NOT_EVALUATED")}
         handler=routes.get(endpoint)
         if handler is None:return 404,{"error":"LOADING_ENDPOINT_NOT_FOUND","endpoint":endpoint,"version":"BLK007C"}
         return 200,handler(record)

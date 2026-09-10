@@ -11,6 +11,7 @@ import os
 import json
 import time
 import traceback
+import threading
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from socketserver import ThreadingMixIn
 
@@ -19,25 +20,46 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, BASE_DIR)
 sys.path.insert(0, os.path.join(BASE_DIR, 'backend'))
 
-from industrial_packer import IndustrialSmartContainerPacker
-from solver_v2.api.adapter import InputAdapter, OutputAdapter
-from solver_v2.solver.baseline_solver import BaselineGreedySolver
-from solver_v2.search.engine import HierarchicalSearchSolver
-from solver_v2.search.config import SearchConfig, SearchProfile
 from backend.api.service import DEFAULT_LOADING_API
+from backend.api.jobs import JobManager, TERMINAL
+from backend.api.static_files import public_file
 from backend.api.error_response import classify_api_exception
+
+JOBS = JobManager()
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     """Handle requests in a separate thread."""
     daemon_threads = True
+    request_slots = threading.BoundedSemaphore(32)
+
+    def process_request(self, request, client_address):
+        if not self.request_slots.acquire(blocking=False):
+            try: request.sendall(b'HTTP/1.1 503 Service Unavailable\r\nContent-Length: 0\r\nConnection: close\r\n\r\n')
+            finally: self.shutdown_request(request)
+            return
+        try: super().process_request(request, client_address)
+        except Exception:
+            self.request_slots.release()
+            raise
+
+    def process_request_thread(self, request, client_address):
+        try: super().process_request_thread(request, client_address)
+        finally: self.request_slots.release()
 
 class AICIVSRequestHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         # Set workspace root as document directory
         super().__init__(*args, directory=BASE_DIR, **kwargs)
 
+    def translate_path(self, path):
+        return public_file(BASE_DIR, path) or os.path.join(BASE_DIR, '__not_public__', '404')
+
     def _send_cors_headers(self):
-        self.send_header('Access-Control-Allow-Origin', '*')
+        origin = self.headers.get('Origin')
+        allowed = os.environ.get('AICIVS_ALLOWED_ORIGINS', '').split(',')
+        if origin and origin in allowed:
+            self.send_header('Access-Control-Allow-Origin', origin)
+            self.send_header('Vary', 'Origin')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
 
@@ -74,7 +96,29 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
             return
         super().do_HEAD()
 
+    def _json(self, status, payload):
+        self.send_response(status)
+        self.send_header('Content-Type', 'application/json; charset=utf-8')
+        self.end_headers()
+        self.wfile.write(json.dumps(payload, ensure_ascii=False, allow_nan=False).encode('utf-8'))
+
     def do_GET(self):
+        parts=self.path.split('?')[0].strip('/').split('/')
+        if len(parts)>=4 and parts[:3]==['api','v1','loading'] and parts[3]!='health':
+            job=JOBS.get(parts[3])
+            if job is not None:
+                if len(parts)==5 and parts[4]=='status':
+                    return self._json(200,{k:v for k,v in job.items() if k!='result'})
+                if job['result'] is None:
+                    return self._json(202 if job['status'] not in TERMINAL else 409,
+                                      {k:v for k,v in job.items() if k!='result'})
+                # 有效结果按现有产品路由读取；任务管理器持有有界生命周期。
+                from backend.api.service import LoadingAPIService
+                service=LoadingAPIService()
+                service.put_result(job['result']['loading'])
+                response=service.dispatch(self.path)
+                if response is not None:return self._json(*response)
+
         if self.path in ('/api/v1/health', '/api/v2/health', '/api/v1/loading/health'):
             self.send_response(200)
             self.send_header('Content-Type', 'application/json; charset=utf-8')
@@ -85,7 +129,7 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                 'status': 'ok',
                 'service': '3D-AICIVS Industrial Packing Kernel (Python 3)',
                 'version': '2.0.0',
-                'solvers': ['v1-industrial', 'v2-cleanroom'],
+                'solvers': ['v2-cleanroom'],
                 'timestamp': time.time()
             }
             self.wfile.write(json.dumps(health_data).encode('utf-8'))
@@ -104,12 +148,20 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
         super().do_GET()
 
     def do_POST(self):
-        if self.path in ('/api/v1/pack', '/api/v2/pack', '/api/v1/loading/jobs'):
-            content_length = int(self.headers.get('Content-Length', 0))
-            body = self.rfile.read(content_length)
+        parts=self.path.strip('/').split('/')
+        if len(parts)==5 and parts[:3]==['api','v1','loading'] and parts[4]=='cancel':
+            return self._json(202 if JOBS.cancel(parts[3]) else 404, {'job_id':parts[3], 'cancel_requested':True})
 
+        if self.path in ('/api/v1/pack', '/api/v2/pack', '/api/v1/loading/jobs'):
             try:
+                content_length = int(self.headers.get('Content-Length', 0))
+                if content_length < 0 or content_length > 2*1024*1024:
+                    raise ValueError('请求体不得超过 2 MiB')
+                self.connection.settimeout(15)
+                body = self.rfile.read(content_length)
                 payload = json.loads(body.decode('utf-8')) if body else {}
+                if not isinstance(payload, dict):
+                    raise ValueError('请求必须为 JSON 对象')
                 solver_version = str(payload.get('solverVersion', '')).lower()
 
                 # V2 route or requested solverVersion == 'v2'
@@ -117,121 +169,31 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                 is_v2_endpoint = is_job_endpoint or self.path == '/api/v2/pack' or solver_version.startswith('v2')
 
                 if is_v2_endpoint:
-                    t_start = time.perf_counter()
-                    # Parse canonical container and cargo
-                    raw_container = payload.get('container') or payload.get('containerSpec', {})
-                    raw_manifest = payload.get('manifest') or payload.get('cargo') or payload.get('sku', [])
-                    container_spec = InputAdapter.parse_container(raw_container)
-                    cargo_skus = InputAdapter.parse_cargo_list(raw_manifest)
-
-                    # Read-only request audit for diagnosing policy-vs-deployment
-                    # differences between the browser's persisted manifest and
-                    # the repository preset.  Do not include names or requirement
-                    # prose; only structured solver fields are logged.
-                    request_policy_audit = [
-                        {
-                            'sku': sku.sku_id,
-                            'quantity': sku.quantity.required,
-                            'dimensions': [sku.box.x, sku.box.y, sku.box.z],
-                            'max_stack_layers': sku.stacking_policy.max_stack_layers,
-                            'max_bearing_kg': sku.stacking_policy.max_bearing_kg,
-                            'max_pressure_kg_m2': sku.stacking_policy.max_pressure_kg_m2,
-                            'allow_stacking_on_top': sku.stacking_policy.allow_stacking_on_top,
-                            'must_be_on_floor': sku.stacking_policy.must_be_on_floor,
-                        }
-                        for sku in cargo_skus
-                    ]
-
-                    mode_str = str(payload.get('mode', 'BALANCED')).upper()
-                    seed = int(payload.get('randomSeed', 42))
-                    time_budget = float(payload.get('timeBudgetSec', 20.0))
-                    version_num = int(payload.get('version', 1))
-                    solution_id = f"sol_{int(time.time()*1000)}_{os.urandom(4).hex()}"
-
-                    profile_map = {
-                        'FAST': SearchProfile.FAST,
-                        'BALANCED': SearchProfile.BALANCED,
-                        'MAX_COMPACT': SearchProfile.OPTIMIZE,
-                        'OPTIMIZE': SearchProfile.OPTIMIZE,
-                        'ROBUST': SearchProfile.BALANCED,
-                    }
-                    search_profile = profile_map.get(mode_str, SearchProfile.BALANCED)
-                    search_cfg = SearchConfig.for_profile(
-                        profile=search_profile,
-                        time_budget_sec=time_budget,
-                        seed=seed,
-                    )
-                    from backend.solver_v2.solver.unified_solver import UnifiedSolver
-                    solver = UnifiedSolver(container_spec)
-                    solution = solver.solve(cargo_skus, mode=mode_str, seed=seed, time_budget=time_budget)
-
-                    elapsed_ms = (time.perf_counter() - t_start) * 1000.0
-
-                    # Output full response (includes V2 schema and visualizer placedBoxes)
-                    result = OutputAdapter.to_legacy_response(
-                        solution=solution,
-                        container=container_spec,
-                        cargo_list=cargo_skus,
-                        version=version_num,
-                        elapsed_ms=elapsed_ms,
-                    )
-                    result['solutionId'] = solution_id
-                    loading_result = DEFAULT_LOADING_API.register_solver_output(
-                        solution_id, solution, container_spec, cargo_skus)
-                    result['loadingJobId'] = solution_id
-                    result['loadingApiBase'] = f"/api/v1/loading/{solution_id}"
-                    result['sequenceFeasible'] = loading_result['sequence']['feasible']
-
+                    job_id = JOBS.submit(payload)
                     if is_job_endpoint:
-                        result = {
-                            'job_id': solution_id,
-                            'status': 'complete',
-                            'result_url': f"/api/v1/loading/{solution_id}",
-                            'version': 'BLK007C',
-                        }
+                        return self._json(202, {'job_id':job_id,'status':'QUEUED',
+                                              'result_url':f'/api/v1/loading/{job_id}','version':'BLK007C'})
+                    # 兼容同步 pack 接口；计算同样运行于受限进程。
+                    while True:
+                        job=JOBS.get(job_id)
+                        if job['status'] in TERMINAL:break
+                        time.sleep(.02)
+                    if job['result'] is not None:
+                        return self._json(200,job['result']['legacy'])
+                    return self._json(504 if job['status']=='TIMED_OUT' else 422,
+                                      {'success':False,'status':job['status'],'error':job['error']})
 
-                    print(f"[PACK-V2] Result: placed={result.get('totalCount',0)}, util={result.get('utilization',0)}%, elapsed={result.get('elapsedMs',0)}ms")
-
-                    self.send_response(200)
-                    self.send_header('Content-Type', 'application/json; charset=utf-8')
-                    self.send_header('X-Solver-Version', 'v2.0.0')
-                    self.end_headers()
-                    self.wfile.write(json.dumps(result, ensure_ascii=False).encode('utf-8'))
-                    return
-
-                # Fallback to Legacy v1.x packer for backward compatibility
-                container_spec = payload.get('containerSpec', {})
-                manifest = payload.get('manifest', [])
-                weights = payload.get('weights', None)
-                gap = float(payload.get('gap', 0) or 0)
-                strategy = payload.get('strategy', 'cluster')
-                enable_cog = bool(payload.get('enableCoGBalance', True))
-                use_plan = bool(payload.get('usePlan', True))
-
-                sku_summary = ', '.join([f"{m.get('sku','?')}({m.get('requirement','?')})" for m in manifest[:5]])
-                print(f"[PACK-V1] Received: {len(manifest)} SKUs, weights={weights is not None}, specs={container_spec.get('code','?')}")
-                print(f"[PACK-V1] SKUs: {sku_summary}{'...' if len(manifest) > 5 else ''}")
-                print(f"[PACK-V1] Params: strategy={strategy}, gap={gap}m, enableCoGBalance={enable_cog}")
-
-                packer = IndustrialSmartContainerPacker(container_spec, weights,
-                                                        gap=gap, strategy=strategy,
-                                                        enableCoGBalance=enable_cog,
-                                                        usePlan=use_plan)
-                result = packer.pack(manifest)
-
-                print(f"[PACK-V1] Result: placed={result.get('totalCount',0)}, util={result.get('utilization',0)}%, elapsed={result.get('elapsedMs',0)}ms")
-
-                self.send_response(200)
-                self.send_header('Content-Type', 'application/json; charset=utf-8')
-                self.end_headers()
-                self.wfile.write(json.dumps(result, ensure_ascii=False).encode('utf-8'))
+                return self._json(410, {'success':False,'error':'旧版求解入口已停用，请使用 /api/v2/pack 或 /api/v1/loading/jobs'})
+            except OverflowError:
+                self._json(429, {"error":"任务队列已满，请稍后重试"})
             except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
                 pass
             except Exception as e:
                 status, err_data = classify_api_exception(e)
                 if status >= 500:
                     traceback.print_exc()
-                    err_data['traceback'] = traceback.format_exc()
+                    err_data['error'] = '内部计算失败，请使用服务端日志定位'
+                    err_data['details'] = {}
                 else:
                     print(f"[PACK-V2-INPUT] {err_data['code']}: {err_data['error']}")
                 try:
@@ -258,7 +220,7 @@ def run_server(port=8080):
         except Exception:
             pass
 
-    server_address = ('', port)
+    server_address = (os.environ.get('AICIVS_HOST', '127.0.0.1'), port)
     httpd = ThreadedHTTPServer(server_address, AICIVSRequestHandler)
     print(f"=================================================================")
     print(f"  3D-AICIVS Python 3 Microservice Server running on port {port}")
@@ -271,6 +233,7 @@ def run_server(port=8080):
         httpd.serve_forever()
     except KeyboardInterrupt:
         print("\nServer shutting down gracefully.")
+        JOBS.close()
         httpd.server_close()
 
 if __name__ == '__main__':

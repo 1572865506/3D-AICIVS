@@ -12,7 +12,7 @@
 
 **3D-AICIVS** 是面向现代工业物流、外贸海运与集装箱多模态运输打造的**工业级 3D 智能装箱求解与沉浸式可视化全栈系统**。系统融合了运筹优化动态规划、高密度复合条带分层咬合、刚体运动学防倾倒约束、空腔极值点（Extreme Points / EMS）微块回填与基于 Three.js 的实时工业级 PBR 3D 渲染引擎。
 
-系统能够毫秒级求解包含 15+ 复杂 SKU、多重摆放朝向、柜门区防倾倒封门、分层堆叠限制（`must_be_on_floor` / `max_stack_layers`）等严苛工业工况，达成 **100% 满配装载、0 违规、重心三维均衡**。
+系统提供启发式装载布局与独立验证。结果可能为部分装载、无效或超时；仅布局验证与顺序检查均通过时，才允许作为可执行方案。当前修复状态及生产门禁见 [修复说明](docs/修复说明.md)。
 
 ---
 
@@ -24,11 +24,11 @@
 - **Pass 2 & 3: 阶梯式顶部空间填补与回填 (Stepped Headroom & Top Fill)**：
   - 针对不同高度货箱构成的断面台阶，自适应下发顶部平铺与净空接力填充策略。
 - **Pass 4: 空间网格三维空腔微块回填 (3D Spatial Grid Cavity Backfilling)**：
-  - 采用极值点与空闲空间（EMS）扫描，对集装箱内部所有死角与残余空隙进行微块（Micro-Block）多向扩展回填，彻底消灭 SKU 尾数残留。
+  - 采用极值点与空闲空间（EMS）扫描，对集装箱内部所有死角与残余空隙进行微块（Micro-Block）多向扩展回填，尝试减少 SKU 尾数残留。
 - **刚体物理防倾倒与动力学封门 (Anti-Tipping & Door-Zone Locking)**：
-  - 柜门端（Door Zone）严格执行基底支撑率强校验（Support Ratio $\ge 0.7$），自动生成自锁式阶梯封门大墙，彻底规避开柜坍塌风险。
+  - 柜门端（Door Zone）严格执行基底支撑率强校验（Support Ratio $\ge 0.7$），自动生成自锁式阶梯封门大墙，按所声明模型检查稳定性，实际装卸仍需结合现场条件验证。
 - **全动态约束解析 (Zero-Cache Dynamic Constraints)**：
-  - 实时响应前端对货物的区位策略（`REAR`/`MIDDLE`/`DOOR`）、朝向权限（`UPRIGHT`/`FLAT`/`SIDE`）、落地限制（`must_be_on_floor`）与层数上限（`max_stack_layers`），计算请求纳秒级防缓存穿透。
+  - 实时响应前端对货物的区位策略（`REAR`/`MIDDLE`/`DOOR`）、朝向权限（`UPRIGHT`/`FLAT`/`SIDE`）、落地限制（`must_be_on_floor`）与层数上限（`max_stack_layers`），逐次解析输入并验证结果。
 
 ### 2. 沉浸式 Three.js 工业级 3D 可视化视口 (Industrial 3D Viewport)
 - **高对比度双层 3D 外轮廓描边 (Dual-Layer High-Contrast Outline Stroke)**：
@@ -82,7 +82,7 @@
 ├── index.html                            # 3D-AICIVS 核心应用界面 (Three.js PBR 视口)
 ├── algorithm_space.html                  # 算法空间全链路架构拓扑可视化
 ├── README.md                             # 项目技术全景文档
-└── requirements.txt                      # 运行依赖 (无重型依赖，开箱即用)
+└── requirements-dev.txt                  # 测试依赖（运行核心采用 Python 标准库）
 ```
 
 ---
@@ -119,8 +119,10 @@ python backend/server.py 8080
 | 接口路径 | 方法 | 说明 |
 | :--- | :--- | :--- |
 | `/api/v1/loading/health` | `GET` | 检查后端内核健康状态与可用求解器列表 |
-| `/api/v1/loading/jobs` | `POST` | 提交装载任务，执行 4-Pass Cleanroom Solver 计算并返回权威装载方案 |
+| `/api/v1/loading/jobs` | `POST` | 提交异步装载任务（202）；通过任务状态接口轮询 |
 | `/api/v1/loading/{job_id}` | `GET` | 获取指定任务的完整 3D 场景对象树、货垛序列与 KPI 指标 |
+| `/api/v1/loading/{job_id}/status` | `GET` | 查询排队、运行、完成、失败、超时与取消状态 |
+| `/api/v1/loading/{job_id}/cancel` | `POST` | 取消尚未完成的任务 |
 | `/api/v1/loading/{job_id}/layout` | `GET` | 获取集装箱空间布局与坐标系统 |
 | `/api/v1/loading/{job_id}/highlight` | `GET` | 获取指定 SKU、墙体或装载步骤的高亮标识数组 |
 

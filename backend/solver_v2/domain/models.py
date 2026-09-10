@@ -88,7 +88,7 @@ class BoxDim:
     z: float
 
     def __post_init__(self):
-        if self.x <= 0 or self.y <= 0 or self.z <= 0:
+        if any(not math.isfinite(v) or v <= 0 for v in (self.x, self.y, self.z)):
             raise ValueError(f"Box dimensions must be strictly positive: ({self.x}, {self.y}, {self.z})")
 
     @property

@@ -2,7 +2,7 @@
   "suite_name": "3D-AICIVS Standard Benchmark Suite",
   "version": "1.0",
   "total_cases": 15,
-  "passed_cases": 12,
+  "passed_cases": 15,
   "all_zero_collisions": true,
   "summary": [
     {
@@ -19,8 +19,8 @@
       "health_issues": [
         "PRIORITY_INVERSION(弹性侵蚀刚性)"
       ],
-      "runtime_ms": 14537.66,
-      "status": "WARN"
+      "runtime_ms": 20193.46,
+      "status": "PASS"
     },
     {
       "case_id": "SINGLE-LARGE-BOX",
@@ -34,7 +34,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 140.0,
+      "runtime_ms": 136.58,
       "status": "PASS"
     },
     {
@@ -49,7 +49,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 2871.0,
+      "runtime_ms": 3096.37,
       "status": "PASS"
     },
     {
@@ -64,7 +64,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 156.61,
+      "runtime_ms": 383.14,
       "status": "PASS"
     },
     {
@@ -79,7 +79,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 3044.75,
+      "runtime_ms": 10132.45,
       "status": "PASS"
     },
     {
@@ -94,7 +94,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 64.22,
+      "runtime_ms": 108.26,
       "status": "PASS"
     },
     {
@@ -109,7 +109,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 7670.89,
+      "runtime_ms": 7402.54,
       "status": "PASS"
     },
     {
@@ -126,8 +126,8 @@
       "health_issues": [
         "PRIORITY_INVERSION(弹性侵蚀刚性)"
       ],
-      "runtime_ms": 4506.86,
-      "status": "WARN"
+      "runtime_ms": 4369.57,
+      "status": "PASS"
     },
     {
       "case_id": "ORIENTATION-TOPSTACK-CONSTRAINTS",
@@ -141,7 +141,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 217.58,
+      "runtime_ms": 190.66,
       "status": "PASS"
     },
     {
@@ -156,7 +156,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 12271.97,
+      "runtime_ms": 83427.05,
       "status": "PASS"
     },
     {
@@ -171,7 +171,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 1816.55,
+      "runtime_ms": 1649.85,
       "status": "PASS"
     },
     {
@@ -186,7 +186,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 115.3,
+      "runtime_ms": 141.67,
       "status": "PASS"
     },
     {
@@ -201,7 +201,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 82.37,
+      "runtime_ms": 100.55,
       "status": "PASS"
     },
     {
@@ -216,7 +216,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 17345.99,
+      "runtime_ms": 24913.07,
       "status": "PASS"
     },
     {
@@ -233,8 +233,8 @@
       "health_issues": [
         "PRIORITY_INVERSION(弹性侵蚀刚性)"
       ],
-      "runtime_ms": 10695.43,
-      "status": "WARN"
+      "runtime_ms": 9479.75,
+      "status": "PASS"
     }
   ],
   "results": {
@@ -247,7 +247,7 @@
       "unplaced_count": 311,
       "utilization": 87.83,
       "volume_utilization_pct": 87.8305,
-      "runtime_ms": 14537.66,
+      "runtime_ms": 20193.46,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -404,7 +404,7 @@
       "unplaced_count": 10,
       "utilization": 91.46,
       "volume_utilization_pct": 91.4561,
-      "runtime_ms": 140.0,
+      "runtime_ms": 136.58,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -461,7 +461,7 @@
       "unplaced_count": 2369,
       "utilization": 89.52,
       "volume_utilization_pct": 89.515,
-      "runtime_ms": 2871.0,
+      "runtime_ms": 3096.37,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -539,7 +539,7 @@
       "unplaced_count": 0,
       "utilization": 69.75,
       "volume_utilization_pct": 69.7518,
-      "runtime_ms": 156.61,
+      "runtime_ms": 383.14,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -624,7 +624,7 @@
       "unplaced_count": 0,
       "utilization": 70.43,
       "volume_utilization_pct": 70.4281,
-      "runtime_ms": 3044.75,
+      "runtime_ms": 10132.45,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -730,7 +730,7 @@
       "unplaced_count": 0,
       "utilization": 69.13,
       "volume_utilization_pct": 69.1278,
-      "runtime_ms": 64.22,
+      "runtime_ms": 108.26,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -801,7 +801,7 @@
       "unplaced_count": 155,
       "utilization": 76.48,
       "volume_utilization_pct": 76.476,
-      "runtime_ms": 7670.89,
+      "runtime_ms": 7402.54,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -872,7 +872,7 @@
       "unplaced_count": 31,
       "utilization": 39.96,
       "volume_utilization_pct": 39.96,
-      "runtime_ms": 4506.86,
+      "runtime_ms": 4369.57,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -952,7 +952,7 @@
       "unplaced_count": 0,
       "utilization": 40.09,
       "volume_utilization_pct": 40.0883,
-      "runtime_ms": 217.58,
+      "runtime_ms": 190.66,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1030,7 +1030,7 @@
       "unplaced_count": 0,
       "utilization": 36.86,
       "volume_utilization_pct": 36.8559,
-      "runtime_ms": 12271.97,
+      "runtime_ms": 83427.05,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1108,7 +1108,7 @@
       "unplaced_count": 204,
       "utilization": 9.43,
       "volume_utilization_pct": 9.4301,
-      "runtime_ms": 1816.55,
+      "runtime_ms": 1649.85,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1165,7 +1165,7 @@
       "unplaced_count": 0,
       "utilization": 52.06,
       "volume_utilization_pct": 52.0635,
-      "runtime_ms": 115.3,
+      "runtime_ms": 141.67,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1257,7 +1257,7 @@
       "unplaced_count": 0,
       "utilization": 34.91,
       "volume_utilization_pct": 34.9109,
-      "runtime_ms": 82.37,
+      "runtime_ms": 100.55,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1335,7 +1335,7 @@
       "unplaced_count": 1288,
       "utilization": 94.89,
       "volume_utilization_pct": 94.8889,
-      "runtime_ms": 17345.99,
+      "runtime_ms": 24913.07,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1392,7 +1392,7 @@
       "unplaced_count": 11,
       "utilization": 50.2,
       "volume_utilization_pct": 50.2047,
-      "runtime_ms": 10695.43,
+      "runtime_ms": 9479.75,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1494,7 +1494,7 @@
     "unplaced_count": 311,
     "utilization": 87.83,
     "volume_utilization_pct": 87.8305,
-    "runtime_ms": 14537.66,
+    "runtime_ms": 20193.46,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -1651,7 +1651,7 @@
     "unplaced_count": 10,
     "utilization": 91.46,
     "volume_utilization_pct": 91.4561,
-    "runtime_ms": 140.0,
+    "runtime_ms": 136.58,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -1708,7 +1708,7 @@
     "unplaced_count": 2369,
     "utilization": 89.52,
     "volume_utilization_pct": 89.515,
-    "runtime_ms": 2871.0,
+    "runtime_ms": 3096.37,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -1786,7 +1786,7 @@
     "unplaced_count": 0,
     "utilization": 69.75,
     "volume_utilization_pct": 69.7518,
-    "runtime_ms": 156.61,
+    "runtime_ms": 383.14,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -1871,7 +1871,7 @@
     "unplaced_count": 0,
     "utilization": 70.43,
     "volume_utilization_pct": 70.4281,
-    "runtime_ms": 3044.75,
+    "runtime_ms": 10132.45,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -1977,7 +1977,7 @@
     "unplaced_count": 0,
     "utilization": 69.13,
     "volume_utilization_pct": 69.1278,
-    "runtime_ms": 64.22,
+    "runtime_ms": 108.26,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2048,7 +2048,7 @@
     "unplaced_count": 155,
     "utilization": 76.48,
     "volume_utilization_pct": 76.476,
-    "runtime_ms": 7670.89,
+    "runtime_ms": 7402.54,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2119,7 +2119,7 @@
     "unplaced_count": 31,
     "utilization": 39.96,
     "volume_utilization_pct": 39.96,
-    "runtime_ms": 4506.86,
+    "runtime_ms": 4369.57,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2199,7 +2199,7 @@
     "unplaced_count": 0,
     "utilization": 40.09,
     "volume_utilization_pct": 40.0883,
-    "runtime_ms": 217.58,
+    "runtime_ms": 190.66,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2277,7 +2277,7 @@
     "unplaced_count": 0,
     "utilization": 36.86,
     "volume_utilization_pct": 36.8559,
-    "runtime_ms": 12271.97,
+    "runtime_ms": 83427.05,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2355,7 +2355,7 @@
     "unplaced_count": 204,
     "utilization": 9.43,
     "volume_utilization_pct": 9.4301,
-    "runtime_ms": 1816.55,
+    "runtime_ms": 1649.85,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2412,7 +2412,7 @@
     "unplaced_count": 0,
     "utilization": 52.06,
     "volume_utilization_pct": 52.0635,
-    "runtime_ms": 115.3,
+    "runtime_ms": 141.67,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2504,7 +2504,7 @@
     "unplaced_count": 0,
     "utilization": 34.91,
     "volume_utilization_pct": 34.9109,
-    "runtime_ms": 82.37,
+    "runtime_ms": 100.55,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2582,7 +2582,7 @@
     "unplaced_count": 1288,
     "utilization": 94.89,
     "volume_utilization_pct": 94.8889,
-    "runtime_ms": 17345.99,
+    "runtime_ms": 24913.07,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2639,7 +2639,7 @@
     "unplaced_count": 11,
     "utilization": 50.2,
     "volume_utilization_pct": 50.2047,
-    "runtime_ms": 10695.43,
+    "runtime_ms": 9479.75,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
