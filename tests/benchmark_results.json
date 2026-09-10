@@ -1,19 +1,23 @@
 {
   "suite_name": "3D-AICIVS Standard Benchmark Suite",
   "version": "1.0",
-  "total_cases": 5,
-  "passed_cases": 5,
+  "total_cases": 15,
+  "passed_cases": 15,
   "all_zero_collisions": true,
   "summary": [
     {
       "case_id": "14-SKU-1845",
       "case_name": "14-SKU-1845 (当前基线)",
-      "placed_count": 2092,
+      "placed_count": 1834,
       "requested_cartons": 2145,
-      "utilization": 88.02,
+      "utilization": 87.83,
+      "rigid_completion_pct": 85.5,
+      "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
-      "runtime_ms": 10520.03,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 30787.12,
       "status": "PASS"
     },
     {
@@ -22,20 +26,28 @@
       "placed_count": 60,
       "requested_cartons": 70,
       "utilization": 91.46,
+      "rigid_completion_pct": 85.71,
+      "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
-      "runtime_ms": 37.4,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 568.37,
       "status": "PASS"
     },
     {
       "case_id": "ALL-ELASTIC-SKUS",
       "case_name": "全弹性件 (测核减逻辑)",
-      "placed_count": 1026,
+      "placed_count": 831,
       "requested_cartons": 3200,
-      "utilization": 86.05,
+      "utilization": 89.52,
+      "rigid_completion_pct": 25.97,
+      "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
-      "runtime_ms": 1760.91,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 15931.28,
       "status": "PASS"
     },
     {
@@ -44,9 +56,13 @@
       "placed_count": 980,
       "requested_cartons": 980,
       "utilization": 69.75,
+      "rigid_completion_pct": 100.0,
+      "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
-      "runtime_ms": 2864.76,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 1236.97,
       "status": "PASS"
     },
     {
@@ -55,9 +71,163 @@
       "placed_count": 810,
       "requested_cartons": 810,
       "utilization": 70.43,
+      "rigid_completion_pct": 100.0,
+      "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
-      "runtime_ms": 2100.76,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 13068.52,
+      "status": "PASS"
+    },
+    {
+      "case_id": "20GP-STANDARD",
+      "case_name": "20GP标准柜 (测短柜装载)",
+      "placed_count": 560,
+      "requested_cartons": 560,
+      "utilization": 69.13,
+      "rigid_completion_pct": 100.0,
+      "elastic_completion_pct": 0.0,
+      "collisions": 0,
+      "violations": 0,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 444.6,
+      "status": "PASS"
+    },
+    {
+      "case_id": "45HQ-EXTENDED",
+      "case_name": "45HQ超长柜 (测极限长度)",
+      "placed_count": 645,
+      "requested_cartons": 800,
+      "utilization": 76.48,
+      "rigid_completion_pct": 80.62,
+      "elastic_completion_pct": 0.0,
+      "collisions": 0,
+      "violations": 0,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 18681.85,
+      "status": "PASS"
+    },
+    {
+      "case_id": "STACK-BEARING-CONSTRAINTS",
+      "case_name": "堆叠承重约束 (测约束遵守)",
+      "placed_count": 615,
+      "requested_cartons": 640,
+      "utilization": 40.67,
+      "rigid_completion_pct": 96.09,
+      "elastic_completion_pct": 0.0,
+      "collisions": 0,
+      "violations": 0,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 18732.14,
+      "status": "PASS"
+    },
+    {
+      "case_id": "ORIENTATION-TOPSTACK-CONSTRAINTS",
+      "case_name": "朝向与顶叠约束 (测约束组合)",
+      "placed_count": 440,
+      "requested_cartons": 440,
+      "utilization": 40.09,
+      "rigid_completion_pct": 100.0,
+      "elastic_completion_pct": 0.0,
+      "collisions": 0,
+      "violations": 0,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 871.01,
+      "status": "PASS"
+    },
+    {
+      "case_id": "TALL-SLENDER-TIPPING",
+      "case_name": "高瘦箱倾覆 (测TIP安全)",
+      "placed_count": 540,
+      "requested_cartons": 540,
+      "utilization": 36.86,
+      "rigid_completion_pct": 100.0,
+      "elastic_completion_pct": 0.0,
+      "collisions": 0,
+      "violations": 0,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 53294.09,
+      "status": "PASS"
+    },
+    {
+      "case_id": "OVERWEIGHT-PAYLOAD",
+      "case_name": "超重场景 (测载重限制)",
+      "placed_count": 96,
+      "requested_cartons": 300,
+      "utilization": 9.43,
+      "rigid_completion_pct": 32.0,
+      "elastic_completion_pct": 0.0,
+      "collisions": 0,
+      "violations": 0,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 7950.45,
+      "status": "PASS"
+    },
+    {
+      "case_id": "MULTI-ZONE-CONSTRAINTS",
+      "case_name": "多区位约束 (测区域调度)",
+      "placed_count": 650,
+      "requested_cartons": 650,
+      "utilization": 52.06,
+      "rigid_completion_pct": 100.0,
+      "elastic_completion_pct": 0.0,
+      "collisions": 0,
+      "violations": 0,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 784.84,
+      "status": "PASS"
+    },
+    {
+      "case_id": "EXTREME-ASPECT-RATIO",
+      "case_name": "极端长宽比 (测朝向+排列)",
+      "placed_count": 570,
+      "requested_cartons": 570,
+      "utilization": 34.91,
+      "rigid_completion_pct": 100.0,
+      "elastic_completion_pct": 0.0,
+      "collisions": 0,
+      "violations": 0,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 561.64,
+      "status": "PASS"
+    },
+    {
+      "case_id": "SINGLE-SKU-MASS",
+      "case_name": "单SKU大批量 (测性能+极限)",
+      "placed_count": 8712,
+      "requested_cartons": 10000,
+      "utilization": 94.89,
+      "rigid_completion_pct": 87.12,
+      "elastic_completion_pct": 0.0,
+      "collisions": 0,
+      "violations": 0,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 88544.9,
+      "status": "PASS"
+    },
+    {
+      "case_id": "ALL-CONSTRAINTS-COMBINED",
+      "case_name": "全约束综合 (测系统鲁棒性)",
+      "placed_count": 999,
+      "requested_cartons": 1010,
+      "utilization": 50.2,
+      "rigid_completion_pct": 98.91,
+      "elastic_completion_pct": 0.0,
+      "collisions": 0,
+      "violations": 0,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 20608.7,
       "status": "PASS"
     }
   ],
@@ -67,11 +237,11 @@
       "case_name": "14-SKU-1845 (当前基线)",
       "description": "14-SKU standard baseline cleanroom case 001",
       "requested_cartons": 2145,
-      "placed_count": 2092,
-      "unplaced_count": 53,
-      "utilization": 88.02,
-      "volume_utilization_pct": 88.0203,
-      "runtime_ms": 10520.03,
+      "placed_count": 1834,
+      "unplaced_count": 311,
+      "utilization": 87.83,
+      "volume_utilization_pct": 87.8305,
+      "runtime_ms": 30787.12,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -79,10 +249,142 @@
       "violations": 0,
       "fatal_violations": 0,
       "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 2145,
+        "rigid_placed": 1834,
+        "rigid_completion_pct": 85.5,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "SKU-01": {
+            "name": "WIFI蓝牙 / WIFI线 / WIFI贴",
+            "is_elastic": false,
+            "required": 1,
+            "placed": 1,
+            "completion_pct": 100.0
+          },
+          "SKU-02": {
+            "name": "21.5寸 显示器 BG (DA)",
+            "is_elastic": false,
+            "required": 500,
+            "placed": 500,
+            "completion_pct": 100.0
+          },
+          "SKU-03": {
+            "name": "34寸显示器 MX340 (DA)",
+            "is_elastic": false,
+            "required": 90,
+            "placed": 80,
+            "completion_pct": 88.9
+          },
+          "SKU-04": {
+            "name": "27寸显示器 2886A (DA)",
+            "is_elastic": false,
+            "required": 100,
+            "placed": 100,
+            "completion_pct": 100.0
+          },
+          "SKU-05": {
+            "name": "32寸智能显示器 (DA)",
+            "is_elastic": false,
+            "required": 100,
+            "placed": 100,
+            "completion_pct": 100.0
+          },
+          "SKU-06": {
+            "name": "15.6寸便携显示器 (14/箱)",
+            "is_elastic": false,
+            "required": 95,
+            "placed": 90,
+            "completion_pct": 94.7
+          },
+          "SKU-07": {
+            "name": "15.6寸 双屏便携屏",
+            "is_elastic": false,
+            "required": 125,
+            "placed": 120,
+            "completion_pct": 96.0
+          },
+          "SKU-08": {
+            "name": "21.5寸一体机整机 带键盘鼠标",
+            "is_elastic": false,
+            "required": 53,
+            "placed": 52,
+            "completion_pct": 98.1
+          },
+          "SKU-09": {
+            "name": "19寸一体机整机",
+            "is_elastic": false,
+            "required": 24,
+            "placed": 24,
+            "completion_pct": 100.0
+          },
+          "SKU-10": {
+            "name": "19寸液晶屏 / 19寸液晶屏玻璃",
+            "is_elastic": false,
+            "required": 22,
+            "placed": 22,
+            "completion_pct": 100.0
+          },
+          "SKU-11": {
+            "name": "电源线",
+            "is_elastic": false,
+            "required": 10,
+            "placed": 10,
+            "completion_pct": 100.0
+          },
+          "SKU-12": {
+            "name": "电源线 (小箱)",
+            "is_elastic": false,
+            "required": 1,
+            "placed": 1,
+            "completion_pct": 100.0
+          },
+          "SKU-13": {
+            "name": "电源",
+            "is_elastic": false,
+            "required": 50,
+            "placed": 50,
+            "completion_pct": 100.0
+          },
+          "SKU-14": {
+            "name": "19寸 显示器 BG (DA)",
+            "is_elastic": false,
+            "required": 674,
+            "placed": 384,
+            "completion_pct": 57.0
+          },
+          "SKU-15": {
+            "name": "23.8寸摄像头显示器",
+            "is_elastic": false,
+            "required": 300,
+            "placed": 300,
+            "completion_pct": 100.0
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
       "summary": {
-        "placedCount": 2092,
-        "unplacedCount": 53,
-        "utilization": 88.0203280198401
+        "placedCount": 1834,
+        "unplacedCount": 311,
+        "utilization": 87.83048775115186,
+        "rigidCompletion": 85.5,
+        "healthStatus": "HEALTHY"
       }
     },
     "SINGLE-LARGE-BOX": {
@@ -94,7 +396,7 @@
       "unplaced_count": 10,
       "utilization": 91.46,
       "volume_utilization_pct": 91.4561,
-      "runtime_ms": 37.4,
+      "runtime_ms": 568.37,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -102,10 +404,44 @@
       "violations": 0,
       "fatal_violations": 0,
       "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 70,
+        "rigid_placed": 60,
+        "rigid_completion_pct": 85.71,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "LARGE-SKU-01": {
+            "name": "Industrial Palletized Unit",
+            "is_elastic": false,
+            "required": 70,
+            "placed": 60,
+            "completion_pct": 85.7
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
       "summary": {
         "placedCount": 60,
         "unplacedCount": 10,
-        "utilization": 91.45606622457511
+        "utilization": 91.45606622457511,
+        "rigidCompletion": 85.71,
+        "healthStatus": "HEALTHY"
       }
     },
     "ALL-ELASTIC-SKUS": {
@@ -113,11 +449,11 @@
       "case_name": "全弹性件 (测核减逻辑)",
       "description": "All elastic SKUs with overcapacity demand testing automated trimming and zero overflow",
       "requested_cartons": 3200,
-      "placed_count": 1026,
-      "unplaced_count": 2174,
-      "utilization": 86.05,
-      "volume_utilization_pct": 86.0495,
-      "runtime_ms": 1760.91,
+      "placed_count": 831,
+      "unplaced_count": 2369,
+      "utilization": 89.52,
+      "volume_utilization_pct": 89.515,
+      "runtime_ms": 15931.28,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -125,10 +461,65 @@
       "violations": 0,
       "fatal_violations": 0,
       "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 3200,
+        "rigid_placed": 831,
+        "rigid_completion_pct": 25.97,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "ELASTIC-01": {
+            "name": "Elastic Standard Carton A",
+            "is_elastic": false,
+            "required": 800,
+            "placed": 434,
+            "completion_pct": 54.2
+          },
+          "ELASTIC-02": {
+            "name": "Elastic Compact Carton B",
+            "is_elastic": false,
+            "required": 900,
+            "placed": 96,
+            "completion_pct": 10.7
+          },
+          "ELASTIC-03": {
+            "name": "Elastic Small Carton C",
+            "is_elastic": false,
+            "required": 1000,
+            "placed": 139,
+            "completion_pct": 13.9
+          },
+          "ELASTIC-04": {
+            "name": "Elastic Bulk Carton D",
+            "is_elastic": false,
+            "required": 500,
+            "placed": 162,
+            "completion_pct": 32.4
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
       "summary": {
-        "placedCount": 1026,
-        "unplacedCount": 2174,
-        "utilization": 86.04948660930715
+        "placedCount": 831,
+        "unplacedCount": 2369,
+        "utilization": 89.5150412754896,
+        "rigidCompletion": 25.97,
+        "healthStatus": "HEALTHY"
       }
     },
     "DOOR-DENSE-SKUS": {
@@ -140,7 +531,7 @@
       "unplaced_count": 0,
       "utilization": 69.75,
       "volume_utilization_pct": 69.7518,
-      "runtime_ms": 2864.76,
+      "runtime_ms": 1236.97,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -148,10 +539,72 @@
       "violations": 0,
       "fatal_violations": 0,
       "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 980,
+        "rigid_placed": 980,
+        "rigid_completion_pct": 100.0,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "MAIN-01": {
+            "name": "Main Wall Bulk Cargo",
+            "is_elastic": false,
+            "required": 160,
+            "placed": 160,
+            "completion_pct": 100.0
+          },
+          "MAIN-02": {
+            "name": "Main Wall Standard Carton",
+            "is_elastic": false,
+            "required": 180,
+            "placed": 180,
+            "completion_pct": 100.0
+          },
+          "DOOR-01": {
+            "name": "Door Safety 21.5 Display Panel",
+            "is_elastic": false,
+            "required": 260,
+            "placed": 260,
+            "completion_pct": 100.0
+          },
+          "DOOR-02": {
+            "name": "Door Safety 27 Display Panel",
+            "is_elastic": false,
+            "required": 160,
+            "placed": 160,
+            "completion_pct": 100.0
+          },
+          "DOOR-03": {
+            "name": "Door Sealing Elastic Filler",
+            "is_elastic": false,
+            "required": 220,
+            "placed": 220,
+            "completion_pct": 100.0
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
       "summary": {
         "placedCount": 980,
         "unplacedCount": 0,
-        "utilization": 69.75179242951019
+        "utilization": 69.75179242950936,
+        "rigidCompletion": 100.0,
+        "healthStatus": "HEALTHY"
       }
     },
     "MIXED-HETEROGENEOUS": {
@@ -163,7 +616,7 @@
       "unplaced_count": 0,
       "utilization": 70.43,
       "volume_utilization_pct": 70.4281,
-      "runtime_ms": 2100.76,
+      "runtime_ms": 13068.52,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -171,10 +624,852 @@
       "violations": 0,
       "fatal_violations": 0,
       "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 810,
+        "rigid_placed": 810,
+        "rigid_completion_pct": 100.0,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "HETERO-01": {
+            "name": "Heavy Base Slab",
+            "is_elastic": false,
+            "required": 30,
+            "placed": 30,
+            "completion_pct": 100.0
+          },
+          "HETERO-02": {
+            "name": "Tall Upright Carton",
+            "is_elastic": false,
+            "required": 70,
+            "placed": 70,
+            "completion_pct": 100.0
+          },
+          "HETERO-03": {
+            "name": "Flat Large Panel",
+            "is_elastic": false,
+            "required": 60,
+            "placed": 60,
+            "completion_pct": 100.0
+          },
+          "HETERO-04": {
+            "name": "Standard Medium Box",
+            "is_elastic": false,
+            "required": 140,
+            "placed": 140,
+            "completion_pct": 100.0
+          },
+          "HETERO-05": {
+            "name": "Long Skinny Bar",
+            "is_elastic": false,
+            "required": 80,
+            "placed": 80,
+            "completion_pct": 100.0
+          },
+          "HETERO-06": {
+            "name": "Compact Cube",
+            "is_elastic": false,
+            "required": 90,
+            "placed": 90,
+            "completion_pct": 100.0
+          },
+          "HETERO-07": {
+            "name": "Small Void Filler",
+            "is_elastic": false,
+            "required": 250,
+            "placed": 250,
+            "completion_pct": 100.0
+          },
+          "HETERO-08": {
+            "name": "Door Safety Partition",
+            "is_elastic": false,
+            "required": 90,
+            "placed": 90,
+            "completion_pct": 100.0
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
       "summary": {
         "placedCount": 810,
         "unplacedCount": 0,
-        "utilization": 70.42809948278841
+        "utilization": 70.42809948278767,
+        "rigidCompletion": 100.0,
+        "healthStatus": "HEALTHY"
+      }
+    },
+    "20GP-STANDARD": {
+      "case_id": "20GP-STANDARD",
+      "case_name": "20GP标准柜 (测短柜装载)",
+      "description": "20GP standard container testing wall construction and door reserve adaptation for shorter containers",
+      "requested_cartons": 560,
+      "placed_count": 560,
+      "unplaced_count": 0,
+      "utilization": 69.13,
+      "volume_utilization_pct": 69.1278,
+      "runtime_ms": 444.6,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 560,
+        "rigid_placed": 560,
+        "rigid_completion_pct": 100.0,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "20GP-01": {
+            "name": "中型纸箱",
+            "is_elastic": false,
+            "required": 200,
+            "placed": 200,
+            "completion_pct": 100.0
+          },
+          "20GP-02": {
+            "name": "小配件箱",
+            "is_elastic": false,
+            "required": 300,
+            "placed": 300,
+            "completion_pct": 100.0
+          },
+          "20GP-03": {
+            "name": "封门面板",
+            "is_elastic": false,
+            "required": 60,
+            "placed": 60,
+            "completion_pct": 100.0
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 560,
+        "unplacedCount": 0,
+        "utilization": 69.12776040055965,
+        "rigidCompletion": 100.0,
+        "healthStatus": "HEALTHY"
+      }
+    },
+    "45HQ-EXTENDED": {
+      "case_id": "45HQ-EXTENDED",
+      "case_name": "45HQ超长柜 (测极限长度)",
+      "description": "45HQ extended container testing extreme length wall construction and performance",
+      "requested_cartons": 800,
+      "placed_count": 645,
+      "unplaced_count": 155,
+      "utilization": 76.48,
+      "volume_utilization_pct": 76.476,
+      "runtime_ms": 18681.85,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 800,
+        "rigid_placed": 645,
+        "rigid_completion_pct": 80.62,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "45HQ-01": {
+            "name": "标准箱A",
+            "is_elastic": false,
+            "required": 300,
+            "placed": 216,
+            "completion_pct": 72.0
+          },
+          "45HQ-02": {
+            "name": "标准箱B",
+            "is_elastic": false,
+            "required": 400,
+            "placed": 329,
+            "completion_pct": 82.2
+          },
+          "45HQ-03": {
+            "name": "封门件",
+            "is_elastic": false,
+            "required": 100,
+            "placed": 100,
+            "completion_pct": 100.0
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 645,
+        "unplacedCount": 155,
+        "utilization": 76.47602358058951,
+        "rigidCompletion": 80.62,
+        "healthStatus": "HEALTHY"
+      }
+    },
+    "STACK-BEARING-CONSTRAINTS": {
+      "case_id": "STACK-BEARING-CONSTRAINTS",
+      "case_name": "堆叠承重约束 (测约束遵守)",
+      "description": "Tests max_stack_layers, maxBearingKg, and mustBeOnFloor constraints are respected",
+      "requested_cartons": 640,
+      "placed_count": 615,
+      "unplaced_count": 25,
+      "utilization": 40.67,
+      "volume_utilization_pct": 40.6672,
+      "runtime_ms": 18732.14,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 640,
+        "rigid_placed": 615,
+        "rigid_completion_pct": 96.09,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "FRAG-01": {
+            "name": "易碎精密设备",
+            "is_elastic": false,
+            "required": 80,
+            "placed": 80,
+            "completion_pct": 100.0
+          },
+          "HEAVY-01": {
+            "name": "重型底座",
+            "is_elastic": false,
+            "required": 60,
+            "placed": 35,
+            "completion_pct": 58.3
+          },
+          "NORM-01": {
+            "name": "普通中箱",
+            "is_elastic": false,
+            "required": 200,
+            "placed": 200,
+            "completion_pct": 100.0
+          },
+          "FILL-01": {
+            "name": "轻量填充",
+            "is_elastic": false,
+            "required": 300,
+            "placed": 300,
+            "completion_pct": 100.0
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 615,
+        "unplacedCount": 25,
+        "utilization": 40.66722312357611,
+        "rigidCompletion": 96.09,
+        "healthStatus": "HEALTHY"
+      }
+    },
+    "ORIENTATION-TOPSTACK-CONSTRAINTS": {
+      "case_id": "ORIENTATION-TOPSTACK-CONSTRAINTS",
+      "case_name": "朝向与顶叠约束 (测约束组合)",
+      "description": "Tests allowStackingOnTop=false and orientation-only constraints (upright only, no flat/side)",
+      "requested_cartons": 440,
+      "placed_count": 440,
+      "unplaced_count": 0,
+      "utilization": 40.09,
+      "volume_utilization_pct": 40.0883,
+      "runtime_ms": 871.01,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 440,
+        "rigid_placed": 440,
+        "rigid_completion_pct": 100.0,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "NOTOP-01": {
+            "name": "精密仪器箱",
+            "is_elastic": false,
+            "required": 40,
+            "placed": 40,
+            "completion_pct": 100.0
+          },
+          "UPONLY-01": {
+            "name": "液晶面板",
+            "is_elastic": false,
+            "required": 120,
+            "placed": 120,
+            "completion_pct": 100.0
+          },
+          "FREE-01": {
+            "name": "自由约束箱",
+            "is_elastic": false,
+            "required": 200,
+            "placed": 200,
+            "completion_pct": 100.0
+          },
+          "DOOR-01": {
+            "name": "封门板",
+            "is_elastic": false,
+            "required": 80,
+            "placed": 80,
+            "completion_pct": 100.0
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 440,
+        "unplacedCount": 0,
+        "utilization": 40.088320945778165,
+        "rigidCompletion": 100.0,
+        "healthStatus": "HEALTHY"
+      }
+    },
+    "TALL-SLENDER-TIPPING": {
+      "case_id": "TALL-SLENDER-TIPPING",
+      "case_name": "高瘦箱倾覆 (测TIP安全)",
+      "description": "Tests tall slender boxes (dz/dx>3) for tipping safety - no unsupported tall placements or voids",
+      "requested_cartons": 540,
+      "placed_count": 540,
+      "unplaced_count": 0,
+      "utilization": 36.86,
+      "volume_utilization_pct": 36.8559,
+      "runtime_ms": 53294.09,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 540,
+        "rigid_placed": 540,
+        "rigid_completion_pct": 100.0,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "TALL-01": {
+            "name": "高柜体A",
+            "is_elastic": false,
+            "required": 60,
+            "placed": 60,
+            "completion_pct": 100.0
+          },
+          "TALL-02": {
+            "name": "高柜体B",
+            "is_elastic": false,
+            "required": 80,
+            "placed": 80,
+            "completion_pct": 100.0
+          },
+          "LOW-01": {
+            "name": "矮宽底座",
+            "is_elastic": false,
+            "required": 100,
+            "placed": 100,
+            "completion_pct": 100.0
+          },
+          "FILL-01": {
+            "name": "间隙填充",
+            "is_elastic": false,
+            "required": 300,
+            "placed": 300,
+            "completion_pct": 100.0
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 540,
+        "unplacedCount": 0,
+        "utilization": 36.85589883083482,
+        "rigidCompletion": 100.0,
+        "healthStatus": "HEALTHY"
+      }
+    },
+    "OVERWEIGHT-PAYLOAD": {
+      "case_id": "OVERWEIGHT-PAYLOAD",
+      "case_name": "超重场景 (测载重限制)",
+      "description": "Tests payload weight limit truncation - total cargo weight far exceeds maxPayloadTons",
+      "requested_cartons": 300,
+      "placed_count": 96,
+      "unplaced_count": 204,
+      "utilization": 9.43,
+      "volume_utilization_pct": 9.4301,
+      "runtime_ms": 7950.45,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 300,
+        "rigid_placed": 96,
+        "rigid_completion_pct": 32.0,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "IRON-01": {
+            "name": "铸铁件",
+            "is_elastic": false,
+            "required": 300,
+            "placed": 96,
+            "completion_pct": 32.0
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 96,
+        "unplacedCount": 204,
+        "utilization": 9.43008072430747,
+        "rigidCompletion": 32.0,
+        "healthStatus": "HEALTHY"
+      }
+    },
+    "MULTI-ZONE-CONSTRAINTS": {
+      "case_id": "MULTI-ZONE-CONSTRAINTS",
+      "case_name": "多区位约束 (测区域调度)",
+      "description": "Tests INNER/MIDDLE/DOOR zone dispatching with multiple zone-specific SKUs",
+      "requested_cartons": 650,
+      "placed_count": 650,
+      "unplaced_count": 0,
+      "utilization": 52.06,
+      "volume_utilization_pct": 52.0635,
+      "runtime_ms": 784.84,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 650,
+        "rigid_placed": 650,
+        "rigid_completion_pct": 100.0,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "INNER-01": {
+            "name": "贵重内壁件",
+            "is_elastic": false,
+            "required": 50,
+            "placed": 50,
+            "completion_pct": 100.0
+          },
+          "INNER-02": {
+            "name": "配套内壁件",
+            "is_elastic": false,
+            "required": 80,
+            "placed": 80,
+            "completion_pct": 100.0
+          },
+          "MIDDLE-01": {
+            "name": "主体货物A",
+            "is_elastic": false,
+            "required": 120,
+            "placed": 120,
+            "completion_pct": 100.0
+          },
+          "MIDDLE-02": {
+            "name": "主体货物B",
+            "is_elastic": false,
+            "required": 150,
+            "placed": 150,
+            "completion_pct": 100.0
+          },
+          "DOOR-01": {
+            "name": "封门刚性板",
+            "is_elastic": false,
+            "required": 100,
+            "placed": 100,
+            "completion_pct": 100.0
+          },
+          "DOOR-02": {
+            "name": "封门弹性填充",
+            "is_elastic": false,
+            "required": 150,
+            "placed": 150,
+            "completion_pct": 100.0
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 650,
+        "unplacedCount": 0,
+        "utilization": 52.06347567890223,
+        "rigidCompletion": 100.0,
+        "healthStatus": "HEALTHY"
+      }
+    },
+    "EXTREME-ASPECT-RATIO": {
+      "case_id": "EXTREME-ASPECT-RATIO",
+      "case_name": "极端长宽比 (测朝向+排列)",
+      "description": "Tests extreme aspect ratio items: long planks (2.4m), tubes (1.5m), thin sheets (30mm)",
+      "requested_cartons": 570,
+      "placed_count": 570,
+      "unplaced_count": 0,
+      "utilization": 34.91,
+      "volume_utilization_pct": 34.9109,
+      "runtime_ms": 561.64,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 570,
+        "rigid_placed": 570,
+        "rigid_completion_pct": 100.0,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "PLANK-01": {
+            "name": "长条形木板",
+            "is_elastic": false,
+            "required": 150,
+            "placed": 150,
+            "completion_pct": 100.0
+          },
+          "TUBE-01": {
+            "name": "管状件",
+            "is_elastic": false,
+            "required": 100,
+            "placed": 100,
+            "completion_pct": 100.0
+          },
+          "CUBE-01": {
+            "name": "正方体",
+            "is_elastic": false,
+            "required": 120,
+            "placed": 120,
+            "completion_pct": 100.0
+          },
+          "SHEET-01": {
+            "name": "薄板件",
+            "is_elastic": false,
+            "required": 200,
+            "placed": 200,
+            "completion_pct": 100.0
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 570,
+        "unplacedCount": 0,
+        "utilization": 34.91094468144695,
+        "rigidCompletion": 100.0,
+        "healthStatus": "HEALTHY"
+      }
+    },
+    "SINGLE-SKU-MASS": {
+      "case_id": "SINGLE-SKU-MASS",
+      "case_name": "单SKU大批量 (测性能+极限)",
+      "description": "Single SKU with 10000 small boxes - tests performance scaling and extreme volume packing",
+      "requested_cartons": 10000,
+      "placed_count": 8712,
+      "unplaced_count": 1288,
+      "utilization": 94.89,
+      "volume_utilization_pct": 94.8889,
+      "runtime_ms": 88544.9,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 10000,
+        "rigid_placed": 8712,
+        "rigid_completion_pct": 87.12,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "MASS-01": {
+            "name": "标准鞋盒",
+            "is_elastic": false,
+            "required": 10000,
+            "placed": 8712,
+            "completion_pct": 87.1
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 8712,
+        "unplacedCount": 1288,
+        "utilization": 94.88886707703946,
+        "rigidCompletion": 87.12,
+        "healthStatus": "HEALTHY"
+      }
+    },
+    "ALL-CONSTRAINTS-COMBINED": {
+      "case_id": "ALL-CONSTRAINTS-COMBINED",
+      "case_name": "全约束综合 (测系统鲁棒性)",
+      "description": "All constraint types combined: mustBeOnFloor + maxBearing + maxStack + noTopStack + uprightOnly + zones + elastic",
+      "requested_cartons": 1010,
+      "placed_count": 999,
+      "unplaced_count": 11,
+      "utilization": 50.2,
+      "volume_utilization_pct": 50.2047,
+      "runtime_ms": 20608.7,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 1010,
+        "rigid_placed": 999,
+        "rigid_completion_pct": 98.91,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "FLOOR-01": {
+            "name": "重型底座",
+            "is_elastic": false,
+            "required": 30,
+            "placed": 19,
+            "completion_pct": 63.3
+          },
+          "FRAG-01": {
+            "name": "精密仪器",
+            "is_elastic": false,
+            "required": 40,
+            "placed": 40,
+            "completion_pct": 100.0
+          },
+          "TALL-01": {
+            "name": "竖放面板",
+            "is_elastic": false,
+            "required": 100,
+            "placed": 100,
+            "completion_pct": 100.0
+          },
+          "INNER-01": {
+            "name": "内壁专用",
+            "is_elastic": false,
+            "required": 60,
+            "placed": 60,
+            "completion_pct": 100.0
+          },
+          "NORM-01": {
+            "name": "普通箱",
+            "is_elastic": false,
+            "required": 200,
+            "placed": 200,
+            "completion_pct": 100.0
+          },
+          "DOOR-01": {
+            "name": "封门件",
+            "is_elastic": false,
+            "required": 80,
+            "placed": 80,
+            "completion_pct": 100.0
+          },
+          "ELASTIC-01": {
+            "name": "弹性填充",
+            "is_elastic": false,
+            "required": 500,
+            "placed": 500,
+            "completion_pct": 100.0
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 999,
+        "unplacedCount": 11,
+        "utilization": 50.20470198946545,
+        "rigidCompletion": 98.91,
+        "healthStatus": "HEALTHY"
       }
     }
   },
@@ -183,11 +1478,11 @@
     "case_name": "14-SKU-1845 (当前基线)",
     "description": "14-SKU standard baseline cleanroom case 001",
     "requested_cartons": 2145,
-    "placed_count": 2092,
-    "unplaced_count": 53,
-    "utilization": 88.02,
-    "volume_utilization_pct": 88.0203,
-    "runtime_ms": 10520.03,
+    "placed_count": 1834,
+    "unplaced_count": 311,
+    "utilization": 87.83,
+    "volume_utilization_pct": 87.8305,
+    "runtime_ms": 30787.12,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -195,10 +1490,142 @@
     "violations": 0,
     "fatal_violations": 0,
     "is_valid": true,
+    "health_status": "HEALTHY",
+    "health_issues": [],
+    "sku_fulfillment": {
+      "rigid_required": 2145,
+      "rigid_placed": 1834,
+      "rigid_completion_pct": 85.5,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
+      "starved_skus": [],
+      "sku_details": {
+        "SKU-01": {
+          "name": "WIFI蓝牙 / WIFI线 / WIFI贴",
+          "is_elastic": false,
+          "required": 1,
+          "placed": 1,
+          "completion_pct": 100.0
+        },
+        "SKU-02": {
+          "name": "21.5寸 显示器 BG (DA)",
+          "is_elastic": false,
+          "required": 500,
+          "placed": 500,
+          "completion_pct": 100.0
+        },
+        "SKU-03": {
+          "name": "34寸显示器 MX340 (DA)",
+          "is_elastic": false,
+          "required": 90,
+          "placed": 80,
+          "completion_pct": 88.9
+        },
+        "SKU-04": {
+          "name": "27寸显示器 2886A (DA)",
+          "is_elastic": false,
+          "required": 100,
+          "placed": 100,
+          "completion_pct": 100.0
+        },
+        "SKU-05": {
+          "name": "32寸智能显示器 (DA)",
+          "is_elastic": false,
+          "required": 100,
+          "placed": 100,
+          "completion_pct": 100.0
+        },
+        "SKU-06": {
+          "name": "15.6寸便携显示器 (14/箱)",
+          "is_elastic": false,
+          "required": 95,
+          "placed": 90,
+          "completion_pct": 94.7
+        },
+        "SKU-07": {
+          "name": "15.6寸 双屏便携屏",
+          "is_elastic": false,
+          "required": 125,
+          "placed": 120,
+          "completion_pct": 96.0
+        },
+        "SKU-08": {
+          "name": "21.5寸一体机整机 带键盘鼠标",
+          "is_elastic": false,
+          "required": 53,
+          "placed": 52,
+          "completion_pct": 98.1
+        },
+        "SKU-09": {
+          "name": "19寸一体机整机",
+          "is_elastic": false,
+          "required": 24,
+          "placed": 24,
+          "completion_pct": 100.0
+        },
+        "SKU-10": {
+          "name": "19寸液晶屏 / 19寸液晶屏玻璃",
+          "is_elastic": false,
+          "required": 22,
+          "placed": 22,
+          "completion_pct": 100.0
+        },
+        "SKU-11": {
+          "name": "电源线",
+          "is_elastic": false,
+          "required": 10,
+          "placed": 10,
+          "completion_pct": 100.0
+        },
+        "SKU-12": {
+          "name": "电源线 (小箱)",
+          "is_elastic": false,
+          "required": 1,
+          "placed": 1,
+          "completion_pct": 100.0
+        },
+        "SKU-13": {
+          "name": "电源",
+          "is_elastic": false,
+          "required": 50,
+          "placed": 50,
+          "completion_pct": 100.0
+        },
+        "SKU-14": {
+          "name": "19寸 显示器 BG (DA)",
+          "is_elastic": false,
+          "required": 674,
+          "placed": 384,
+          "completion_pct": 57.0
+        },
+        "SKU-15": {
+          "name": "23.8寸摄像头显示器",
+          "is_elastic": false,
+          "required": 300,
+          "placed": 300,
+          "completion_pct": 100.0
+        }
+      }
+    },
+    "constraint_audit": {
+      "orientation_violations": 0,
+      "floor_only_violations": 0,
+      "top_stack_violations": 0,
+      "bearing_violations": 0,
+      "stack_layer_violations": 0,
+      "support_floating_violations": 0,
+      "zone_violations": 0,
+      "door_lockout_violations": 0,
+      "payload_violations": 0
+    },
     "summary": {
-      "placedCount": 2092,
-      "unplacedCount": 53,
-      "utilization": 88.0203280198401
+      "placedCount": 1834,
+      "unplacedCount": 311,
+      "utilization": 87.83048775115186,
+      "rigidCompletion": 85.5,
+      "healthStatus": "HEALTHY"
     }
   },
   "SINGLE-LARGE-BOX": {
@@ -210,7 +1637,7 @@
     "unplaced_count": 10,
     "utilization": 91.46,
     "volume_utilization_pct": 91.4561,
-    "runtime_ms": 37.4,
+    "runtime_ms": 568.37,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -218,10 +1645,44 @@
     "violations": 0,
     "fatal_violations": 0,
     "is_valid": true,
+    "health_status": "HEALTHY",
+    "health_issues": [],
+    "sku_fulfillment": {
+      "rigid_required": 70,
+      "rigid_placed": 60,
+      "rigid_completion_pct": 85.71,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
+      "starved_skus": [],
+      "sku_details": {
+        "LARGE-SKU-01": {
+          "name": "Industrial Palletized Unit",
+          "is_elastic": false,
+          "required": 70,
+          "placed": 60,
+          "completion_pct": 85.7
+        }
+      }
+    },
+    "constraint_audit": {
+      "orientation_violations": 0,
+      "floor_only_violations": 0,
+      "top_stack_violations": 0,
+      "bearing_violations": 0,
+      "stack_layer_violations": 0,
+      "support_floating_violations": 0,
+      "zone_violations": 0,
+      "door_lockout_violations": 0,
+      "payload_violations": 0
+    },
     "summary": {
       "placedCount": 60,
       "unplacedCount": 10,
-      "utilization": 91.45606622457511
+      "utilization": 91.45606622457511,
+      "rigidCompletion": 85.71,
+      "healthStatus": "HEALTHY"
     }
   },
   "ALL-ELASTIC-SKUS": {
@@ -229,11 +1690,11 @@
     "case_name": "全弹性件 (测核减逻辑)",
     "description": "All elastic SKUs with overcapacity demand testing automated trimming and zero overflow",
     "requested_cartons": 3200,
-    "placed_count": 1026,
-    "unplaced_count": 2174,
-    "utilization": 86.05,
-    "volume_utilization_pct": 86.0495,
-    "runtime_ms": 1760.91,
+    "placed_count": 831,
+    "unplaced_count": 2369,
+    "utilization": 89.52,
+    "volume_utilization_pct": 89.515,
+    "runtime_ms": 15931.28,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -241,10 +1702,65 @@
     "violations": 0,
     "fatal_violations": 0,
     "is_valid": true,
+    "health_status": "HEALTHY",
+    "health_issues": [],
+    "sku_fulfillment": {
+      "rigid_required": 3200,
+      "rigid_placed": 831,
+      "rigid_completion_pct": 25.97,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
+      "starved_skus": [],
+      "sku_details": {
+        "ELASTIC-01": {
+          "name": "Elastic Standard Carton A",
+          "is_elastic": false,
+          "required": 800,
+          "placed": 434,
+          "completion_pct": 54.2
+        },
+        "ELASTIC-02": {
+          "name": "Elastic Compact Carton B",
+          "is_elastic": false,
+          "required": 900,
+          "placed": 96,
+          "completion_pct": 10.7
+        },
+        "ELASTIC-03": {
+          "name": "Elastic Small Carton C",
+          "is_elastic": false,
+          "required": 1000,
+          "placed": 139,
+          "completion_pct": 13.9
+        },
+        "ELASTIC-04": {
+          "name": "Elastic Bulk Carton D",
+          "is_elastic": false,
+          "required": 500,
+          "placed": 162,
+          "completion_pct": 32.4
+        }
+      }
+    },
+    "constraint_audit": {
+      "orientation_violations": 0,
+      "floor_only_violations": 0,
+      "top_stack_violations": 0,
+      "bearing_violations": 0,
+      "stack_layer_violations": 0,
+      "support_floating_violations": 0,
+      "zone_violations": 0,
+      "door_lockout_violations": 0,
+      "payload_violations": 0
+    },
     "summary": {
-      "placedCount": 1026,
-      "unplacedCount": 2174,
-      "utilization": 86.04948660930715
+      "placedCount": 831,
+      "unplacedCount": 2369,
+      "utilization": 89.5150412754896,
+      "rigidCompletion": 25.97,
+      "healthStatus": "HEALTHY"
     }
   },
   "DOOR-DENSE-SKUS": {
@@ -256,7 +1772,7 @@
     "unplaced_count": 0,
     "utilization": 69.75,
     "volume_utilization_pct": 69.7518,
-    "runtime_ms": 2864.76,
+    "runtime_ms": 1236.97,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -264,10 +1780,72 @@
     "violations": 0,
     "fatal_violations": 0,
     "is_valid": true,
+    "health_status": "HEALTHY",
+    "health_issues": [],
+    "sku_fulfillment": {
+      "rigid_required": 980,
+      "rigid_placed": 980,
+      "rigid_completion_pct": 100.0,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
+      "starved_skus": [],
+      "sku_details": {
+        "MAIN-01": {
+          "name": "Main Wall Bulk Cargo",
+          "is_elastic": false,
+          "required": 160,
+          "placed": 160,
+          "completion_pct": 100.0
+        },
+        "MAIN-02": {
+          "name": "Main Wall Standard Carton",
+          "is_elastic": false,
+          "required": 180,
+          "placed": 180,
+          "completion_pct": 100.0
+        },
+        "DOOR-01": {
+          "name": "Door Safety 21.5 Display Panel",
+          "is_elastic": false,
+          "required": 260,
+          "placed": 260,
+          "completion_pct": 100.0
+        },
+        "DOOR-02": {
+          "name": "Door Safety 27 Display Panel",
+          "is_elastic": false,
+          "required": 160,
+          "placed": 160,
+          "completion_pct": 100.0
+        },
+        "DOOR-03": {
+          "name": "Door Sealing Elastic Filler",
+          "is_elastic": false,
+          "required": 220,
+          "placed": 220,
+          "completion_pct": 100.0
+        }
+      }
+    },
+    "constraint_audit": {
+      "orientation_violations": 0,
+      "floor_only_violations": 0,
+      "top_stack_violations": 0,
+      "bearing_violations": 0,
+      "stack_layer_violations": 0,
+      "support_floating_violations": 0,
+      "zone_violations": 0,
+      "door_lockout_violations": 0,
+      "payload_violations": 0
+    },
     "summary": {
       "placedCount": 980,
       "unplacedCount": 0,
-      "utilization": 69.75179242951019
+      "utilization": 69.75179242950936,
+      "rigidCompletion": 100.0,
+      "healthStatus": "HEALTHY"
     }
   },
   "MIXED-HETEROGENEOUS": {
@@ -279,7 +1857,7 @@
     "unplaced_count": 0,
     "utilization": 70.43,
     "volume_utilization_pct": 70.4281,
-    "runtime_ms": 2100.76,
+    "runtime_ms": 13068.52,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -287,10 +1865,852 @@
     "violations": 0,
     "fatal_violations": 0,
     "is_valid": true,
+    "health_status": "HEALTHY",
+    "health_issues": [],
+    "sku_fulfillment": {
+      "rigid_required": 810,
+      "rigid_placed": 810,
+      "rigid_completion_pct": 100.0,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
+      "starved_skus": [],
+      "sku_details": {
+        "HETERO-01": {
+          "name": "Heavy Base Slab",
+          "is_elastic": false,
+          "required": 30,
+          "placed": 30,
+          "completion_pct": 100.0
+        },
+        "HETERO-02": {
+          "name": "Tall Upright Carton",
+          "is_elastic": false,
+          "required": 70,
+          "placed": 70,
+          "completion_pct": 100.0
+        },
+        "HETERO-03": {
+          "name": "Flat Large Panel",
+          "is_elastic": false,
+          "required": 60,
+          "placed": 60,
+          "completion_pct": 100.0
+        },
+        "HETERO-04": {
+          "name": "Standard Medium Box",
+          "is_elastic": false,
+          "required": 140,
+          "placed": 140,
+          "completion_pct": 100.0
+        },
+        "HETERO-05": {
+          "name": "Long Skinny Bar",
+          "is_elastic": false,
+          "required": 80,
+          "placed": 80,
+          "completion_pct": 100.0
+        },
+        "HETERO-06": {
+          "name": "Compact Cube",
+          "is_elastic": false,
+          "required": 90,
+          "placed": 90,
+          "completion_pct": 100.0
+        },
+        "HETERO-07": {
+          "name": "Small Void Filler",
+          "is_elastic": false,
+          "required": 250,
+          "placed": 250,
+          "completion_pct": 100.0
+        },
+        "HETERO-08": {
+          "name": "Door Safety Partition",
+          "is_elastic": false,
+          "required": 90,
+          "placed": 90,
+          "completion_pct": 100.0
+        }
+      }
+    },
+    "constraint_audit": {
+      "orientation_violations": 0,
+      "floor_only_violations": 0,
+      "top_stack_violations": 0,
+      "bearing_violations": 0,
+      "stack_layer_violations": 0,
+      "support_floating_violations": 0,
+      "zone_violations": 0,
+      "door_lockout_violations": 0,
+      "payload_violations": 0
+    },
     "summary": {
       "placedCount": 810,
       "unplacedCount": 0,
-      "utilization": 70.42809948278841
+      "utilization": 70.42809948278767,
+      "rigidCompletion": 100.0,
+      "healthStatus": "HEALTHY"
+    }
+  },
+  "20GP-STANDARD": {
+    "case_id": "20GP-STANDARD",
+    "case_name": "20GP标准柜 (测短柜装载)",
+    "description": "20GP standard container testing wall construction and door reserve adaptation for shorter containers",
+    "requested_cartons": 560,
+    "placed_count": 560,
+    "unplaced_count": 0,
+    "utilization": 69.13,
+    "volume_utilization_pct": 69.1278,
+    "runtime_ms": 444.6,
+    "collisions": 0,
+    "overlap_pair_count": 0,
+    "penetration_volume": 0.0,
+    "out_of_bounds_count": 0,
+    "violations": 0,
+    "fatal_violations": 0,
+    "is_valid": true,
+    "health_status": "HEALTHY",
+    "health_issues": [],
+    "sku_fulfillment": {
+      "rigid_required": 560,
+      "rigid_placed": 560,
+      "rigid_completion_pct": 100.0,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
+      "starved_skus": [],
+      "sku_details": {
+        "20GP-01": {
+          "name": "中型纸箱",
+          "is_elastic": false,
+          "required": 200,
+          "placed": 200,
+          "completion_pct": 100.0
+        },
+        "20GP-02": {
+          "name": "小配件箱",
+          "is_elastic": false,
+          "required": 300,
+          "placed": 300,
+          "completion_pct": 100.0
+        },
+        "20GP-03": {
+          "name": "封门面板",
+          "is_elastic": false,
+          "required": 60,
+          "placed": 60,
+          "completion_pct": 100.0
+        }
+      }
+    },
+    "constraint_audit": {
+      "orientation_violations": 0,
+      "floor_only_violations": 0,
+      "top_stack_violations": 0,
+      "bearing_violations": 0,
+      "stack_layer_violations": 0,
+      "support_floating_violations": 0,
+      "zone_violations": 0,
+      "door_lockout_violations": 0,
+      "payload_violations": 0
+    },
+    "summary": {
+      "placedCount": 560,
+      "unplacedCount": 0,
+      "utilization": 69.12776040055965,
+      "rigidCompletion": 100.0,
+      "healthStatus": "HEALTHY"
+    }
+  },
+  "45HQ-EXTENDED": {
+    "case_id": "45HQ-EXTENDED",
+    "case_name": "45HQ超长柜 (测极限长度)",
+    "description": "45HQ extended container testing extreme length wall construction and performance",
+    "requested_cartons": 800,
+    "placed_count": 645,
+    "unplaced_count": 155,
+    "utilization": 76.48,
+    "volume_utilization_pct": 76.476,
+    "runtime_ms": 18681.85,
+    "collisions": 0,
+    "overlap_pair_count": 0,
+    "penetration_volume": 0.0,
+    "out_of_bounds_count": 0,
+    "violations": 0,
+    "fatal_violations": 0,
+    "is_valid": true,
+    "health_status": "HEALTHY",
+    "health_issues": [],
+    "sku_fulfillment": {
+      "rigid_required": 800,
+      "rigid_placed": 645,
+      "rigid_completion_pct": 80.62,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
+      "starved_skus": [],
+      "sku_details": {
+        "45HQ-01": {
+          "name": "标准箱A",
+          "is_elastic": false,
+          "required": 300,
+          "placed": 216,
+          "completion_pct": 72.0
+        },
+        "45HQ-02": {
+          "name": "标准箱B",
+          "is_elastic": false,
+          "required": 400,
+          "placed": 329,
+          "completion_pct": 82.2
+        },
+        "45HQ-03": {
+          "name": "封门件",
+          "is_elastic": false,
+          "required": 100,
+          "placed": 100,
+          "completion_pct": 100.0
+        }
+      }
+    },
+    "constraint_audit": {
+      "orientation_violations": 0,
+      "floor_only_violations": 0,
+      "top_stack_violations": 0,
+      "bearing_violations": 0,
+      "stack_layer_violations": 0,
+      "support_floating_violations": 0,
+      "zone_violations": 0,
+      "door_lockout_violations": 0,
+      "payload_violations": 0
+    },
+    "summary": {
+      "placedCount": 645,
+      "unplacedCount": 155,
+      "utilization": 76.47602358058951,
+      "rigidCompletion": 80.62,
+      "healthStatus": "HEALTHY"
+    }
+  },
+  "STACK-BEARING-CONSTRAINTS": {
+    "case_id": "STACK-BEARING-CONSTRAINTS",
+    "case_name": "堆叠承重约束 (测约束遵守)",
+    "description": "Tests max_stack_layers, maxBearingKg, and mustBeOnFloor constraints are respected",
+    "requested_cartons": 640,
+    "placed_count": 615,
+    "unplaced_count": 25,
+    "utilization": 40.67,
+    "volume_utilization_pct": 40.6672,
+    "runtime_ms": 18732.14,
+    "collisions": 0,
+    "overlap_pair_count": 0,
+    "penetration_volume": 0.0,
+    "out_of_bounds_count": 0,
+    "violations": 0,
+    "fatal_violations": 0,
+    "is_valid": true,
+    "health_status": "HEALTHY",
+    "health_issues": [],
+    "sku_fulfillment": {
+      "rigid_required": 640,
+      "rigid_placed": 615,
+      "rigid_completion_pct": 96.09,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
+      "starved_skus": [],
+      "sku_details": {
+        "FRAG-01": {
+          "name": "易碎精密设备",
+          "is_elastic": false,
+          "required": 80,
+          "placed": 80,
+          "completion_pct": 100.0
+        },
+        "HEAVY-01": {
+          "name": "重型底座",
+          "is_elastic": false,
+          "required": 60,
+          "placed": 35,
+          "completion_pct": 58.3
+        },
+        "NORM-01": {
+          "name": "普通中箱",
+          "is_elastic": false,
+          "required": 200,
+          "placed": 200,
+          "completion_pct": 100.0
+        },
+        "FILL-01": {
+          "name": "轻量填充",
+          "is_elastic": false,
+          "required": 300,
+          "placed": 300,
+          "completion_pct": 100.0
+        }
+      }
+    },
+    "constraint_audit": {
+      "orientation_violations": 0,
+      "floor_only_violations": 0,
+      "top_stack_violations": 0,
+      "bearing_violations": 0,
+      "stack_layer_violations": 0,
+      "support_floating_violations": 0,
+      "zone_violations": 0,
+      "door_lockout_violations": 0,
+      "payload_violations": 0
+    },
+    "summary": {
+      "placedCount": 615,
+      "unplacedCount": 25,
+      "utilization": 40.66722312357611,
+      "rigidCompletion": 96.09,
+      "healthStatus": "HEALTHY"
+    }
+  },
+  "ORIENTATION-TOPSTACK-CONSTRAINTS": {
+    "case_id": "ORIENTATION-TOPSTACK-CONSTRAINTS",
+    "case_name": "朝向与顶叠约束 (测约束组合)",
+    "description": "Tests allowStackingOnTop=false and orientation-only constraints (upright only, no flat/side)",
+    "requested_cartons": 440,
+    "placed_count": 440,
+    "unplaced_count": 0,
+    "utilization": 40.09,
+    "volume_utilization_pct": 40.0883,
+    "runtime_ms": 871.01,
+    "collisions": 0,
+    "overlap_pair_count": 0,
+    "penetration_volume": 0.0,
+    "out_of_bounds_count": 0,
+    "violations": 0,
+    "fatal_violations": 0,
+    "is_valid": true,
+    "health_status": "HEALTHY",
+    "health_issues": [],
+    "sku_fulfillment": {
+      "rigid_required": 440,
+      "rigid_placed": 440,
+      "rigid_completion_pct": 100.0,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
+      "starved_skus": [],
+      "sku_details": {
+        "NOTOP-01": {
+          "name": "精密仪器箱",
+          "is_elastic": false,
+          "required": 40,
+          "placed": 40,
+          "completion_pct": 100.0
+        },
+        "UPONLY-01": {
+          "name": "液晶面板",
+          "is_elastic": false,
+          "required": 120,
+          "placed": 120,
+          "completion_pct": 100.0
+        },
+        "FREE-01": {
+          "name": "自由约束箱",
+          "is_elastic": false,
+          "required": 200,
+          "placed": 200,
+          "completion_pct": 100.0
+        },
+        "DOOR-01": {
+          "name": "封门板",
+          "is_elastic": false,
+          "required": 80,
+          "placed": 80,
+          "completion_pct": 100.0
+        }
+      }
+    },
+    "constraint_audit": {
+      "orientation_violations": 0,
+      "floor_only_violations": 0,
+      "top_stack_violations": 0,
+      "bearing_violations": 0,
+      "stack_layer_violations": 0,
+      "support_floating_violations": 0,
+      "zone_violations": 0,
+      "door_lockout_violations": 0,
+      "payload_violations": 0
+    },
+    "summary": {
+      "placedCount": 440,
+      "unplacedCount": 0,
+      "utilization": 40.088320945778165,
+      "rigidCompletion": 100.0,
+      "healthStatus": "HEALTHY"
+    }
+  },
+  "TALL-SLENDER-TIPPING": {
+    "case_id": "TALL-SLENDER-TIPPING",
+    "case_name": "高瘦箱倾覆 (测TIP安全)",
+    "description": "Tests tall slender boxes (dz/dx>3) for tipping safety - no unsupported tall placements or voids",
+    "requested_cartons": 540,
+    "placed_count": 540,
+    "unplaced_count": 0,
+    "utilization": 36.86,
+    "volume_utilization_pct": 36.8559,
+    "runtime_ms": 53294.09,
+    "collisions": 0,
+    "overlap_pair_count": 0,
+    "penetration_volume": 0.0,
+    "out_of_bounds_count": 0,
+    "violations": 0,
+    "fatal_violations": 0,
+    "is_valid": true,
+    "health_status": "HEALTHY",
+    "health_issues": [],
+    "sku_fulfillment": {
+      "rigid_required": 540,
+      "rigid_placed": 540,
+      "rigid_completion_pct": 100.0,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
+      "starved_skus": [],
+      "sku_details": {
+        "TALL-01": {
+          "name": "高柜体A",
+          "is_elastic": false,
+          "required": 60,
+          "placed": 60,
+          "completion_pct": 100.0
+        },
+        "TALL-02": {
+          "name": "高柜体B",
+          "is_elastic": false,
+          "required": 80,
+          "placed": 80,
+          "completion_pct": 100.0
+        },
+        "LOW-01": {
+          "name": "矮宽底座",
+          "is_elastic": false,
+          "required": 100,
+          "placed": 100,
+          "completion_pct": 100.0
+        },
+        "FILL-01": {
+          "name": "间隙填充",
+          "is_elastic": false,
+          "required": 300,
+          "placed": 300,
+          "completion_pct": 100.0
+        }
+      }
+    },
+    "constraint_audit": {
+      "orientation_violations": 0,
+      "floor_only_violations": 0,
+      "top_stack_violations": 0,
+      "bearing_violations": 0,
+      "stack_layer_violations": 0,
+      "support_floating_violations": 0,
+      "zone_violations": 0,
+      "door_lockout_violations": 0,
+      "payload_violations": 0
+    },
+    "summary": {
+      "placedCount": 540,
+      "unplacedCount": 0,
+      "utilization": 36.85589883083482,
+      "rigidCompletion": 100.0,
+      "healthStatus": "HEALTHY"
+    }
+  },
+  "OVERWEIGHT-PAYLOAD": {
+    "case_id": "OVERWEIGHT-PAYLOAD",
+    "case_name": "超重场景 (测载重限制)",
+    "description": "Tests payload weight limit truncation - total cargo weight far exceeds maxPayloadTons",
+    "requested_cartons": 300,
+    "placed_count": 96,
+    "unplaced_count": 204,
+    "utilization": 9.43,
+    "volume_utilization_pct": 9.4301,
+    "runtime_ms": 7950.45,
+    "collisions": 0,
+    "overlap_pair_count": 0,
+    "penetration_volume": 0.0,
+    "out_of_bounds_count": 0,
+    "violations": 0,
+    "fatal_violations": 0,
+    "is_valid": true,
+    "health_status": "HEALTHY",
+    "health_issues": [],
+    "sku_fulfillment": {
+      "rigid_required": 300,
+      "rigid_placed": 96,
+      "rigid_completion_pct": 32.0,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
+      "starved_skus": [],
+      "sku_details": {
+        "IRON-01": {
+          "name": "铸铁件",
+          "is_elastic": false,
+          "required": 300,
+          "placed": 96,
+          "completion_pct": 32.0
+        }
+      }
+    },
+    "constraint_audit": {
+      "orientation_violations": 0,
+      "floor_only_violations": 0,
+      "top_stack_violations": 0,
+      "bearing_violations": 0,
+      "stack_layer_violations": 0,
+      "support_floating_violations": 0,
+      "zone_violations": 0,
+      "door_lockout_violations": 0,
+      "payload_violations": 0
+    },
+    "summary": {
+      "placedCount": 96,
+      "unplacedCount": 204,
+      "utilization": 9.43008072430747,
+      "rigidCompletion": 32.0,
+      "healthStatus": "HEALTHY"
+    }
+  },
+  "MULTI-ZONE-CONSTRAINTS": {
+    "case_id": "MULTI-ZONE-CONSTRAINTS",
+    "case_name": "多区位约束 (测区域调度)",
+    "description": "Tests INNER/MIDDLE/DOOR zone dispatching with multiple zone-specific SKUs",
+    "requested_cartons": 650,
+    "placed_count": 650,
+    "unplaced_count": 0,
+    "utilization": 52.06,
+    "volume_utilization_pct": 52.0635,
+    "runtime_ms": 784.84,
+    "collisions": 0,
+    "overlap_pair_count": 0,
+    "penetration_volume": 0.0,
+    "out_of_bounds_count": 0,
+    "violations": 0,
+    "fatal_violations": 0,
+    "is_valid": true,
+    "health_status": "HEALTHY",
+    "health_issues": [],
+    "sku_fulfillment": {
+      "rigid_required": 650,
+      "rigid_placed": 650,
+      "rigid_completion_pct": 100.0,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
+      "starved_skus": [],
+      "sku_details": {
+        "INNER-01": {
+          "name": "贵重内壁件",
+          "is_elastic": false,
+          "required": 50,
+          "placed": 50,
+          "completion_pct": 100.0
+        },
+        "INNER-02": {
+          "name": "配套内壁件",
+          "is_elastic": false,
+          "required": 80,
+          "placed": 80,
+          "completion_pct": 100.0
+        },
+        "MIDDLE-01": {
+          "name": "主体货物A",
+          "is_elastic": false,
+          "required": 120,
+          "placed": 120,
+          "completion_pct": 100.0
+        },
+        "MIDDLE-02": {
+          "name": "主体货物B",
+          "is_elastic": false,
+          "required": 150,
+          "placed": 150,
+          "completion_pct": 100.0
+        },
+        "DOOR-01": {
+          "name": "封门刚性板",
+          "is_elastic": false,
+          "required": 100,
+          "placed": 100,
+          "completion_pct": 100.0
+        },
+        "DOOR-02": {
+          "name": "封门弹性填充",
+          "is_elastic": false,
+          "required": 150,
+          "placed": 150,
+          "completion_pct": 100.0
+        }
+      }
+    },
+    "constraint_audit": {
+      "orientation_violations": 0,
+      "floor_only_violations": 0,
+      "top_stack_violations": 0,
+      "bearing_violations": 0,
+      "stack_layer_violations": 0,
+      "support_floating_violations": 0,
+      "zone_violations": 0,
+      "door_lockout_violations": 0,
+      "payload_violations": 0
+    },
+    "summary": {
+      "placedCount": 650,
+      "unplacedCount": 0,
+      "utilization": 52.06347567890223,
+      "rigidCompletion": 100.0,
+      "healthStatus": "HEALTHY"
+    }
+  },
+  "EXTREME-ASPECT-RATIO": {
+    "case_id": "EXTREME-ASPECT-RATIO",
+    "case_name": "极端长宽比 (测朝向+排列)",
+    "description": "Tests extreme aspect ratio items: long planks (2.4m), tubes (1.5m), thin sheets (30mm)",
+    "requested_cartons": 570,
+    "placed_count": 570,
+    "unplaced_count": 0,
+    "utilization": 34.91,
+    "volume_utilization_pct": 34.9109,
+    "runtime_ms": 561.64,
+    "collisions": 0,
+    "overlap_pair_count": 0,
+    "penetration_volume": 0.0,
+    "out_of_bounds_count": 0,
+    "violations": 0,
+    "fatal_violations": 0,
+    "is_valid": true,
+    "health_status": "HEALTHY",
+    "health_issues": [],
+    "sku_fulfillment": {
+      "rigid_required": 570,
+      "rigid_placed": 570,
+      "rigid_completion_pct": 100.0,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
+      "starved_skus": [],
+      "sku_details": {
+        "PLANK-01": {
+          "name": "长条形木板",
+          "is_elastic": false,
+          "required": 150,
+          "placed": 150,
+          "completion_pct": 100.0
+        },
+        "TUBE-01": {
+          "name": "管状件",
+          "is_elastic": false,
+          "required": 100,
+          "placed": 100,
+          "completion_pct": 100.0
+        },
+        "CUBE-01": {
+          "name": "正方体",
+          "is_elastic": false,
+          "required": 120,
+          "placed": 120,
+          "completion_pct": 100.0
+        },
+        "SHEET-01": {
+          "name": "薄板件",
+          "is_elastic": false,
+          "required": 200,
+          "placed": 200,
+          "completion_pct": 100.0
+        }
+      }
+    },
+    "constraint_audit": {
+      "orientation_violations": 0,
+      "floor_only_violations": 0,
+      "top_stack_violations": 0,
+      "bearing_violations": 0,
+      "stack_layer_violations": 0,
+      "support_floating_violations": 0,
+      "zone_violations": 0,
+      "door_lockout_violations": 0,
+      "payload_violations": 0
+    },
+    "summary": {
+      "placedCount": 570,
+      "unplacedCount": 0,
+      "utilization": 34.91094468144695,
+      "rigidCompletion": 100.0,
+      "healthStatus": "HEALTHY"
+    }
+  },
+  "SINGLE-SKU-MASS": {
+    "case_id": "SINGLE-SKU-MASS",
+    "case_name": "单SKU大批量 (测性能+极限)",
+    "description": "Single SKU with 10000 small boxes - tests performance scaling and extreme volume packing",
+    "requested_cartons": 10000,
+    "placed_count": 8712,
+    "unplaced_count": 1288,
+    "utilization": 94.89,
+    "volume_utilization_pct": 94.8889,
+    "runtime_ms": 88544.9,
+    "collisions": 0,
+    "overlap_pair_count": 0,
+    "penetration_volume": 0.0,
+    "out_of_bounds_count": 0,
+    "violations": 0,
+    "fatal_violations": 0,
+    "is_valid": true,
+    "health_status": "HEALTHY",
+    "health_issues": [],
+    "sku_fulfillment": {
+      "rigid_required": 10000,
+      "rigid_placed": 8712,
+      "rigid_completion_pct": 87.12,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
+      "starved_skus": [],
+      "sku_details": {
+        "MASS-01": {
+          "name": "标准鞋盒",
+          "is_elastic": false,
+          "required": 10000,
+          "placed": 8712,
+          "completion_pct": 87.1
+        }
+      }
+    },
+    "constraint_audit": {
+      "orientation_violations": 0,
+      "floor_only_violations": 0,
+      "top_stack_violations": 0,
+      "bearing_violations": 0,
+      "stack_layer_violations": 0,
+      "support_floating_violations": 0,
+      "zone_violations": 0,
+      "door_lockout_violations": 0,
+      "payload_violations": 0
+    },
+    "summary": {
+      "placedCount": 8712,
+      "unplacedCount": 1288,
+      "utilization": 94.88886707703946,
+      "rigidCompletion": 87.12,
+      "healthStatus": "HEALTHY"
+    }
+  },
+  "ALL-CONSTRAINTS-COMBINED": {
+    "case_id": "ALL-CONSTRAINTS-COMBINED",
+    "case_name": "全约束综合 (测系统鲁棒性)",
+    "description": "All constraint types combined: mustBeOnFloor + maxBearing + maxStack + noTopStack + uprightOnly + zones + elastic",
+    "requested_cartons": 1010,
+    "placed_count": 999,
+    "unplaced_count": 11,
+    "utilization": 50.2,
+    "volume_utilization_pct": 50.2047,
+    "runtime_ms": 20608.7,
+    "collisions": 0,
+    "overlap_pair_count": 0,
+    "penetration_volume": 0.0,
+    "out_of_bounds_count": 0,
+    "violations": 0,
+    "fatal_violations": 0,
+    "is_valid": true,
+    "health_status": "HEALTHY",
+    "health_issues": [],
+    "sku_fulfillment": {
+      "rigid_required": 1010,
+      "rigid_placed": 999,
+      "rigid_completion_pct": 98.91,
+      "elastic_required": 0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
+      "priority_inversion": false,
+      "starved_skus": [],
+      "sku_details": {
+        "FLOOR-01": {
+          "name": "重型底座",
+          "is_elastic": false,
+          "required": 30,
+          "placed": 19,
+          "completion_pct": 63.3
+        },
+        "FRAG-01": {
+          "name": "精密仪器",
+          "is_elastic": false,
+          "required": 40,
+          "placed": 40,
+          "completion_pct": 100.0
+        },
+        "TALL-01": {
+          "name": "竖放面板",
+          "is_elastic": false,
+          "required": 100,
+          "placed": 100,
+          "completion_pct": 100.0
+        },
+        "INNER-01": {
+          "name": "内壁专用",
+          "is_elastic": false,
+          "required": 60,
+          "placed": 60,
+          "completion_pct": 100.0
+        },
+        "NORM-01": {
+          "name": "普通箱",
+          "is_elastic": false,
+          "required": 200,
+          "placed": 200,
+          "completion_pct": 100.0
+        },
+        "DOOR-01": {
+          "name": "封门件",
+          "is_elastic": false,
+          "required": 80,
+          "placed": 80,
+          "completion_pct": 100.0
+        },
+        "ELASTIC-01": {
+          "name": "弹性填充",
+          "is_elastic": false,
+          "required": 500,
+          "placed": 500,
+          "completion_pct": 100.0
+        }
+      }
+    },
+    "constraint_audit": {
+      "orientation_violations": 0,
+      "floor_only_violations": 0,
+      "top_stack_violations": 0,
+      "bearing_violations": 0,
+      "stack_layer_violations": 0,
+      "support_floating_violations": 0,
+      "zone_violations": 0,
+      "door_lockout_violations": 0,
+      "payload_violations": 0
+    },
+    "summary": {
+      "placedCount": 999,
+      "unplacedCount": 11,
+      "utilization": 50.20470198946545,
+      "rigidCompletion": 98.91,
+      "healthStatus": "HEALTHY"
     }
   }
 }

@@ -926,6 +926,13 @@ class WidthPatternEngine:
             elif hasattr(c, "stacking_policy") and c.stacking_policy and c.stacking_policy.max_stack_layers:
                 max_stack = c.stacking_policy.max_stack_layers
 
+            must_floor = getattr(c, "must_be_on_floor", False) or getattr(getattr(c, "stacking_policy", None), "must_be_on_floor", False)
+            allow_top = getattr(c, "allow_stacking_on_top", True)
+            if hasattr(c, "stacking_policy") and c.stacking_policy and not c.stacking_policy.allow_stacking_on_top:
+                allow_top = False
+            if must_floor or not allow_top:
+                max_stack = 1
+
             oris_raw: List[Tuple[str, float, float, float, bool, bool, bool]] = []
             if isinstance(c, UniversalCargoTensor):
                 for o in c.orientations:
@@ -1102,15 +1109,20 @@ class WidthPatternEngine:
                             lz2 = min(v2.max_stack, int((self.cH - 0.04) // v2.dz))
 
                             tot1 = c1 * r1 * lz1
-                            tot2 = c2 * r2 * lz2
                             if tot1 > q1:
                                 lz1 = max(1, q1 // (c1 * r1))
                                 tot1 = c1 * r1 * lz1
-                            if tot2 > q2:
-                                lz2 = max(1, q2 // (c2 * r2))
+
+                            eff_q2 = (q2 - tot1) if v1.sku_id == v2.sku_id else q2
+                            if eff_q2 <= 0:
+                                continue
+
+                            tot2 = c2 * r2 * lz2
+                            if tot2 > eff_q2:
+                                lz2 = max(1, eff_q2 // (c2 * r2))
                                 tot2 = c2 * r2 * lz2
 
-                            if tot1 <= 0 or tot1 > q1 or tot2 <= 0 or tot2 > q2:
+                            if tot1 <= 0 or tot1 > q1 or tot2 <= 0 or tot2 > eff_q2:
                                 continue
 
                             col1 = PatternColumnSpec(

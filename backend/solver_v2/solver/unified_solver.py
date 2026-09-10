@@ -297,6 +297,9 @@ class UnifiedSolver:
                 raw_requirement=req,
                 is_elastic=is_elastic,
             ))
+            setattr(tensor_list[-1], "allow_stacking_on_top", getattr(s.stacking_policy, "allow_stacking_on_top", True))
+            setattr(tensor_list[-1], "max_bearing_kg", getattr(s.stacking_policy, "max_bearing_kg", None))
+            setattr(tensor_list[-1], "sku_obj", s)
         return tensor_list
 
     def solve(
@@ -553,6 +556,7 @@ class UnifiedSolver:
                                         if (not self._has_collision(t_pos, placements) and 
                                             self._has_sufficient_support(t_pos, placements) and 
                                             self._check_layer_height_consistency(t_pos, placements) and 
+                                            self._check_placement_constraints(t_pos, placements) and
                                             self._is_placement_tipping_safe(t_pos, placements)):
                                             self._add_placement(t_pos, placements)
                                             remaining_qty[tc.sku_id] -= 1
@@ -577,6 +581,25 @@ class UnifiedSolver:
 
     def _add_placement(self, cand: Dict, placements: List[Dict]) -> None:
         placements.append(cand)
+        cand_weight = cand.get("weight_kg", 0.0)
+        self._curr_payload_weight = getattr(self, "_curr_payload_weight", 0.0) + cand_weight
+
+        # Accumulate bearing weight on underlying boxes
+        if cand["z"] > 1e-3:
+            eps = 1e-4
+            cx0, cx1 = cand["x"], cand["x"] + cand["dx"]
+            cy0, cy1 = cand["y"], cand["y"] + cand["dy"]
+            cand_area = cand["dx"] * cand["dy"]
+            for p in placements[:-1]:
+                if abs(round(p["z"] + p["dz"], 4) - round(cand["z"], 4)) < 1e-3:
+                    ix0 = max(cx0, p["x"])
+                    ix1 = min(cx1, p["x"] + p["dx"])
+                    iy0 = max(cy0, p["y"])
+                    iy1 = min(cy1, p["y"] + p["dy"])
+                    if ix1 > ix0 + eps and iy1 > iy0 + eps:
+                        contact_frac = ((ix1 - ix0) * (iy1 - iy0)) / max(1e-6, cand_area)
+                        p["_bearing_load"] = p.get("_bearing_load", 0.0) + cand_weight * contact_frac
+
         if getattr(self, "_spatial_idx", None) is not None:
             aabb = AABB(
                 min_x=cand["x"],
@@ -602,6 +625,8 @@ class UnifiedSolver:
             self._spatial_idx.insert(f"item_{idx}_{p['x']}_{p['y']}_{p['z']}", aabb, p)
 
     def _solve_single_trial(self, cargo_list: List[UniversalCargoTensor], trial_cfg: Dict[str, Any]) -> Tuple[List[Dict], Dict]:
+        self._sku_tensor_map = {c.sku_id: c for c in cargo_list}
+        self._curr_payload_weight = 0.0
         remaining_qty: Dict[str, int] = {c.sku_id: c.quantity_required for c in cargo_list}
 
         inner_group: List[UniversalCargoTensor] = []
@@ -741,6 +766,7 @@ class UnifiedSolver:
                                 continue
                             if (not self._has_collision(cand_pos, placements) and
                                 self._has_sufficient_support(cand_pos, placements) and
+                                self._check_placement_constraints(cand_pos, placements) and
                                 (current_x < self.cL - 0.50 or self._is_placement_tipping_safe(cand_pos, placements))):
                                 self._add_placement(cand_pos, placements)
                                 remaining_qty[c_sku.sku_id] -= 1
@@ -809,6 +835,7 @@ class UnifiedSolver:
                             "current_x": current_x,
                             "step_idx": step_idx,
                             "zone_counts": dict(zone_counts),
+                            "payload_weight": getattr(self, "_curr_payload_weight", 0.0),
                         }
 
                         wall_items = 0
@@ -855,12 +882,12 @@ class UnifiedSolver:
                                             (rx < col.num_rows_x - 1)
                                             or (cand_pos["x"] + cand_pos["dx"] >= self.cL - 0.05)
                                             or ((2.0 * cand_pos["dx"] / max(1e-4, cand_pos["dz"])) >= 1.5 - 1e-4)
-                                            or (current_x + pat.flush_depth <= self.cL - 0.50)
                                             or self._is_placement_tipping_safe(cand_pos, placements)
                                         )
 
                                         if (not self._has_collision(cand_pos, placements) and
                                             self._has_sufficient_support(cand_pos, placements) and
+                                            self._check_placement_constraints(cand_pos, placements) and
                                             is_tipping_safe):
                                             self._add_placement(cand_pos, placements)
                                             remaining_qty[col.variant.sku_id] -= 1
@@ -917,6 +944,7 @@ class UnifiedSolver:
                             step_idx = tx_snapshot["step_idx"]
                             zone_counts.clear()
                             zone_counts.update(tx_snapshot["zone_counts"])
+                            self._curr_payload_weight = tx_snapshot.get("payload_weight", 0.0)
                             self._rebuild_spatial_index(placements)
 
                 if pattern_placed:
@@ -1077,6 +1105,7 @@ class UnifiedSolver:
                                                 }
                                                 if (not self._has_collision(cand_pos, placements) and 
                                                     self._has_sufficient_support(cand_pos, placements) and 
+                                                    self._check_placement_constraints(cand_pos, placements) and
                                                     self._is_placement_tipping_safe(cand_pos, placements)):
                                                     self._add_placement(cand_pos, placements)
                                                     remaining_qty[sub_col.sku_id] -= 1
@@ -1114,7 +1143,7 @@ class UnifiedSolver:
                     if not col_sku:
                         for fc in pool:
                             if remaining_qty[fc.sku_id] <= 0:
-                                break
+                                continue
                             for o in self._get_permitted_orientations(fc):
                                 if o.dy <= rem_w + 1e-4:
                                     col_sku = fc
@@ -1177,6 +1206,7 @@ class UnifiedSolver:
                                 }
                                 if (not self._has_collision(cand_pos, placements) and 
                                     self._has_sufficient_support(cand_pos, placements) and 
+                                    self._check_placement_constraints(cand_pos, placements) and
                                     self._is_placement_tipping_safe(cand_pos, placements)):
                                     self._add_placement(cand_pos, placements)
                                     remaining_qty[col_sku.sku_id] -= 1
@@ -1334,6 +1364,7 @@ class UnifiedSolver:
                                     }
                                     if (not self._has_collision(cand, placements) and 
                                         self._has_sufficient_support(cand, placements) and 
+                                        self._check_placement_constraints(cand, placements) and
                                         self._is_placement_tipping_safe(cand, placements)):
                                         self._add_placement(cand, placements)
                                         remaining_qty[c.sku_id] -= 1
@@ -1355,6 +1386,94 @@ class UnifiedSolver:
                         break
             if placed_in_round == 0:
                 break
+
+        # PASS 4.5: Residual Rigid Forward-Anchoring Channel (Anti-Starvation)
+        # Guarantees 0-starvation for rigid items by anchoring against rigid cargo walls or top surfaces in door/rear zones.
+        unplaced_rigid = [c for c in cargo_list if not getattr(c, 'is_elastic', False) and remaining_qty.get(c.sku_id, 0) > 0]
+        if unplaced_rigid:
+            potential_anchors = list(reversed(placements))
+            for c_rem in unplaced_rigid:
+                c_oris = self._get_permitted_orientations(c_rem)
+                while remaining_qty[c_rem.sku_id] > 0:
+                    placed_rigid_item = False
+                    for o in c_oris:
+                        if placed_rigid_item:
+                            break
+                        # 1. First attempt to anchor along door boundary (rigid support from door against tipping)
+                        door_x = round(self.cL - 0.04 - o.dx, 4)
+                        max_lz = min(getattr(c_rem, 'max_stack_layers', None) or 99, int((self.cH - 0.04) // o.dz))
+                        for lz_step in range(max_lz):
+                            cz_door = round(lz_step * o.dz, 4)
+                            for cy_step in range(int(self.cW // o.dy) + 1):
+                                if remaining_qty[c_rem.sku_id] <= 0:
+                                    break
+                                cy_door = round(cy_step * o.dy, 4)
+                                if cy_door + o.dy > self.cW - 0.02:
+                                    continue
+                                cand_res = {
+                                    "sku_id": c_rem.sku_id,
+                                    "x": door_x, "y": cy_door, "z": cz_door,
+                                    "dx": o.dx, "dy": o.dy, "dz": o.dz,
+                                    "weight_kg": c_rem.weight_kg,
+                                    "orientation": o.name,
+                                    "step": step_idx,
+                                    "tag": "DOOR_SEAL" if getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR else "RESIDUAL_ANCHOR",
+                                    "context": "DOOR_SEAL" if getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR else "MAIN_WALL",
+                                }
+                                if (not self._has_collision(cand_res, placements) and
+                                    self._has_sufficient_support(cand_res, placements) and
+                                    self._check_placement_constraints(cand_res, placements) and
+                                    self._is_placement_tipping_safe(cand_res, placements)):
+                                    self._add_placement(cand_res, placements)
+                                    remaining_qty[c_rem.sku_id] -= 1
+                                    step_idx += 1
+                                    placed_rigid_item = True
+                                    potential_anchors.append(cand_res)
+
+                        if placed_rigid_item:
+                            break
+
+                        # 2. Next attempt anchoring to existing placed boxes
+                        for other in potential_anchors:
+                            # For slender items (SF < 1.5), placing in front of other without forward support is unsafe
+                            is_slender = (2.0 * o.dx / max(1e-4, o.dz)) < 1.5 - 1e-4
+                            cand_coords = [
+                                (round(other["x"] - o.dx, 4), round(other["y"], 4), 0.0),
+                                (round(other["x"], 4), round(other["y"], 4), round(other["z"] + other["dz"], 4)),
+                                (round(other["x"] - o.dx, 4), round(other["y"], 4), round(other["z"] + other["dz"], 4)),
+                                (round(other["x"], 4), round(other["y"] + other["dy"], 4), round(other["z"], 4)),
+                            ]
+                            if not is_slender:
+                                cand_coords.append((round(other["x"] + other["dx"], 4), round(other["y"], 4), round(other["z"], 4)))
+                            for cx, cy, cz in cand_coords:
+                                if cx < 0.0 or cy < 0.0 or cz < 0.0:
+                                    continue
+                                if cx + o.dx > self.cL - 0.02 or cy + o.dy > self.cW - 0.02 or cz + o.dz > self.cH - 0.04:
+                                    continue
+                                cand_res = {
+                                    "sku_id": c_rem.sku_id,
+                                    "x": cx, "y": cy, "z": cz,
+                                    "dx": o.dx, "dy": o.dy, "dz": o.dz,
+                                    "weight_kg": c_rem.weight_kg,
+                                    "orientation": o.name,
+                                    "step": step_idx,
+                                    "tag": "RESIDUAL_ANCHOR",
+                                    "context": "MAIN_WALL",
+                                }
+                                if (not self._has_collision(cand_res, placements) and
+                                    self._has_sufficient_support(cand_res, placements) and
+                                    self._check_placement_constraints(cand_res, placements) and
+                                    self._is_placement_tipping_safe(cand_res, placements)):
+                                    self._add_placement(cand_res, placements)
+                                    remaining_qty[c_rem.sku_id] -= 1
+                                    step_idx += 1
+                                    placed_rigid_item = True
+                                    potential_anchors.append(cand_res)
+                                    break
+                            if placed_rigid_item:
+                                break
+                    if not placed_rigid_item:
+                        break
         # PASS 5: Tipping Stability Audit and Automated Repair (TIP-03)
         self._spatial_idx = None
         tipping_analyzer = TippingMomentAnalyzer(
@@ -1694,7 +1813,22 @@ class UnifiedSolver:
         min_z_ov = 0.20 * cand["dz"]
         eps = 1e-4
 
-        for other in placements:
+        # Query forward neighbors using spatial index if available
+        if getattr(self, "_spatial_idx", None) is not None and len(self._spatial_idx) > 0:
+            query_aabb = AABB(
+                min_x=cand["x"] + cand["dx"] - 0.05,
+                min_y=cand["y"] - 0.05,
+                min_z=cand["z"] - 0.05,
+                max_x=cand["x"] + cand["dx"] + 0.05,
+                max_y=cand["y"] + cand["dy"] + 0.05,
+                max_z=cand["z"] + cand["dz"] + 0.05,
+            )
+            cand_ids = self._spatial_idx.query_candidate_ids(query_aabb, expand_eps=0.05)
+            check_placements = [self._spatial_idx.get_item(cid).data for cid in cand_ids if self._spatial_idx.get_item(cid) is not None and self._spatial_idx.get_item(cid).data is not None]
+        else:
+            check_placements = placements
+
+        for other in check_placements:
             if abs(other["x"] - target_x) <= 0.03:
                 y_ov = min(cand["y"] + cand["dy"], other["y"] + other["dy"]) - max(cand["y"], other["y"])
                 z_ov = min(cand["z"] + cand["dz"], other["z"] + other["dz"]) - max(cand["z"], other["z"])
@@ -1746,7 +1880,112 @@ class UnifiedSolver:
         if (support_area / cand_area) < (min_ratio - 1e-4):
             return False
 
+        # Constraint check: verify lower supporting boxes permit stacking on top
+        if getattr(self, "_sku_tensor_map", None) is not None:
+            eps = 1e-4
+            for p in relevant_placements:
+                if abs(round(p["z"] + p["dz"], 4) - round(cand["z"], 4)) < 1e-3:
+                    ix0 = max(cx0, p["x"])
+                    ix1 = min(cx1, p["x"] + p["dx"])
+                    iy0 = max(cy0, p["y"])
+                    iy1 = min(cy1, p["y"] + p["dy"])
+                    if ix1 > ix0 + eps and iy1 > iy0 + eps:
+                        under_sku = self._sku_tensor_map.get(p["sku_id"])
+                        if under_sku and not getattr(under_sku, "allow_stacking_on_top", True):
+                            return False
+
         return self._check_cog_projection(cand, relevant_placements)
+
+    def _check_placement_constraints(self, cand: Dict, placements: List[Dict]) -> bool:
+        """
+        PRE-CHECK GATE: Comprehensive physical and business rule verification.
+        Enforces must_be_on_floor, max_stack_layers, max_payload, allow_stacking_on_top, and bearing limits.
+        """
+        eps = 1e-4
+        sku_id = cand["sku_id"]
+        tensor_map = getattr(self, "_sku_tensor_map", None)
+        c_sku = tensor_map.get(sku_id) if tensor_map else None
+
+        # 1. Payload capacity check
+        max_payload = getattr(self.container, "max_payload_kg", None)
+        if max_payload is not None and max_payload > 0:
+            curr_weight = getattr(self, "_curr_payload_weight", 0.0)
+            cand_weight = cand.get("weight_kg", c_sku.weight_kg if c_sku else 0.0)
+            if curr_weight + cand_weight > max_payload + eps:
+                return False
+
+        if not c_sku:
+            return True
+
+        # 2. Floor-only check
+        if getattr(c_sku, "must_be_on_floor", False):
+            if cand["z"] > 1e-3:
+                return False
+
+        # 3. Upper bearing check for underlying boxes
+        cand_z = cand["z"]
+        if cand_z > 1e-3:
+            cx0, cx1 = cand["x"], cand["x"] + cand["dx"]
+            cy0, cy1 = cand["y"], cand["y"] + cand["dy"]
+            cand_area = cand["dx"] * cand["dy"]
+            cand_weight = cand.get("weight_kg", c_sku.weight_kg)
+
+            if getattr(self, "_spatial_idx", None) is not None and len(self._spatial_idx) > 0:
+                query_aabb = AABB(
+                    min_x=cand["x"],
+                    min_y=cand["y"],
+                    min_z=cand_z - 0.05,
+                    max_x=cand["x"] + cand["dx"],
+                    max_y=cand["y"] + cand["dy"],
+                    max_z=cand_z + 0.05,
+                )
+                cand_ids = self._spatial_idx.query_candidate_ids(query_aabb, expand_eps=0.05)
+                lowers = [self._spatial_idx.get_item(cid).data for cid in cand_ids if self._spatial_idx.get_item(cid) is not None and self._spatial_idx.get_item(cid).data is not None]
+            else:
+                lowers = placements
+
+            for p in lowers:
+                if abs(round(p["z"] + p["dz"], 4) - round(cand_z, 4)) < 1e-3:
+                    ix0 = max(cx0, p["x"])
+                    ix1 = min(cx1, p["x"] + p["dx"])
+                    iy0 = max(cy0, p["y"])
+                    iy1 = min(cy1, p["y"] + p["dy"])
+                    if ix1 > ix0 + eps and iy1 > iy0 + eps:
+                        under_sku = tensor_map.get(p["sku_id"])
+                        if under_sku:
+                            if not getattr(under_sku, "allow_stacking_on_top", True):
+                                return False
+                            max_bearing = getattr(under_sku, "max_bearing_kg", None)
+                            if max_bearing is not None:
+                                contact_frac = ((ix1 - ix0) * (iy1 - iy0)) / max(1e-6, cand_area)
+                                added_w = cand_weight * contact_frac
+                                curr_bearing = p.get("_bearing_load", 0.0)
+                                if curr_bearing + added_w > max_bearing + eps:
+                                    return False
+
+        # 4. Vertical Stack Layers limit check
+        max_layers = getattr(c_sku, "max_stack_layers", None)
+        if max_layers is not None:
+            if cand["z"] > 1e-3:
+                same_sku_depth = 1
+                curr_check_z = round(cand["z"], 4)
+                while curr_check_z > 1e-3:
+                    found_lower = False
+                    for p in placements:
+                        if p["sku_id"] == sku_id and abs(round(p["z"] + p["dz"], 4) - curr_check_z) < 1e-3:
+                            ox = min(cand["x"] + cand["dx"], p["x"] + p["dx"]) - max(cand["x"], p["x"])
+                            oy = min(cand["y"] + cand["dy"], p["y"] + p["dy"]) - max(cand["y"], p["y"])
+                            if ox > 0.15 * min(cand["dx"], p["dx"]) and oy > 0.15 * min(cand["dy"], p["dy"]):
+                                same_sku_depth += 1
+                                curr_check_z = round(p["z"], 4)
+                                found_lower = True
+                                break
+                    if not found_lower:
+                        break
+                if same_sku_depth > max_layers:
+                    return False
+
+        return True
 
     def _compact_placements(self, placements: List[Dict]) -> int:
         placements.sort(key=lambda p: (round(p["x"], 4), round(p["y"], 4), round(p["z"], 4)))
@@ -1759,18 +1998,47 @@ class UnifiedSolver:
             p["dz"] = round(p["dz"], 4)
 
         # Final Door Flush Alignment:
-        # If any exposed front wall boxes in the door zone are within 0.048m of the container end door
-        # (e.g. at x + dx = 11.986m where cL = 12.032m), shift their x position slightly forward
-        # so they snugly touch the door boundary (x + dx = cL - 0.038m), providing rigid door support
-        # and eliminating any residual tipping moment violations while strictly staying inside container bounds.
+        # If door zone sealing boxes or frontward boundary boxes were placed, shift the frontmost layer forward
+        # so their front edge snugly touches the container door boundary (x + dx = cL - 0.04m),
+        # providing rigid door support and eliminating tipping moment violations without overlap.
+        door_p = [p for p in placements if p.get('context') == 'DOOR_SEAL' or p.get('tag') == 'DOOR_SEAL']
+        if door_p:
+            other_p = [p for p in placements if p.get('context') != 'DOOR_SEAL' and p.get('tag') != 'DOOR_SEAL']
+            max_other_x = max([p['x'] + p['dx'] for p in other_p], default=0.0)
+            max_door_x = max([p['x'] + p['dx'] for p in door_p], default=0.0)
+            min_door_x = min(p['x'] for p in door_p)
+            target_front = round(self.cL - 0.04, 4)
+            shift_dx = round(target_front - max_door_x, 4)
+            
+            # Check if any other_p items currently rely on door_p for forward stability
+            # (i.e. other_p cartons touching door_p at min_door_x that have SF < 1.5)
+            other_needs_door_support = False
+            for op in other_p:
+                if abs((op['x'] + op['dx']) - min_door_x) <= 0.03:
+                    sf = (2.0 * op['dx']) / max(1e-4, op['dz'])
+                    if sf < 1.5 - 1e-4:
+                        other_needs_door_support = True
+                        break
+
+            if shift_dx > 1e-4 and not other_needs_door_support and (min_door_x + shift_dx) >= max_other_x - 1e-4:
+                for p in door_p:
+                    p['x'] = round(p['x'] + shift_dx, 4)
+            elif abs(max_door_x - target_front) < 1e-3 and min_door_x > max_other_x + 0.03 and other_needs_door_support:
+                gap_to_other = round(min_door_x - max_other_x, 4)
+                if 0.03 < gap_to_other <= 0.35:
+                    for p in door_p:
+                        p['x'] = round(p['x'] - gap_to_other, 4)
+
+        # General Snug Door Alignment:
+        # If the frontmost wall is within 0.06m from the door boundary (cL - 0.04),
+        # micro-shift that frontmost layer to snugly touch the door boundary (x + dx = cL - 0.04).
         max_front_x = max([p["x"] + p["dx"] for p in placements], default=0.0)
-        gap_to_door = self.cL - max_front_x
-        if 0.005 < gap_to_door <= 0.048:
-            shift_dx = round(gap_to_door - 0.038, 4)
-            if shift_dx > 1e-4:
-                for p in placements:
-                    # If this box is part of the outermost front wall layer
-                    if abs((p["x"] + p["dx"]) - max_front_x) < 1e-3:
-                        p["x"] = round(p["x"] + shift_dx, 4)
+        target_front = round(self.cL - 0.04, 4)
+        gap_to_door_target = round(target_front - max_front_x, 4)
+        if 1e-4 < gap_to_door_target <= 0.05:
+            # Shift the outermost front-touching cartons
+            for p in placements:
+                if abs((p["x"] + p["dx"]) - max_front_x) < 1e-3:
+                    p["x"] = round(p["x"] + gap_to_door_target, 4)
 
         return len(placements)
