@@ -633,6 +633,26 @@ class IndependentGlobalValidator:
                         candidates.append(idx)
             return candidates
 
+        # 从最终几何独立构造接触图，归一化分配全部重量，避免悬空面积吞掉载荷。
+        downward = {}
+        for j, upper in enumerate(placements):
+            contacts = []
+            for i in get_supporting_candidates(upper["z"]):
+                lower = placements[i]
+                if i == j or lower["z"] >= upper["z"]:
+                    continue
+                ox = min(lower["x"]+lower["dx"], upper["x"]+upper["dx"])-max(lower["x"], upper["x"])
+                oy = min(lower["y"]+lower["dy"], upper["y"]+upper["dy"])-max(lower["y"], upper["y"])
+                if ox > eps and oy > eps:
+                    contacts.append((i, ox*oy))
+            area = sum(a for _, a in contacts)
+            downward[j] = [(i, a/area) for i, a in contacts] if area else []
+        bearing_load = [0.0] * n
+        for j in sorted(range(n), key=lambda j: placements[j]["z"], reverse=True):
+            transmitted = placements[j]["weight_kg"] + bearing_load[j]
+            for i, fraction in downward[j]:
+                bearing_load[i] += transmitted*fraction
+
         stack_depth_memo: Dict[int, int] = {}
         for i, p in enumerate(placements):
             sku_id = p["sku_id"]
@@ -749,6 +769,8 @@ class IndependentGlobalValidator:
                         w = p2["weight_kg"] * contact_frac
                         upper_weight += w
                         upper_boxes.append((j, p2["sku_id"], ox * oy, w))
+
+            upper_weight = bearing_load[i]
 
             # 1. No top stacking allowed check
             if cargo and not cargo.stacking_policy.allow_stacking_on_top and upper_boxes:

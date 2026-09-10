@@ -339,7 +339,7 @@ class TestIndependentGlobalValidator(unittest.TestCase):
             placement_id="p_seal",
             instance_id="i2",
             sku_id="SKU_DOOR_SEAL",
-            position=Point3D(9.0, 0.0, 0.0),
+            position=Point3D(9.5, 0.0, 0.0),  # 接触柜门，隔离门区测试与倾覆条件
             orientation=Orientation3D(dx=0.5, dy=1.2, dz=1.3),
             weight_kg=20.0,
             context=PlacementContext.DOOR_SEAL,
@@ -652,15 +652,16 @@ class TestIndependentGlobalValidator(unittest.TestCase):
         P2-5 Guardrail: Square-base and cube cargo must resolve orientation checks
         without symmetric dimension collision or false rejections.
         """
+        # 独立满足倾覆阈值 SF=1.6，确保此测试只检验对称朝向。
         sku_square = CargoSKU(
             sku_id="SKU_SQUARE",
             name="Square Base Item",
-            box=BoxDim(0.4, 0.4, 0.6),
+            box=BoxDim(0.4, 0.4, 0.5),
             weight_kg=10.0,
             quantity=QuantityPlan(required=2),
         )
-        p_sq1 = Placement("psq1", "i1", "SKU_SQUARE", Point3D(0.0, 0.0, 0.0), Orientation3D(0.4, 0.4, 0.6), 10.0, PlacementContext.MAIN_WALL)
-        p_sq2 = Placement("psq2", "i2", "SKU_SQUARE", Point3D(0.4, 0.0, 0.0), Orientation3D(0.4, 0.4, 0.6), 10.0, PlacementContext.MAIN_WALL)
+        p_sq1 = Placement("psq1", "i1", "SKU_SQUARE", Point3D(0.0, 0.0, 0.0), Orientation3D(0.4, 0.4, 0.5), 10.0, PlacementContext.MAIN_WALL)
+        p_sq2 = Placement("psq2", "i2", "SKU_SQUARE", Point3D(0.4, 0.0, 0.0), Orientation3D(0.4, 0.4, 0.5), 10.0, PlacementContext.MAIN_WALL)
         
         res = self.validator.validate(
             container=self.container,
