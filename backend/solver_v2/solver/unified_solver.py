@@ -381,7 +381,29 @@ class UnifiedSolver:
             util = val_result.metrics.get("volume_utilization_pct", 0.0)
             violations = len(val_result.violations)
             placed_vol = val_result.metrics.get("cargo_volume", 0.0)
-            score = placed_vol * 100.0 + util - (10000.0 if not val_result.is_valid else 0.0) - violations * 500.0
+
+            # Compute rigid item fulfillment
+            placed_rigid_count = 0
+            req_rigid_count = 0
+            placed_counts_trial: Dict[str, int] = {}
+            for p in trial_placements:
+                sid = p.get("sku_id", "")
+                placed_counts_trial[sid] = placed_counts_trial.get(sid, 0) + 1
+            for c in cargo_list:
+                is_el = bool(getattr(getattr(c, "quantity", None), "is_elastic", False) or getattr(c, "is_elastic", False))
+                req_q = getattr(getattr(c, "quantity", None), "required", 0) or getattr(c, "quantity_required", 0)
+                if not is_el:
+                    req_rigid_count += req_q
+                    placed_rigid_count += min(req_q, placed_counts_trial.get(c.sku_id, 0))
+
+            rigid_ratio = (placed_rigid_count / max(1, req_rigid_count)) if req_rigid_count > 0 else 1.0
+            score = (
+                rigid_ratio * 5000.0
+                + placed_vol * 100.0
+                + util
+                - (10000.0 if not val_result.is_valid else 0.0)
+                - violations * 500.0
+            )
 
             if score > best_score or not best_raw_placements:
                 best_score = score
@@ -502,6 +524,14 @@ class UnifiedSolver:
         while rem_headroom >= 0.05:
             top_pool = sku_group if is_door else (sku_group + companion_pool)
             top_pool = [tc for tc in top_pool if remaining_qty.get(tc.sku_id, 0) > 0]
+            # 刚性件绝对优先铁律：只要有任何刚性件未装完，严禁弹性件抢占净空
+            has_unplaced_rigid_any = any(
+                remaining_qty.get(c.sku_id, 0) > 0 and not getattr(c, 'is_elastic', False)
+                for c in (sku_group + companion_pool)
+            )
+            if has_unplaced_rigid_any:
+                top_pool = [tc for tc in top_pool if not getattr(tc, 'is_elastic', False)]
+
             if not top_pool:
                 break
             if sort_mode == "volume_desc":
@@ -952,8 +982,8 @@ class UnifiedSolver:
 
                 # --- STEP 2: Fallback to Column-by-Column Greedy / Composite Strip ---
                 # Sort: SKUs with substantial bulk volume/qty lead slices according to trial config
-                has_rigid_door_rem = is_door and any(remaining_qty.get(c.sku_id, 0) > 0 and not getattr(c, 'is_elastic', False) for c in active_skus)
-                pool_to_lead = [c for c in active_skus if not getattr(c, 'is_elastic', False)] if has_rigid_door_rem else active_skus
+                has_rigid_rem = any(remaining_qty.get(c.sku_id, 0) > 0 and not getattr(c, 'is_elastic', False) for c in active_skus)
+                pool_to_lead = [c for c in active_skus if not getattr(c, 'is_elastic', False)] if has_rigid_rem else active_skus
                 bulk_skus = [
                     c for c in pool_to_lead
                     if remaining_qty[c.sku_id] >= 8 or (c.volume_m3 * remaining_qty[c.sku_id] >= min_sec_vol * 2.0)
@@ -962,30 +992,34 @@ class UnifiedSolver:
 
                 if sort_mode == "volume_desc":
                     candidates_to_lead.sort(key=lambda c: (
+                        0 if getattr(c, 'is_elastic', False) else 1,
                         -c.volume_m3,
                         -(c.volume_m3 * remaining_qty[c.sku_id]),
                         -remaining_qty[c.sku_id]
-                    ))
+                    ), reverse=True)
                 elif sort_mode == "volume_asc":
                     candidates_to_lead.sort(key=lambda c: (
-                        c.volume_m3,
-                        -(remaining_qty[c.sku_id] / max(1, c.quantity_required)),
-                        -(c.volume_m3 * remaining_qty[c.sku_id])
-                    ))
+                        1 if not getattr(c, 'is_elastic', False) else 0,
+                        -c.volume_m3,
+                        remaining_qty[c.sku_id] / max(1, c.quantity_required),
+                        c.volume_m3 * remaining_qty[c.sku_id]
+                    ), reverse=True)
                 elif sort_mode == "quantity_desc":
                     candidates_to_lead.sort(key=lambda c: (
-                        -remaining_qty[c.sku_id],
-                        -(remaining_qty[c.sku_id] / max(1, c.quantity_required)),
-                        -(c.volume_m3 * remaining_qty[c.sku_id])
-                    ))
+                        0 if getattr(c, 'is_elastic', False) else 1,
+                        remaining_qty[c.sku_id],
+                        remaining_qty[c.sku_id] / max(1, c.quantity_required),
+                        c.volume_m3 * remaining_qty[c.sku_id]
+                    ), reverse=True)
                 else:
                     # Weighted multi-factor
                     candidates_to_lead.sort(key=lambda c: (
-                        -(vol_weight * (c.volume_m3 * remaining_qty[c.sku_id]) + den_weight * (c.density_kg_m3 / 100.0) + 0.35 * (remaining_qty[c.sku_id] / max(1, c.quantity_required))),
-                        -(remaining_qty[c.sku_id] / max(1, c.quantity_required)),
-                        -(c.volume_m3 * remaining_qty[c.sku_id]),
-                        -c.density_kg_m3
-                    ))
+                        0 if getattr(c, 'is_elastic', False) else 1,
+                        vol_weight * (c.volume_m3 * remaining_qty[c.sku_id]) + den_weight * (c.density_kg_m3 / 100.0) + 0.35 * (remaining_qty[c.sku_id] / max(1, c.quantity_required)),
+                        remaining_qty[c.sku_id] / max(1, c.quantity_required),
+                        c.volume_m3 * remaining_qty[c.sku_id],
+                        c.density_kg_m3
+                    ), reverse=True)
 
                 chosen_candidate = None
                 chosen_opt = None
@@ -996,13 +1030,13 @@ class UnifiedSolver:
                     if avail_x < 0.60 or rem_q <= 40:
                         c_oris.sort(key=lambda o: (1 if o.dx <= avail_x + 1e-4 else 0, (int(self.cW / o.dy) * o.dy / self.cW) * 0.50 - o.dx * 0.50), reverse=True)
                     else:
-                        c_oris.sort(key=lambda o: (int(self.cW / o.dy) * o.dy / self.cW) * 0.65 + o.dx * 0.35, reverse=True)
+                        c_oris.sort(key=lambda o: ((int(self.cW / o.dy) * o.dy / self.cW) * 0.60 + (int((self.cH - 0.04) / o.dz) * o.dz / (self.cH - 0.04)) * 0.40), reverse=True)
                     for o in c_oris:
-                        if o.dx <= avail_x + 1e-4 and o.dy <= self.cW - 0.02 and o.dz <= (self.cH - 0.04):
+                        if o.dx <= avail_x + 1e-4 and o.dy <= self.cW - 0.02:
                             chosen_candidate = cand_sku
                             chosen_opt = o
                             break
-                    if chosen_candidate:
+                    if chosen_candidate and chosen_opt:
                         break
 
                 if not chosen_candidate or not chosen_opt:
@@ -1025,7 +1059,7 @@ class UnifiedSolver:
                 cur_y = 0.0
                 placed_in_section = 0
                 base_pool = [primary_sku] + sku_group + ([] if is_door else companion_pool)
-                if has_rigid_door_rem:
+                if has_rigid_rem:
                     pool = [c for c in base_pool if not getattr(c, 'is_elastic', False)]
                 else:
                     pool = base_pool
@@ -1145,7 +1179,7 @@ class UnifiedSolver:
                             if remaining_qty[fc.sku_id] <= 0:
                                 continue
                             for o in self._get_permitted_orientations(fc):
-                                if o.dy <= rem_w + 1e-4:
+                                if o.dy <= rem_w + 1e-4 and o.dx <= delta_x + 1e-4:
                                     col_sku = fc
                                     col_opt = o
                                     break
@@ -1157,21 +1191,13 @@ class UnifiedSolver:
                     c_rows_x = max(1, int((delta_x + 1e-4) / col_opt.dx))
                     c_cols_y = max(1, min(int((rem_w + 1e-4) / col_opt.dy), 35))
                     c_layers_z = max(1, min(int((self.cH - 0.04) / col_opt.dz), col_sku.max_stack_layers or 99))
-                    needed = c_rows_x * c_cols_y * c_layers_z
                     avail_c = remaining_qty[col_sku.sku_id]
-
-                    if needed > avail_c:
-                        c_layers_z = max(1, avail_c // (c_rows_x * c_cols_y))
+                    # Allow top layer to be partially filled so tail cartons are not discarded
+                    if avail_c < c_rows_x * c_cols_y * c_layers_z:
+                        c_layers_z = max(1, math.ceil(avail_c / (c_rows_x * c_cols_y)))
                         if col_sku.max_stack_layers:
                             c_layers_z = min(c_layers_z, col_sku.max_stack_layers)
-                        if c_layers_z <= 0:
-                            c_layers_z = 1
-                            if avail_c >= c_rows_x:
-                                c_cols_y = max(1, min(c_cols_y, avail_c // c_rows_x))
-                            else:
-                                c_rows_x = 1
-                                c_cols_y = min(c_cols_y, avail_c)
-                        needed = min(avail_c, c_rows_x * c_cols_y * c_layers_z)
+                    needed = min(avail_c, c_rows_x * c_cols_y * c_layers_z)
 
                     if needed <= 0:
                         cur_y = round(cur_y + col_opt.dy, 4)
@@ -1268,29 +1294,48 @@ class UnifiedSolver:
 
             anchors: Set[Tuple[float, float, float]] = {(0.0, 0.0, 0.0)}
             for p in placements:
-                anchors.add((round(p['x'] + p['dx'], 4), round(p['y'], 4), round(p['z'], 4)))
-                anchors.add((round(p['x'], 4), round(p['y'] + p['dy'], 4), round(p['z'], 4)))
-                anchors.add((round(p['x'], 4), round(p['y'], 4), round(p['z'] + p['dz'], 4)))
-                anchors.add((round(p['x'] + p['dx'], 4), round(p['y'] + p['dy'], 4), round(p['z'], 4)))
+                px1, py1, pz1 = round(p['x'] + p['dx'], 4), round(p['y'] + p['dy'], 4), round(p['z'] + p['dz'], 4)
+                anchors.add((px1, round(p['y'], 4), round(p['z'], 4)))
+                anchors.add((round(p['x'], 4), py1, round(p['z'], 4)))
+                anchors.add((round(p['x'], 4), round(p['y'], 4), pz1))
+                anchors.add((px1, py1, round(p['z'], 4)))
+                anchors.add((round(p['x'], 4), round(p['y'], 4), 0.0))
+                anchors.add((px1, round(p['y'], 4), 0.0))
+                anchors.add((round(p['x'], 4), py1, 0.0))
+                anchors.add((px1, py1, 0.0))
+                anchors.add((round(p['x'], 4), round(self.cW - 0.02, 4), 0.0))
+                anchors.add((px1, round(self.cW - 0.02, 4), 0.0))
+                anchors.add((round(p['x'], 4), round(p['y'], 4), pz1))
+                anchors.add((round(p['x'], 4), 0.0, pz1))
+                anchors.add((px1, round(p['y'], 4), pz1))
+                anchors.add((px1, 0.0, pz1))
+                anchors.add((round(p['x'], 4), py1, pz1))
+                anchors.add((px1, py1, pz1))
 
             has_door_skus = any(c.zone_preference == UniversalZone.DOOR for c in cargo_list)
 
             for ax, ay, az in sorted(list(anchors), key=lambda pt: (pt[0], pt[2], pt[1])):
                 if ax >= self.cL - 0.04 or ay >= self.cW - 0.02 or az >= self.cH - 0.03:
                     continue
-                is_door_zone = (ax >= validator_door_boundary_x - 1e-4) if has_door_skus else False
+                # 真正硬性门区锁定线（与 IndependentGlobalValidator 标准保持一致：cL - 0.20m）
+                hard_door_lockout_x = round(self.cL - 0.20, 4)
+                is_door_zone = (ax >= hard_door_lockout_x - 1e-4) if has_door_skus else False
 
+                has_unplaced_rigid = any(not getattr(x, 'is_elastic', False) and remaining_qty[x.sku_id] > 0 for x in unplaced)
                 placed_at_anchor = False
                 for c in unplaced:
                     if remaining_qty[c.sku_id] <= 0:
                         continue
-                    if is_door_zone and c.zone_preference != UniversalZone.DOOR:
+                    if has_unplaced_rigid and getattr(c, 'is_elastic', False):
+                        continue
+                    is_door_sku = (c.zone_preference == UniversalZone.DOOR or "门" in (getattr(c, 'raw_requirement', '') or ''))
+                    if is_door_zone and not is_door_sku:
                         continue
                     if not self._check_stacking_limit(c, ax, ay, az, placements):
                         continue
 
                     for o in self._get_permitted_orientations(c):
-                        max_x_bound = validator_door_boundary_x if (has_door_skus and c.zone_preference != UniversalZone.DOOR) else (self.cL - 0.04)
+                        max_x_bound = (self.cL - 0.04) if is_door_sku or not has_door_skus else hard_door_lockout_x
                         max_y_bound = self.cW - 0.02
                         max_z_bound = self.cH - 0.03
                         if (ax + o.dx > max_x_bound + 1e-4 or
@@ -1327,7 +1372,6 @@ class UnifiedSolver:
                         }
                         if self._has_collision(cand_base, placements) or not self._has_sufficient_support(cand_base, placements):
                             continue
-
                         max_rx = max(1, min(int((max_x_bound - ax + 1e-4) / o.dx), 8))
                         max_cy = max(1, min(int((max_y_bound - ay + 1e-4) / o.dy), 12))
                         max_lz = max(1, min(int((max_z_bound - az + 1e-4) / o.dz), 10))
@@ -1371,10 +1415,14 @@ class UnifiedSolver:
                                         step_idx += 1
                                         placed_in_round += 1
                                         placed_block += 1
-                                        anchors.add((round(cand['x'] + cand['dx'], 4), round(cand['y'], 4), round(cand['z'], 4)))
-                                        anchors.add((round(cand['x'], 4), round(cand['y'] + cand['dy'], 4), round(cand['z'], 4)))
-                                        anchors.add((round(cand['x'], 4), round(cand['y'], 4), round(cand['z'] + cand['dz'], 4)))
-                                        anchors.add((round(cand['x'] + cand['dx'], 4), round(cand['y'] + cand['dy'], 4), round(cand['z'], 4)))
+                                        pcx1, pcy1, pcz1 = round(cand['x'] + cand['dx'], 4), round(cand['y'] + cand['dy'], 4), round(cand['z'] + cand['dz'], 4)
+                                        anchors.add((pcx1, round(cand['y'], 4), round(cand['z'], 4)))
+                                        anchors.add((round(cand['x'], 4), pcy1, round(cand['z'], 4)))
+                                        anchors.add((round(cand['x'], 4), round(cand['y'], 4), pcz1))
+                                        anchors.add((pcx1, pcy1, round(cand['z'], 4)))
+                                        anchors.add((pcx1, round(cand['y'], 4), 0.0))
+                                        anchors.add((round(cand['x'], 4), pcy1, 0.0))
+                                        anchors.add((pcx1, pcy1, 0.0))
                                     else:
                                         if rx == 0 and cy == 0 and lz > 0:
                                             break
@@ -1389,66 +1437,136 @@ class UnifiedSolver:
 
         # PASS 4.5: Residual Rigid Forward-Anchoring Channel (Anti-Starvation)
         # Guarantees 0-starvation for rigid items by anchoring against rigid cargo walls or top surfaces in door/rear zones.
-        unplaced_rigid = [c for c in cargo_list if not getattr(c, 'is_elastic', False) and remaining_qty.get(c.sku_id, 0) > 0]
-        if unplaced_rigid:
-            potential_anchors = list(reversed(placements))
-            for c_rem in unplaced_rigid:
+        unplaced_rigid_skus = [c for c in cargo_list if not getattr(c, 'is_elastic', False) and remaining_qty.get(c.sku_id, 0) > 0]
+        if unplaced_rigid_skus:
+            self._rebuild_spatial_index(placements)
+            for c_rem in unplaced_rigid_skus:
                 c_oris = self._get_permitted_orientations(c_rem)
-                while remaining_qty[c_rem.sku_id] > 0:
+                # Prioritize same-sku anchors and ground anchors first to build compact columns
+                potential_anchors = [p for p in reversed(placements) if p.get('sku_id') == c_rem.sku_id] + [p for p in reversed(placements) if p.get('sku_id') != c_rem.sku_id]
+                while remaining_qty.get(c_rem.sku_id, 0) > 0:
                     placed_rigid_item = False
                     for o in c_oris:
                         if placed_rigid_item:
                             break
-                        # 1. First attempt to anchor along door boundary (rigid support from door against tipping)
-                        door_x = round(self.cL - 0.04 - o.dx, 4)
-                        max_lz = min(getattr(c_rem, 'max_stack_layers', None) or 99, int((self.cH - 0.04) // o.dz))
-                        for lz_step in range(max_lz):
-                            cz_door = round(lz_step * o.dz, 4)
-                            for cy_step in range(int(self.cW // o.dy) + 1):
-                                if remaining_qty[c_rem.sku_id] <= 0:
-                                    break
-                                cy_door = round(cy_step * o.dy, 4)
-                                if cy_door + o.dy > self.cW - 0.02:
-                                    continue
-                                cand_res = {
-                                    "sku_id": c_rem.sku_id,
-                                    "x": door_x, "y": cy_door, "z": cz_door,
-                                    "dx": o.dx, "dy": o.dy, "dz": o.dz,
-                                    "weight_kg": c_rem.weight_kg,
-                                    "orientation": o.name,
-                                    "step": step_idx,
-                                    "tag": "DOOR_SEAL" if getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR else "RESIDUAL_ANCHOR",
-                                    "context": "DOOR_SEAL" if getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR else "MAIN_WALL",
-                                }
-                                if (not self._has_collision(cand_res, placements) and
-                                    self._has_sufficient_support(cand_res, placements) and
-                                    self._check_placement_constraints(cand_res, placements) and
-                                    self._is_placement_tipping_safe(cand_res, placements)):
-                                    self._add_placement(cand_res, placements)
-                                    remaining_qty[c_rem.sku_id] -= 1
-                                    step_idx += 1
-                                    placed_rigid_item = True
-                                    potential_anchors.append(cand_res)
+                        # 1. First attempt to anchor along door boundary (only for DOOR preferred or allowed items)
+                        is_door_allowed = (getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR or "门" in (getattr(c_rem, 'raw_requirement', '') or ''))
+                        if is_door_allowed:
+                            max_lz = min(getattr(c_rem, 'max_stack_layers', None) or 99, int((self.cH - 0.04) // o.dz))
+                            # Fine-grained door scanning from container end backwards
+                            door_x_list = []
+                            curr_dx = round(self.cL - 0.04 - o.dx, 4)
+                            min_door_x = max(0.0, round(self.cL - 3.5, 4))
+                            while curr_dx >= min_door_x:
+                                door_x_list.append(round(curr_dx, 4))
+                                curr_dx -= 0.05
+                            # Add anchor aligned x
+                            for p in potential_anchors[-50:]:
+                                px_lead = round(p["x"] - o.dx, 4)
+                                px_trail = round(p["x"] + p["dx"], 4)
+                                if min_door_x <= px_lead <= self.cL - 0.04 - o.dx:
+                                    door_x_list.append(px_lead)
+                                if min_door_x <= px_trail <= self.cL - 0.04 - o.dx:
+                                    door_x_list.append(px_trail)
+                            door_x_list = sorted(list(set(door_x_list)), reverse=True)
 
-                        if placed_rigid_item:
+                            door_y_list = [0.0]
+                            curr_dy = 0.0
+                            while curr_dy + o.dy <= self.cW - 0.02:
+                                door_y_list.append(round(curr_dy, 4))
+                                curr_dy += max(0.05, min(o.dy, 0.15))
+                            door_y_list.append(round(self.cW - 0.02 - o.dy, 4))
+                            for p in potential_anchors[-50:]:
+                                py1 = round(p["y"] + p["dy"], 4)
+                                py0 = round(p["y"] - o.dy, 4)
+                                if 0.0 <= py1 and py1 + o.dy <= self.cW - 0.02:
+                                    door_y_list.append(py1)
+                                if 0.0 <= py0 and py0 + o.dy <= self.cW - 0.02:
+                                    door_y_list.append(py0)
+                            door_y_list = sorted(list(set(door_y_list)))
+
+                            for door_x in door_x_list:
+                                for lz_step in range(max_lz):
+                                    cz_door = round(lz_step * o.dz, 4)
+                                    if cz_door + o.dz > self.cH - 0.04:
+                                        break
+                                    for cy_door in door_y_list:
+                                        if remaining_qty[c_rem.sku_id] <= 0:
+                                            break
+                                        cand_res = {
+                                            "sku_id": c_rem.sku_id,
+                                            "x": door_x, "y": cy_door, "z": cz_door,
+                                            "dx": o.dx, "dy": o.dy, "dz": o.dz,
+                                            "weight_kg": c_rem.weight_kg,
+                                            "orientation": o.name,
+                                            "step": step_idx,
+                                            "tag": "DOOR_SEAL" if getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR else "RESIDUAL_ANCHOR",
+                                            "context": "DOOR_SEAL" if getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR else "MAIN_WALL",
+                                        }
+                                        if (not self._has_collision(cand_res, placements) and
+                                            self._has_sufficient_support(cand_res, placements) and
+                                            self._check_placement_constraints(cand_res, placements) and
+                                            self._is_placement_tipping_safe(cand_res, placements)):
+                                            self._add_placement(cand_res, placements)
+                                            remaining_qty[c_rem.sku_id] -= 1
+                                            step_idx += 1
+                                            placed_rigid_item = True
+                                            potential_anchors.append(cand_res)
+                                            break
+                                    if remaining_qty[c_rem.sku_id] <= 0 or placed_rigid_item:
+                                        break
+                                if remaining_qty[c_rem.sku_id] <= 0 or placed_rigid_item:
+                                    break
+
+                        if remaining_qty[c_rem.sku_id] <= 0 or placed_rigid_item:
                             break
 
-                        # 2. Next attempt anchoring to existing placed boxes
+                        # 2. Next attempt anchoring to existing placed boxes with comprehensive face and edge contacts
+                        is_door_item = (getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR or "门" in (getattr(c_rem, 'raw_requirement', '') or ''))
                         for other in potential_anchors:
-                            # For slender items (SF < 1.5), placing in front of other without forward support is unsafe
                             is_slender = (2.0 * o.dx / max(1e-4, o.dz)) < 1.5 - 1e-4
                             cand_coords = [
+                                # Bottom/Floor contacts
                                 (round(other["x"] - o.dx, 4), round(other["y"], 4), 0.0),
+                                (round(other["x"], 4), round(other["y"], 4), 0.0),
+                                (round(other["x"], 4), round(other["y"] + other["dy"], 4), 0.0),
+                                (round(other["x"], 4), round(other["y"] - o.dy, 4), 0.0),
+                                (round(other["x"], 4), round(self.cW - 0.02 - o.dy, 4), 0.0),
+                                (round(other["x"] - o.dx, 4), round(self.cW - 0.02 - o.dy, 4), 0.0),
+                                (round(other["x"] + other["dx"], 4), round(other["y"], 4), 0.0),
+                                (round(other["x"] + other["dx"] - o.dx, 4), round(other["y"], 4), 0.0),
+                                (round(other["x"] + other["dx"], 4), round(other["y"] + other["dy"] - o.dy, 4), 0.0),
+                                (round(other["x"] - o.dx, 4), round(other["y"] + other["dy"] - o.dy, 4), 0.0),
+                                # Stacking on top
                                 (round(other["x"], 4), round(other["y"], 4), round(other["z"] + other["dz"], 4)),
                                 (round(other["x"] - o.dx, 4), round(other["y"], 4), round(other["z"] + other["dz"], 4)),
+                                (round(other["x"], 4), round(other["y"] + other["dy"] - o.dy, 4), round(other["z"] + other["dz"], 4)),
+                                (round(other["x"] + other["dx"] - o.dx, 4), round(other["y"], 4), round(other["z"] + other["dz"], 4)),
+                                (round(other["x"] + other["dx"] - o.dx, 4), round(other["y"] + other["dy"] - o.dy, 4), round(other["z"] + other["dz"], 4)),
+                                (round(other["x"], 4), round(self.cW - 0.02 - o.dy, 4), round(other["z"] + other["dz"], 4)),
+                                (round(other["x"] - o.dx, 4), round(self.cW - 0.02 - o.dy, 4), round(other["z"] + other["dz"], 4)),
+                                (round(other["x"] + other["dx"] - o.dx, 4), round(self.cW - 0.02 - o.dy, 4), round(other["z"] + other["dz"], 4)),
+                                (round(other["x"] + other["dx"], 4), round(other["y"], 4), round(other["z"] + other["dz"], 4)),
+                                (round(other["x"] + other["dx"], 4), round(other["y"] + other["dy"] - o.dy, 4), round(other["z"] + other["dz"], 4)),
+                                (round(other["x"], 4), 0.0, round(other["z"] + other["dz"], 4)),
+                                (round(other["x"] + other["dx"] - o.dx, 4), 0.0, round(other["z"] + other["dz"], 4)),
+                                # Lateral contacts at same z
                                 (round(other["x"], 4), round(other["y"] + other["dy"], 4), round(other["z"], 4)),
+                                (round(other["x"], 4), round(other["y"] - o.dy, 4), round(other["z"], 4)),
+                                (round(other["x"] - o.dx, 4), round(other["y"] + other["dy"], 4), round(other["z"], 4)),
+                                (round(other["x"] - o.dx, 4), round(other["y"] - o.dy, 4), round(other["z"], 4)),
                             ]
                             if not is_slender:
-                                cand_coords.append((round(other["x"] + other["dx"], 4), round(other["y"], 4), round(other["z"], 4)))
+                                cand_coords.extend([
+                                    (round(other["x"] + other["dx"], 4), round(other["y"], 4), round(other["z"], 4)),
+                                    (round(other["x"] + other["dx"], 4), round(other["y"] + other["dy"], 4), round(other["z"], 4)),
+                                    (round(other["x"] + other["dx"], 4), round(other["y"] - o.dy, 4), round(other["z"], 4)),
+                                ])
                             for cx, cy, cz in cand_coords:
                                 if cx < 0.0 or cy < 0.0 or cz < 0.0:
                                     continue
-                                if cx + o.dx > self.cL - 0.02 or cy + o.dy > self.cW - 0.02 or cz + o.dz > self.cH - 0.04:
+                                max_x_lim = self.cL - 0.02 if is_door_item else (self.cL - 0.20)
+                                if cx + o.dx > max_x_lim or cy + o.dy > self.cW - 0.02 or cz + o.dz > self.cH - 0.04:
                                     continue
                                 cand_res = {
                                     "sku_id": c_rem.sku_id,
@@ -1469,11 +1587,172 @@ class UnifiedSolver:
                                     step_idx += 1
                                     placed_rigid_item = True
                                     potential_anchors.append(cand_res)
+                                    # Try placing consecutive copies along Y or X if remaining_qty > 0
+                                    cur_c = cand_res
+                                    while remaining_qty[c_rem.sku_id] > 0:
+                                        next_placed = False
+                                        # Try next along Y
+                                        next_y = round(cur_c["y"] + cur_c["dy"], 4)
+                                        if next_y + o.dy <= self.cW - 0.02:
+                                            next_cand = {
+                                                "sku_id": c_rem.sku_id,
+                                                "x": cur_c["x"], "y": next_y, "z": cur_c["z"],
+                                                "dx": o.dx, "dy": o.dy, "dz": o.dz,
+                                                "weight_kg": c_rem.weight_kg,
+                                                "orientation": o.name,
+                                                "step": step_idx,
+                                                "tag": "RESIDUAL_ANCHOR",
+                                                "context": "MAIN_WALL",
+                                            }
+                                            if (not self._has_collision(next_cand, placements) and
+                                                self._has_sufficient_support(next_cand, placements) and
+                                                self._check_placement_constraints(next_cand, placements) and
+                                                self._is_placement_tipping_safe(next_cand, placements)):
+                                                self._add_placement(next_cand, placements)
+                                                remaining_qty[c_rem.sku_id] -= 1
+                                                step_idx += 1
+                                                potential_anchors.append(next_cand)
+                                                cur_c = next_cand
+                                                next_placed = True
+                                        if not next_placed:
+                                            break
+                                    break
+                            if placed_rigid_item:
+                                break
+
+                        # 3. If neighbor anchors didn't place it, perform a fast anchor-aligned scan
+                        if not placed_rigid_item:
+                            is_door_item = (getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR or "门" in (getattr(c_rem, 'raw_requirement', '') or ''))
+                            if is_door_item:
+                                x_search_start = max(0.0, self.cL - 4.5)
+                                x_search_end = self.cL - o.dx - 0.02
+                            else:
+                                x_search_start = 0.0
+                                x_search_end = self.cL - o.dx - 0.04
+
+                            # Collect existing placement boundaries as high-affinity candidates
+                            x_cands = set([0.0, max(0.0, round(self.cL - 0.04 - o.dx, 4)), max(0.0, round(self.cL - 0.20 - o.dx, 4))])
+                            y_cands = set([0.0, round(self.cW - 0.02 - o.dy, 4)])
+                            z_cands = set([0.0])
+                            # Sample placements to bound search space and maintain sub-minute performance
+                            # Ensure support surfaces with sufficient vertical headroom across the container are included
+                            headroom_support_anchors = [
+                                p for p in potential_anchors 
+                                if round(p["z"] + p["dz"], 4) + o.dz <= self.cH - 0.04
+                            ]
+                            sample_pool = potential_anchors if len(potential_anchors) <= 400 else (
+                                [p for p in potential_anchors if p.get('sku_id') == c_rem.sku_id] +
+                                headroom_support_anchors +
+                                potential_anchors[-100:] +
+                                [p for p in potential_anchors if abs(p["z"]) < 1e-3][-100:] +
+                                potential_anchors[::max(1, len(potential_anchors) // 100)]
+                            )
+                            for p in sample_pool:
+                                ex0 = round(p["x"] - o.dx, 4)
+                                ex_align = round(p["x"], 4)
+                                ex1 = round(p["x"] + p["dx"], 4)
+                                ex1_sub = round(p["x"] + p["dx"] - o.dx, 4)
+                                for cx in (ex0, ex_align, ex1, ex1_sub):
+                                    if x_search_start <= cx <= x_search_end:
+                                        x_cands.add(cx)
+
+                                ey0 = round(p["y"] - o.dy, 4)
+                                ey_align = round(p["y"], 4)
+                                ey1 = round(p["y"] + p["dy"], 4)
+                                ey1_sub = round(p["y"] + p["dy"] - o.dy, 4)
+                                for cy in (ey0, ey_align, ey1, ey1_sub):
+                                    if 0.0 <= cy and cy + o.dy <= self.cW - 0.02:
+                                        y_cands.add(cy)
+
+                                ez1 = round(p["z"] + p["dz"], 4)
+                                if ez1 + o.dz <= self.cH - 0.04:
+                                    z_cands.add(ez1)
+
+                            # Also include regular grid steps along container walls for y
+                            for step_y in [round(i * 0.1, 4) for i in range(int(self.cW / 0.1))]:
+                                if step_y + o.dy <= self.cW - 0.02:
+                                    y_cands.add(step_y)
+
+                            sorted_x = sorted(list(x_cands), reverse=True if is_door_item else False)
+                            sorted_y = sorted(list(y_cands))
+                            sorted_z = sorted(list(z_cands))
+
+                            for sz in sorted_z:
+                                for sx in sorted_x:
+                                    for sy in sorted_y:
+                                        cand_res = {
+                                            "sku_id": c_rem.sku_id,
+                                            "x": sx, "y": sy, "z": sz,
+                                            "dx": o.dx, "dy": o.dy, "dz": o.dz,
+                                            "weight_kg": c_rem.weight_kg,
+                                            "orientation": o.name,
+                                            "step": step_idx,
+                                            "tag": "RESIDUAL_LATTICE",
+                                            "context": "MAIN_WALL",
+                                        }
+                                        if (not self._has_collision(cand_res, placements) and
+                                            self._has_sufficient_support(cand_res, placements) and
+                                            self._check_placement_constraints(cand_res, placements) and
+                                            self._is_placement_tipping_safe(cand_res, placements)):
+                                            self._add_placement(cand_res, placements)
+                                            remaining_qty[c_rem.sku_id] -= 1
+                                            step_idx += 1
+                                            placed_rigid_item = True
+                                            potential_anchors.append(cand_res)
+                                            break
+                                    if placed_rigid_item:
+                                        break
+                                if placed_rigid_item:
                                     break
                             if placed_rigid_item:
                                 break
                     if not placed_rigid_item:
                         break
+
+        # PASS 4.6: Elastic Cavity Re-fill (Fill remaining voids with elastic cargo after rigid items)
+        unplaced_elastic = [c for c in cargo_list if getattr(c, 'is_elastic', False) and remaining_qty.get(c.sku_id, 0) > 0]
+        if unplaced_elastic:
+            for round_idx in range(5):
+                placed_elastic_round = 0
+                for c in unplaced_elastic:
+                    if remaining_qty.get(c.sku_id, 0) <= 0:
+                        continue
+                    anchors_el = set()
+                    for p in placements[-200:]:
+                        anchors_el.add((round(p['x'] + p['dx'], 4), round(p['y'], 4), round(p['z'], 4)))
+                        anchors_el.add((round(p['x'], 4), round(p['y'] + p['dy'], 4), round(p['z'], 4)))
+                        anchors_el.add((round(p['x'], 4), round(p['y'], 4), round(p['z'] + p['dz'], 4)))
+                        anchors_el.add((round(p['x'] + p['dx'], 4), round(p['y'] + p['dy'], 4), round(p['z'] + p['dz'], 4)))
+                    for ax, ay, az in sorted(list(anchors_el), key=lambda pt: (pt[0], pt[2], pt[1])):
+                        if remaining_qty.get(c.sku_id, 0) <= 0:
+                            break
+                        if ax >= self.cL - 0.04 or ay >= self.cW - 0.02 or az >= self.cH - 0.03:
+                            continue
+                        for o in self._get_permitted_orientations(c):
+                            if ax + o.dx > self.cL - 0.04 or ay + o.dy > self.cW - 0.02 or az + o.dz > self.cH - 0.03:
+                                continue
+                            cand = {
+                                'sku_id': c.sku_id,
+                                'x': ax, 'y': ay, 'z': az,
+                                'dx': o.dx, 'dy': o.dy, 'dz': o.dz,
+                                'weight_kg': c.weight_kg,
+                                'orientation': o.name,
+                                'step': step_idx,
+                                'tag': "TOP_FILL",
+                                'context': "TOP_FILL"
+                            }
+                            if (not self._has_collision(cand, placements) and
+                                self._has_sufficient_support(cand, placements) and
+                                self._check_placement_constraints(cand, placements) and
+                                self._is_placement_tipping_safe(cand, placements)):
+                                self._add_placement(cand, placements)
+                                remaining_qty[c.sku_id] -= 1
+                                step_idx += 1
+                                placed_elastic_round += 1
+                                break
+                if placed_elastic_round == 0:
+                    break
+
         # PASS 5: Tipping Stability Audit and Automated Repair (TIP-03)
         self._spatial_idx = None
         tipping_analyzer = TippingMomentAnalyzer(
