@@ -337,18 +337,16 @@ class UnifiedSolver:
         tensor_cargo_list = self._convert_cargo_skus_to_tensors(cargo_list)
 
         trials = [
-            # 原有 3 种
+            {"name": "LARGE_FIRST",   "sort": "volume_desc",    "min_sec_vol": 0.35},
             {"name": "BALANCED_WALL", "volume_weight": 0.6, "density_weight": 0.4, "min_sec_vol": 0.40},
             {"name": "DENSITY_FIRST", "volume_weight": 0.3, "density_weight": 0.7, "min_sec_vol": 0.30},
             {"name": "MODULAR_SLAB",  "volume_weight": 0.8, "density_weight": 0.2, "min_sec_vol": 0.50},
-            # 新增策略
-            {"name": "LARGE_FIRST",   "sort": "volume_desc",    "min_sec_vol": 0.35},
             {"name": "SMALL_FILL",    "sort": "volume_asc",     "min_sec_vol": 0.25},
             {"name": "QTY_FIRST",     "sort": "quantity_desc",  "min_sec_vol": 0.40},
-            {"name": "WIDE_WALL",     "max_rows": 8, "min_sec_vol": 0.50},  # 更宽的墙切片
-            {"name": "THIN_WALL",     "max_rows": 2, "min_sec_vol": 0.30},  # 更薄的墙切片
-            {"name": "DOOR_DEEP",     "door_reserve_ratio": 0.25, "min_sec_vol": 0.35},  # 门区预留 25% 纵深
-            {"name": "DOOR_COMPACT",  "door_reserve_ratio": 0.15, "min_sec_vol": 0.35},  # 门区预留 15% 纵深
+            {"name": "WIDE_WALL",     "max_rows": 8, "min_sec_vol": 0.50},
+            {"name": "THIN_WALL",     "max_rows": 2, "min_sec_vol": 0.30},
+            {"name": "DOOR_DEEP",     "door_reserve_ratio": 0.25, "min_sec_vol": 0.35},
+            {"name": "DOOR_COMPACT",  "door_reserve_ratio": 0.15, "min_sec_vol": 0.35},
         ]
 
         total_req_count = sum(s.quantity.required for s in cargo_list)
@@ -365,12 +363,18 @@ class UnifiedSolver:
             active_trials = trials
 
         max_time_budget = float(time_budget or 18.0)
+        global_deadline = t0 + max_time_budget
 
         for trial_idx, trial_cfg in enumerate(active_trials):
-            if trial_idx > 0 and (time.perf_counter() - t0) >= max_time_budget:
+            time_now = time.perf_counter()
+            # Enforce global deadline: if less than 2.0s remains, stop and return best found
+            if trial_idx > 0 and (time_now >= global_deadline - 2.0 or (time_now - t0) >= max_time_budget):
                 break
 
-            trial_placements, trial_raw_metrics = self._solve_single_trial(tensor_cargo_list, trial_cfg)
+            remaining_total = max(2.0, global_deadline - time_now)
+            # Give trial sufficient headroom up to remaining global time to finish PASS 1-4.6 properly
+            trial_deadline = min(global_deadline - 0.2, time_now + remaining_total)
+            trial_placements, trial_raw_metrics = self._solve_single_trial(tensor_cargo_list, trial_cfg, deadline=trial_deadline)
 
             val_result = IndependentGlobalValidator.validate(
                 container=self.container,
@@ -654,7 +658,7 @@ class UnifiedSolver:
             )
             self._spatial_idx.insert(f"item_{idx}_{p['x']}_{p['y']}_{p['z']}", aabb, p)
 
-    def _solve_single_trial(self, cargo_list: List[UniversalCargoTensor], trial_cfg: Dict[str, Any]) -> Tuple[List[Dict], Dict]:
+    def _solve_single_trial(self, cargo_list: List[UniversalCargoTensor], trial_cfg: Dict[str, Any], deadline: Optional[float] = None) -> Tuple[List[Dict], Dict]:
         self._sku_tensor_map = {c.sku_id: c for c in cargo_list}
         self._curr_payload_weight = 0.0
         remaining_qty: Dict[str, int] = {c.sku_id: c.quantity_required for c in cargo_list}
@@ -1315,6 +1319,8 @@ class UnifiedSolver:
             has_door_skus = any(c.zone_preference == UniversalZone.DOOR for c in cargo_list)
 
             for ax, ay, az in sorted(list(anchors), key=lambda pt: (pt[0], pt[2], pt[1])):
+                if deadline is not None and time.perf_counter() > deadline:
+                    break
                 if ax >= self.cL - 0.04 or ay >= self.cW - 0.02 or az >= self.cH - 0.03:
                     continue
                 # 真正硬性门区锁定线（与 IndependentGlobalValidator 标准保持一致：cL - 0.20m）
@@ -1445,6 +1451,8 @@ class UnifiedSolver:
                 # Prioritize same-sku anchors and ground anchors first to build compact columns
                 potential_anchors = [p for p in reversed(placements) if p.get('sku_id') == c_rem.sku_id] + [p for p in reversed(placements) if p.get('sku_id') != c_rem.sku_id]
                 while remaining_qty.get(c_rem.sku_id, 0) > 0:
+                    if deadline is not None and time.perf_counter() > deadline:
+                        break
                     placed_rigid_item = False
                     for o in c_oris:
                         if placed_rigid_item:
@@ -1486,11 +1494,15 @@ class UnifiedSolver:
                             door_y_list = sorted(list(set(door_y_list)))
 
                             for door_x in door_x_list:
+                                if deadline is not None and time.perf_counter() > deadline:
+                                    break
                                 for lz_step in range(max_lz):
                                     cz_door = round(lz_step * o.dz, 4)
                                     if cz_door + o.dz > self.cH - 0.04:
                                         break
                                     for cy_door in door_y_list:
+                                        if deadline is not None and time.perf_counter() > deadline:
+                                            break
                                         if remaining_qty[c_rem.sku_id] <= 0:
                                             break
                                         cand_res = {
@@ -1524,6 +1536,8 @@ class UnifiedSolver:
                         # 2. Next attempt anchoring to existing placed boxes with comprehensive face and edge contacts
                         is_door_item = (getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR or "门" in (getattr(c_rem, 'raw_requirement', '') or ''))
                         for other in potential_anchors:
+                            if deadline is not None and time.perf_counter() > deadline:
+                                break
                             is_slender = (2.0 * o.dx / max(1e-4, o.dz)) < 1.5 - 1e-4
                             cand_coords = [
                                 # Bottom/Floor contacts
@@ -1640,12 +1654,13 @@ class UnifiedSolver:
                                 p for p in potential_anchors 
                                 if round(p["z"] + p["dz"], 4) + o.dz <= self.cH - 0.04
                             ]
-                            sample_pool = potential_anchors if len(potential_anchors) <= 400 else (
-                                [p for p in potential_anchors if p.get('sku_id') == c_rem.sku_id] +
-                                headroom_support_anchors +
-                                potential_anchors[-100:] +
-                                [p for p in potential_anchors if abs(p["z"]) < 1e-3][-100:] +
-                                potential_anchors[::max(1, len(potential_anchors) // 100)]
+                            same_sku_anchors = [p for p in potential_anchors if p.get('sku_id') == c_rem.sku_id]
+                            sample_pool = potential_anchors if len(potential_anchors) <= 150 else (
+                                same_sku_anchors[:50] +
+                                headroom_support_anchors[-50:] +
+                                potential_anchors[-60:] +
+                                [p for p in potential_anchors if abs(p["z"]) < 1e-3][-40:] +
+                                potential_anchors[::max(1, len(potential_anchors) // 50)]
                             )
                             for p in sample_pool:
                                 ex0 = round(p["x"] - o.dx, 4)
@@ -1677,9 +1692,18 @@ class UnifiedSolver:
                             sorted_y = sorted(list(y_cands))
                             sorted_z = sorted(list(z_cands))
 
+                            lattice_attempts = 0
+                            max_lattice_attempts = 3000
                             for sz in sorted_z:
+                                if deadline is not None and time.perf_counter() > deadline:
+                                    break
                                 for sx in sorted_x:
+                                    if deadline is not None and time.perf_counter() > deadline:
+                                        break
                                     for sy in sorted_y:
+                                        lattice_attempts += 1
+                                        if lattice_attempts > max_lattice_attempts:
+                                            break
                                         cand_res = {
                                             "sku_id": c_rem.sku_id,
                                             "x": sx, "y": sy, "z": sz,
@@ -1700,9 +1724,9 @@ class UnifiedSolver:
                                             placed_rigid_item = True
                                             potential_anchors.append(cand_res)
                                             break
-                                    if placed_rigid_item:
+                                    if placed_rigid_item or lattice_attempts > max_lattice_attempts:
                                         break
-                                if placed_rigid_item:
+                                if placed_rigid_item or lattice_attempts > max_lattice_attempts:
                                     break
                             if placed_rigid_item:
                                 break
@@ -1713,8 +1737,12 @@ class UnifiedSolver:
         unplaced_elastic = [c for c in cargo_list if getattr(c, 'is_elastic', False) and remaining_qty.get(c.sku_id, 0) > 0]
         if unplaced_elastic:
             for round_idx in range(5):
+                if deadline is not None and time.perf_counter() > deadline:
+                    break
                 placed_elastic_round = 0
                 for c in unplaced_elastic:
+                    if deadline is not None and time.perf_counter() > deadline:
+                        break
                     if remaining_qty.get(c.sku_id, 0) <= 0:
                         continue
                     anchors_el = set()
@@ -1724,6 +1752,8 @@ class UnifiedSolver:
                         anchors_el.add((round(p['x'], 4), round(p['y'], 4), round(p['z'] + p['dz'], 4)))
                         anchors_el.add((round(p['x'] + p['dx'], 4), round(p['y'] + p['dy'], 4), round(p['z'] + p['dz'], 4)))
                     for ax, ay, az in sorted(list(anchors_el), key=lambda pt: (pt[0], pt[2], pt[1])):
+                        if deadline is not None and time.perf_counter() > deadline:
+                            break
                         if remaining_qty.get(c.sku_id, 0) <= 0:
                             break
                         if ax >= self.cL - 0.04 or ay >= self.cW - 0.02 or az >= self.cH - 0.03:
