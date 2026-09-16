@@ -371,15 +371,33 @@ class InputAdapter:
             # Normalize product L/W/H before mapping onto canonical X/Y/Z.
             box = InputNormalizer.normalize_box_dim(src)
 
-            # Weight (in kg)
-            weight_kg = float(src.get('weight', src.get('weightKg', 1.0)))
+            # Quantity
+            req_qty = int(src.get('quantity', src.get('qty', 1)))
+            req_text = str(src.get('requirement', ''))
+
+            # Weight (in kg) with smart normalization:
+            # Detect whether the input weight is total batch weight mistakenly entered as per-box weight
+            raw_weight = float(src.get('weight', src.get('weightKg', 1.0)))
+            vol_m3 = max(1e-5, box.x * box.y * box.z)
+            if req_qty > 1 and raw_weight > 0:
+                raw_density = raw_weight / vol_m3
+                per_box_weight = raw_weight / req_qty
+                per_box_density = per_box_weight / vol_m3
+                # Normal packaged freight density is usually 30 ~ 800 kg/m3.
+                # If raw density > 1000 kg/m3 (denser than water/solid metal) while per_box_density is in reasonable range,
+                # or raw_weight > 100kg for small packages (<0.1m3), normalize to per_box_weight.
+                if raw_density > 1000.0 and per_box_density <= 1200.0:
+                    weight_kg = round(per_box_weight, 3)
+                elif vol_m3 < 0.15 and raw_weight > 150.0 and per_box_weight <= 100.0:
+                    weight_kg = round(per_box_weight, 3)
+                else:
+                    weight_kg = raw_weight
+            else:
+                weight_kg = raw_weight
 
             profile_ref = item.get('cargoProfileRef', src.get('cargoProfileRef'))
             if profile_ref is not None:
                 if cargo_profiles is None:
-                    # Legacy callers historically pass only the cargo array. Keep that
-                    # compatibility path isolated; canonical dataset loaders pass the
-                    # profile registry and never consume requirement text.
                     profile_raw = None
                 elif profile_ref not in cargo_profiles:
                     raise ValueError(f"Unknown cargoProfileRef for {sku_id}: {profile_ref!r}")
@@ -388,10 +406,6 @@ class InputAdapter:
             else:
                 profile_raw = item.get('cargoProfile', src.get('cargoProfile'))
             profile = InputNormalizer.parse_cargo_profile(profile_raw) if profile_raw is not None else None
-
-            # Quantity
-            req_qty = int(src.get('quantity', src.get('qty', 1)))
-            req_text = str(src.get('requirement', ''))
             if profile is not None:
                 is_elastic = profile.placement_policy.reduction_allowed
                 min_qty = (
@@ -421,9 +435,16 @@ class InputAdapter:
                 if PackingRole.DOOR_SEAL not in roles:
                     roles = roles + (PackingRole.DOOR_SEAL,)
 
-            # Policies
-            ori_policy = profile.orientation_policy if profile is not None else InputNormalizer.parse_orientation_policy(src)
-            stack_policy = profile.stack_policy if profile is not None else InputNormalizer.parse_stacking_policy(src)
+            # Policies: merge item and src so top-level properties like allowedOrientation and maxStackLayers are preserved
+            policy_src = dict(src)
+            for k in ('allowedOrientation', 'allowFlat', 'allowSide', 'orientationRules', 'maxFlatLayers', 'maxStackLayers', 'max_stack_layers', 'max_stack', 'maxBearingKg', 'maxStackWeight', 'maxPressureKgM2', 'minSupportRatio', 'maxUnsupportedSpanM', 'allowStackingOnTop', 'mustBeOnFloor'):
+                if k in item and k not in policy_src:
+                    policy_src[k] = item[k]
+                elif k in item and policy_src.get(k) is None:
+                    policy_src[k] = item[k]
+
+            ori_policy = profile.orientation_policy if profile is not None else InputNormalizer.parse_orientation_policy(policy_src)
+            stack_policy = profile.stack_policy if profile is not None else InputNormalizer.parse_stacking_policy(policy_src)
 
             # Color
             color_hex = item.get('color', src.get('color'))

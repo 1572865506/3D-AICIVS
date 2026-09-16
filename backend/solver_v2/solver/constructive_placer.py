@@ -1,0 +1,344 @@
+"""
+Constructive Micro-Placer for Solver V2 (Phase 2).
+
+Converts MacroAllocationResult from CP-SAT into exact 3D coordinates (List[Placement]).
+Executes Bottom-Left-Back placement with strict spatial indexing, overlap avoidance,
+support ratio check (>= 70%), and weight bearing checks.
+"""
+from __future__ import annotations
+
+import math
+from typing import Dict, List, Optional, Set, Tuple, Any
+
+from backend.solver_v2.domain.models import (
+    BoxDim,
+    ContainerSpec,
+    Orientation3D,
+    OrientationSpec,
+    Placement,
+    PlacementContext,
+    Point3D,
+    UniversalCargoTensor,
+)
+from backend.solver_v2.geometry.aabb import AABB
+from backend.solver_v2.geometry.spatial_index import SpatialIndex
+from backend.solver_v2.solver.cpsat_engine import MacroAllocationResult, StripAllocation
+
+
+class ConstructivePlacer:
+    """
+    Constructive Micro-Placer.
+    Takes StripAllocations and converts them to precise 3D box placements.
+    """
+
+    def __init__(self, container: ContainerSpec):
+        self.container = container
+        self.cL = round(container.Lx, 4)
+        self.cW = round(container.Ly, 4)
+        self.cH = round(container.Lz, 4)
+        self.door_zone_len = getattr(container, "door_zone_length_m", 1.5)
+        self.spatial_index = SpatialIndex(cell_size=0.5)
+
+    def place(
+        self,
+        allocation: MacroAllocationResult,
+        cargo_list: List[UniversalCargoTensor],
+        existing_placements: Optional[List[Placement]] = None,
+    ) -> List[Placement]:
+        """Places items strip by strip, enforcing all physical gates."""
+        self.spatial_index.clear()
+        placements: List[Placement] = []
+        step_idx = 0
+
+        # Register any already existing placements
+        if existing_placements:
+            for p in existing_placements:
+                placements.append(p)
+                self.spatial_index.insert(p.placement_id, AABB.from_placement(p), data=p)
+                step_idx = max(step_idx, p.step_index + 1)
+
+        cargo_map = {c.sku_id: c for c in cargo_list}
+        placed_counts: Dict[str, int] = {c.sku_id: 0 for c in cargo_list}
+        for p in placements:
+            placed_counts[p.sku_id] = placed_counts.get(p.sku_id, 0) + 1
+
+        sorted_strips = sorted(allocation.strips, key=lambda s: s.x_start)
+
+        for strip in sorted_strips:
+            x_cursor = strip.x_start
+
+            # Calculate total width required for items if composite
+            items_to_place = []
+            for it in strip.items:
+                cargo = cargo_map.get(it.sku_id)
+                if not cargo:
+                    continue
+                # Respect required quantities if rigid
+                max_allowed = cargo.quantity_required if not cargo.is_elastic else 99999
+                rem_needed = max_allowed - placed_counts.get(it.sku_id, 0)
+                actual_count = min(it.count, rem_needed)
+                if actual_count > 0:
+                    items_to_place.append((cargo, it.orientation, actual_count))
+
+            if not items_to_place:
+                continue
+
+            # If homogeneous strip (1 SKU)
+            if len(items_to_place) == 1:
+                cargo, ori, count = items_to_place[0]
+                placed_in_strip = 0
+
+                row_x = x_cursor
+                max_strip_x = strip.x_start + strip.x_depth
+                while row_x + ori.dx <= min(self.cL, max_strip_x) + 1e-4 and placed_in_strip < count:
+                    col_y = 0.0
+                    while col_y + ori.dy <= self.cW + 1e-4 and placed_in_strip < count:
+                        layer_z = 0.0
+                        max_layers = cargo.max_stack_layers or 99
+                        if getattr(cargo, "must_be_on_floor", False):
+                            max_layers = 1
+                        layer_count = 0
+
+                        while (
+                            layer_z + ori.dz <= self.cH + 1e-4
+                            and layer_count < max_layers
+                            and placed_in_strip < count
+                        ):
+                            cand = {
+                                "x": round(row_x, 4),
+                                "y": round(col_y, 4),
+                                "z": round(layer_z, 4),
+                                "dx": ori.dx,
+                                "dy": ori.dy,
+                                "dz": ori.dz,
+                            }
+                            if self._pre_check(cand, cargo):
+                                p = self._commit_placement(cand, cargo, ori, step_idx, strip)
+                                placements.append(p)
+                                self.spatial_index.insert(p.placement_id, AABB.from_placement(p), data=p)
+                                step_idx += 1
+                                placed_in_strip += 1
+                                placed_counts[cargo.sku_id] = placed_counts.get(cargo.sku_id, 0) + 1
+
+                            layer_z = round(layer_z + ori.dz, 4)
+                            layer_count += 1
+
+                        col_y = round(col_y + ori.dy, 4)
+                    row_x = round(row_x + ori.dx, 4)
+
+            else:
+                # Composite strip (multiple SKUs side by side along Y)
+                curr_y = 0.0
+                for cargo, ori, count in items_to_place:
+                    placed_for_sku = 0
+                    row_x = x_cursor
+                    max_strip_x = strip.x_start + strip.x_depth
+
+                    # Width slice for this SKU
+                    cols_y = max(1, int(round((count / (max(1, int(self.cH / ori.dz)) * max(1, int(strip.x_depth / ori.dx)))))))
+                    sub_y_limit = min(self.cW, curr_y + cols_y * ori.dy)
+
+                    while row_x + ori.dx <= min(self.cL, max_strip_x) + 1e-4 and placed_for_sku < count:
+                        col_y = curr_y
+                        while col_y + ori.dy <= sub_y_limit + 1e-4 and placed_for_sku < count:
+                            layer_z = 0.0
+                            max_layers = cargo.max_stack_layers or 99
+                            if getattr(cargo, "must_be_on_floor", False):
+                                max_layers = 1
+                            layer_count = 0
+
+                            while (
+                                layer_z + ori.dz <= self.cH + 1e-4
+                                and layer_count < max_layers
+                                and placed_for_sku < count
+                            ):
+                                cand = {
+                                    "x": round(row_x, 4),
+                                    "y": round(col_y, 4),
+                                    "z": round(layer_z, 4),
+                                    "dx": ori.dx,
+                                    "dy": ori.dy,
+                                    "dz": ori.dz,
+                                }
+                                if self._pre_check(cand, cargo):
+                                    p = self._commit_placement(cand, cargo, ori, step_idx, strip)
+                                    placements.append(p)
+                                    self.spatial_index.insert(p.placement_id, AABB.from_placement(p), data=p)
+                                    step_idx += 1
+                                    placed_for_sku += 1
+                                    placed_counts[cargo.sku_id] = placed_counts.get(cargo.sku_id, 0) + 1
+
+                                layer_z = round(layer_z + ori.dz, 4)
+                                layer_count += 1
+
+                            col_y = round(col_y + ori.dy, 4)
+                        row_x = round(row_x + ori.dx, 4)
+
+                    curr_y = round(curr_y + cols_y * ori.dy, 4)
+
+        return placements
+
+    def _pre_check(self, cand: Dict[str, float], cargo: UniversalCargoTensor) -> bool:
+        """Physical safety pre-check before committing placement."""
+        cand_aabb = AABB(
+            min_x=cand["x"],
+            min_y=cand["y"],
+            min_z=cand["z"],
+            max_x=cand["x"] + cand["dx"],
+            max_y=cand["y"] + cand["dy"],
+            max_z=cand["z"] + cand["dz"],
+        )
+
+        # 1. Container boundaries
+        if (
+            cand_aabb.min_x < -1e-4
+            or cand_aabb.min_y < -1e-4
+            or cand_aabb.min_z < -1e-4
+            or cand_aabb.max_x > self.cL + 1e-4
+            or cand_aabb.max_y > self.cW + 1e-4
+            or cand_aabb.max_z > self.cH + 1e-4
+        ):
+            return False
+
+        # 2. Collision with existing placements
+        if self.spatial_index.query_intersect(cand_aabb, eps=1e-4):
+            return False
+
+        # 3. Floor-only rule
+        if getattr(cargo, "must_be_on_floor", False) and cand["z"] > 1e-3:
+            return False
+
+        # 4. Bottom support ratio (floor layer z < 1e-3 always True)
+        if cand["z"] > 1e-3:
+            support_ratio = self._calc_support_ratio(cand_aabb)
+            if support_ratio < 0.70:
+                return False
+
+        # 5. Top-stacking forbidden on supporting boxes
+        if cand["z"] > 1e-3:
+            if not self._check_top_stacking_allowed(cand_aabb):
+                return False
+
+        # 6. Bearing weight check on boxes beneath
+        if cand["z"] > 1e-3:
+            if not self._check_bearing(cand_aabb, cargo.weight_kg):
+                return False
+
+        return True
+
+    def _calc_support_ratio(self, cand_aabb: AABB) -> float:
+        """Computes contact area ratio between cand bottom face and lower boxes."""
+        bottom_z = cand_aabb.min_z
+        cand_area = (cand_aabb.max_x - cand_aabb.min_x) * (cand_aabb.max_y - cand_aabb.min_y)
+        if cand_area < 1e-6:
+            return 1.0
+
+        query_box = AABB(
+            min_x=cand_aabb.min_x,
+            min_y=cand_aabb.min_y,
+            min_z=bottom_z - 0.05,
+            max_x=cand_aabb.max_x,
+            max_y=cand_aabb.max_y,
+            max_z=bottom_z + 0.005,
+        )
+        candidate_ids = self.spatial_index.query_candidate_ids(query_box)
+
+        supported_area = 0.0
+        for item_id in candidate_ids:
+            item = self.spatial_index.get_item(item_id)
+            if item and abs(item.aabb.max_z - bottom_z) < 0.005:
+                ox = max(0.0, min(cand_aabb.max_x, item.aabb.max_x) - max(cand_aabb.min_x, item.aabb.min_x))
+                oy = max(0.0, min(cand_aabb.max_y, item.aabb.max_y) - max(cand_aabb.min_y, item.aabb.min_y))
+                supported_area += ox * oy
+
+        return supported_area / cand_area
+
+    def _check_top_stacking_allowed(self, cand_aabb: AABB) -> bool:
+        """Verifies that none of the directly supporting boxes forbid top stacking."""
+        bottom_z = cand_aabb.min_z
+        query_box = AABB(
+            min_x=cand_aabb.min_x,
+            min_y=cand_aabb.min_y,
+            min_z=bottom_z - 0.05,
+            max_x=cand_aabb.max_x,
+            max_y=cand_aabb.max_y,
+            max_z=bottom_z + 0.005,
+        )
+        candidate_ids = self.spatial_index.query_candidate_ids(query_box)
+        for item_id in candidate_ids:
+            item = self.spatial_index.get_item(item_id)
+            if item and abs(item.aabb.max_z - bottom_z) < 0.005:
+                ox = min(cand_aabb.max_x, item.aabb.max_x) - max(cand_aabb.min_x, item.aabb.min_x)
+                oy = min(cand_aabb.max_y, item.aabb.max_y) - max(cand_aabb.min_y, item.aabb.min_y)
+                if ox > 1e-4 and oy > 1e-4:
+                    p: Optional[Placement] = item.data
+                    if p and hasattr(p, "sku_id"):
+                        # If underlying box has allow_stacking_on_top == False
+                        # We can inspect attribute if stored
+                        if getattr(p, "allow_stacking_on_top", True) is False:
+                            return False
+        return True
+
+    def _check_bearing(self, cand_aabb: AABB, added_weight_kg: float) -> bool:
+        """Verifies underlying boxes do not exceed their max bearing weight."""
+        # Conservative check: underneath boxes with bearing limits
+        bottom_z = cand_aabb.min_z
+        query_box = AABB(
+            min_x=cand_aabb.min_x,
+            min_y=cand_aabb.min_y,
+            min_z=bottom_z - 0.05,
+            max_x=cand_aabb.max_x,
+            max_y=cand_aabb.max_y,
+            max_z=bottom_z + 0.005,
+        )
+        candidate_ids = self.spatial_index.query_candidate_ids(query_box)
+        for item_id in candidate_ids:
+            item = self.spatial_index.get_item(item_id)
+            if item and abs(item.aabb.max_z - bottom_z) < 0.005:
+                p: Optional[Placement] = item.data
+                if p:
+                    max_bearing = getattr(p, "max_bearing_kg", None)
+                    current_bearing = getattr(p, "current_bearing_kg", 0.0)
+                    if max_bearing is not None and current_bearing + added_weight_kg > max_bearing:
+                        return False
+        return True
+
+    def _infer_context(self, cand: Dict[str, float], strip: StripAllocation) -> PlacementContext:
+        if cand["x"] >= self.cL - self.door_zone_len:
+            return PlacementContext.DOOR_WALL
+        if strip.zone == "INNER" or cand["x"] <= self.container.rear_zone_length_m:
+            return PlacementContext.REAR_WALL
+        return PlacementContext.MAIN_WALL
+
+    def _commit_placement(
+        self,
+        cand: Dict[str, float],
+        cargo: UniversalCargoTensor,
+        ori: OrientationSpec,
+        step_idx: int,
+        strip: StripAllocation,
+    ) -> Placement:
+        context = self._infer_context(cand, strip)
+        p = Placement(
+            placement_id=f"cpsat-{step_idx:04d}",
+            instance_id=f"{cargo.sku_id}-{step_idx:04d}",
+            sku_id=cargo.sku_id,
+            position=Point3D(x=cand["x"], y=cand["y"], z=cand["z"]),
+            orientation=Orientation3D(
+                dx=ori.dx,
+                dy=ori.dy,
+                dz=ori.dz,
+                name=ori.name,
+                is_upright=ori.is_upright,
+                is_flat=ori.is_flat,
+                is_side=ori.is_side,
+            ),
+            weight_kg=cargo.weight_kg,
+            context=context,
+            step_index=step_idx,
+        )
+        # Attach dynamic properties for stacked checks
+        setattr(p, "allow_stacking_on_top", getattr(cargo, "allow_stacking_on_top", True))
+        setattr(p, "max_bearing_kg", getattr(cargo, "max_bearing_kg", None))
+        setattr(p, "current_bearing_kg", 0.0)
+        return p

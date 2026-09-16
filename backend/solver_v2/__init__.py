@@ -5,6 +5,7 @@ Clean-room implementation of 3D-AICIVS Container Loading Engine.
 from typing import List, Optional, Any, Dict
 from backend.solver_v2.domain.models import ContainerSpec, CargoSKU
 from backend.solver_v2.solver.baseline_solver import SolverSolution
+from backend.solver_v2.solver.cpsat_hybrid_solver import CPSATHybridSolver
 from backend.solver_v2.solver.unified_solver import UnifiedSolver
 
 __version__ = "2.0.0-dev"
@@ -18,15 +19,16 @@ def solve(
 ) -> SolverSolution:
     """
     Main entry point for Solver V2.
-    Executes 3D packing solver using the UnifiedSolver engine.
+    Executes 3D packing solver using the CPSATHybridSolver engine.
     """
     merged_options = dict(options or {})
     merged_options.update(kwargs)
-    solver = UnifiedSolver(container)
+    solver = CPSATHybridSolver(container)
     return solver.solve(cargo_list, options=merged_options)
 
 
 __all__ = [
     "solve",
+    "CPSATHybridSolver",
     "UnifiedSolver",
 ]
