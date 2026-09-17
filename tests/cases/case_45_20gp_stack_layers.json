@@ -1,0 +1,45 @@
+{
+    "case_id": "20GP-STACK-LAYERS",
+    "case_name": "20GP短柜层数限制 (测紧凑小柜低层截断)",
+    "description": "20GP container with max_stack_layers=2 items",
+    "container": {
+        "usable": {
+            "L": 5.898,
+            "W": 2.352,
+            "H": 2.385
+        },
+        "maxPayloadTons": 21.8
+    },
+    "cargo": [
+        {
+            "sku": "20-L2-BOX",
+            "name": "小柜限2层箱",
+            "w": 0.7,
+            "d": 0.5,
+            "h": 0.45,
+            "weight": 25.0,
+            "quantity": 30,
+            "max_stack_layers": 2,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "20-FREE",
+            "name": "小柜自由填隙箱",
+            "w": 0.4,
+            "d": 0.3,
+            "h": 0.25,
+            "weight": 8.0,
+            "quantity": 100
+        },
+        {
+            "sku": "20-ELAS",
+            "name": "小柜弹性填平包",
+            "w": 0.25,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 1.5,
+            "quantity": 160,
+            "isElastic": true
+        }
+    ]
+}

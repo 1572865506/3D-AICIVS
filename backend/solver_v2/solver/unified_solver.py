@@ -362,7 +362,8 @@ class UnifiedSolver:
         else:
             active_trials = trials
 
-        max_time_budget = float(time_budget or 18.0)
+        default_budget = 75.0 if total_req_count >= 5000 else 25.0
+        max_time_budget = float(time_budget or default_budget)
         global_deadline = t0 + max_time_budget
 
         for trial_idx, trial_cfg in enumerate(active_trials):
@@ -527,7 +528,7 @@ class UnifiedSolver:
 
         while rem_headroom >= 0.05:
             top_pool = sku_group if is_door else (sku_group + companion_pool)
-            top_pool = [tc for tc in top_pool if remaining_qty.get(tc.sku_id, 0) > 0]
+            top_pool = [tc for tc in top_pool if not getattr(tc, 'must_be_on_floor', False) and remaining_qty.get(tc.sku_id, 0) > 0]
             # 刚性件绝对优先铁律：只要有任何刚性件未装完，严禁弹性件抢占净空
             has_unplaced_rigid_any = any(
                 remaining_qty.get(c.sku_id, 0) > 0 and not getattr(c, 'is_elastic', False)
@@ -767,7 +768,10 @@ class UnifiedSolver:
             else:
                 max_zone_x = validator_door_boundary_x
 
+            consecutive_failed_slices = 0
             while current_x < max_zone_x:
+                if deadline is not None and time.perf_counter() > deadline - 6.0:
+                    break
                 active_skus = [c for c in sku_group if remaining_qty[c.sku_id] > 0]
                 if not active_skus:
                     break
@@ -810,14 +814,15 @@ class UnifiedSolver:
                                 break
 
                 # --- STEP 1: Attempt Section-Width Pattern (WidthPatternEngine) ---
+                has_any_rigid_remaining = any(
+                    remaining_qty.get(c.sku_id, 0) > 0 and not getattr(c, 'is_elastic', False)
+                    for c in cargo_list
+                )
                 pattern_pool = [c for c in sku_group if remaining_qty[c.sku_id] > 0]
                 if not is_door:
                     pattern_pool += [c for c in companion_pool if remaining_qty.get(c.sku_id, 0) > 0]
-                elif any(remaining_qty.get(c.sku_id, 0) > 0 and not getattr(c, 'is_elastic', False) for c in sku_group):
-                    # In door zone, while non-elastic rigid items (SKU-02, SKU-03, SKU-04) remain unplaced,
-                    # restrict pattern pool to non-elastic items to prevent elastic filler items (SKU-14)
-                    # from prematurely consuming longitudinal depth.
-                    pattern_pool = [c for c in sku_group if remaining_qty.get(c.sku_id, 0) > 0 and not getattr(c, 'is_elastic', False)]
+                if has_any_rigid_remaining:
+                    pattern_pool = [c for c in pattern_pool if not getattr(c, 'is_elastic', False)]
 
                 pattern_placed = False
                 pattern_variants = self.pattern_engine.extract_orientation_variants(
@@ -832,11 +837,15 @@ class UnifiedSolver:
                         available_x=avail_x,
                         target_width=self.cW,
                     )
-                    # Filter patterns with high coverage (>= 84%, or >= 80% for door zone / large items like SKU-03)
-                    cov_threshold = 0.80 if (is_door or any(c.sku_id == "SKU-03" for c in pattern_pool)) else 0.84
+                    # Filter patterns with high coverage (adaptive threshold: step down if tight constraints reduce combinations)
+                    cov_threshold = 0.80 if (is_door or any(c.sku_id == "SKU-03" or getattr(c, 'must_be_on_floor', False) for c in pattern_pool)) else 0.84
                     viable_patterns = [p for p in cand_patterns if p.coverage_ratio >= cov_threshold]
+                    if not viable_patterns and cand_patterns:
+                        # Fallback stepped threshold to prevent premature fallback to greedy column
+                        adaptive_threshold = max(0.68, cov_threshold - 0.10)
+                        viable_patterns = [p for p in cand_patterns if p.coverage_ratio >= adaptive_threshold]
 
-                    # Prioritize patterns containing unplaced bulk items, non-elastic items, and zero-fulfillment SKUs
+                    # Prioritize patterns containing unplaced bulk items, non-elastic items, floor-only items, and zero-fulfillment SKUs
                     viable_patterns.sort(
                         key=lambda p: (
                             # Penalize pure elastic patterns (e.g. single-SKU SKU-14) if any non-elastic SKU still has remaining items
@@ -844,6 +853,18 @@ class UnifiedSolver:
                                 any(remaining_qty.get(c.sku_id, 0) > 0 and not getattr(c, 'is_elastic', False) for c in sku_group)
                                 and all(getattr(next((c for c in pattern_pool if c.sku_id == sid), None), 'is_elastic', False) for sid in p.sku_counts)
                             ) else 1,
+                            # Strongly prioritize patterns containing must_be_on_floor SKUs (e.g. HEAVY-01)
+                            # Pure floor-only patterns take highest precedence (5) so floor space is fully preserved for them,
+                            # followed by mixed floor patterns (3).
+                            5 if (
+                                any(getattr(c, 'must_be_on_floor', False) and remaining_qty.get(c.sku_id, 0) > 0 for c in pattern_pool)
+                                and all(getattr(next((c for c in pattern_pool if c.sku_id == sid), None), 'must_be_on_floor', False) for sid in p.sku_counts)
+                            ) else (
+                                3 if (
+                                    any(getattr(c, 'must_be_on_floor', False) and remaining_qty.get(c.sku_id, 0) > 0 for c in pattern_pool)
+                                    and any(getattr(next((c for c in pattern_pool if c.sku_id == sid), None), 'must_be_on_floor', False) for sid in p.sku_counts)
+                                ) else 0
+                            ),
                             # Strongly prioritize patterns that contain active non-elastic SKUs that currently have 0 placements (e.g. SKU-10)
                             2 if any(
                                 not getattr(c, 'is_elastic', False)
@@ -986,7 +1007,7 @@ class UnifiedSolver:
 
                 # --- STEP 2: Fallback to Column-by-Column Greedy / Composite Strip ---
                 # Sort: SKUs with substantial bulk volume/qty lead slices according to trial config
-                has_rigid_rem = any(remaining_qty.get(c.sku_id, 0) > 0 and not getattr(c, 'is_elastic', False) for c in active_skus)
+                has_rigid_rem = any(remaining_qty.get(c.sku_id, 0) > 0 and not getattr(c, 'is_elastic', False) for c in cargo_list)
                 pool_to_lead = [c for c in active_skus if not getattr(c, 'is_elastic', False)] if has_rigid_rem else active_skus
                 bulk_skus = [
                     c for c in pool_to_lead
@@ -994,23 +1015,46 @@ class UnifiedSolver:
                 ]
                 candidates_to_lead = bulk_skus if bulk_skus else pool_to_lead
 
+                def _calc_lead_priority(c):
+                    is_el = 0 if getattr(c, 'is_elastic', False) else 1
+                    must_floor = 1 if (not getattr(c, 'is_elastic', False) and getattr(c, 'must_be_on_floor', False)) else 0
+                    # Single-unit base footprint: larger footprint should be placed at the bottom to support upper smaller items
+                    unit_fp = max(c.length * c.width, c.length * c.height, c.width * c.height)
+                    rem_q = remaining_qty.get(c.sku_id, 0)
+                    rem_ratio = rem_q / max(1, c.quantity_required)
+                    rem_vol = c.volume_m3 * rem_q
+                    # Low max_stack_layers items or items forbidding stacking on top must be planned early on the floor
+                    layers = getattr(c, 'max_stack_layers', None)
+                    is_low_layers = (layers is not None and layers <= 2)
+                    stack_urgency = 1.0 if (is_low_layers or not getattr(c, 'allow_stacking_on_top', True)) else 0.0
+                    return (is_el, must_floor, stack_urgency, unit_fp, rem_vol, rem_ratio)
+
                 if sort_mode == "volume_desc":
                     candidates_to_lead.sort(key=lambda c: (
-                        0 if getattr(c, 'is_elastic', False) else 1,
+                        _calc_lead_priority(c)[0],
+                        _calc_lead_priority(c)[1],
+                        _calc_lead_priority(c)[2],
+                        _calc_lead_priority(c)[3],
                         -c.volume_m3,
                         -(c.volume_m3 * remaining_qty[c.sku_id]),
                         -remaining_qty[c.sku_id]
                     ), reverse=True)
                 elif sort_mode == "volume_asc":
                     candidates_to_lead.sort(key=lambda c: (
-                        1 if not getattr(c, 'is_elastic', False) else 0,
+                        _calc_lead_priority(c)[0],
+                        _calc_lead_priority(c)[1],
+                        _calc_lead_priority(c)[2],
+                        _calc_lead_priority(c)[3],
                         -c.volume_m3,
                         remaining_qty[c.sku_id] / max(1, c.quantity_required),
                         c.volume_m3 * remaining_qty[c.sku_id]
                     ), reverse=True)
                 elif sort_mode == "quantity_desc":
                     candidates_to_lead.sort(key=lambda c: (
-                        0 if getattr(c, 'is_elastic', False) else 1,
+                        _calc_lead_priority(c)[0],
+                        _calc_lead_priority(c)[1],
+                        _calc_lead_priority(c)[2],
+                        _calc_lead_priority(c)[3],
                         remaining_qty[c.sku_id],
                         remaining_qty[c.sku_id] / max(1, c.quantity_required),
                         c.volume_m3 * remaining_qty[c.sku_id]
@@ -1018,7 +1062,10 @@ class UnifiedSolver:
                 else:
                     # Weighted multi-factor
                     candidates_to_lead.sort(key=lambda c: (
-                        0 if getattr(c, 'is_elastic', False) else 1,
+                        _calc_lead_priority(c)[0],
+                        _calc_lead_priority(c)[1],
+                        _calc_lead_priority(c)[2],
+                        _calc_lead_priority(c)[3],
                         vol_weight * (c.volume_m3 * remaining_qty[c.sku_id]) + den_weight * (c.density_kg_m3 / 100.0) + 0.35 * (remaining_qty[c.sku_id] / max(1, c.quantity_required)),
                         remaining_qty[c.sku_id] / max(1, c.quantity_required),
                         c.volume_m3 * remaining_qty[c.sku_id],
@@ -1048,8 +1095,7 @@ class UnifiedSolver:
 
                 primary_sku = chosen_candidate
                 opt = chosen_opt
-
-                max_stack = primary_sku.max_stack_layers or 99
+                max_stack = (primary_sku.max_stack_layers or 1) if getattr(primary_sku, 'must_be_on_floor', False) else (primary_sku.max_stack_layers or 99)
                 per_row_cap = max(1, int(self.cW / opt.dy)) * min(max_stack, max(1, int((self.cH - 0.04) / opt.dz)))
                 avail_p = remaining_qty[primary_sku.sku_id]
 
@@ -1194,12 +1240,15 @@ class UnifiedSolver:
 
                     c_rows_x = max(1, int((delta_x + 1e-4) / col_opt.dx))
                     c_cols_y = max(1, min(int((rem_w + 1e-4) / col_opt.dy), 35))
-                    c_layers_z = max(1, min(int((self.cH - 0.04) / col_opt.dz), col_sku.max_stack_layers or 99))
+                    max_sku_layers = (col_sku.max_stack_layers or 1) if getattr(col_sku, 'must_be_on_floor', False) else (col_sku.max_stack_layers or 99)
+                    c_layers_z = max(1, min(int((self.cH - 0.04) / col_opt.dz), max_sku_layers))
                     avail_c = remaining_qty[col_sku.sku_id]
                     # Allow top layer to be partially filled so tail cartons are not discarded
                     if avail_c < c_rows_x * c_cols_y * c_layers_z:
                         c_layers_z = max(1, math.ceil(avail_c / (c_rows_x * c_cols_y)))
-                        if col_sku.max_stack_layers:
+                        if getattr(col_sku, 'must_be_on_floor', False):
+                            c_layers_z = 1
+                        elif col_sku.max_stack_layers:
                             c_layers_z = min(c_layers_z, col_sku.max_stack_layers)
                     needed = min(avail_c, c_rows_x * c_cols_y * c_layers_z)
 
@@ -1276,8 +1325,11 @@ class UnifiedSolver:
                 if placed_in_section > 0:
                     current_x = round(current_x + delta_x, 4)
                     walls_count += 1
+                    consecutive_failed_slices = 0
                 else:
-                    current_x = round(current_x + 0.10, 4)
+                    consecutive_failed_slices += 1
+                    step_adv = 0.25 if consecutive_failed_slices >= 6 else 0.10
+                    current_x = round(current_x + step_adv, 4)
 
         # PASS 4: All-Space 3D Spatial Grid Cavity Backfilling (Iterative)
         for round_idx in range(10):
@@ -1358,7 +1410,7 @@ class UnifiedSolver:
                         if is_flat and c.sku_id in ("SKU-14", "SKU-02"):
                             tag_val = "TOP_FILL"
                             ctx_val = "TOP_FILL"
-                        elif is_door_zone or ax >= self.cL - 1.8:
+                        elif is_door_sku and (is_door_zone or ax >= self.cL - 1.8):
                             tag_val = "DOOR_SEAL"
                             ctx_val = "DOOR_SEAL"
                         else:
@@ -1457,14 +1509,27 @@ class UnifiedSolver:
                     for o in c_oris:
                         if placed_rigid_item:
                             break
-                        # 1. First attempt to anchor along door boundary (only for DOOR preferred or allowed items)
-                        is_door_allowed = (getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR or "门" in (getattr(c_rem, 'raw_requirement', '') or ''))
+                        has_door_skus_all = any(
+                            getattr(c, 'zone_preference', None) == UniversalZone.DOOR or "门" in (getattr(c, 'raw_requirement', '') or '')
+                            for c in cargo_list
+                        )
+                        is_door_allowed = (
+                            getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR
+                            or "门" in (getattr(c_rem, 'raw_requirement', '') or '')
+                            or not has_door_skus_all
+                            or (2.0 * o.dx) / max(1e-4, o.dz) < 1.5 - 1e-4
+                        )
                         if is_door_allowed:
                             max_lz = min(getattr(c_rem, 'max_stack_layers', None) or 99, int((self.cH - 0.04) // o.dz))
                             # Fine-grained door scanning from container end backwards
                             door_x_list = []
-                            curr_dx = round(self.cL - 0.04 - o.dx, 4)
-                            min_door_x = max(0.0, round(self.cL - 3.5, 4))
+                            door_zone_len = getattr(self.container, "door_zone_length_m", 0.20) if has_door_skus_all else 0.0
+                            is_door_sku = (getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR or "门" in (getattr(c_rem, 'raw_requirement', '') or ''))
+                            if is_door_sku or not has_door_skus_all:
+                                curr_dx = round(self.cL - 0.04 - o.dx, 4)
+                            else:
+                                curr_dx = round(self.cL - door_zone_len - o.dx - 0.005, 4)
+                            min_door_x = max(0.0, round(self.cL - 8.0, 4))
                             while curr_dx >= min_door_x:
                                 door_x_list.append(round(curr_dx, 4))
                                 curr_dx -= 0.05
@@ -1579,7 +1644,11 @@ class UnifiedSolver:
                             for cx, cy, cz in cand_coords:
                                 if cx < 0.0 or cy < 0.0 or cz < 0.0:
                                     continue
-                                max_x_lim = self.cL - 0.02 if is_door_item else (self.cL - 0.20)
+                                door_zone_len = getattr(self.container, "door_zone_length_m", 1.5) if any(
+                                    getattr(c, "zone_preference", None) == UniversalZone.DOOR or "门" in (getattr(c, "raw_requirement", "") or "")
+                                    for c in cargo_list
+                                ) else 0.0
+                                max_x_lim = self.cL - 0.02 if is_door_item else (self.cL - door_zone_len - 0.005)
                                 if cx + o.dx > max_x_lim or cy + o.dy > self.cW - 0.02 or cz + o.dz > self.cH - 0.04:
                                     continue
                                 cand_res = {
@@ -1637,15 +1706,19 @@ class UnifiedSolver:
                         # 3. If neighbor anchors didn't place it, perform a fast anchor-aligned scan
                         if not placed_rigid_item:
                             is_door_item = (getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR or "门" in (getattr(c_rem, 'raw_requirement', '') or ''))
+                            door_zone_len = getattr(self.container, "door_zone_length_m", 1.5) if any(
+                                getattr(c, "zone_preference", None) == UniversalZone.DOOR or "门" in (getattr(c, "raw_requirement", "") or "")
+                                for c in cargo_list
+                            ) else 0.0
                             if is_door_item:
                                 x_search_start = max(0.0, self.cL - 4.5)
                                 x_search_end = self.cL - o.dx - 0.02
                             else:
                                 x_search_start = 0.0
-                                x_search_end = self.cL - o.dx - 0.04
+                                x_search_end = self.cL - door_zone_len - o.dx - 0.005
 
                             # Collect existing placement boundaries as high-affinity candidates
-                            x_cands = set([0.0, max(0.0, round(self.cL - 0.04 - o.dx, 4)), max(0.0, round(self.cL - 0.20 - o.dx, 4))])
+                            x_cands = set([0.0, max(0.0, round(x_search_end, 4))])
                             y_cands = set([0.0, round(self.cW - 0.02 - o.dy, 4)])
                             z_cands = set([0.0])
                             # Sample placements to bound search space and maintain sub-minute performance
@@ -1688,7 +1761,8 @@ class UnifiedSolver:
                                 if step_y + o.dy <= self.cW - 0.02:
                                     y_cands.add(step_y)
 
-                            sorted_x = sorted(list(x_cands), reverse=True if is_door_item else False)
+                            is_tipping_risk = (2.0 * o.dx) / max(1e-4, o.dz) < 1.5 - 1e-4
+                            sorted_x = sorted(list(x_cands), reverse=True if (is_door_item or is_tipping_risk) else False)
                             sorted_y = sorted(list(y_cands))
                             sorted_z = sorted(list(z_cands))
 
@@ -1734,9 +1808,26 @@ class UnifiedSolver:
                         break
 
         # PASS 4.6: Elastic Cavity Re-fill (Fill remaining voids with elastic cargo after rigid items)
+        # Permissive non-competing policy: allow elastic items if rigid items are done OR if remaining rigid items cannot be placed in the available space
+        has_unplaced_rigid = any(remaining_qty.get(c.sku_id, 0) > 0 and not getattr(c, 'is_elastic', False) for c in cargo_list)
         unplaced_elastic = [c for c in cargo_list if getattr(c, 'is_elastic', False) and remaining_qty.get(c.sku_id, 0) > 0]
         if unplaced_elastic:
-            for round_idx in range(5):
+            # Check if remaining rigid items are physically blocked (e.g. must_be_on_floor and floor full, or cannot stack)
+            rigid_can_continue = False
+            if has_unplaced_rigid:
+                unplaced_rigid_items = [c for c in cargo_list if not getattr(c, 'is_elastic', False) and remaining_qty.get(c.sku_id, 0) > 0]
+                # If ALL remaining rigid items are strictly must_be_on_floor, but container length is packed, they cannot place
+                all_must_floor = all(getattr(c, 'must_be_on_floor', False) for c in unplaced_rigid_items)
+                max_x = max((p['x'] + p['dx'] for p in placements), default=0.0)
+                if all_must_floor and max_x >= self.cL - 0.20:
+                    rigid_can_continue = False
+                else:
+                    # In general, if rigid items exist, only permit elastic placement at high elevation (z >= 0.80m)
+                    # or in spaces where rigid cannot fit, preventing priority inversion while eradicating voids
+                    rigid_can_continue = True
+
+            min_fill_z = 0.80 if (has_unplaced_rigid and rigid_can_continue) else 0.0
+            for round_idx in range(25):
                 if deadline is not None and time.perf_counter() > deadline:
                     break
                 placed_elastic_round = 0
@@ -1746,7 +1837,8 @@ class UnifiedSolver:
                     if remaining_qty.get(c.sku_id, 0) <= 0:
                         continue
                     anchors_el = set()
-                    for p in placements[-200:]:
+                    # Sample top surfaces from all existing placements to find cavity entrypoints
+                    for p in placements:
                         anchors_el.add((round(p['x'] + p['dx'], 4), round(p['y'], 4), round(p['z'], 4)))
                         anchors_el.add((round(p['x'], 4), round(p['y'] + p['dy'], 4), round(p['z'], 4)))
                         anchors_el.add((round(p['x'], 4), round(p['y'], 4), round(p['z'] + p['dz'], 4)))
@@ -1756,6 +1848,8 @@ class UnifiedSolver:
                             break
                         if remaining_qty.get(c.sku_id, 0) <= 0:
                             break
+                        if az < min_fill_z:
+                            continue
                         if ax >= self.cL - 0.04 or ay >= self.cW - 0.02 or az >= self.cH - 0.03:
                             continue
                         for o in self._get_permitted_orientations(c):
@@ -1779,6 +1873,7 @@ class UnifiedSolver:
                                 remaining_qty[c.sku_id] -= 1
                                 step_idx += 1
                                 placed_elastic_round += 1
+                                # Keep placing at same anchor or immediately continue
                                 break
                 if placed_elastic_round == 0:
                     break
@@ -2226,10 +2321,12 @@ class UnifiedSolver:
         if not c_sku:
             return True
 
-        # 2. Floor-only check
+        # 2. Floor-only check (允许在同款SKU上方合法自堆叠，禁止非同款杂货垫底)
         if getattr(c_sku, "must_be_on_floor", False):
             if cand["z"] > 1e-3:
-                return False
+                max_layers = c_sku.max_stack_layers or 1
+                if max_layers <= 1:
+                    return False
 
         # 3. Upper bearing check for underlying boxes
         cand_z = cand["z"]
@@ -2310,9 +2407,14 @@ class UnifiedSolver:
         # If door zone sealing boxes or frontward boundary boxes were placed, shift the frontmost layer forward
         # so their front edge snugly touches the container door boundary (x + dx = cL - 0.04m),
         # providing rigid door support and eliminating tipping moment violations without overlap.
-        door_p = [p for p in placements if p.get('context') == 'DOOR_SEAL' or p.get('tag') == 'DOOR_SEAL']
+        door_skus_set = set()
+        if getattr(self, "_sku_tensor_map", None):
+            for sid, sku_t in self._sku_tensor_map.items():
+                if sku_t.zone_preference == UniversalZone.DOOR or "门" in (getattr(sku_t, 'raw_requirement', '') or ''):
+                    door_skus_set.add(sid)
+        door_p = [p for p in placements if (p.get('context') == 'DOOR_SEAL' or p.get('tag') == 'DOOR_SEAL') and (not door_skus_set or p.get('sku_id') in door_skus_set)]
         if door_p:
-            other_p = [p for p in placements if p.get('context') != 'DOOR_SEAL' and p.get('tag') != 'DOOR_SEAL']
+            other_p = [p for p in placements if p not in door_p]
             max_other_x = max([p['x'] + p['dx'] for p in other_p], default=0.0)
             max_door_x = max([p['x'] + p['dx'] for p in door_p], default=0.0)
             min_door_x = min(p['x'] for p in door_p)
@@ -2345,9 +2447,10 @@ class UnifiedSolver:
         target_front = round(self.cL - 0.04, 4)
         gap_to_door_target = round(target_front - max_front_x, 4)
         if 1e-4 < gap_to_door_target <= 0.05:
-            # Shift the outermost front-touching cartons
+            # Shift the outermost front-touching cartons (only if no door SKUs exist, or they are door SKUs)
             for p in placements:
                 if abs((p["x"] + p["dx"]) - max_front_x) < 1e-3:
-                    p["x"] = round(p["x"] + gap_to_door_target, 4)
+                    if not door_skus_set or p.get('sku_id') in door_skus_set:
+                        p["x"] = round(p["x"] + gap_to_door_target, 4)
 
         return len(placements)

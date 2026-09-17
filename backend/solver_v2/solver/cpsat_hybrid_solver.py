@@ -28,6 +28,7 @@ from backend.solver_v2.solver.baseline_solver import SolverSolution, SolverTelem
 from backend.solver_v2.solver.constructive_placer import ConstructivePlacer
 from backend.solver_v2.solver.cpsat_engine import CPSATMacroAllocator
 from backend.solver_v2.solver.lns_optimizer import LNSOptimizer
+from backend.solver_v2.solver.unified_solver import UnifiedSolver
 from backend.solver_v2.validation.independent_validator import IndependentGlobalValidator
 
 
@@ -82,8 +83,9 @@ class CPSATHybridSolver:
 
         # 2. Phase 1: CP-SAT Macro Strip Allocation
         phase1_time = min(60.0, timeout * 0.4)
+        weights = options.get("weights", None)
         allocator = CPSATMacroAllocator(self.container)
-        allocation = allocator.solve(tensors, time_limit_seconds=phase1_time)
+        allocation = allocator.solve(tensors, time_limit_seconds=phase1_time, weights=weights)
 
         # 3. Phase 2: Constructive Micro-Placer
         placer = ConstructivePlacer(self.container)
@@ -113,9 +115,64 @@ class CPSATHybridSolver:
         total_weight = sum(p.weight_kg for p in placements)
         total_req = sum(c.quantity.required for c in cargo_list)
 
-        status_str = "SUCCESS" if (validation_result.is_valid and len(placements) == total_req) else (
-            "VALID_PARTIAL" if validation_result.is_valid else "INVALID"
+        # === 刚性履行率检查 ===
+        total_rigid_required = sum(
+            c.quantity.required 
+            for c in cargo_list 
+            if not getattr(c.quantity, 'is_elastic', False)
         )
+
+        rigid_placed = sum(
+            1 for p in placements
+            if not self._is_elastic_cargo(p.sku_id, cargo_list)
+        )
+
+        rigid_fulfillment_rate = rigid_placed / max(1, total_rigid_required) if total_rigid_required > 0 else 1.0
+
+        # === Phase 3: Adaptive Retry & Verification Closed-Loop ===
+        if (not validation_result.is_valid or rigid_fulfillment_rate < 0.99) and options.get("enable_adaptive_retry", True):
+            has_floor_unfulfilled = any(
+                getattr(c.stacking_policy, 'must_be_on_floor', False) or getattr(c, 'must_be_on_floor', False)
+                for c in cargo_list
+                if not getattr(c.quantity, 'is_elastic', False) and (sum(1 for p in placements if p.sku_id == c.sku_id) < c.quantity.required)
+            )
+            adaptive_weights = dict(weights or {})
+            if has_floor_unfulfilled:
+                adaptive_weights["com_stability"] = 2000
+                adaptive_weights["compactness"] = 3000
+            else:
+                adaptive_weights["compactness"] = 2000
+
+            retry_alloc = allocator.solve(tensors, time_limit_seconds=phase1_time, weights=adaptive_weights)
+            retry_placements = placer.place(retry_alloc, tensors)
+            retry_val = IndependentGlobalValidator.validate(self.container, retry_placements, cargo_list)
+            retry_rigid = sum(1 for p in retry_placements if not self._is_elastic_cargo(p.sku_id, cargo_list))
+            retry_rigid_rate = retry_rigid / max(1, total_rigid_required) if total_rigid_required > 0 else 1.0
+
+            if retry_val.is_valid and retry_rigid_rate >= rigid_fulfillment_rate:
+                placements = retry_placements
+                validation_result = retry_val
+                rigid_fulfillment_rate = retry_rigid_rate
+                total_vol = sum(p.volume for p in placements)
+                total_weight = sum(p.weight_kg for p in placements)
+
+            # Fallback Guard: If rigid fulfillment is still below 99% or invalid, execute UnifiedSolver fallback
+            if (not validation_result.is_valid or rigid_fulfillment_rate < 0.99) and options.get("allow_fallback", True):
+                unified = UnifiedSolver(self.container)
+                unified_sol = unified.solve(cargo_list, options=options)
+                if unified_sol.validation_result.is_valid:
+                    return unified_sol
+
+        # === 状态判定 ===
+        if validation_result.is_valid:
+            if rigid_fulfillment_rate >= 0.99:
+                status_str = "SUCCESS" if len(placements) == total_req else "VALID_PARTIAL"
+            else:
+                status_str = "PARTIAL_RIGID_FAILURE"
+                unfulfilled = self._get_unfulfilled_rigid_skus(placements, cargo_list)
+                print(f"[WARNING] Rigid cargo not fully placed: {unfulfilled}")
+        else:
+            status_str = "INVALID"
 
         return SolverSolution(
             status=status_str,
@@ -132,6 +189,30 @@ class CPSATHybridSolver:
                 phases_completed=["CPSAT_MACRO", "CONSTRUCTIVE", "LNS"],
             ),
         )
+
+    def _is_elastic_cargo(self, sku_id: str, cargo_list: List[CargoSKU]) -> bool:
+        """判断 SKU 是否为弹性货物"""
+        for cargo in cargo_list:
+            if cargo.sku_id == sku_id:
+                return getattr(cargo.quantity, 'is_elastic', False)
+        return False
+
+    def _get_unfulfilled_rigid_skus(self, placements: List[Placement], cargo_list: List[CargoSKU]) -> List[str]:
+        """返回未完全放置的刚性 SKU 列表"""
+        placed_counts: Dict[str, int] = {}
+        for p in placements:
+            placed_counts[p.sku_id] = placed_counts.get(p.sku_id, 0) + 1
+        
+        unfulfilled = []
+        for cargo in cargo_list:
+            if getattr(cargo.quantity, 'is_elastic', False):
+                continue
+            
+            placed = placed_counts.get(cargo.sku_id, 0)
+            if placed < cargo.quantity.required:
+                unfulfilled.append(f"{cargo.sku_id}({placed}/{cargo.quantity.required})")
+        
+        return unfulfilled
 
     def _convert_to_tensors(self, cargo_list: List[CargoSKU]) -> List[UniversalCargoTensor]:
         tensors: List[UniversalCargoTensor] = []

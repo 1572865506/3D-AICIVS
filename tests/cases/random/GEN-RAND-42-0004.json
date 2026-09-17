@@ -1,0 +1,85 @@
+{
+    "case_id": "GEN-RAND-42-0004",
+    "case_name": "随机生成: 20GP-NONE-NORMAL (seed=42)",
+    "description": "Random: container=20GP, constraint=NONE, rigid=BALANCED, hetero=MEDIUM, scenario=NORMAL, seed=42",
+    "tags": [
+        "20GP",
+        "NONE",
+        "BALANCED",
+        "MEDIUM",
+        "NORMAL",
+        "RANDOM"
+    ],
+    "container": {
+        "usable": {
+            "L": 5.898,
+            "W": 2.352,
+            "H": 2.393
+        },
+        "maxPayloadTons": 21.8
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "长条形管箱-532",
+            "w": 1.147,
+            "d": 0.219,
+            "h": 0.281,
+            "weight": 6.0,
+            "quantity": 100,
+            "allowFlat": true
+        },
+        {
+            "sku": "SKU-002",
+            "name": "立方箱体-200",
+            "w": 0.36,
+            "d": 0.55,
+            "h": 0.517,
+            "weight": 17.7,
+            "quantity": 146
+        },
+        {
+            "sku": "SKU-003",
+            "name": "重型底座/底盘-969",
+            "w": 0.795,
+            "d": 0.622,
+            "h": 0.344,
+            "weight": 73.2,
+            "quantity": 18,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "SKU-004",
+            "name": "微型方块-268",
+            "w": 0.138,
+            "d": 0.199,
+            "h": 0.127,
+            "weight": 1.7,
+            "quantity": 665,
+            "isElastic": true
+        },
+        {
+            "sku": "SKU-005",
+            "name": "弹性封门件-392",
+            "w": 0.463,
+            "d": 0.098,
+            "h": 0.399,
+            "weight": 2.6,
+            "quantity": 204,
+            "isElastic": true,
+            "allowDoorZone": true,
+            "requirement": "封柜门,按需调节"
+        },
+        {
+            "sku": "SKU-006",
+            "name": "弹性填充件-258",
+            "w": 0.238,
+            "d": 0.183,
+            "h": 0.109,
+            "weight": 3.2,
+            "quantity": 131,
+            "isElastic": true,
+            "requirement": "按需调节"
+        }
+    ]
+}

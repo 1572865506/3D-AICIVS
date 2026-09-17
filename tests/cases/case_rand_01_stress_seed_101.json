@@ -1,0 +1,113 @@
+{
+    "case_id": "RANDOM-STRESS-CASE-01",
+    "case_name": "随机约束压力测试01 (Seed:101)",
+    "description": "Randomized constraint stress testing with fixed reproducible seed 101",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "R-BASE",
+            "name": "工业底座",
+            "w": 0.85,
+            "d": 0.65,
+            "h": 0.5,
+            "weight": 45.0,
+            "quantity": 38,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "R-SCREEN",
+            "name": "超薄屏件",
+            "w": 0.9,
+            "d": 0.12,
+            "h": 0.6,
+            "weight": 9.0,
+            "quantity": 72,
+            "mustBeOnFloor": true,
+            "maxBearingKg": 50.0,
+            "allowFlat": false,
+            "allowSide": false,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "R-PIPE",
+            "name": "细长管箱",
+            "w": 1.4,
+            "d": 0.25,
+            "h": 0.25,
+            "weight": 16.0,
+            "quantity": 35,
+            "mustBeOnFloor": true,
+            "allowFlat": true,
+            "allowSide": false
+        },
+        {
+            "sku": "R-CUBE",
+            "name": "紧凑立方",
+            "w": 0.45,
+            "d": 0.45,
+            "h": 0.45,
+            "weight": 18.0,
+            "quantity": 100,
+            "allowFlat": false,
+            "allowSide": false,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "R-MID",
+            "name": "标准中箱",
+            "w": 0.55,
+            "d": 0.4,
+            "h": 0.35,
+            "weight": 12.0,
+            "quantity": 133,
+            "allowFlat": true,
+            "allowSide": true
+        },
+        {
+            "sku": "R-SLAB",
+            "name": "扁平厚板",
+            "w": 0.7,
+            "d": 0.5,
+            "h": 0.2,
+            "weight": 15.0,
+            "quantity": 80,
+            "max_stack_layers": 4,
+            "maxBearingKg": 0.0,
+            "allowFlat": true,
+            "allowSide": false
+        },
+        {
+            "sku": "R-DOOR",
+            "name": "门区面板",
+            "w": 0.6,
+            "d": 0.1,
+            "h": 0.4,
+            "weight": 6.0,
+            "quantity": 56,
+            "allowStackingOnTop": false,
+            "maxBearingKg": 0.0,
+            "allowFlat": true,
+            "allowSide": true,
+            "allowDoorZone": true,
+            "requirement": "封柜门"
+        },
+        {
+            "sku": "R-ELAS",
+            "name": "微型填块",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.18,
+            "weight": 2.5,
+            "quantity": 236,
+            "isElastic": true,
+            "requirement": "按需调节,填充空腔"
+        }
+    ]
+}

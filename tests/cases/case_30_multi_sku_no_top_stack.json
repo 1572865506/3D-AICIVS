@@ -1,0 +1,65 @@
+{
+    "case_id": "MULTI-SKU-NO-TOP-STACK",
+    "case_name": "多品类并发禁压 (测全截面封顶防护)",
+    "description": "Three distinct SKUs all having allowStackingOnTop=false",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "NOTOP-A",
+            "name": "仪器A(禁压)",
+            "w": 0.6,
+            "d": 0.4,
+            "h": 0.35,
+            "weight": 16.0,
+            "quantity": 40,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "NOTOP-B",
+            "name": "仪器B(禁压)",
+            "w": 0.7,
+            "d": 0.5,
+            "h": 0.4,
+            "weight": 22.0,
+            "quantity": 30,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "NOTOP-C",
+            "name": "仪器C(禁压)",
+            "w": 0.5,
+            "d": 0.3,
+            "h": 0.3,
+            "weight": 10.0,
+            "quantity": 50,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "ALLOW-BASE",
+            "name": "普通承托底座",
+            "w": 0.6,
+            "d": 0.5,
+            "h": 0.45,
+            "weight": 30.0,
+            "quantity": 50,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "ELAS-VOIDS",
+            "name": "残余空隙回填件",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 2.0,
+            "quantity": 300,
+            "isElastic": true
+        }
+    ]
+}

@@ -1,0 +1,53 @@
+{
+    "case_id": "GEN-P1-08-03",
+    "case_name": "自动生成: 20GP-无约束-NORMAL",
+    "description": "Auto-generated: container=20GP, constraint=NONE, rigid=FULL_RIGID, hetero=LOW, scenario=NORMAL",
+    "tags": [
+        "20GP",
+        "NONE",
+        "FULL_RIGID",
+        "LOW",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 5.898,
+            "W": 2.352,
+            "H": 2.393
+        },
+        "maxPayloadTons": 21.8
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "封门面板-846",
+            "w": 0.698,
+            "d": 0.117,
+            "h": 0.359,
+            "weight": 7.1,
+            "quantity": 108,
+            "allowDoorZone": true,
+            "requirement": "封柜门"
+        },
+        {
+            "sku": "SKU-002",
+            "name": "标准纸箱-152",
+            "w": 0.506,
+            "d": 0.45,
+            "h": 0.292,
+            "weight": 14.4,
+            "quantity": 149
+        },
+        {
+            "sku": "SKU-003",
+            "name": "大尺寸电视-892",
+            "w": 1.344,
+            "d": 0.198,
+            "h": 0.925,
+            "weight": 15.9,
+            "quantity": 48,
+            "allowedOrientation": "upright"
+        }
+    ]
+}

@@ -1,0 +1,55 @@
+{
+    "case_id": "CHECKERBOARD-NOTOP-ISOLATION",
+    "case_name": "棋盘式交错禁压 (测非连续表面支承与落空)",
+    "description": "Alternating no-top cartons creating discontinuous roof surfaces",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "NOTOP-CHECK",
+            "name": "禁压校验箱",
+            "w": 0.5,
+            "d": 0.5,
+            "h": 0.5,
+            "weight": 18.0,
+            "quantity": 45,
+            "allowStackingOnTop": false,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "ALLOW-CHECK",
+            "name": "可顶叠校验箱",
+            "w": 0.5,
+            "d": 0.5,
+            "h": 0.5,
+            "weight": 22.0,
+            "quantity": 45,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "UPPER-LIGHT",
+            "name": "上层细长件",
+            "w": 0.5,
+            "d": 0.25,
+            "h": 0.3,
+            "weight": 5.0,
+            "quantity": 120
+        },
+        {
+            "sku": "FILL-ELAS",
+            "name": "柔性自适应颗粒",
+            "w": 0.25,
+            "d": 0.2,
+            "h": 0.2,
+            "weight": 1.5,
+            "quantity": 250,
+            "isElastic": true
+        }
+    ]
+}

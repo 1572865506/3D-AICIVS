@@ -1,0 +1,65 @@
+{
+    "case_id": "STEPPED-STACK-LAYERS-CASCADE",
+    "case_name": "梯度层数级联阶梯 (测多层数阈值混合排布)",
+    "description": "Layer hierarchy with 1-layer, 2-layer, 3-layer, and unlimited stack limits",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "L1-ONLY",
+            "name": "纯1层基座",
+            "w": 0.9,
+            "d": 0.6,
+            "h": 0.5,
+            "weight": 55.0,
+            "quantity": 18,
+            "max_stack_layers": 1,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "L2-BOX",
+            "name": "限2层中箱",
+            "w": 0.6,
+            "d": 0.45,
+            "h": 0.4,
+            "weight": 20.0,
+            "quantity": 50,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "L3-BOX",
+            "name": "限3层小箱",
+            "w": 0.45,
+            "d": 0.35,
+            "h": 0.3,
+            "weight": 10.0,
+            "quantity": 80,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "L-FREE",
+            "name": "无层数限制小件",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.2,
+            "weight": 4.0,
+            "quantity": 160
+        },
+        {
+            "sku": "ELAS-FILL",
+            "name": "柔性自适应填料",
+            "w": 0.25,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 1.5,
+            "quantity": 250,
+            "isElastic": true
+        }
+    ]
+}

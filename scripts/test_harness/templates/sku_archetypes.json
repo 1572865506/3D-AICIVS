@@ -1,0 +1,185 @@
+{
+    "_doc": "20种SKU原型，覆盖工业实际常见的尺寸/重量/约束分布。用于模板化生成测试用例。",
+    "archetypes": [
+        {
+            "id": "TV_LARGE",
+            "name": "大尺寸电视",
+            "size_class": "thin_large",
+            "w": [1.20, 1.60], "d": [0.14, 0.20], "h": [0.75, 1.00],
+            "weight": [12.0, 22.0],
+            "typical_qty": [40, 100],
+            "default_constraints": {"allowedOrientation": "upright"}
+        },
+        {
+            "id": "TV_MEDIUM",
+            "name": "中尺寸电视",
+            "size_class": "thin_medium",
+            "w": [0.80, 1.10], "d": [0.12, 0.16], "h": [0.50, 0.70],
+            "weight": [7.0, 12.0],
+            "typical_qty": [80, 200],
+            "default_constraints": {"allowedOrientation": "upright"}
+        },
+        {
+            "id": "DISPLAY_SMALL",
+            "name": "小显示器",
+            "size_class": "thin_small",
+            "w": [0.45, 0.60], "d": [0.06, 0.10], "h": [0.30, 0.45],
+            "weight": [4.0, 9.0],
+            "typical_qty": [100, 300],
+            "default_constraints": {"allowedOrientation": "upright", "allowDoorZone": true}
+        },
+        {
+            "id": "HEAVY_BASE",
+            "name": "重型底座/底盘",
+            "size_class": "heavy_flat",
+            "w": [0.70, 1.10], "d": [0.50, 0.80], "h": [0.20, 0.50],
+            "weight": [30.0, 80.0],
+            "typical_qty": [15, 50],
+            "default_constraints": {"mustBeOnFloor": true}
+        },
+        {
+            "id": "STANDARD_BOX",
+            "name": "标准纸箱",
+            "size_class": "medium",
+            "w": [0.40, 0.65], "d": [0.30, 0.50], "h": [0.25, 0.45],
+            "weight": [8.0, 18.0],
+            "typical_qty": [100, 300],
+            "default_constraints": {}
+        },
+        {
+            "id": "SMALL_ACCESSORY",
+            "name": "小配件箱",
+            "size_class": "small",
+            "w": [0.25, 0.40], "d": [0.15, 0.30], "h": [0.12, 0.25],
+            "weight": [1.5, 5.0],
+            "typical_qty": [150, 500],
+            "default_constraints": {}
+        },
+        {
+            "id": "CUBE_BOX",
+            "name": "立方箱体",
+            "size_class": "cube",
+            "w": [0.35, 0.55], "d": [0.35, 0.55], "h": [0.35, 0.55],
+            "weight": [8.0, 18.0],
+            "typical_qty": [50, 150],
+            "default_constraints": {}
+        },
+        {
+            "id": "LONG_BAR",
+            "name": "长条形管箱",
+            "size_class": "long",
+            "w": [1.00, 1.80], "d": [0.15, 0.30], "h": [0.15, 0.30],
+            "weight": [5.0, 18.0],
+            "typical_qty": [30, 100],
+            "default_constraints": {"allowFlat": true}
+        },
+        {
+            "id": "FLAT_PANEL",
+            "name": "扁平板材",
+            "size_class": "flat",
+            "w": [0.60, 1.00], "d": [0.60, 0.95], "h": [0.05, 0.20],
+            "weight": [8.0, 25.0],
+            "typical_qty": [30, 80],
+            "default_constraints": {"allowStackingOnTop": false}
+        },
+        {
+            "id": "PALLET_UNIT",
+            "name": "托盘化大件",
+            "size_class": "pallet",
+            "w": [1.00, 1.20], "d": [0.80, 1.20], "h": [0.60, 1.00],
+            "weight": [50.0, 120.0],
+            "typical_qty": [10, 40],
+            "default_constraints": {"mustBeOnFloor": true, "max_stack_layers": 2}
+        },
+        {
+            "id": "FRAGILE_INSTRUMENT",
+            "name": "精密仪器箱",
+            "size_class": "medium",
+            "w": [0.50, 0.70], "d": [0.40, 0.60], "h": [0.35, 0.50],
+            "weight": [15.0, 30.0],
+            "typical_qty": [20, 60],
+            "default_constraints": {"maxBearingKg": 20.0, "allowStackingOnTop": false}
+        },
+        {
+            "id": "DOOR_SEAL_PANEL",
+            "name": "封门面板",
+            "size_class": "thin_small",
+            "w": [0.45, 0.70], "d": [0.06, 0.12], "h": [0.30, 0.45],
+            "weight": [3.0, 8.0],
+            "typical_qty": [60, 200],
+            "default_constraints": {"allowDoorZone": true, "requirement": "封柜门"}
+        },
+        {
+            "id": "ELASTIC_FILLER",
+            "name": "弹性填充件",
+            "size_class": "small",
+            "w": [0.20, 0.40], "d": [0.15, 0.30], "h": [0.10, 0.25],
+            "weight": [1.0, 4.0],
+            "typical_qty": [100, 500],
+            "default_constraints": {"isElastic": true, "requirement": "按需调节"}
+        },
+        {
+            "id": "ELASTIC_DOOR_FILLER",
+            "name": "弹性封门件",
+            "size_class": "thin_small",
+            "w": [0.40, 0.55], "d": [0.06, 0.10], "h": [0.25, 0.40],
+            "weight": [1.5, 3.5],
+            "typical_qty": [80, 250],
+            "default_constraints": {"isElastic": true, "allowDoorZone": true, "requirement": "封柜门,按需调节"}
+        },
+        {
+            "id": "UPRIGHT_ONLY_SCREEN",
+            "name": "竖放专用屏",
+            "size_class": "thin_medium",
+            "w": [0.50, 0.90], "d": [0.05, 0.10], "h": [0.35, 0.65],
+            "weight": [3.0, 8.0],
+            "typical_qty": [50, 200],
+            "default_constraints": {"allowFlat": false, "allowSide": false, "allowedOrientation": "upright"}
+        },
+        {
+            "id": "SIDE_ALLOWED_BOX",
+            "name": "可侧放箱体",
+            "size_class": "medium",
+            "w": [0.50, 0.70], "d": [0.30, 0.45], "h": [0.30, 0.50],
+            "weight": [10.0, 20.0],
+            "typical_qty": [40, 120],
+            "default_constraints": {"allowFlat": true, "allowSide": true}
+        },
+        {
+            "id": "LIMITED_STACK_BOX",
+            "name": "限层堆叠箱",
+            "size_class": "medium",
+            "w": [0.50, 0.70], "d": [0.35, 0.50], "h": [0.30, 0.45],
+            "weight": [12.0, 25.0],
+            "typical_qty": [40, 100],
+            "default_constraints": {"max_stack_layers": 2, "maxBearingKg": 30.0}
+        },
+        {
+            "id": "ZERO_BEARING_SLAB",
+            "name": "零承重板件",
+            "size_class": "flat",
+            "w": [0.60, 0.90], "d": [0.40, 0.70], "h": [0.08, 0.20],
+            "weight": [8.0, 18.0],
+            "typical_qty": [30, 80],
+            "default_constraints": {"maxBearingKg": 0.0}
+        },
+        {
+            "id": "TALL_SLENDER",
+            "name": "高瘦箱体",
+            "size_class": "tall",
+            "w": [0.30, 0.50], "d": [0.25, 0.40], "h": [0.70, 1.20],
+            "weight": [8.0, 18.0],
+            "typical_qty": [30, 80],
+            "default_constraints": {"allowedOrientation": "upright"}
+        },
+        {
+            "id": "MICRO_CUBE",
+            "name": "微型方块",
+            "size_class": "micro",
+            "w": [0.10, 0.20], "d": [0.10, 0.20], "h": [0.10, 0.20],
+            "weight": [0.5, 2.0],
+            "typical_qty": [200, 1000],
+            "default_constraints": {"isElastic": true}
+        }
+    ]
+}

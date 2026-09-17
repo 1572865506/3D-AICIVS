@@ -1,0 +1,89 @@
+{
+    "case_id": "GEN-P1-09-03",
+    "case_name": "自动生成: 20GP-中约束-NORMAL",
+    "description": "Auto-generated: container=20GP, constraint=MEDIUM, rigid=DOMINANT_RIGID, hetero=MEDIUM, scenario=NORMAL",
+    "tags": [
+        "20GP",
+        "MEDIUM",
+        "DOMINANT_RIGID",
+        "MEDIUM",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 5.898,
+            "W": 2.352,
+            "H": 2.393
+        },
+        "maxPayloadTons": 21.8
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "零承重板件-782",
+            "w": 0.865,
+            "d": 0.56,
+            "h": 0.161,
+            "weight": 16.3,
+            "quantity": 60,
+            "maxBearingKg": 0.0,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-002",
+            "name": "扁平板材-884",
+            "w": 0.801,
+            "d": 0.764,
+            "h": 0.137,
+            "weight": 23.4,
+            "quantity": 66,
+            "allowStackingOnTop": false,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-003",
+            "name": "托盘化大件-120",
+            "w": 1.086,
+            "d": 1.102,
+            "h": 0.753,
+            "weight": 114.3,
+            "quantity": 12,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-004",
+            "name": "重型底座/底盘-885",
+            "w": 0.892,
+            "d": 0.765,
+            "h": 0.408,
+            "weight": 36.5,
+            "quantity": 24,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-005",
+            "name": "立方箱体-532",
+            "w": 0.492,
+            "d": 0.431,
+            "h": 0.524,
+            "weight": 16.3,
+            "quantity": 81,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-006",
+            "name": "小显示器-753",
+            "w": 0.545,
+            "d": 0.08,
+            "h": 0.354,
+            "weight": 8.5,
+            "quantity": 180,
+            "allowedOrientation": "upright",
+            "allowDoorZone": true,
+            "max_stack_layers": 4
+        }
+    ]
+}

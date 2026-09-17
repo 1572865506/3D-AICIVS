@@ -1,0 +1,46 @@
+{
+    "case_id": "ORIENTATION-HEIGHT-CUTOFF",
+    "case_name": "高度与朝向联动截断 (测高位平放与低位立放)",
+    "description": "Tall boxes that are upright near floor but must be flat if placed high",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "HYBRID-ORI",
+            "name": "高低自适应调向箱",
+            "w": 0.8,
+            "d": 0.3,
+            "h": 0.6,
+            "weight": 20.0,
+            "quantity": 90,
+            "allowFlat": true,
+            "allowSide": true
+        },
+        {
+            "sku": "BLOCK-BASE",
+            "name": "底部基础重块",
+            "w": 0.6,
+            "d": 0.6,
+            "h": 0.4,
+            "weight": 35.0,
+            "quantity": 45,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "FILL-HYBRID",
+            "name": "填隙柔性袋",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 1.5,
+            "quantity": 250,
+            "isElastic": true
+        }
+    ]
+}

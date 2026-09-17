@@ -1,0 +1,53 @@
+{
+    "case_id": "RIGID-DOMINANT-95PCT",
+    "case_name": "刚性占95%极致压榨 (测高密度刚性件密排与0饥饿)",
+    "description": "95% of container volume occupied by rigid items",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "RIGID-MAIN-A",
+            "name": "核心刚性主件A",
+            "w": 0.6,
+            "d": 0.4,
+            "h": 0.35,
+            "weight": 16.0,
+            "quantity": 260
+        },
+        {
+            "sku": "RIGID-MAIN-B",
+            "name": "核心刚性主件B",
+            "w": 0.5,
+            "d": 0.3,
+            "h": 0.4,
+            "weight": 14.0,
+            "quantity": 220
+        },
+        {
+            "sku": "RIGID-FLOOR",
+            "name": "刚性落地大件",
+            "w": 0.8,
+            "d": 0.6,
+            "h": 0.45,
+            "weight": 35.0,
+            "quantity": 40,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "TINY-ELAS",
+            "name": "5%微量弹性件",
+            "w": 0.25,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 1.5,
+            "quantity": 60,
+            "isElastic": true
+        }
+    ]
+}

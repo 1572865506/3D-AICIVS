@@ -1,0 +1,305 @@
+{
+  "run_id": "20260917_161926",
+  "timestamp": "2026-09-17T16:19:26.207055",
+  "tier": 1,
+  "total_cases": 3,
+  "passed": 3,
+  "failed": 0,
+  "warned": 0,
+  "total_runtime_s": 53.6,
+  "results": {
+    "14-SKU-1845": {
+      "case_id": "14-SKU-1845",
+      "case_name": "14-SKU-1845 (当前基线)",
+      "description": "14-SKU standard baseline cleanroom case 001",
+      "requested_cartons": 2145,
+      "placed_count": 1624,
+      "unplaced_count": 521,
+      "utilization": 86.22,
+      "volume_utilization_pct": 86.2207,
+      "runtime_ms": 25120.35,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 1471,
+        "rigid_placed": 1471,
+        "rigid_completion_pct": 100.0,
+        "elastic_required": 674,
+        "elastic_placed": 153,
+        "elastic_completion_pct": 22.7,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "SKU-01": {
+            "name": "WIFI蓝牙 / WIFI线 / WIFI贴",
+            "is_elastic": false,
+            "required": 1,
+            "placed": 1,
+            "completion_pct": 100.0
+          },
+          "SKU-02": {
+            "name": "21.5寸 显示器 BG (DA)",
+            "is_elastic": false,
+            "required": 500,
+            "placed": 500,
+            "completion_pct": 100.0
+          },
+          "SKU-03": {
+            "name": "34寸显示器 MX340 (DA)",
+            "is_elastic": false,
+            "required": 90,
+            "placed": 90,
+            "completion_pct": 100.0
+          },
+          "SKU-04": {
+            "name": "27寸显示器 2886A (DA)",
+            "is_elastic": false,
+            "required": 100,
+            "placed": 100,
+            "completion_pct": 100.0
+          },
+          "SKU-05": {
+            "name": "32寸智能显示器 (DA)",
+            "is_elastic": false,
+            "required": 100,
+            "placed": 100,
+            "completion_pct": 100.0
+          },
+          "SKU-06": {
+            "name": "15.6寸便携显示器 (14/箱)",
+            "is_elastic": false,
+            "required": 95,
+            "placed": 95,
+            "completion_pct": 100.0
+          },
+          "SKU-07": {
+            "name": "15.6寸 双屏便携屏",
+            "is_elastic": false,
+            "required": 125,
+            "placed": 125,
+            "completion_pct": 100.0
+          },
+          "SKU-08": {
+            "name": "21.5寸一体机整机 带键盘鼠标",
+            "is_elastic": false,
+            "required": 53,
+            "placed": 53,
+            "completion_pct": 100.0
+          },
+          "SKU-09": {
+            "name": "19寸一体机整机",
+            "is_elastic": false,
+            "required": 24,
+            "placed": 24,
+            "completion_pct": 100.0
+          },
+          "SKU-10": {
+            "name": "19寸液晶屏 / 19寸液晶屏玻璃",
+            "is_elastic": false,
+            "required": 22,
+            "placed": 22,
+            "completion_pct": 100.0
+          },
+          "SKU-11": {
+            "name": "电源线",
+            "is_elastic": false,
+            "required": 10,
+            "placed": 10,
+            "completion_pct": 100.0
+          },
+          "SKU-12": {
+            "name": "电源线 (小箱)",
+            "is_elastic": false,
+            "required": 1,
+            "placed": 1,
+            "completion_pct": 100.0
+          },
+          "SKU-13": {
+            "name": "电源",
+            "is_elastic": false,
+            "required": 50,
+            "placed": 50,
+            "completion_pct": 100.0
+          },
+          "SKU-14": {
+            "name": "19寸 显示器 BG (DA)",
+            "is_elastic": true,
+            "required": 674,
+            "placed": 153,
+            "completion_pct": 22.7
+          },
+          "SKU-15": {
+            "name": "23.8寸摄像头显示器",
+            "is_elastic": false,
+            "required": 300,
+            "placed": 300,
+            "completion_pct": 100.0
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 1624,
+        "unplacedCount": 521,
+        "utilization": 86.22072895137124,
+        "rigidCompletion": 100.0,
+        "healthStatus": "HEALTHY"
+      },
+      "status": "PASS"
+    },
+    "SINGLE-LARGE-BOX": {
+      "case_id": "SINGLE-LARGE-BOX",
+      "case_name": "单一大箱 SKU (测极限堆叠)",
+      "description": "Single large carton SKU for monolithic block stacking and extreme volume utilization",
+      "requested_cartons": 70,
+      "placed_count": 60,
+      "unplaced_count": 10,
+      "utilization": 91.46,
+      "volume_utilization_pct": 91.4561,
+      "runtime_ms": 3354.1,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 70,
+        "rigid_placed": 60,
+        "rigid_completion_pct": 85.71,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "LARGE-SKU-01": {
+            "name": "Industrial Palletized Unit",
+            "is_elastic": false,
+            "required": 70,
+            "placed": 60,
+            "completion_pct": 85.7
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 60,
+        "unplacedCount": 10,
+        "utilization": 91.45606622457511,
+        "rigidCompletion": 85.71,
+        "healthStatus": "HEALTHY"
+      },
+      "status": "PASS"
+    },
+    "ALL-ELASTIC-SKUS": {
+      "case_id": "ALL-ELASTIC-SKUS",
+      "case_name": "全弹性件 (测核减逻辑)",
+      "description": "All elastic SKUs with overcapacity demand testing automated trimming and zero overflow",
+      "requested_cartons": 3200,
+      "placed_count": 831,
+      "unplaced_count": 2369,
+      "utilization": 89.52,
+      "volume_utilization_pct": 89.515,
+      "runtime_ms": 25103.71,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 0,
+        "rigid_placed": 0,
+        "rigid_completion_pct": 0.0,
+        "elastic_required": 3200,
+        "elastic_placed": 831,
+        "elastic_completion_pct": 25.97,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "ELASTIC-01": {
+            "name": "Elastic Standard Carton A",
+            "is_elastic": true,
+            "required": 800,
+            "placed": 434,
+            "completion_pct": 54.2
+          },
+          "ELASTIC-02": {
+            "name": "Elastic Compact Carton B",
+            "is_elastic": true,
+            "required": 900,
+            "placed": 96,
+            "completion_pct": 10.7
+          },
+          "ELASTIC-03": {
+            "name": "Elastic Small Carton C",
+            "is_elastic": true,
+            "required": 1000,
+            "placed": 139,
+            "completion_pct": 13.9
+          },
+          "ELASTIC-04": {
+            "name": "Elastic Bulk Carton D",
+            "is_elastic": true,
+            "required": 500,
+            "placed": 162,
+            "completion_pct": 32.4
+          }
+        }
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 831,
+        "unplacedCount": 2369,
+        "utilization": 89.5150412754896,
+        "rigidCompletion": 0.0,
+        "healthStatus": "HEALTHY"
+      },
+      "status": "PASS"
+    }
+  }
+}

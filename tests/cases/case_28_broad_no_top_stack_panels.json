@@ -1,0 +1,55 @@
+{
+    "case_id": "BROAD-NO-TOP-STACK-PANELS",
+    "case_name": "大面积禁压面板 (测孤岛上方空腔智能绕行)",
+    "description": "Large fragile panels forbidding top stacking",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "BASE-BLOCK",
+            "name": "基础实木方",
+            "w": 0.6,
+            "d": 0.5,
+            "h": 0.4,
+            "weight": 28.0,
+            "quantity": 60,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "PANEL-NOTOP",
+            "name": "禁压大面板箱",
+            "w": 1.1,
+            "d": 0.6,
+            "h": 0.4,
+            "weight": 20.0,
+            "quantity": 25,
+            "allowStackingOnTop": false,
+            "requirement": "不可叠放"
+        },
+        {
+            "sku": "TOWER-BOX",
+            "name": "窄高堆叠柱箱",
+            "w": 0.4,
+            "d": 0.4,
+            "h": 0.5,
+            "weight": 15.0,
+            "quantity": 80
+        },
+        {
+            "sku": "PENETR-ELAS",
+            "name": "空腔渗透填充件",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 2.0,
+            "quantity": 300,
+            "isElastic": true
+        }
+    ]
+}

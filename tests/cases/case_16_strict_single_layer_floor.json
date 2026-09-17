@@ -1,0 +1,48 @@
+{
+    "case_id": "STRICT-SINGLE-LAYER-FLOOR",
+    "case_name": "绝对单层底铺 (测单层约束)",
+    "description": "Large heavy equipment bases with mustBeOnFloor=true and max_stack_layers=1, upper space filled by light boxes",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "BASE-01",
+            "name": "重型单层机床底座",
+            "w": 1.2,
+            "d": 1.0,
+            "h": 0.6,
+            "weight": 80.0,
+            "quantity": 18,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 1,
+            "requirement": "绝对单层落地"
+        },
+        {
+            "sku": "MID-01",
+            "name": "中型过渡箱",
+            "w": 0.6,
+            "d": 0.5,
+            "h": 0.4,
+            "weight": 15.0,
+            "quantity": 120,
+            "requirement": "允许旋转"
+        },
+        {
+            "sku": "LIGHT-01",
+            "name": "顶层轻量填缝件",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.2,
+            "weight": 2.0,
+            "quantity": 300,
+            "isElastic": true,
+            "requirement": "按需调节"
+        }
+    ]
+}

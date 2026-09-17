@@ -1,0 +1,83 @@
+{
+    "case_id": "GEN-P1-02-03",
+    "case_name": "自动生成: 40HQ-轻约束-NORMAL",
+    "description": "Auto-generated: container=40HQ, constraint=LIGHT, rigid=DOMINANT_RIGID, hetero=MEDIUM, scenario=NORMAL",
+    "tags": [
+        "40HQ",
+        "LIGHT",
+        "DOMINANT_RIGID",
+        "MEDIUM",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "小配件箱-469",
+            "w": 0.341,
+            "d": 0.205,
+            "h": 0.225,
+            "weight": 1.7,
+            "quantity": 427
+        },
+        {
+            "sku": "SKU-002",
+            "name": "可侧放箱体-327",
+            "w": 0.524,
+            "d": 0.364,
+            "h": 0.449,
+            "weight": 13.3,
+            "quantity": 48,
+            "allowFlat": true,
+            "allowSide": true
+        },
+        {
+            "sku": "SKU-003",
+            "name": "扁平板材-124",
+            "w": 0.97,
+            "d": 0.61,
+            "h": 0.153,
+            "weight": 10.6,
+            "quantity": 46,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-004",
+            "name": "中尺寸电视-398",
+            "w": 0.96,
+            "d": 0.148,
+            "h": 0.557,
+            "weight": 11.2,
+            "quantity": 154,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "SKU-005",
+            "name": "长条形管箱-724",
+            "w": 1.77,
+            "d": 0.239,
+            "h": 0.297,
+            "weight": 8.2,
+            "quantity": 96,
+            "allowFlat": true
+        },
+        {
+            "sku": "SKU-006",
+            "name": "高瘦箱体-636",
+            "w": 0.476,
+            "d": 0.294,
+            "h": 1.143,
+            "weight": 14.1,
+            "quantity": 50,
+            "allowedOrientation": "upright"
+        }
+    ]
+}

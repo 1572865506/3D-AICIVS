@@ -1,0 +1,159 @@
+{
+    "case_id": "GEN-P1-03-01",
+    "case_name": "自动生成: 40HQ-中约束-NORMAL",
+    "description": "Auto-generated: container=40HQ, constraint=MEDIUM, rigid=HIGH_RIGID, hetero=HIGH, scenario=NORMAL",
+    "tags": [
+        "40HQ",
+        "MEDIUM",
+        "HIGH_RIGID",
+        "HIGH",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "精密仪器箱-171",
+            "w": 0.569,
+            "d": 0.481,
+            "h": 0.461,
+            "weight": 23.5,
+            "quantity": 55,
+            "maxBearingKg": 20.0,
+            "allowStackingOnTop": false,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-002",
+            "name": "零承重板件-595",
+            "w": 0.602,
+            "d": 0.686,
+            "h": 0.083,
+            "weight": 15.1,
+            "quantity": 80,
+            "maxBearingKg": 0.0,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-003",
+            "name": "竖放专用屏-971",
+            "w": 0.85,
+            "d": 0.073,
+            "h": 0.618,
+            "weight": 5.9,
+            "quantity": 85,
+            "allowFlat": false,
+            "allowSide": false,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-004",
+            "name": "长条形管箱-961",
+            "w": 1.04,
+            "d": 0.232,
+            "h": 0.236,
+            "weight": 12.6,
+            "quantity": 68,
+            "allowFlat": true,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-005",
+            "name": "标准纸箱-674",
+            "w": 0.437,
+            "d": 0.442,
+            "h": 0.285,
+            "weight": 14.6,
+            "quantity": 212,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-006",
+            "name": "小显示器-857",
+            "w": 0.567,
+            "d": 0.088,
+            "h": 0.434,
+            "weight": 4.9,
+            "quantity": 109,
+            "allowedOrientation": "upright",
+            "allowDoorZone": true,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-007",
+            "name": "扁平板材-503",
+            "w": 0.854,
+            "d": 0.936,
+            "h": 0.061,
+            "weight": 11.5,
+            "quantity": 73,
+            "allowStackingOnTop": false,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-008",
+            "name": "大尺寸电视-882",
+            "w": 1.395,
+            "d": 0.159,
+            "h": 0.801,
+            "weight": 13.2,
+            "quantity": 65,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-009",
+            "name": "限层堆叠箱-527",
+            "w": 0.668,
+            "d": 0.458,
+            "h": 0.312,
+            "weight": 12.6,
+            "quantity": 72,
+            "max_stack_layers": 2,
+            "maxBearingKg": 30.0
+        },
+        {
+            "sku": "SKU-010",
+            "name": "中尺寸电视-878",
+            "w": 0.996,
+            "d": 0.127,
+            "h": 0.608,
+            "weight": 11.8,
+            "quantity": 98,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-011",
+            "name": "弹性填充件-839",
+            "w": 0.295,
+            "d": 0.277,
+            "h": 0.14,
+            "weight": 2.0,
+            "quantity": 413,
+            "isElastic": true,
+            "requirement": "按需调节",
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-012",
+            "name": "微型方块-138",
+            "w": 0.175,
+            "d": 0.139,
+            "h": 0.156,
+            "weight": 0.6,
+            "quantity": 413,
+            "isElastic": true,
+            "max_stack_layers": 3
+        }
+    ]
+}

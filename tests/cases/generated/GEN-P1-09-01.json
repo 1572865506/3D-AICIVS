@@ -1,0 +1,90 @@
+{
+    "case_id": "GEN-P1-09-01",
+    "case_name": "自动生成: 20GP-中约束-NORMAL",
+    "description": "Auto-generated: container=20GP, constraint=MEDIUM, rigid=DOMINANT_RIGID, hetero=MEDIUM, scenario=NORMAL",
+    "tags": [
+        "20GP",
+        "MEDIUM",
+        "DOMINANT_RIGID",
+        "MEDIUM",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 5.898,
+            "W": 2.352,
+            "H": 2.393
+        },
+        "maxPayloadTons": 21.8
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "中尺寸电视-358",
+            "w": 1.069,
+            "d": 0.128,
+            "h": 0.576,
+            "weight": 11.6,
+            "quantity": 136,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-002",
+            "name": "封门面板-751",
+            "w": 0.663,
+            "d": 0.067,
+            "h": 0.324,
+            "weight": 6.0,
+            "quantity": 167,
+            "allowDoorZone": true,
+            "requirement": "封柜门",
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-003",
+            "name": "托盘化大件-849",
+            "w": 1.011,
+            "d": 0.821,
+            "h": 0.773,
+            "weight": 116.0,
+            "quantity": 20,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-004",
+            "name": "标准纸箱-153",
+            "w": 0.623,
+            "d": 0.424,
+            "h": 0.255,
+            "weight": 16.2,
+            "quantity": 255,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-005",
+            "name": "小显示器-325",
+            "w": 0.539,
+            "d": 0.082,
+            "h": 0.447,
+            "weight": 5.0,
+            "quantity": 189,
+            "allowedOrientation": "upright",
+            "allowDoorZone": true,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-006",
+            "name": "长条形管箱-937",
+            "w": 1.289,
+            "d": 0.218,
+            "h": 0.257,
+            "weight": 10.4,
+            "quantity": 86,
+            "allowFlat": true,
+            "max_stack_layers": 3
+        }
+    ]
+}

@@ -91,6 +91,79 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
             self.wfile.write(json.dumps(health_data).encode('utf-8'))
             return
 
+        # 测试平台专用 API 路由
+        if self.path.startswith('/api/v1/harness/'):
+            from backend.harness_service import HarnessTaskManager, generate_agent_summary
+            manager = HarnessTaskManager()
+
+            if self.path == '/api/v1/harness/status':
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                self.wfile.write(json.dumps(manager.get_status(), ensure_ascii=False).encode('utf-8'))
+                return
+
+            if self.path == '/api/v1/harness/agent-summary':
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                summary_text = generate_agent_summary()
+                self.wfile.write(json.dumps({'agent_summary': summary_text}, ensure_ascii=False).encode('utf-8'))
+                return
+
+            if self.path.startswith('/api/v1/harness/case-summary'):
+                from urllib.parse import urlparse, parse_qs
+                from backend.harness_service import generate_single_case_summary
+                query = parse_qs(urlparse(self.path).query)
+                case_id = query.get('id', [''])[0]
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                res = generate_single_case_summary(case_id)
+                self.wfile.write(json.dumps(res, ensure_ascii=False).encode('utf-8'))
+                return
+
+            if self.path == '/api/v1/harness/report':
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                rep_path = os.path.join(BASE_DIR, 'tests', 'harness_reports', 'latest_report.json')
+                data = {}
+                if os.path.exists(rep_path):
+                    try:
+                        with open(rep_path, 'r', encoding='utf-8') as f:
+                            data = json.load(f)
+                    except Exception:
+                        pass
+                self.wfile.write(json.dumps(data, ensure_ascii=False).encode('utf-8'))
+                return
+
+            if self.path == '/api/v1/harness/cases':
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                from scripts.test_harness.runner import _get_hardcoded_cases, _discover_json_cases, _infer_tags
+                cases = list(_get_hardcoded_cases())
+                cases.extend(_discover_json_cases(['tests/cases', 'tests/cases/generated', 'tests/cases/random']))
+                case_items = []
+                seen = set()
+                for c in cases:
+                    cid = c[2]
+                    if cid in seen:
+                        continue
+                    seen.add(cid)
+                    spec = c[0].get('usable', {})
+                    case_items.append({
+                        'case_id': cid,
+                        'name': c[3],
+                        'description': c[4],
+                        'sku_count': len(c[1]),
+                        'tags': _infer_tags(cid, c[4]),
+                        'container': f"{spec.get('L',12):.1f}x{spec.get('W',2.4):.1f}x{spec.get('H',2.7):.1f}"
+                    })
+                self.wfile.write(json.dumps({'total': len(case_items), 'cases': case_items}, ensure_ascii=False).encode('utf-8'))
+                return
+
         loading_response = DEFAULT_LOADING_API.dispatch(self.path)
         if loading_response is not None:
             status, payload = loading_response
@@ -104,6 +177,36 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
         super().do_GET()
 
     def do_POST(self):
+        # 测试平台专用 POST API 路由
+        if self.path.startswith('/api/v1/harness/'):
+            from backend.harness_service import HarnessTaskManager
+            manager = HarnessTaskManager()
+
+            content_length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(content_length) if content_length > 0 else b'{}'
+            payload = {}
+            if body:
+                try:
+                    payload = json.loads(body.decode('utf-8'))
+                except Exception:
+                    pass
+
+            if self.path == '/api/v1/harness/run':
+                res = manager.start_test(payload)
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                self.wfile.write(json.dumps(res, ensure_ascii=False).encode('utf-8'))
+                return
+
+            if self.path == '/api/v1/harness/stop':
+                res = manager.stop_test()
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                self.wfile.write(json.dumps({'stopped': res}, ensure_ascii=False).encode('utf-8'))
+                return
+
         if self.path in ('/api/v1/pack', '/api/v2/pack', '/api/v1/loading/jobs'):
             content_length = int(self.headers.get('Content-Length', 0))
             body = self.rfile.read(content_length)

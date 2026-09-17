@@ -1,0 +1,46 @@
+{
+    "case_id": "STEPPED-HEIGHT-TIPPING-SAFETY",
+    "case_name": "阶梯断层防倾覆 (测层数截断处边缘跌落安全)",
+    "description": "Sudden height drop from layer-capped columns creating free edges",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "CAP-DROP",
+            "name": "陡降截断箱",
+            "w": 0.8,
+            "d": 0.6,
+            "h": 0.55,
+            "weight": 30.0,
+            "quantity": 30,
+            "max_stack_layers": 2,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "TALL-PILLAR",
+            "name": "通顶堆码柱",
+            "w": 0.5,
+            "d": 0.5,
+            "h": 0.4,
+            "weight": 16.0,
+            "quantity": 90,
+            "max_stack_layers": 6
+        },
+        {
+            "sku": "EDGE-ELAS",
+            "name": "阶梯处护角填料",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.2,
+            "weight": 2.5,
+            "quantity": 220,
+            "isElastic": true
+        }
+    ]
+}

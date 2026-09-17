@@ -1,0 +1,57 @@
+{
+    "case_id": "THREE-TIER-BEARING-CHAIN",
+    "case_name": "三级承重递减受力链 (测承压极限与物理分层)",
+    "description": "Rigid bearing hierarchy: Heavy (maxBearing 180kg) -> Mid (maxBearing 35kg) -> Fragile (maxBearing 0kg)",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "BEAR-HEAVY",
+            "name": "高抗压重底座",
+            "w": 0.7,
+            "d": 0.5,
+            "h": 0.4,
+            "weight": 40.0,
+            "quantity": 60,
+            "maxBearingKg": 180.0,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "BEAR-MID",
+            "name": "中度耐压件",
+            "w": 0.5,
+            "d": 0.4,
+            "h": 0.3,
+            "weight": 12.0,
+            "quantity": 140,
+            "maxBearingKg": 35.0
+        },
+        {
+            "sku": "BEAR-ZERO",
+            "name": "零承重压敏件",
+            "w": 0.4,
+            "d": 0.3,
+            "h": 0.25,
+            "weight": 4.0,
+            "quantity": 80,
+            "maxBearingKg": 0.0,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "ELAS-FILL",
+            "name": "空腔回填弹性包",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 1.5,
+            "quantity": 250,
+            "isElastic": true
+        }
+    ]
+}

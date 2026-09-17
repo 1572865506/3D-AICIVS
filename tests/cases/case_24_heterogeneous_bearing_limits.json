@@ -1,0 +1,55 @@
+{
+    "case_id": "HETEROGENEOUS-BEARING-LIMITS",
+    "case_name": "异构货物混合承重约束 (测接触面承载折算)",
+    "description": "Boxes of varying dimensions and bearing capacities sharing layers",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "HET-H1",
+            "name": "承重底框A",
+            "w": 0.8,
+            "d": 0.5,
+            "h": 0.4,
+            "weight": 45.0,
+            "quantity": 30,
+            "maxBearingKg": 120.0
+        },
+        {
+            "sku": "HET-H2",
+            "name": "承重底框B",
+            "w": 0.6,
+            "d": 0.6,
+            "h": 0.35,
+            "weight": 35.0,
+            "quantity": 35,
+            "maxBearingKg": 90.0
+        },
+        {
+            "sku": "HET-M1",
+            "name": "普通承重箱",
+            "w": 0.4,
+            "d": 0.4,
+            "h": 0.3,
+            "weight": 14.0,
+            "quantity": 120,
+            "maxBearingKg": 40.0
+        },
+        {
+            "sku": "HET-L1",
+            "name": "轻型脆性箱",
+            "w": 0.35,
+            "d": 0.25,
+            "h": 0.25,
+            "weight": 5.0,
+            "quantity": 150,
+            "maxBearingKg": 12.0
+        }
+    ]
+}

@@ -1,0 +1,59 @@
+{
+    "case_id": "GEN-P1-07-02",
+    "case_name": "自动生成: 40HQ-中约束-NORMAL",
+    "description": "Auto-generated: container=40HQ, constraint=MEDIUM, rigid=FULL_ELASTIC, hetero=MEDIUM, scenario=NORMAL",
+    "tags": [
+        "40HQ",
+        "MEDIUM",
+        "FULL_ELASTIC",
+        "MEDIUM",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "微型方块-972",
+            "w": 0.163,
+            "d": 0.132,
+            "h": 0.108,
+            "weight": 1.8,
+            "quantity": 974,
+            "isElastic": true,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-002",
+            "name": "弹性封门件-257",
+            "w": 0.402,
+            "d": 0.079,
+            "h": 0.351,
+            "weight": 2.4,
+            "quantity": 218,
+            "isElastic": true,
+            "allowDoorZone": true,
+            "requirement": "封柜门,按需调节",
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-003",
+            "name": "弹性填充件-412",
+            "w": 0.232,
+            "d": 0.265,
+            "h": 0.128,
+            "weight": 1.7,
+            "quantity": 196,
+            "isElastic": true,
+            "requirement": "按需调节",
+            "max_stack_layers": 2
+        }
+    ]
+}

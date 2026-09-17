@@ -1,0 +1,87 @@
+{
+    "case_id": "GEN-P1-14-02",
+    "case_name": "自动生成: 40GP-轻约束-NORMAL",
+    "description": "Auto-generated: container=40GP, constraint=LIGHT, rigid=FULL_RIGID, hetero=MEDIUM, scenario=NORMAL",
+    "tags": [
+        "40GP",
+        "LIGHT",
+        "FULL_RIGID",
+        "MEDIUM",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.393
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "扁平板材-486",
+            "w": 0.849,
+            "d": 0.609,
+            "h": 0.187,
+            "weight": 13.4,
+            "quantity": 73,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-002",
+            "name": "小显示器-307",
+            "w": 0.512,
+            "d": 0.071,
+            "h": 0.351,
+            "weight": 4.7,
+            "quantity": 137,
+            "allowedOrientation": "upright",
+            "allowDoorZone": true
+        },
+        {
+            "sku": "SKU-003",
+            "name": "大尺寸电视-175",
+            "w": 1.393,
+            "d": 0.158,
+            "h": 0.862,
+            "weight": 14.4,
+            "quantity": 94,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "SKU-004",
+            "name": "封门面板-941",
+            "w": 0.574,
+            "d": 0.066,
+            "h": 0.354,
+            "weight": 5.8,
+            "quantity": 68,
+            "allowDoorZone": true,
+            "requirement": "封柜门"
+        },
+        {
+            "sku": "SKU-005",
+            "name": "竖放专用屏-586",
+            "w": 0.854,
+            "d": 0.059,
+            "h": 0.492,
+            "weight": 7.9,
+            "quantity": 139,
+            "allowFlat": false,
+            "allowSide": false,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "SKU-006",
+            "name": "中尺寸电视-845",
+            "w": 0.843,
+            "d": 0.121,
+            "h": 0.504,
+            "weight": 8.9,
+            "quantity": 99,
+            "allowedOrientation": "upright"
+        }
+    ]
+}

@@ -1,0 +1,46 @@
+{
+    "case_id": "MAX-FLAT-LAYERS-CONSTRAINT",
+    "case_name": "平放层数限制约束 (测平躺堆叠上限)",
+    "description": "Cargo items allowing flat orientation but capped at maxFlatLayers=2",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "FLAT-CAP",
+            "name": "平放限层仪器盒",
+            "w": 0.7,
+            "d": 0.45,
+            "h": 0.25,
+            "weight": 18.0,
+            "quantity": 80,
+            "allowFlat": true,
+            "maxFlatLayers": 2,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "STD-CRATE",
+            "name": "普通立体周转箱",
+            "w": 0.5,
+            "d": 0.4,
+            "h": 0.35,
+            "weight": 12.0,
+            "quantity": 150
+        },
+        {
+            "sku": "ELAS-CORNER",
+            "name": "边角填平件",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.2,
+            "weight": 2.0,
+            "quantity": 200,
+            "isElastic": true
+        }
+    ]
+}

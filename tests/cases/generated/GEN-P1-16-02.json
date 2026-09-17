@@ -1,0 +1,158 @@
+{
+    "case_id": "GEN-P1-16-02",
+    "case_name": "自动生成: 53HQ-中约束-NORMAL",
+    "description": "Auto-generated: container=53HQ, constraint=MEDIUM, rigid=DOMINANT_RIGID, hetero=HIGH, scenario=NORMAL",
+    "tags": [
+        "53HQ",
+        "MEDIUM",
+        "DOMINANT_RIGID",
+        "HIGH",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 16.154,
+            "W": 2.438,
+            "H": 2.694
+        },
+        "maxPayloadTons": 27.0
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "小显示器-720",
+            "w": 0.524,
+            "d": 0.097,
+            "h": 0.383,
+            "weight": 8.8,
+            "quantity": 161,
+            "allowedOrientation": "upright",
+            "allowDoorZone": true,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-002",
+            "name": "托盘化大件-250",
+            "w": 1.096,
+            "d": 1.008,
+            "h": 0.677,
+            "weight": 73.7,
+            "quantity": 35,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-003",
+            "name": "封门面板-231",
+            "w": 0.697,
+            "d": 0.081,
+            "h": 0.396,
+            "weight": 5.8,
+            "quantity": 84,
+            "allowDoorZone": true,
+            "requirement": "封柜门",
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-004",
+            "name": "小配件箱-844",
+            "w": 0.264,
+            "d": 0.207,
+            "h": 0.238,
+            "weight": 2.6,
+            "quantity": 459,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-005",
+            "name": "零承重板件-266",
+            "w": 0.692,
+            "d": 0.566,
+            "h": 0.16,
+            "weight": 17.9,
+            "quantity": 35,
+            "maxBearingKg": 0.0,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-006",
+            "name": "扁平板材-957",
+            "w": 0.692,
+            "d": 0.737,
+            "h": 0.152,
+            "weight": 12.6,
+            "quantity": 47,
+            "allowStackingOnTop": false,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-007",
+            "name": "竖放专用屏-130",
+            "w": 0.631,
+            "d": 0.058,
+            "h": 0.469,
+            "weight": 3.2,
+            "quantity": 78,
+            "allowFlat": false,
+            "allowSide": false,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-008",
+            "name": "精密仪器箱-654",
+            "w": 0.673,
+            "d": 0.517,
+            "h": 0.36,
+            "weight": 21.5,
+            "quantity": 22,
+            "maxBearingKg": 20.0,
+            "allowStackingOnTop": false,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-009",
+            "name": "标准纸箱-239",
+            "w": 0.544,
+            "d": 0.376,
+            "h": 0.303,
+            "weight": 10.4,
+            "quantity": 234,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-010",
+            "name": "高瘦箱体-415",
+            "w": 0.359,
+            "d": 0.37,
+            "h": 1.165,
+            "weight": 11.3,
+            "quantity": 66,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-011",
+            "name": "大尺寸电视-936",
+            "w": 1.318,
+            "d": 0.195,
+            "h": 0.831,
+            "weight": 12.9,
+            "quantity": 83,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-012",
+            "name": "长条形管箱-551",
+            "w": 1.335,
+            "d": 0.152,
+            "h": 0.288,
+            "weight": 9.2,
+            "quantity": 76,
+            "allowFlat": true,
+            "max_stack_layers": 4
+        }
+    ]
+}

@@ -1,0 +1,93 @@
+{
+    "case_id": "ALL-CONSTRAINTS-COMBINED-MUT-03",
+    "case_name": "全约束综合 (测系统鲁棒性) (变异 #3)",
+    "description": "Mutated from ALL-CONSTRAINTS-COMBINED, variant 3",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "FLOOR-01",
+            "name": "重型底座",
+            "w": 0.75,
+            "d": 0.641,
+            "h": 0.233,
+            "weight": 50.0,
+            "quantity": 40,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 1,
+            "requirement": "必须平放,重物靠底"
+        },
+        {
+            "sku": "FRAG-01",
+            "name": "精密仪器",
+            "w": 0.639,
+            "d": 0.475,
+            "h": 0.428,
+            "weight": 20.0,
+            "quantity": 60,
+            "maxBearingKg": 25.0,
+            "max_stack_layers": 2,
+            "allowStackingOnTop": true
+        },
+        {
+            "sku": "TALL-01",
+            "name": "竖放面板",
+            "w": 0.955,
+            "d": 0.111,
+            "h": 0.681,
+            "weight": 8.0,
+            "quantity": 141,
+            "allowFlat": true,
+            "requirement": "仅竖放"
+        },
+        {
+            "sku": "INNER-01",
+            "name": "内壁专用",
+            "w": 0.463,
+            "d": 0.416,
+            "h": 0.316,
+            "weight": 12.0,
+            "quantity": 107,
+            "requirement": "最里面"
+        },
+        {
+            "sku": "NORM-01",
+            "name": "普通箱",
+            "w": 0.465,
+            "d": 0.416,
+            "h": 0.339,
+            "weight": 10.0,
+            "quantity": 256
+        },
+        {
+            "sku": "DOOR-01",
+            "name": "封门件",
+            "w": 0.587,
+            "d": 0.083,
+            "h": 0.335,
+            "weight": 5.5,
+            "quantity": 105,
+            "requirement": "封柜门"
+        },
+        {
+            "sku": "ELASTIC-01",
+            "name": "弹性填充",
+            "w": 0.32,
+            "d": 0.208,
+            "h": 0.169,
+            "weight": 2.0,
+            "quantity": 717,
+            "requirement": "按需调节,可以少放",
+            "isElastic": false
+        }
+    ],
+    "tags": [
+        "MUTATED"
+    ]
+}

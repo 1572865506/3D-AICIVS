@@ -1,0 +1,54 @@
+{
+    "case_id": "GEN-P1-01-02",
+    "case_name": "自动生成: 40HQ-无约束-NORMAL",
+    "description": "Auto-generated: container=40HQ, constraint=NONE, rigid=FULL_RIGID, hetero=LOW, scenario=NORMAL",
+    "tags": [
+        "40HQ",
+        "NONE",
+        "FULL_RIGID",
+        "LOW",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "重型底座/底盘-811",
+            "w": 0.886,
+            "d": 0.679,
+            "h": 0.278,
+            "weight": 30.1,
+            "quantity": 47,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "SKU-002",
+            "name": "长条形管箱-217",
+            "w": 1.244,
+            "d": 0.197,
+            "h": 0.256,
+            "weight": 13.7,
+            "quantity": 72,
+            "allowFlat": true
+        },
+        {
+            "sku": "SKU-003",
+            "name": "小显示器-117",
+            "w": 0.514,
+            "d": 0.098,
+            "h": 0.449,
+            "weight": 6.0,
+            "quantity": 133,
+            "allowedOrientation": "upright",
+            "allowDoorZone": true
+        }
+    ]
+}

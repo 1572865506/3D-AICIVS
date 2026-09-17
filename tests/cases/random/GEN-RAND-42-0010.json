@@ -1,0 +1,76 @@
+{
+    "case_id": "GEN-RAND-42-0010",
+    "case_name": "随机生成: 45HQ-NONE-TIPPING_RISK (seed=42)",
+    "description": "Random: container=45HQ, constraint=NONE, rigid=FULL_ELASTIC, hetero=HIGH, scenario=TIPPING_RISK, seed=42",
+    "tags": [
+        "45HQ",
+        "NONE",
+        "FULL_ELASTIC",
+        "HIGH",
+        "TIPPING_RISK",
+        "RANDOM"
+    ],
+    "container": {
+        "usable": {
+            "L": 13.556,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 25.6
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "高瘦箱体-871",
+            "w": 0.378,
+            "d": 0.384,
+            "h": 1.118,
+            "weight": 13.4,
+            "quantity": 77,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "SKU-002",
+            "name": "重型底座/底盘-659",
+            "w": 1.02,
+            "d": 0.769,
+            "h": 0.346,
+            "weight": 43.6,
+            "quantity": 46,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "SKU-003",
+            "name": "弹性填充件-129",
+            "w": 0.278,
+            "d": 0.25,
+            "h": 0.22,
+            "weight": 3.2,
+            "quantity": 339,
+            "isElastic": true,
+            "requirement": "按需调节"
+        },
+        {
+            "sku": "SKU-004",
+            "name": "弹性封门件-230",
+            "w": 0.547,
+            "d": 0.081,
+            "h": 0.386,
+            "weight": 2.7,
+            "quantity": 249,
+            "isElastic": true,
+            "allowDoorZone": true,
+            "requirement": "封柜门,按需调节"
+        },
+        {
+            "sku": "SKU-005",
+            "name": "微型方块-127",
+            "w": 0.108,
+            "d": 0.143,
+            "h": 0.187,
+            "weight": 0.8,
+            "quantity": 466,
+            "isElastic": true
+        }
+    ]
+}

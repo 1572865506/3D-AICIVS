@@ -1,0 +1,55 @@
+{
+    "case_id": "GEN-RAND-42-0001",
+    "case_name": "随机生成: 20GP-NONE-DOOR_HEAVY (seed=42)",
+    "description": "Random: container=20GP, constraint=NONE, rigid=HIGH_RIGID, hetero=LOW, scenario=DOOR_HEAVY, seed=42",
+    "tags": [
+        "20GP",
+        "NONE",
+        "HIGH_RIGID",
+        "LOW",
+        "DOOR_HEAVY",
+        "RANDOM"
+    ],
+    "container": {
+        "usable": {
+            "L": 5.898,
+            "W": 2.352,
+            "H": 2.393
+        },
+        "maxPayloadTons": 21.8
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "封门面板-854",
+            "w": 0.476,
+            "d": 0.104,
+            "h": 0.382,
+            "weight": 6.0,
+            "quantity": 68,
+            "allowDoorZone": true,
+            "requirement": "封柜门"
+        },
+        {
+            "sku": "SKU-002",
+            "name": "弹性封门件-130",
+            "w": 0.414,
+            "d": 0.069,
+            "h": 0.34,
+            "weight": 2.6,
+            "quantity": 246,
+            "isElastic": true,
+            "allowDoorZone": true,
+            "requirement": "封柜门,按需调节"
+        },
+        {
+            "sku": "SKU-003",
+            "name": "标准纸箱-818",
+            "w": 0.536,
+            "d": 0.344,
+            "h": 0.368,
+            "weight": 16.1,
+            "quantity": 101
+        }
+    ]
+}

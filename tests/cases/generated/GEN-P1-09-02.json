@@ -1,0 +1,89 @@
+{
+    "case_id": "GEN-P1-09-02",
+    "case_name": "自动生成: 20GP-中约束-NORMAL",
+    "description": "Auto-generated: container=20GP, constraint=MEDIUM, rigid=DOMINANT_RIGID, hetero=MEDIUM, scenario=NORMAL",
+    "tags": [
+        "20GP",
+        "MEDIUM",
+        "DOMINANT_RIGID",
+        "MEDIUM",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 5.898,
+            "W": 2.352,
+            "H": 2.393
+        },
+        "maxPayloadTons": 21.8
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "标准纸箱-823",
+            "w": 0.616,
+            "d": 0.455,
+            "h": 0.37,
+            "weight": 10.7,
+            "quantity": 151,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-002",
+            "name": "小显示器-380",
+            "w": 0.56,
+            "d": 0.071,
+            "h": 0.359,
+            "weight": 4.2,
+            "quantity": 273,
+            "allowedOrientation": "upright",
+            "allowDoorZone": true,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-003",
+            "name": "可侧放箱体-278",
+            "w": 0.547,
+            "d": 0.361,
+            "h": 0.405,
+            "weight": 17.0,
+            "quantity": 115,
+            "allowFlat": true,
+            "allowSide": true,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-004",
+            "name": "长条形管箱-118",
+            "w": 1.154,
+            "d": 0.163,
+            "h": 0.289,
+            "weight": 16.5,
+            "quantity": 52,
+            "allowFlat": true,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-005",
+            "name": "小配件箱-109",
+            "w": 0.341,
+            "d": 0.279,
+            "h": 0.195,
+            "weight": 4.3,
+            "quantity": 376,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-006",
+            "name": "大尺寸电视-450",
+            "w": 1.387,
+            "d": 0.158,
+            "h": 0.802,
+            "weight": 19.9,
+            "quantity": 95,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 4
+        }
+    ]
+}

@@ -1,0 +1,178 @@
+{
+    "case_id": "GEN-P1-06-01",
+    "case_name": "自动生成: 40HQ-全约束-TIPPING_RISK",
+    "description": "Auto-generated: container=40HQ, constraint=HEAVY, rigid=HIGH_RIGID, hetero=HIGH, scenario=TIPPING_RISK",
+    "tags": [
+        "40HQ",
+        "HEAVY",
+        "HIGH_RIGID",
+        "HIGH",
+        "TIPPING_RISK",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "高瘦箱体-517",
+            "w": 0.376,
+            "d": 0.256,
+            "h": 1.086,
+            "weight": 13.2,
+            "quantity": 57,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 4,
+            "maxBearingKg": 33.4,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-002",
+            "name": "重型底座/底盘-506",
+            "w": 0.826,
+            "d": 0.52,
+            "h": 0.26,
+            "weight": 77.9,
+            "quantity": 31,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 3,
+            "maxBearingKg": 29.1
+        },
+        {
+            "sku": "SKU-003",
+            "name": "封门面板-899",
+            "w": 0.602,
+            "d": 0.118,
+            "h": 0.34,
+            "weight": 4.3,
+            "quantity": 94,
+            "allowDoorZone": true,
+            "requirement": "封柜门",
+            "max_stack_layers": 2,
+            "maxBearingKg": 43.2
+        },
+        {
+            "sku": "SKU-004",
+            "name": "大尺寸电视-117",
+            "w": 1.257,
+            "d": 0.158,
+            "h": 0.819,
+            "weight": 16.8,
+            "quantity": 76,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 2,
+            "maxBearingKg": 28.5,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-005",
+            "name": "标准纸箱-386",
+            "w": 0.563,
+            "d": 0.33,
+            "h": 0.345,
+            "weight": 13.4,
+            "quantity": 138,
+            "max_stack_layers": 4,
+            "maxBearingKg": 53.8,
+            "mustBeOnFloor": true,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-006",
+            "name": "托盘化大件-105",
+            "w": 1.054,
+            "d": 0.886,
+            "h": 0.655,
+            "weight": 99.9,
+            "quantity": 28,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 2,
+            "maxBearingKg": 29.9,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-007",
+            "name": "可侧放箱体-596",
+            "w": 0.673,
+            "d": 0.344,
+            "h": 0.428,
+            "weight": 12.0,
+            "quantity": 90,
+            "allowFlat": true,
+            "allowSide": true,
+            "max_stack_layers": 3,
+            "maxBearingKg": 28.8,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "SKU-008",
+            "name": "长条形管箱-112",
+            "w": 1.193,
+            "d": 0.172,
+            "h": 0.187,
+            "weight": 17.9,
+            "quantity": 60,
+            "allowFlat": true,
+            "max_stack_layers": 2,
+            "maxBearingKg": 15.0
+        },
+        {
+            "sku": "SKU-009",
+            "name": "小配件箱-851",
+            "w": 0.252,
+            "d": 0.216,
+            "h": 0.214,
+            "weight": 2.7,
+            "quantity": 276,
+            "max_stack_layers": 3,
+            "maxBearingKg": 73.5,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-010",
+            "name": "立方箱体-114",
+            "w": 0.452,
+            "d": 0.432,
+            "h": 0.527,
+            "weight": 14.4,
+            "quantity": 60,
+            "max_stack_layers": 3,
+            "maxBearingKg": 75.7,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-011",
+            "name": "微型方块-434",
+            "w": 0.152,
+            "d": 0.146,
+            "h": 0.118,
+            "weight": 1.6,
+            "quantity": 962,
+            "isElastic": true,
+            "max_stack_layers": 2,
+            "maxBearingKg": 17.7,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "SKU-012",
+            "name": "弹性封门件-936",
+            "w": 0.495,
+            "d": 0.089,
+            "h": 0.28,
+            "weight": 2.5,
+            "quantity": 161,
+            "isElastic": true,
+            "allowDoorZone": true,
+            "requirement": "封柜门,按需调节",
+            "max_stack_layers": 3,
+            "maxBearingKg": 29.5,
+            "allowStackingOnTop": false
+        }
+    ]
+}

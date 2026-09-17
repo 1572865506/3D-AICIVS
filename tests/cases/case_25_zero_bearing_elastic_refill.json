@@ -1,0 +1,47 @@
+{
+    "case_id": "ZERO-BEARING-ELASTIC-REFILL",
+    "case_name": "顶层零承重与弹性填充 (测上层防压机制)",
+    "description": "Zero-bearing top-tier cartons alongside massive elastic parcels",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "F-BASE",
+            "name": "基础装配台",
+            "w": 0.7,
+            "d": 0.6,
+            "h": 0.5,
+            "weight": 50.0,
+            "quantity": 30,
+            "maxBearingKg": 250.0,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "F-GLASS",
+            "name": "玻璃显示屏箱",
+            "w": 0.7,
+            "d": 0.2,
+            "h": 0.5,
+            "weight": 15.0,
+            "quantity": 60,
+            "maxBearingKg": 0.0,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "F-ELAS",
+            "name": "侧向与顶部弹性囊袋",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 2.0,
+            "quantity": 350,
+            "isElastic": true
+        }
+    ]
+}

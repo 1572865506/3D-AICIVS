@@ -1,0 +1,46 @@
+{
+    "case_id": "FLOOR-AND-NOTOP-COMBINED",
+    "case_name": "落地兼禁压双重限制 (测绝对底部单层且上方完全禁入)",
+    "description": "Boxes that must be on floor AND cannot have anything stacked on top",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "FL-NOTOP",
+            "name": "裸装发动机",
+            "w": 1.0,
+            "d": 0.7,
+            "h": 0.85,
+            "weight": 120.0,
+            "quantity": 16,
+            "mustBeOnFloor": true,
+            "allowStackingOnTop": false,
+            "requirement": "落地且禁压"
+        },
+        {
+            "sku": "FREE-STACK",
+            "name": "自由区域堆码箱",
+            "w": 0.5,
+            "d": 0.4,
+            "h": 0.35,
+            "weight": 12.0,
+            "quantity": 150
+        },
+        {
+            "sku": "FREE-ELAS",
+            "name": "自由弹性件",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.2,
+            "weight": 3.0,
+            "quantity": 250,
+            "isElastic": true
+        }
+    ]
+}

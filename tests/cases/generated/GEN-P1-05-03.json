@@ -1,0 +1,93 @@
+{
+    "case_id": "GEN-P1-05-03",
+    "case_name": "自动生成: 40HQ-中约束-DOOR_HEAVY",
+    "description": "Auto-generated: container=40HQ, constraint=MEDIUM, rigid=DOMINANT_RIGID, hetero=MEDIUM, scenario=DOOR_HEAVY",
+    "tags": [
+        "40HQ",
+        "MEDIUM",
+        "DOMINANT_RIGID",
+        "MEDIUM",
+        "DOOR_HEAVY",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "封门面板-781",
+            "w": 0.492,
+            "d": 0.064,
+            "h": 0.389,
+            "weight": 4.2,
+            "quantity": 159,
+            "allowDoorZone": true,
+            "requirement": "封柜门",
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-002",
+            "name": "弹性封门件-978",
+            "w": 0.439,
+            "d": 0.076,
+            "h": 0.328,
+            "weight": 1.8,
+            "quantity": 158,
+            "isElastic": true,
+            "allowDoorZone": true,
+            "requirement": "封柜门,按需调节",
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-003",
+            "name": "零承重板件-845",
+            "w": 0.886,
+            "d": 0.402,
+            "h": 0.095,
+            "weight": 12.0,
+            "quantity": 47,
+            "maxBearingKg": 0.0,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-004",
+            "name": "标准纸箱-984",
+            "w": 0.646,
+            "d": 0.453,
+            "h": 0.44,
+            "weight": 14.5,
+            "quantity": 192,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-005",
+            "name": "精密仪器箱-599",
+            "w": 0.507,
+            "d": 0.502,
+            "h": 0.441,
+            "weight": 27.3,
+            "quantity": 38,
+            "maxBearingKg": 20.0,
+            "allowStackingOnTop": false,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-006",
+            "name": "可侧放箱体-218",
+            "w": 0.585,
+            "d": 0.372,
+            "h": 0.374,
+            "weight": 19.5,
+            "quantity": 68,
+            "allowFlat": true,
+            "allowSide": true,
+            "max_stack_layers": 2
+        }
+    ]
+}

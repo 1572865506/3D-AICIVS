@@ -1,0 +1,52 @@
+{
+    "case_id": "GEN-RAND-42-0007",
+    "case_name": "随机生成: 40GP-LIGHT-TIPPING_RISK (seed=42)",
+    "description": "Random: container=40GP, constraint=LIGHT, rigid=FULL_RIGID, hetero=LOW, scenario=TIPPING_RISK, seed=42",
+    "tags": [
+        "40GP",
+        "LIGHT",
+        "FULL_RIGID",
+        "LOW",
+        "TIPPING_RISK",
+        "RANDOM"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.393
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "高瘦箱体-385",
+            "w": 0.473,
+            "d": 0.395,
+            "h": 0.84,
+            "weight": 14.4,
+            "quantity": 55,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "SKU-002",
+            "name": "重型底座/底盘-795",
+            "w": 1.092,
+            "d": 0.661,
+            "h": 0.482,
+            "weight": 35.8,
+            "quantity": 31,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "SKU-003",
+            "name": "立方箱体-282",
+            "w": 0.466,
+            "d": 0.547,
+            "h": 0.358,
+            "weight": 14.0,
+            "quantity": 94
+        }
+    ]
+}

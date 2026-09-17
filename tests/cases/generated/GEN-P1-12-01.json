@@ -1,0 +1,158 @@
+{
+    "case_id": "GEN-P1-12-01",
+    "case_name": "自动生成: 45HQ-中约束-NORMAL",
+    "description": "Auto-generated: container=45HQ, constraint=MEDIUM, rigid=DOMINANT_RIGID, hetero=HIGH, scenario=NORMAL",
+    "tags": [
+        "45HQ",
+        "MEDIUM",
+        "DOMINANT_RIGID",
+        "HIGH",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 13.556,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 25.6
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "限层堆叠箱-573",
+            "w": 0.555,
+            "d": 0.448,
+            "h": 0.41,
+            "weight": 24.1,
+            "quantity": 57,
+            "max_stack_layers": 2,
+            "maxBearingKg": 30.0
+        },
+        {
+            "sku": "SKU-002",
+            "name": "竖放专用屏-886",
+            "w": 0.677,
+            "d": 0.08,
+            "h": 0.536,
+            "weight": 6.4,
+            "quantity": 81,
+            "allowFlat": false,
+            "allowSide": false,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-003",
+            "name": "小配件箱-247",
+            "w": 0.349,
+            "d": 0.173,
+            "h": 0.191,
+            "weight": 4.1,
+            "quantity": 331,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-004",
+            "name": "立方箱体-723",
+            "w": 0.438,
+            "d": 0.514,
+            "h": 0.497,
+            "weight": 17.3,
+            "quantity": 139,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-005",
+            "name": "托盘化大件-206",
+            "w": 1.083,
+            "d": 0.905,
+            "h": 0.692,
+            "weight": 88.8,
+            "quantity": 33,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-006",
+            "name": "小显示器-245",
+            "w": 0.517,
+            "d": 0.071,
+            "h": 0.357,
+            "weight": 5.9,
+            "quantity": 246,
+            "allowedOrientation": "upright",
+            "allowDoorZone": true,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-007",
+            "name": "中尺寸电视-842",
+            "w": 0.938,
+            "d": 0.122,
+            "h": 0.521,
+            "weight": 8.6,
+            "quantity": 169,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-008",
+            "name": "可侧放箱体-977",
+            "w": 0.543,
+            "d": 0.346,
+            "h": 0.375,
+            "weight": 14.0,
+            "quantity": 53,
+            "allowFlat": true,
+            "allowSide": true,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-009",
+            "name": "长条形管箱-539",
+            "w": 1.049,
+            "d": 0.171,
+            "h": 0.269,
+            "weight": 6.0,
+            "quantity": 96,
+            "allowFlat": true,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-010",
+            "name": "零承重板件-370",
+            "w": 0.774,
+            "d": 0.589,
+            "h": 0.112,
+            "weight": 16.4,
+            "quantity": 47,
+            "maxBearingKg": 0.0,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-011",
+            "name": "封门面板-148",
+            "w": 0.645,
+            "d": 0.1,
+            "h": 0.43,
+            "weight": 3.7,
+            "quantity": 132,
+            "allowDoorZone": true,
+            "requirement": "封柜门",
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-012",
+            "name": "高瘦箱体-108",
+            "w": 0.432,
+            "d": 0.39,
+            "h": 0.821,
+            "weight": 17.6,
+            "quantity": 42,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 4
+        }
+    ]
+}

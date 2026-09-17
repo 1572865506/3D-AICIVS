@@ -1,0 +1,53 @@
+{
+    "case_id": "INTERLEAVED-STACK-LAYERS",
+    "case_name": "夹心非连续同品层数 (测间接垂直投影层数合规)",
+    "description": "Testing whether layer depth accumulates across intermediate other-SKU layers",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "INT-A",
+            "name": "夹心敏感箱A",
+            "w": 0.6,
+            "d": 0.5,
+            "h": 0.35,
+            "weight": 15.0,
+            "quantity": 60,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "INT-SEP",
+            "name": "隔断托板B",
+            "w": 0.6,
+            "d": 0.5,
+            "h": 0.15,
+            "weight": 8.0,
+            "quantity": 60
+        },
+        {
+            "sku": "INT-TOP",
+            "name": "普通上层填充",
+            "w": 0.4,
+            "d": 0.3,
+            "h": 0.25,
+            "weight": 5.0,
+            "quantity": 140
+        },
+        {
+            "sku": "INT-ELAS",
+            "name": "弹性填隙小件",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 2.0,
+            "quantity": 200,
+            "isElastic": true
+        }
+    ]
+}

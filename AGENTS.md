@@ -259,6 +259,7 @@ Changed: _solve_single_trial PASS1, composite_strip.py
 | **L1** | 每次代码修改后 | 见下方 | <30s | 冒烟验证：只确认不崩溃 |
 | **L2** | L1 通过 + 修改了算法逻辑 | 见下方 | 30-60s | 核心基线：单用例验证关键指标 |
 | **L3** | 准备提交或交接时 | 见下方 | 5-10min | 全量回归：15 用例完整审计 |
+| **L4** | 重大重构/发布前/批量归因 | 见下方 | 10-30min | 平台级大规模工况与随机对抗压测 (100~300+用例) |
 
 **L1 冒烟测试**（每次修改后必跑）：
 ```bash
@@ -276,7 +277,20 @@ python tests/benchmark_suite.py --run
 python tests/regression_guard.py
 ```
 
-> ⚠️ **禁止跳级**：不准跳过 L1 直接跑 L3。不准每次微小修改后跑 L3。
+**L4 平台级测试与故障归因**（扩展至 100~300+ 生产级与随机工况）：
+```bash
+# Tier 1: 核心 100 用例自动化闭环（自动运行、归因并输出精简报告）
+python scripts/test_harness/runner.py --tier 1
+
+# 指定特定约束或柜型批量诊断
+python scripts/test_harness/runner.py --tags door,bearing
+python scripts/test_harness/runner.py --container 20GP,45HQ
+
+# 增量模式（只跑发生变动的用例）
+python scripts/test_harness/runner.py --incremental
+```
+
+> ⚠️ **禁止跳级**：不准跳过 L1 直接跑 L3/L4。不准每次微小修改后跑 L3/L4。
 
 ### 5.2 Token 节约绝对禁止事项
 

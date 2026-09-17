@@ -1,0 +1,45 @@
+{
+    "case_id": "STRICT-THREE-STACK-LAYERS",
+    "case_name": "严格三层堆叠限制 (测层数达到后截断与上层平接)",
+    "description": "SKUs capping precisely at 3 layers",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "3LAYER-01",
+            "name": "三层限定设备箱",
+            "w": 0.7,
+            "d": 0.45,
+            "h": 0.38,
+            "weight": 22.0,
+            "quantity": 75,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "3LAYER-02",
+            "name": "三层限定备件盒",
+            "w": 0.5,
+            "d": 0.4,
+            "h": 0.3,
+            "weight": 12.0,
+            "quantity": 90,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "TOP-CUSHION",
+            "name": "顶部缓冲小包",
+            "w": 0.3,
+            "d": 0.25,
+            "h": 0.2,
+            "weight": 3.0,
+            "quantity": 220,
+            "isElastic": true
+        }
+    ]
+}

@@ -1,0 +1,27 @@
+{
+    "20GP": {
+        "name": "20尺标准箱",
+        "usable": {"L": 5.898, "W": 2.352, "H": 2.393},
+        "maxPayloadTons": 21.8
+    },
+    "40GP": {
+        "name": "40尺标准箱",
+        "usable": {"L": 12.032, "W": 2.352, "H": 2.393},
+        "maxPayloadTons": 26.5
+    },
+    "40HQ": {
+        "name": "40尺高柜",
+        "usable": {"L": 12.032, "W": 2.352, "H": 2.698},
+        "maxPayloadTons": 26.5
+    },
+    "45HQ": {
+        "name": "45尺高柜",
+        "usable": {"L": 13.556, "W": 2.352, "H": 2.698},
+        "maxPayloadTons": 25.6
+    },
+    "53HQ": {
+        "name": "53尺高柜",
+        "usable": {"L": 16.154, "W": 2.438, "H": 2.694},
+        "maxPayloadTons": 27.0
+    }
+}

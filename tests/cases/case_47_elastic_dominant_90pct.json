@@ -1,0 +1,54 @@
+{
+    "case_id": "ELASTIC-DOMINANT-90PCT",
+    "case_name": "弹性占90%海量吞吐 (测优先保证刚性100%不倒挂)",
+    "description": "Small batch of rigid items (10%) immersed in massive pool of elastic goods (90%)",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "PRIOR-RIGID-1",
+            "name": "优先刚性件1号",
+            "w": 0.7,
+            "d": 0.5,
+            "h": 0.4,
+            "weight": 25.0,
+            "quantity": 25,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "PRIOR-RIGID-2",
+            "name": "优先刚性件2号",
+            "w": 0.5,
+            "d": 0.4,
+            "h": 0.35,
+            "weight": 15.0,
+            "quantity": 40
+        },
+        {
+            "sku": "OCEAN-ELAS-A",
+            "name": "海量弹性件A",
+            "w": 0.4,
+            "d": 0.3,
+            "h": 0.25,
+            "weight": 6.0,
+            "quantity": 600,
+            "isElastic": true
+        },
+        {
+            "sku": "OCEAN-ELAS-B",
+            "name": "海量弹性件B",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.2,
+            "weight": 3.0,
+            "quantity": 800,
+            "isElastic": true
+        }
+    ]
+}

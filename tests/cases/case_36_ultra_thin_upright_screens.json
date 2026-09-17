@@ -1,0 +1,48 @@
+{
+    "case_id": "ULTRA-THIN-UPRIGHT-SCREENS",
+    "case_name": "超薄直立屏防倾覆 (测极限厚度与侧向支撑)",
+    "description": "Thin glass sheets (thickness 0.08m) with strict upright constraints",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "THIN-SCREEN",
+            "name": "65寸超薄显示屏",
+            "w": 0.95,
+            "d": 0.08,
+            "h": 0.7,
+            "weight": 9.0,
+            "quantity": 220,
+            "allowFlat": false,
+            "allowSide": false,
+            "allowedOrientation": "upright",
+            "requirement": "仅竖放,严禁平放"
+        },
+        {
+            "sku": "SUPPORT-FRAME",
+            "name": "立屏间夹紧木架",
+            "w": 0.5,
+            "d": 0.4,
+            "h": 0.35,
+            "weight": 16.0,
+            "quantity": 80,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "SCREEN-ELAS",
+            "name": "防震弹性缓冲块",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 2.0,
+            "quantity": 220,
+            "isElastic": true
+        }
+    ]
+}

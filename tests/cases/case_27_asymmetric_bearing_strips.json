@@ -1,0 +1,56 @@
+{
+    "case_id": "ASYMMETRIC-BEARING-STRIPS",
+    "case_name": "不对称承重长条箱 (测跨箱承压与接触积分)",
+    "description": "Long boxes spanning across multiple lower boxes with differing bearing capacities",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "STRIP-BOT-A",
+            "name": "高承压支架",
+            "w": 0.6,
+            "d": 0.4,
+            "h": 0.4,
+            "weight": 25.0,
+            "quantity": 50,
+            "maxBearingKg": 100.0,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "STRIP-BOT-B",
+            "name": "弱承压支架",
+            "w": 0.6,
+            "d": 0.4,
+            "h": 0.4,
+            "weight": 18.0,
+            "quantity": 50,
+            "maxBearingKg": 30.0,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "SPAN-TOP",
+            "name": "跨界横放长箱",
+            "w": 1.2,
+            "d": 0.4,
+            "h": 0.3,
+            "weight": 20.0,
+            "quantity": 40
+        },
+        {
+            "sku": "ELAS-PLUG",
+            "name": "微小嵌合件",
+            "w": 0.25,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 2.0,
+            "quantity": 200,
+            "isElastic": true
+        }
+    ]
+}

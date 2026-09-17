@@ -1,0 +1,43 @@
+{
+    "case_id": "20GP-NEAR-LIMIT",
+    "case_name": "20GP小柜超限利用 (测短柜极限空间压缩)",
+    "description": "20GP container packed with complementary dimensions",
+    "container": {
+        "usable": {
+            "L": 5.898,
+            "W": 2.352,
+            "H": 2.385
+        },
+        "maxPayloadTons": 21.8
+    },
+    "cargo": [
+        {
+            "sku": "20-FIT-A",
+            "name": "小柜模数箱A",
+            "w": 0.58,
+            "d": 0.39,
+            "h": 0.38,
+            "weight": 15.0,
+            "quantity": 120
+        },
+        {
+            "sku": "20-FIT-B",
+            "name": "小柜模数箱B",
+            "w": 0.48,
+            "d": 0.38,
+            "h": 0.3,
+            "weight": 11.0,
+            "quantity": 140
+        },
+        {
+            "sku": "20-FIT-ELAS",
+            "name": "小柜填平弹性件",
+            "w": 0.28,
+            "d": 0.19,
+            "h": 0.18,
+            "weight": 3.0,
+            "quantity": 180,
+            "isElastic": true
+        }
+    ]
+}

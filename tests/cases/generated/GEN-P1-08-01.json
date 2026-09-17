@@ -1,0 +1,54 @@
+{
+    "case_id": "GEN-P1-08-01",
+    "case_name": "自动生成: 20GP-无约束-NORMAL",
+    "description": "Auto-generated: container=20GP, constraint=NONE, rigid=FULL_RIGID, hetero=LOW, scenario=NORMAL",
+    "tags": [
+        "20GP",
+        "NONE",
+        "FULL_RIGID",
+        "LOW",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 5.898,
+            "W": 2.352,
+            "H": 2.393
+        },
+        "maxPayloadTons": 21.8
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "精密仪器箱-386",
+            "w": 0.5,
+            "d": 0.583,
+            "h": 0.47,
+            "weight": 15.8,
+            "quantity": 52,
+            "maxBearingKg": 20.0,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-002",
+            "name": "高瘦箱体-701",
+            "w": 0.492,
+            "d": 0.254,
+            "h": 0.727,
+            "weight": 8.0,
+            "quantity": 61,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "SKU-003",
+            "name": "扁平板材-341",
+            "w": 0.847,
+            "d": 0.944,
+            "h": 0.125,
+            "weight": 24.2,
+            "quantity": 32,
+            "allowStackingOnTop": false
+        }
+    ]
+}

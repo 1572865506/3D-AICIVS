@@ -1,0 +1,157 @@
+{
+    "case_id": "GEN-RAND-42-0009",
+    "case_name": "随机生成: 40HQ-MEDIUM-EXTREME_RATIO (seed=42)",
+    "description": "Random: container=40HQ, constraint=MEDIUM, rigid=DOMINANT_RIGID, hetero=HIGH, scenario=EXTREME_RATIO, seed=42",
+    "tags": [
+        "40HQ",
+        "MEDIUM",
+        "DOMINANT_RIGID",
+        "HIGH",
+        "EXTREME_RATIO",
+        "RANDOM"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "长条形管箱-912",
+            "w": 1.721,
+            "d": 0.269,
+            "h": 0.175,
+            "weight": 6.1,
+            "quantity": 95,
+            "allowFlat": true,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-002",
+            "name": "扁平板材-748",
+            "w": 0.848,
+            "d": 0.633,
+            "h": 0.193,
+            "weight": 12.0,
+            "quantity": 49,
+            "allowStackingOnTop": false,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-003",
+            "name": "大尺寸电视-925",
+            "w": 1.28,
+            "d": 0.141,
+            "h": 0.811,
+            "weight": 16.8,
+            "quantity": 94,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-004",
+            "name": "竖放专用屏-566",
+            "w": 0.666,
+            "d": 0.081,
+            "h": 0.408,
+            "weight": 6.5,
+            "quantity": 176,
+            "allowFlat": false,
+            "allowSide": false,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-005",
+            "name": "可侧放箱体-349",
+            "w": 0.53,
+            "d": 0.403,
+            "h": 0.479,
+            "weight": 18.6,
+            "quantity": 53,
+            "allowFlat": true,
+            "allowSide": true,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-006",
+            "name": "立方箱体-324",
+            "w": 0.385,
+            "d": 0.542,
+            "h": 0.454,
+            "weight": 8.5,
+            "quantity": 81,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-007",
+            "name": "精密仪器箱-567",
+            "w": 0.527,
+            "d": 0.493,
+            "h": 0.43,
+            "weight": 23.4,
+            "quantity": 40,
+            "maxBearingKg": 20.0,
+            "allowStackingOnTop": false,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-008",
+            "name": "零承重板件-727",
+            "w": 0.845,
+            "d": 0.668,
+            "h": 0.131,
+            "weight": 17.1,
+            "quantity": 58,
+            "maxBearingKg": 0.0,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-009",
+            "name": "高瘦箱体-861",
+            "w": 0.472,
+            "d": 0.318,
+            "h": 1.076,
+            "weight": 16.4,
+            "quantity": 47,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-010",
+            "name": "标准纸箱-596",
+            "w": 0.557,
+            "d": 0.355,
+            "h": 0.265,
+            "weight": 10.9,
+            "quantity": 169,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-011",
+            "name": "小配件箱-427",
+            "w": 0.384,
+            "d": 0.162,
+            "h": 0.14,
+            "weight": 2.8,
+            "quantity": 228,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-012",
+            "name": "封门面板-319",
+            "w": 0.466,
+            "d": 0.084,
+            "h": 0.381,
+            "weight": 5.1,
+            "quantity": 112,
+            "allowDoorZone": true,
+            "requirement": "封柜门",
+            "max_stack_layers": 3
+        }
+    ]
+}

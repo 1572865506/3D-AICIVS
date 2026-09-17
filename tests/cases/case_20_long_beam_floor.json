@@ -1,0 +1,46 @@
+{
+    "case_id": "LONG-BEAM-FLOOR",
+    "case_name": "长条异形底座落地 (测横纵铺排与底支撑)",
+    "description": "Long structural bases (2.2m) requiring floor placement, supporting normal boxes",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "BEAM-01",
+            "name": "2.2米承重纵梁",
+            "w": 2.2,
+            "d": 0.45,
+            "h": 0.35,
+            "weight": 75.0,
+            "quantity": 16,
+            "mustBeOnFloor": true,
+            "allowFlat": false,
+            "requirement": "必须落地"
+        },
+        {
+            "sku": "NORM-BOX",
+            "name": "标准上层周转箱",
+            "w": 0.45,
+            "d": 0.35,
+            "h": 0.3,
+            "weight": 10.0,
+            "quantity": 220
+        },
+        {
+            "sku": "ELAS-PLUG",
+            "name": "弹性插空件",
+            "w": 0.3,
+            "d": 0.25,
+            "h": 0.2,
+            "weight": 3.0,
+            "quantity": 180,
+            "isElastic": true
+        }
+    ]
+}

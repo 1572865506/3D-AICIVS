@@ -1,0 +1,65 @@
+{
+    "_doc": "约束组合矩阵。每个 combo 定义一组约束的激活模式，用于正交覆盖测试用例生成。",
+    "constraint_levels": {
+        "NONE": {
+            "name": "无约束",
+            "description": "所有SKU无特殊约束，仅依赖默认行为",
+            "active_constraints": []
+        },
+        "LIGHT": {
+            "name": "轻约束",
+            "description": "1-2种约束激活",
+            "active_constraints": ["orientation_locked"]
+        },
+        "MEDIUM": {
+            "name": "中等约束",
+            "description": "3-4种约束激活",
+            "active_constraints": ["orientation_locked", "max_stack_layers", "door_zone"]
+        },
+        "HEAVY": {
+            "name": "全约束",
+            "description": "5+种约束同时激活",
+            "active_constraints": ["orientation_locked", "max_stack_layers", "door_zone", "must_be_on_floor", "max_bearing", "no_top_stack"]
+        }
+    },
+    "rigid_ratios": {
+        "FULL_RIGID": {"rigid_pct": 1.0, "elastic_pct": 0.0},
+        "DOMINANT_RIGID": {"rigid_pct": 0.95, "elastic_pct": 0.05},
+        "HIGH_RIGID": {"rigid_pct": 0.80, "elastic_pct": 0.20},
+        "BALANCED": {"rigid_pct": 0.50, "elastic_pct": 0.50},
+        "FULL_ELASTIC": {"rigid_pct": 0.0, "elastic_pct": 1.0}
+    },
+    "size_heterogeneity": {
+        "UNIFORM": {"description": "同尺寸或近似尺寸", "sku_count": 1, "size_variance": 0.0},
+        "LOW": {"description": "2-3种相近尺寸", "sku_count": 3, "size_variance": 0.2},
+        "MEDIUM": {"description": "5-7种中等差异尺寸", "sku_count": 6, "size_variance": 0.5},
+        "HIGH": {"description": "10+种高差异尺寸", "sku_count": 12, "size_variance": 0.8},
+        "EXTREME": {"description": "20+种极端差异尺寸", "sku_count": 20, "size_variance": 1.0}
+    },
+    "special_scenarios": {
+        "NORMAL": {"description": "普通装载", "focus": []},
+        "DOOR_HEAVY": {"description": "门区密集", "focus": ["door_zone", "door_seal"]},
+        "OVERWEIGHT": {"description": "接近超重极限", "focus": ["weight_limit"]},
+        "TIPPING_RISK": {"description": "倾覆风险", "focus": ["tall_slender", "aspect_ratio"]},
+        "EXTREME_RATIO": {"description": "极端长宽比", "focus": ["aspect_ratio"]}
+    },
+    "phase1_matrix": [
+        {"container": "40HQ", "constraint": "NONE",   "rigid_ratio": "FULL_RIGID",     "heterogeneity": "LOW",     "scenario": "NORMAL",       "count": 3},
+        {"container": "40HQ", "constraint": "LIGHT",  "rigid_ratio": "DOMINANT_RIGID",  "heterogeneity": "MEDIUM",  "scenario": "NORMAL",       "count": 4},
+        {"container": "40HQ", "constraint": "MEDIUM", "rigid_ratio": "HIGH_RIGID",      "heterogeneity": "HIGH",    "scenario": "NORMAL",       "count": 4},
+        {"container": "40HQ", "constraint": "HEAVY",  "rigid_ratio": "BALANCED",        "heterogeneity": "HIGH",    "scenario": "NORMAL",       "count": 3},
+        {"container": "40HQ", "constraint": "MEDIUM", "rigid_ratio": "DOMINANT_RIGID",  "heterogeneity": "MEDIUM",  "scenario": "DOOR_HEAVY",   "count": 3},
+        {"container": "40HQ", "constraint": "HEAVY",  "rigid_ratio": "HIGH_RIGID",      "heterogeneity": "HIGH",    "scenario": "TIPPING_RISK", "count": 3},
+        {"container": "40HQ", "constraint": "MEDIUM", "rigid_ratio": "FULL_ELASTIC",    "heterogeneity": "MEDIUM",  "scenario": "NORMAL",       "count": 2},
+        {"container": "20GP", "constraint": "NONE",   "rigid_ratio": "FULL_RIGID",      "heterogeneity": "LOW",     "scenario": "NORMAL",       "count": 3},
+        {"container": "20GP", "constraint": "MEDIUM", "rigid_ratio": "DOMINANT_RIGID",  "heterogeneity": "MEDIUM",  "scenario": "NORMAL",       "count": 3},
+        {"container": "20GP", "constraint": "HEAVY",  "rigid_ratio": "HIGH_RIGID",      "heterogeneity": "HIGH",    "scenario": "DOOR_HEAVY",   "count": 2},
+        {"container": "45HQ", "constraint": "NONE",   "rigid_ratio": "FULL_RIGID",      "heterogeneity": "LOW",     "scenario": "NORMAL",       "count": 2},
+        {"container": "45HQ", "constraint": "MEDIUM", "rigid_ratio": "DOMINANT_RIGID",  "heterogeneity": "HIGH",    "scenario": "NORMAL",       "count": 3},
+        {"container": "45HQ", "constraint": "HEAVY",  "rigid_ratio": "HIGH_RIGID",      "heterogeneity": "EXTREME", "scenario": "TIPPING_RISK", "count": 2},
+        {"container": "40GP", "constraint": "LIGHT",  "rigid_ratio": "FULL_RIGID",      "heterogeneity": "MEDIUM",  "scenario": "NORMAL",       "count": 2},
+        {"container": "40GP", "constraint": "MEDIUM", "rigid_ratio": "HIGH_RIGID",      "heterogeneity": "HIGH",    "scenario": "OVERWEIGHT",   "count": 2},
+        {"container": "53HQ", "constraint": "MEDIUM", "rigid_ratio": "DOMINANT_RIGID",  "heterogeneity": "HIGH",    "scenario": "NORMAL",       "count": 2},
+        {"container": "53HQ", "constraint": "HEAVY",  "rigid_ratio": "HIGH_RIGID",      "heterogeneity": "EXTREME", "scenario": "EXTREME_RATIO","count": 1}
+    ]
+}

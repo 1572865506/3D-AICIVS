@@ -1,0 +1,55 @@
+{
+    "case_id": "STRICT-TWO-STACK-LAYERS",
+    "case_name": "严格双层堆叠限制 (测同品垂直深度计数)",
+    "description": "Multiple SKUs strictly restricted to max 2 vertical layers",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "2LAYER-A",
+            "name": "双层限高箱A",
+            "w": 0.65,
+            "d": 0.5,
+            "h": 0.4,
+            "weight": 18.0,
+            "quantity": 60,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "2LAYER-B",
+            "name": "双层限高箱B",
+            "w": 0.55,
+            "d": 0.4,
+            "h": 0.35,
+            "weight": 14.0,
+            "quantity": 80,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "FREE-TALL",
+            "name": "高层堆叠允许箱",
+            "w": 0.45,
+            "d": 0.35,
+            "h": 0.3,
+            "weight": 8.0,
+            "quantity": 150,
+            "max_stack_layers": 6
+        },
+        {
+            "sku": "ELAS-REMAIN",
+            "name": "空腔补充弹性件",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 2.0,
+            "quantity": 250,
+            "isElastic": true
+        }
+    ]
+}

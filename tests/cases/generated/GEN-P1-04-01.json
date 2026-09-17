@@ -1,0 +1,137 @@
+{
+    "case_id": "GEN-P1-04-01",
+    "case_name": "自动生成: 40HQ-全约束-NORMAL",
+    "description": "Auto-generated: container=40HQ, constraint=HEAVY, rigid=BALANCED, hetero=HIGH, scenario=NORMAL",
+    "tags": [
+        "40HQ",
+        "HEAVY",
+        "BALANCED",
+        "HIGH",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "小显示器-573",
+            "w": 0.544,
+            "d": 0.065,
+            "h": 0.415,
+            "weight": 5.6,
+            "quantity": 127,
+            "allowedOrientation": "upright",
+            "allowDoorZone": true,
+            "max_stack_layers": 3,
+            "maxBearingKg": 15.8
+        },
+        {
+            "sku": "SKU-002",
+            "name": "重型底座/底盘-120",
+            "w": 0.95,
+            "d": 0.762,
+            "h": 0.365,
+            "weight": 63.6,
+            "quantity": 32,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 2,
+            "maxBearingKg": 73.0
+        },
+        {
+            "sku": "SKU-003",
+            "name": "标准纸箱-497",
+            "w": 0.53,
+            "d": 0.427,
+            "h": 0.304,
+            "weight": 13.0,
+            "quantity": 168,
+            "max_stack_layers": 3,
+            "maxBearingKg": 62.4
+        },
+        {
+            "sku": "SKU-004",
+            "name": "零承重板件-825",
+            "w": 0.751,
+            "d": 0.558,
+            "h": 0.198,
+            "weight": 9.8,
+            "quantity": 69,
+            "maxBearingKg": 0.0,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-005",
+            "name": "可侧放箱体-103",
+            "w": 0.651,
+            "d": 0.348,
+            "h": 0.4,
+            "weight": 11.7,
+            "quantity": 119,
+            "allowFlat": true,
+            "allowSide": true,
+            "max_stack_layers": 4,
+            "maxBearingKg": 56.0,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-006",
+            "name": "托盘化大件-812",
+            "w": 1.15,
+            "d": 0.952,
+            "h": 0.626,
+            "weight": 78.5,
+            "quantity": 16,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 2,
+            "maxBearingKg": 26.4
+        },
+        {
+            "sku": "SKU-007",
+            "name": "微型方块-831",
+            "w": 0.133,
+            "d": 0.156,
+            "h": 0.154,
+            "weight": 1.2,
+            "quantity": 352,
+            "isElastic": true,
+            "max_stack_layers": 4,
+            "maxBearingKg": 40.8,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "SKU-008",
+            "name": "弹性填充件-505",
+            "w": 0.208,
+            "d": 0.206,
+            "h": 0.124,
+            "weight": 1.6,
+            "quantity": 168,
+            "isElastic": true,
+            "requirement": "按需调节",
+            "max_stack_layers": 2,
+            "maxBearingKg": 54.0,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-009",
+            "name": "弹性封门件-494",
+            "w": 0.532,
+            "d": 0.074,
+            "h": 0.284,
+            "weight": 2.0,
+            "quantity": 184,
+            "isElastic": true,
+            "allowDoorZone": true,
+            "requirement": "封柜门,按需调节",
+            "max_stack_layers": 2,
+            "maxBearingKg": 29.8
+        }
+    ]
+}

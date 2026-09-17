@@ -1,0 +1,127 @@
+{
+    "case_id": "TWELVE-SKU-COMPLEX-MOSAIC",
+    "case_name": "12种复杂尺寸异型拼合 (测多模态宽度带与回填)",
+    "description": "12 distinctly sized SKUs with complementary aspect ratios",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "MOS-01",
+            "name": "基底大板",
+            "w": 1.1,
+            "d": 0.75,
+            "h": 0.4,
+            "weight": 40.0,
+            "quantity": 15,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "MOS-02",
+            "name": "重方块",
+            "w": 0.6,
+            "d": 0.6,
+            "h": 0.6,
+            "weight": 35.0,
+            "quantity": 25,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "MOS-03",
+            "name": "中型长条",
+            "w": 0.9,
+            "d": 0.35,
+            "h": 0.3,
+            "weight": 18.0,
+            "quantity": 40
+        },
+        {
+            "sku": "MOS-04",
+            "name": "中型宽板",
+            "w": 0.7,
+            "d": 0.5,
+            "h": 0.35,
+            "weight": 16.0,
+            "quantity": 45
+        },
+        {
+            "sku": "MOS-05",
+            "name": "标准中方",
+            "w": 0.5,
+            "d": 0.5,
+            "h": 0.4,
+            "weight": 14.0,
+            "quantity": 60
+        },
+        {
+            "sku": "MOS-06",
+            "name": "普通标箱",
+            "w": 0.5,
+            "d": 0.4,
+            "h": 0.35,
+            "weight": 12.0,
+            "quantity": 80
+        },
+        {
+            "sku": "MOS-07",
+            "name": "狭长小盒",
+            "w": 0.6,
+            "d": 0.2,
+            "h": 0.25,
+            "weight": 6.0,
+            "quantity": 70
+        },
+        {
+            "sku": "MOS-08",
+            "name": "薄平盒",
+            "w": 0.45,
+            "d": 0.35,
+            "h": 0.15,
+            "weight": 5.0,
+            "quantity": 90
+        },
+        {
+            "sku": "MOS-09",
+            "name": "微型立方",
+            "w": 0.3,
+            "d": 0.3,
+            "h": 0.3,
+            "weight": 6.0,
+            "quantity": 80
+        },
+        {
+            "sku": "MOS-10",
+            "name": "扁平填片",
+            "w": 0.4,
+            "d": 0.25,
+            "h": 0.12,
+            "weight": 3.0,
+            "quantity": 110
+        },
+        {
+            "sku": "MOS-11",
+            "name": "微小垫块",
+            "w": 0.25,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 2.0,
+            "quantity": 150,
+            "isElastic": true
+        },
+        {
+            "sku": "MOS-12",
+            "name": "封门护板",
+            "w": 0.55,
+            "d": 0.1,
+            "h": 0.35,
+            "weight": 4.0,
+            "quantity": 60,
+            "allowDoorZone": true
+        }
+    ]
+}

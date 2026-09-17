@@ -1,0 +1,65 @@
+{
+    "case_id": "GEN-RAND-42-0008",
+    "case_name": "随机生成: 40HQ-HEAVY-NORMAL (seed=42)",
+    "description": "Random: container=40HQ, constraint=HEAVY, rigid=FULL_ELASTIC, hetero=EXTREME, scenario=NORMAL, seed=42",
+    "tags": [
+        "40HQ",
+        "HEAVY",
+        "FULL_ELASTIC",
+        "EXTREME",
+        "NORMAL",
+        "RANDOM"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "弹性封门件-145",
+            "w": 0.506,
+            "d": 0.06,
+            "h": 0.389,
+            "weight": 2.6,
+            "quantity": 130,
+            "isElastic": true,
+            "allowDoorZone": true,
+            "requirement": "封柜门,按需调节",
+            "max_stack_layers": 3,
+            "maxBearingKg": 40.2,
+            "mustBeOnFloor": true,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-002",
+            "name": "弹性填充件-738",
+            "w": 0.263,
+            "d": 0.277,
+            "h": 0.208,
+            "weight": 1.9,
+            "quantity": 258,
+            "isElastic": true,
+            "requirement": "按需调节",
+            "max_stack_layers": 4,
+            "maxBearingKg": 38.6
+        },
+        {
+            "sku": "SKU-003",
+            "name": "微型方块-230",
+            "w": 0.119,
+            "d": 0.166,
+            "h": 0.138,
+            "weight": 1.6,
+            "quantity": 378,
+            "isElastic": true,
+            "max_stack_layers": 4,
+            "maxBearingKg": 49.8,
+            "allowStackingOnTop": false
+        }
+    ]
+}

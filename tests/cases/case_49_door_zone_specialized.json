@@ -1,0 +1,58 @@
+{
+    "case_id": "DOOR-ZONE-SPECIALIZED",
+    "case_name": "门区专用密集装载 (测封门区段排他性与平整)",
+    "description": "Specialized door zone SKUs requiring door zone placement and strict sealing",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "MAIN-INNER",
+            "name": "内舱普通大箱",
+            "w": 0.7,
+            "d": 0.5,
+            "h": 0.4,
+            "weight": 22.0,
+            "quantity": 160,
+            "requirement": "最里面"
+        },
+        {
+            "sku": "DOOR-PANEL-1",
+            "name": "专用封门屏A",
+            "w": 0.58,
+            "d": 0.1,
+            "h": 0.38,
+            "weight": 6.0,
+            "quantity": 180,
+            "allowDoorZone": true,
+            "requirement": "封柜门"
+        },
+        {
+            "sku": "DOOR-PANEL-2",
+            "name": "专用封门屏B",
+            "w": 0.65,
+            "d": 0.12,
+            "h": 0.42,
+            "weight": 7.5,
+            "quantity": 140,
+            "allowDoorZone": true,
+            "requirement": "封柜门"
+        },
+        {
+            "sku": "DOOR-PLUG",
+            "name": "门边防磕弹性垫",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 2.0,
+            "quantity": 150,
+            "isElastic": true,
+            "allowDoorZone": true
+        }
+    ]
+}

@@ -1,0 +1,45 @@
+{
+    "case_id": "NOTOP-LARGE-WITH-ELASTIC-BURST",
+    "case_name": "禁压件与高密度弹性件 (测空腔深度吞吐与反穿)",
+    "description": "Capped height due to no-top items, requiring large elastic items to consume clear headroom",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "BIG-NOTOP",
+            "name": "大号封顶精密柜",
+            "w": 0.9,
+            "d": 0.6,
+            "h": 0.7,
+            "weight": 40.0,
+            "quantity": 35,
+            "allowStackingOnTop": false,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "SIDE-COL",
+            "name": "侧边通顶柱箱",
+            "w": 0.45,
+            "d": 0.45,
+            "h": 0.5,
+            "weight": 18.0,
+            "quantity": 60
+        },
+        {
+            "sku": "BURST-ELAS",
+            "name": "穿插弹性箱",
+            "w": 0.35,
+            "d": 0.25,
+            "h": 0.2,
+            "weight": 3.0,
+            "quantity": 400,
+            "isElastic": true
+        }
+    ]
+}

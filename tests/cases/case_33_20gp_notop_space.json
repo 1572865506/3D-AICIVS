@@ -1,0 +1,45 @@
+{
+    "case_id": "20GP-NOTOP-SPACE",
+    "case_name": "20GP小柜禁压调度 (测短柜禁叠空间利用)",
+    "description": "20GP container with fragile unstackable modules",
+    "container": {
+        "usable": {
+            "L": 5.898,
+            "W": 2.352,
+            "H": 2.385
+        },
+        "maxPayloadTons": 21.8
+    },
+    "cargo": [
+        {
+            "sku": "20GP-NOTOP",
+            "name": "小柜禁压设备",
+            "w": 0.8,
+            "d": 0.6,
+            "h": 0.6,
+            "weight": 35.0,
+            "quantity": 14,
+            "allowStackingOnTop": false,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "20GP-STD",
+            "name": "小柜伴随箱",
+            "w": 0.4,
+            "d": 0.3,
+            "h": 0.3,
+            "weight": 10.0,
+            "quantity": 90
+        },
+        {
+            "sku": "20GP-ELAS",
+            "name": "小柜弹性填平件",
+            "w": 0.25,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 2.0,
+            "quantity": 180,
+            "isElastic": true
+        }
+    ]
+}

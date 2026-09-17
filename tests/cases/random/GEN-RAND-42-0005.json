@@ -1,0 +1,198 @@
+{
+    "case_id": "GEN-RAND-42-0005",
+    "case_name": "随机生成: 40HQ-NONE-TIPPING_RISK (seed=42)",
+    "description": "Random: container=40HQ, constraint=NONE, rigid=FULL_RIGID, hetero=EXTREME, scenario=TIPPING_RISK, seed=42",
+    "tags": [
+        "40HQ",
+        "NONE",
+        "FULL_RIGID",
+        "EXTREME",
+        "TIPPING_RISK",
+        "RANDOM"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "高瘦箱体-692",
+            "w": 0.419,
+            "d": 0.343,
+            "h": 0.91,
+            "weight": 13.8,
+            "quantity": 63,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "SKU-002",
+            "name": "重型底座/底盘-423",
+            "w": 1.074,
+            "d": 0.561,
+            "h": 0.415,
+            "weight": 41.9,
+            "quantity": 40,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "SKU-003",
+            "name": "托盘化大件-234",
+            "w": 1.134,
+            "d": 0.92,
+            "h": 0.726,
+            "weight": 102.6,
+            "quantity": 12,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-004",
+            "name": "限层堆叠箱-109",
+            "w": 0.592,
+            "d": 0.5,
+            "h": 0.449,
+            "weight": 13.0,
+            "quantity": 53,
+            "max_stack_layers": 2,
+            "maxBearingKg": 30.0
+        },
+        {
+            "sku": "SKU-005",
+            "name": "零承重板件-618",
+            "w": 0.68,
+            "d": 0.68,
+            "h": 0.186,
+            "weight": 16.8,
+            "quantity": 53,
+            "maxBearingKg": 0.0
+        },
+        {
+            "sku": "SKU-006",
+            "name": "小显示器-391",
+            "w": 0.474,
+            "d": 0.093,
+            "h": 0.406,
+            "weight": 7.1,
+            "quantity": 267,
+            "allowedOrientation": "upright",
+            "allowDoorZone": true
+        },
+        {
+            "sku": "SKU-007",
+            "name": "大尺寸电视-641",
+            "w": 1.203,
+            "d": 0.189,
+            "h": 0.825,
+            "weight": 18.6,
+            "quantity": 100,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "SKU-008",
+            "name": "可侧放箱体-999",
+            "w": 0.527,
+            "d": 0.317,
+            "h": 0.321,
+            "weight": 15.5,
+            "quantity": 74,
+            "allowFlat": true,
+            "allowSide": true
+        },
+        {
+            "sku": "SKU-009",
+            "name": "中尺寸电视-388",
+            "w": 0.981,
+            "d": 0.149,
+            "h": 0.541,
+            "weight": 10.2,
+            "quantity": 113,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "SKU-010",
+            "name": "竖放专用屏-617",
+            "w": 0.695,
+            "d": 0.095,
+            "h": 0.604,
+            "weight": 3.5,
+            "quantity": 158,
+            "allowFlat": false,
+            "allowSide": false,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "SKU-011",
+            "name": "封门面板-949",
+            "w": 0.519,
+            "d": 0.06,
+            "h": 0.416,
+            "weight": 6.2,
+            "quantity": 127,
+            "allowDoorZone": true,
+            "requirement": "封柜门"
+        },
+        {
+            "sku": "SKU-012",
+            "name": "小配件箱-265",
+            "w": 0.361,
+            "d": 0.233,
+            "h": 0.176,
+            "weight": 1.5,
+            "quantity": 188
+        },
+        {
+            "sku": "SKU-013",
+            "name": "长条形管箱-807",
+            "w": 1.723,
+            "d": 0.232,
+            "h": 0.275,
+            "weight": 12.6,
+            "quantity": 48,
+            "allowFlat": true
+        },
+        {
+            "sku": "SKU-014",
+            "name": "精密仪器箱-540",
+            "w": 0.525,
+            "d": 0.462,
+            "h": 0.485,
+            "weight": 26.9,
+            "quantity": 22,
+            "maxBearingKg": 20.0,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-015",
+            "name": "标准纸箱-466",
+            "w": 0.453,
+            "d": 0.35,
+            "h": 0.271,
+            "weight": 15.8,
+            "quantity": 204
+        },
+        {
+            "sku": "SKU-016",
+            "name": "立方箱体-735",
+            "w": 0.5,
+            "d": 0.535,
+            "h": 0.397,
+            "weight": 9.6,
+            "quantity": 72
+        },
+        {
+            "sku": "SKU-017",
+            "name": "扁平板材-522",
+            "w": 0.61,
+            "d": 0.858,
+            "h": 0.1,
+            "weight": 23.8,
+            "quantity": 72,
+            "allowStackingOnTop": false
+        }
+    ]
+}

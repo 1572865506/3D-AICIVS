@@ -1,0 +1,52 @@
+{
+    "case_id": "RIGID-OVERLOAD-150PCT",
+    "case_name": "刚性总体积150%超载 (测公平分配与防彻底饥饿)",
+    "description": "Total requested rigid volume exceeds 40HQ usable capacity by 50%",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "OVER-A",
+            "name": "超额刚性A",
+            "w": 0.6,
+            "d": 0.5,
+            "h": 0.4,
+            "weight": 20.0,
+            "quantity": 300
+        },
+        {
+            "sku": "OVER-B",
+            "name": "超额刚性B",
+            "w": 0.5,
+            "d": 0.4,
+            "h": 0.35,
+            "weight": 14.0,
+            "quantity": 400
+        },
+        {
+            "sku": "OVER-C",
+            "name": "超额刚性C",
+            "w": 0.45,
+            "d": 0.3,
+            "h": 0.3,
+            "weight": 10.0,
+            "quantity": 450
+        },
+        {
+            "sku": "OVER-ELAS",
+            "name": "伴随弹性件",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 2.0,
+            "quantity": 100,
+            "isElastic": true
+        }
+    ]
+}

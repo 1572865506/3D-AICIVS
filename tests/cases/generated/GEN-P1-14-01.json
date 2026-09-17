@@ -1,0 +1,86 @@
+{
+    "case_id": "GEN-P1-14-01",
+    "case_name": "自动生成: 40GP-轻约束-NORMAL",
+    "description": "Auto-generated: container=40GP, constraint=LIGHT, rigid=FULL_RIGID, hetero=MEDIUM, scenario=NORMAL",
+    "tags": [
+        "40GP",
+        "LIGHT",
+        "FULL_RIGID",
+        "MEDIUM",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.393
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "精密仪器箱-197",
+            "w": 0.602,
+            "d": 0.524,
+            "h": 0.468,
+            "weight": 22.8,
+            "quantity": 52,
+            "maxBearingKg": 20.0,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-002",
+            "name": "托盘化大件-977",
+            "w": 1.14,
+            "d": 0.849,
+            "h": 0.665,
+            "weight": 53.3,
+            "quantity": 19,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-003",
+            "name": "限层堆叠箱-814",
+            "w": 0.592,
+            "d": 0.41,
+            "h": 0.415,
+            "weight": 24.0,
+            "quantity": 76,
+            "max_stack_layers": 2,
+            "maxBearingKg": 30.0
+        },
+        {
+            "sku": "SKU-004",
+            "name": "立方箱体-508",
+            "w": 0.5,
+            "d": 0.481,
+            "h": 0.424,
+            "weight": 10.2,
+            "quantity": 150
+        },
+        {
+            "sku": "SKU-005",
+            "name": "重型底座/底盘-694",
+            "w": 0.789,
+            "d": 0.575,
+            "h": 0.247,
+            "weight": 68.5,
+            "quantity": 45,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "SKU-006",
+            "name": "小显示器-288",
+            "w": 0.555,
+            "d": 0.08,
+            "h": 0.314,
+            "weight": 6.8,
+            "quantity": 111,
+            "allowedOrientation": "upright",
+            "allowDoorZone": true
+        }
+    ]
+}

@@ -1,0 +1,100 @@
+{
+    "case_id": "GEN-RAND-42-0002",
+    "case_name": "随机生成: 40GP-HEAVY-DOOR_HEAVY (seed=42)",
+    "description": "Random: container=40GP, constraint=HEAVY, rigid=HIGH_RIGID, hetero=MEDIUM, scenario=DOOR_HEAVY, seed=42",
+    "tags": [
+        "40GP",
+        "HEAVY",
+        "HIGH_RIGID",
+        "MEDIUM",
+        "DOOR_HEAVY",
+        "RANDOM"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.393
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "封门面板-194",
+            "w": 0.545,
+            "d": 0.082,
+            "h": 0.352,
+            "weight": 4.3,
+            "quantity": 71,
+            "allowDoorZone": true,
+            "requirement": "封柜门",
+            "max_stack_layers": 4,
+            "maxBearingKg": 42.2,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-002",
+            "name": "弹性封门件-180",
+            "w": 0.483,
+            "d": 0.093,
+            "h": 0.343,
+            "weight": 3.2,
+            "quantity": 227,
+            "isElastic": true,
+            "allowDoorZone": true,
+            "requirement": "封柜门,按需调节",
+            "max_stack_layers": 2,
+            "maxBearingKg": 59.3
+        },
+        {
+            "sku": "SKU-003",
+            "name": "立方箱体-396",
+            "w": 0.547,
+            "d": 0.521,
+            "h": 0.523,
+            "weight": 11.8,
+            "quantity": 108,
+            "max_stack_layers": 4,
+            "maxBearingKg": 68.4
+        },
+        {
+            "sku": "SKU-004",
+            "name": "可侧放箱体-786",
+            "w": 0.553,
+            "d": 0.44,
+            "h": 0.43,
+            "weight": 16.1,
+            "quantity": 61,
+            "allowFlat": true,
+            "allowSide": true,
+            "max_stack_layers": 4,
+            "maxBearingKg": 61.0
+        },
+        {
+            "sku": "SKU-005",
+            "name": "小配件箱-755",
+            "w": 0.353,
+            "d": 0.183,
+            "h": 0.162,
+            "weight": 4.2,
+            "quantity": 178,
+            "max_stack_layers": 2,
+            "maxBearingKg": 67.5,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "SKU-006",
+            "name": "中尺寸电视-167",
+            "w": 0.863,
+            "d": 0.158,
+            "h": 0.675,
+            "weight": 8.6,
+            "quantity": 163,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 3,
+            "maxBearingKg": 37.7,
+            "mustBeOnFloor": true
+        }
+    ]
+}

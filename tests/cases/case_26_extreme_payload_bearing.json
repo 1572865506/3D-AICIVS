@@ -1,0 +1,46 @@
+{
+    "case_id": "EXTREME-PAYLOAD-BEARING",
+    "case_name": "极限载重与多点承压 (测整柜载重与局部压溃)",
+    "description": "Container total weight near 26.5 tons with individual bearing limits",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "METAL-01",
+            "name": "高密五金件A",
+            "w": 0.5,
+            "d": 0.4,
+            "h": 0.3,
+            "weight": 50.0,
+            "quantity": 180,
+            "maxBearingKg": 150.0,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "METAL-02",
+            "name": "高密五金件B",
+            "w": 0.4,
+            "d": 0.3,
+            "h": 0.25,
+            "weight": 30.0,
+            "quantity": 250,
+            "maxBearingKg": 80.0
+        },
+        {
+            "sku": "PKG-LGT",
+            "name": "辅料轻包",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.2,
+            "weight": 4.0,
+            "quantity": 300,
+            "isElastic": true
+        }
+    ]
+}

@@ -1,0 +1,159 @@
+{
+    "case_id": "GEN-P1-03-03",
+    "case_name": "自动生成: 40HQ-中约束-NORMAL",
+    "description": "Auto-generated: container=40HQ, constraint=MEDIUM, rigid=HIGH_RIGID, hetero=HIGH, scenario=NORMAL",
+    "tags": [
+        "40HQ",
+        "MEDIUM",
+        "HIGH_RIGID",
+        "HIGH",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "标准纸箱-549",
+            "w": 0.534,
+            "d": 0.356,
+            "h": 0.353,
+            "weight": 17.3,
+            "quantity": 288,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-002",
+            "name": "零承重板件-226",
+            "w": 0.784,
+            "d": 0.655,
+            "h": 0.113,
+            "weight": 17.5,
+            "quantity": 35,
+            "maxBearingKg": 0.0,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-003",
+            "name": "小显示器-992",
+            "w": 0.462,
+            "d": 0.063,
+            "h": 0.427,
+            "weight": 8.1,
+            "quantity": 130,
+            "allowedOrientation": "upright",
+            "allowDoorZone": true,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-004",
+            "name": "大尺寸电视-102",
+            "w": 1.334,
+            "d": 0.197,
+            "h": 0.829,
+            "weight": 12.3,
+            "quantity": 74,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-005",
+            "name": "可侧放箱体-219",
+            "w": 0.596,
+            "d": 0.401,
+            "h": 0.371,
+            "weight": 17.5,
+            "quantity": 85,
+            "allowFlat": true,
+            "allowSide": true,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-006",
+            "name": "托盘化大件-109",
+            "w": 1.019,
+            "d": 0.863,
+            "h": 0.809,
+            "weight": 78.4,
+            "quantity": 16,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-007",
+            "name": "中尺寸电视-837",
+            "w": 0.973,
+            "d": 0.156,
+            "h": 0.515,
+            "weight": 11.5,
+            "quantity": 136,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-008",
+            "name": "立方箱体-323",
+            "w": 0.421,
+            "d": 0.423,
+            "h": 0.501,
+            "weight": 15.9,
+            "quantity": 89,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-009",
+            "name": "封门面板-375",
+            "w": 0.465,
+            "d": 0.088,
+            "h": 0.372,
+            "weight": 6.3,
+            "quantity": 184,
+            "allowDoorZone": true,
+            "requirement": "封柜门",
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-010",
+            "name": "限层堆叠箱-856",
+            "w": 0.584,
+            "d": 0.371,
+            "h": 0.385,
+            "weight": 17.8,
+            "quantity": 71,
+            "max_stack_layers": 2,
+            "maxBearingKg": 30.0
+        },
+        {
+            "sku": "SKU-011",
+            "name": "弹性填充件-185",
+            "w": 0.394,
+            "d": 0.176,
+            "h": 0.226,
+            "weight": 1.7,
+            "quantity": 221,
+            "isElastic": true,
+            "requirement": "按需调节",
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-012",
+            "name": "弹性封门件-253",
+            "w": 0.451,
+            "d": 0.074,
+            "h": 0.31,
+            "weight": 1.8,
+            "quantity": 238,
+            "isElastic": true,
+            "allowDoorZone": true,
+            "requirement": "封柜门,按需调节",
+            "max_stack_layers": 4
+        }
+    ]
+}

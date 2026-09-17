@@ -1,0 +1,45 @@
+{
+    "case_id": "DENSE-HEAVY-FLOOR-PAD",
+    "case_name": "高密重件铺底 (测轴荷与承载分布)",
+    "description": "Extremely dense, heavy small metal castings requiring floor placement",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "CASTING-01",
+            "name": "铸铁铸件箱",
+            "w": 0.4,
+            "d": 0.4,
+            "h": 0.25,
+            "weight": 110.0,
+            "quantity": 60,
+            "mustBeOnFloor": true,
+            "requirement": "必须落地,重载"
+        },
+        {
+            "sku": "CARTON-REG",
+            "name": "上覆轻型标箱",
+            "w": 0.5,
+            "d": 0.4,
+            "h": 0.35,
+            "weight": 8.0,
+            "quantity": 160
+        },
+        {
+            "sku": "ELAS-PAD",
+            "name": "填缝缓冲袋",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 1.5,
+            "quantity": 200,
+            "isElastic": true
+        }
+    ]
+}

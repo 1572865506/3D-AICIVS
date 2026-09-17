@@ -397,11 +397,57 @@ def execute_benchmark_case(
     ])
 
     # --- SKU 履行度与刚性/弹性合规审计 ---
+    # --- 深度结构质量与中空率指标提取 (来自 independent_validator) ---
+    val_metrics = getattr(val_report, "metrics", {}) if hasattr(val_report, "metrics") else (val_report if isinstance(val_report, dict) else {})
+    container_vol = float(val_metrics.get("container_volume", float(usable["L"]) * float(usable["W"]) * float(usable["H"])))
+    enclosed_cavity_vol = float(val_metrics.get("enclosed_cavity_volume", 0.0))
+    enclosed_cavity_count = int(val_metrics.get("enclosed_cavity_count", 0))
+    reachable_residual_vol = float(val_metrics.get("reachable_residual_volume", 0.0))
+    dead_space_vol = float(val_metrics.get("dead_space_volume", 0.0))
+    frag_score = float(val_metrics.get("fragmentation_score", 0.0))
+    hollow_ratio_pct = round((enclosed_cavity_vol / max(0.001, container_vol)) * 100.0, 2)
+
+    # --- SKU 履行度、空间分布与细分约束执行审计 ---
     sku_counts: Dict[str, int] = {}
+    sku_positions: Dict[str, List[Dict[str, Any]]] = {}
+    total_placed_weight = 0.0
+    weighted_x = 0.0
+    weighted_y = 0.0
+    weighted_z = 0.0
+    c_lx = float(usable["L"])
+    door_threshold_x = max(0.0, c_lx - 1.2)
+
     for p in sol.placements:
         sid = getattr(p, "sku_id", "") or (p.get("sku_id") if isinstance(p, dict) else "")
-        if sid:
-            sku_counts[sid] = sku_counts.get(sid, 0) + 1
+        if not sid:
+            continue
+        sku_counts[sid] = sku_counts.get(sid, 0) + 1
+
+        px = float(getattr(p, "x", 0.0) if hasattr(p, "x") else getattr(getattr(p, "position", None), "x", p.get("x", 0.0) if isinstance(p, dict) else 0.0))
+        py = float(getattr(p, "y", 0.0) if hasattr(p, "y") else getattr(getattr(p, "position", None), "y", p.get("y", 0.0) if isinstance(p, dict) else 0.0))
+        pz = float(getattr(p, "z", 0.0) if hasattr(p, "z") else getattr(getattr(p, "position", None), "z", p.get("z", 0.0) if isinstance(p, dict) else 0.0))
+        pdx = float(getattr(p, "dx", 0.0) if hasattr(p, "dx") else getattr(getattr(p, "dimensions", None), "x", p.get("dx", 0.0) if isinstance(p, dict) else 0.0))
+        pdy = float(getattr(p, "dy", 0.0) if hasattr(p, "dy") else getattr(getattr(p, "dimensions", None), "y", p.get("dy", 0.0) if isinstance(p, dict) else 0.0))
+        pdz = float(getattr(p, "dz", 0.0) if hasattr(p, "dz") else getattr(getattr(p, "dimensions", None), "z", p.get("dz", 0.0) if isinstance(p, dict) else 0.0))
+        pw = float(getattr(p, "weight", 0.0) if hasattr(p, "weight") else (p.get("weight", 0.0) if isinstance(p, dict) else 0.0))
+
+        total_placed_weight += pw
+        weighted_x += (px + pdx / 2.0) * pw
+        weighted_y += (py + pdy / 2.0) * pw
+        weighted_z += (pz + pdz / 2.0) * pw
+
+        sku_positions.setdefault(sid, []).append({
+            "x": px, "y": py, "z": pz,
+            "dx": pdx, "dy": pdy, "dz": pdz,
+            "is_floor": pz < 0.005,
+            "is_door_zone": (px + pdx) >= door_threshold_x
+        })
+
+    # 重心偏移百分比 (相对于几何中心)
+    cog_x = (weighted_x / max(1.0, total_placed_weight)) if total_placed_weight > 0 else (c_lx / 2.0)
+    cog_y = (weighted_y / max(1.0, total_placed_weight)) if total_placed_weight > 0 else (float(usable["W"]) / 2.0)
+    cog_offset_x_pct = round(abs(cog_x - c_lx / 2.0) / max(0.1, c_lx / 2.0) * 100.0, 1)
+    cog_offset_y_pct = round(abs(cog_y - float(usable["W"]) / 2.0) / max(0.1, float(usable["W"]) / 2.0) * 100.0, 1)
 
     rigid_req = 0
     rigid_placed = 0
@@ -417,12 +463,36 @@ def execute_benchmark_case(
         p_count = sku_counts.get(sid, 0)
         c_rate = round(p_count / max(1, req_q) * 100.0, 1)
 
+        # 细分约束审计提取
+        pos_list = sku_positions.get(sid, [])
+        floor_count = sum(1 for item in pos_list if item["is_floor"])
+        door_zone_count = sum(1 for item in pos_list if item["is_door_zone"])
+
+        # 提取 SKU 声明的约束
+        stack_policy = getattr(c, "stacking_policy", None)
+        must_floor = bool(getattr(stack_policy, "must_be_on_floor", False)) if stack_policy else False
+        allow_top = bool(getattr(stack_policy, "allow_stacking_on_top", True)) if stack_policy else True
+        max_layers = getattr(stack_policy, "max_stack_layers", None) if stack_policy else None
+        max_bearing = getattr(stack_policy, "max_bearing_kg", None) if stack_policy else None
+
         sku_fulfillment_details[sid] = {
             "name": c.name,
             "is_elastic": is_elastic,
             "required": req_q,
             "placed": p_count,
-            "completion_pct": c_rate
+            "missing": max(0, req_q - p_count),
+            "completion_pct": c_rate,
+            "distribution": {
+                "floor_placed": floor_count,
+                "door_zone_placed": door_zone_count,
+                "non_door_placed": p_count - door_zone_count,
+            },
+            "constraints_summary": {
+                "must_be_on_floor": must_floor,
+                "allow_stacking_on_top": allow_top,
+                "max_stack_layers": max_layers,
+                "max_bearing_kg": max_bearing,
+            }
         }
 
         if is_elastic:
@@ -523,6 +593,16 @@ def execute_benchmark_case(
             "starved_skus": starved_skus,
             "sku_details": sku_fulfillment_details,
         },
+        "quality_metrics": {
+            "hollow_ratio_pct": hollow_ratio_pct,
+            "enclosed_cavity_volume": round(enclosed_cavity_vol, 4),
+            "enclosed_cavity_count": enclosed_cavity_count,
+            "reachable_residual_volume": round(reachable_residual_vol, 4),
+            "dead_space_volume": round(dead_space_vol, 4),
+            "fragmentation_score": round(frag_score, 4),
+            "cog_offset_x_pct": cog_offset_x_pct,
+            "cog_offset_y_pct": cog_offset_y_pct,
+        },
         "constraint_audit": audit_breakdown,
         "summary": {
             "placedCount": placed_count,
@@ -586,6 +666,7 @@ def load_json_cases() -> List[Tuple[Dict[str, Any], List[Dict[str, Any]], str, s
                 # 传递约束字段（如果存在）
                 for key in ("isElastic", "allowDoorZone", "mustBeOnFloor",
                             "allowStackingOnTop", "allowFlat", "allowSide",
+                            "allowedOrientation", "orientationRules",
                             "max_stack_layers", "maxBearingKg", "maxFlatLayers"):
                     if key in item:
                         cargo_entry[key] = item[key]

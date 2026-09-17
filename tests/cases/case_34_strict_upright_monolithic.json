@@ -1,0 +1,63 @@
+{
+    "case_id": "STRICT-UPRIGHT-MONOLITHIC",
+    "case_name": "全品类严苛立放锁定 (测单自由度排布与截面匹配)",
+    "description": "All SKUs strictly locked to upright orientation only",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "UP-PANEL-A",
+            "name": "直立液晶立箱A",
+            "w": 0.85,
+            "d": 0.18,
+            "h": 0.65,
+            "weight": 12.0,
+            "quantity": 90,
+            "allowFlat": false,
+            "allowSide": false,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "UP-PANEL-B",
+            "name": "直立液晶立箱B",
+            "w": 0.65,
+            "d": 0.22,
+            "h": 0.55,
+            "weight": 10.0,
+            "quantity": 110,
+            "allowFlat": false,
+            "allowSide": false,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "UP-CARTON",
+            "name": "严苛直立标准箱",
+            "w": 0.5,
+            "d": 0.38,
+            "h": 0.4,
+            "weight": 14.0,
+            "quantity": 130,
+            "allowFlat": false,
+            "allowSide": false,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "UP-ELAS",
+            "name": "直立弹性塞块",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.2,
+            "weight": 2.5,
+            "quantity": 200,
+            "isElastic": true,
+            "allowFlat": false,
+            "allowSide": false
+        }
+    ]
+}

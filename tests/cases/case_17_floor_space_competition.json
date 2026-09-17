@@ -1,0 +1,58 @@
+{
+    "case_id": "FLOOR-SPACE-COMPETITION",
+    "case_name": "多落地件地面竞争 (测底面过载分配)",
+    "description": "Multiple large rigid SKUs strictly requiring mustBeOnFloor=true whose total footprint exceeds container floor area",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "FL-HEAVY-A",
+            "name": "电机箱A",
+            "w": 0.8,
+            "d": 0.6,
+            "h": 0.5,
+            "weight": 60.0,
+            "quantity": 30,
+            "mustBeOnFloor": true,
+            "requirement": "必须落地"
+        },
+        {
+            "sku": "FL-HEAVY-B",
+            "name": "电机箱B",
+            "w": 1.0,
+            "d": 0.5,
+            "h": 0.45,
+            "weight": 55.0,
+            "quantity": 25,
+            "mustBeOnFloor": true,
+            "requirement": "必须落地"
+        },
+        {
+            "sku": "FL-HEAVY-C",
+            "name": "配电柜C",
+            "w": 0.7,
+            "d": 0.7,
+            "h": 0.8,
+            "weight": 70.0,
+            "quantity": 20,
+            "mustBeOnFloor": true,
+            "requirement": "必须落地"
+        },
+        {
+            "sku": "ELAS-TOP",
+            "name": "上层弹性货件",
+            "w": 0.4,
+            "d": 0.3,
+            "h": 0.3,
+            "weight": 5.0,
+            "quantity": 200,
+            "isElastic": true
+        }
+    ]
+}

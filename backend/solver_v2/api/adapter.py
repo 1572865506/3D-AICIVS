@@ -135,12 +135,19 @@ class InputNormalizer:
             except (KeyError, TypeError, ValueError) as exc:
                 raise ValueError(f"Invalid orientationRules entry: {raw_rule!r}") from exc
 
+        contexts_flat = [PlacementContext.TOP_FILL, PlacementContext.GAP_FILL, PlacementContext.DOOR_SEAL]
+        contexts_side = [PlacementContext.GAP_FILL, PlacementContext.DOOR_SEAL]
+        if allow_flat or allowed_ori in ('any', 'allow_flat') or '允许旋转' in raw_item.get('requirement', ''):
+            contexts_flat.extend([PlacementContext.MAIN_WALL, PlacementContext.GENERAL, PlacementContext.FOUNDATION])
+        if allow_side or allowed_ori in ('any', 'allow_side') or '允许旋转' in raw_item.get('requirement', ''):
+            contexts_side.extend([PlacementContext.MAIN_WALL, PlacementContext.GENERAL, PlacementContext.FOUNDATION])
+
         return OrientationPolicy(
             allow_upright=True,
             allow_flat=allow_flat,
             allow_side=allow_side,
-            allowed_contexts_for_flat=(PlacementContext.TOP_FILL, PlacementContext.GAP_FILL, PlacementContext.DOOR_SEAL),
-            allowed_contexts_for_side=(PlacementContext.GAP_FILL, PlacementContext.DOOR_SEAL),
+            allowed_contexts_for_flat=tuple(contexts_flat),
+            allowed_contexts_for_side=tuple(contexts_side),
             max_flat_stack_layers=int(raw_item.get('maxFlatLayers', 1)),
             rules=tuple(explicit_rules),
         )

@@ -1,0 +1,47 @@
+{
+    "case_id": "TWO-LAYER-FLOOR-CEILING",
+    "case_name": "双层落地封顶约束 (测自限高与空腔渗透)",
+    "description": "Floor-bound items strictly capped at 2 layers, followed by multi-layer stackable items",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "FL-2LAYER",
+            "name": "标准双层限制柜",
+            "w": 0.75,
+            "d": 0.55,
+            "h": 0.45,
+            "weight": 35.0,
+            "quantity": 40,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 2,
+            "requirement": "落地且最多2层"
+        },
+        {
+            "sku": "STACK-FREE",
+            "name": "普通多层箱",
+            "w": 0.5,
+            "d": 0.4,
+            "h": 0.35,
+            "weight": 12.0,
+            "quantity": 180,
+            "max_stack_layers": 5
+        },
+        {
+            "sku": "TOP-ELAS",
+            "name": "顶部柔性填充",
+            "w": 0.35,
+            "d": 0.25,
+            "h": 0.2,
+            "weight": 3.0,
+            "quantity": 250,
+            "isElastic": true
+        }
+    ]
+}

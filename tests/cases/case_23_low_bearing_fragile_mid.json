@@ -1,0 +1,56 @@
+{
+    "case_id": "LOW-BEARING-FRAGILE-MID",
+    "case_name": "低承重中箱堆叠 (测自重承压熔断)",
+    "description": "Mid-sized boxes with maxBearingKg equal to their own weight",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "BASE-BOX",
+            "name": "结实木箱底座",
+            "w": 0.6,
+            "d": 0.6,
+            "h": 0.4,
+            "weight": 30.0,
+            "quantity": 40,
+            "maxBearingKg": 200.0,
+            "mustBeOnFloor": true
+        },
+        {
+            "sku": "WEAK-MID",
+            "name": "易变形瓦楞箱",
+            "w": 0.5,
+            "d": 0.4,
+            "h": 0.35,
+            "weight": 15.0,
+            "quantity": 100,
+            "maxBearingKg": 16.0
+        },
+        {
+            "sku": "FEATHER",
+            "name": "超轻泡沫箱",
+            "w": 0.4,
+            "d": 0.3,
+            "h": 0.2,
+            "weight": 2.0,
+            "quantity": 180,
+            "maxBearingKg": 10.0
+        },
+        {
+            "sku": "ELAS-TOP",
+            "name": "弹性填料",
+            "w": 0.25,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 1.0,
+            "quantity": 200,
+            "isElastic": true
+        }
+    ]
+}

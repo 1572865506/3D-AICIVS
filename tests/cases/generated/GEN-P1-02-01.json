@@ -1,0 +1,86 @@
+{
+    "case_id": "GEN-P1-02-01",
+    "case_name": "自动生成: 40HQ-轻约束-NORMAL",
+    "description": "Auto-generated: container=40HQ, constraint=LIGHT, rigid=DOMINANT_RIGID, hetero=MEDIUM, scenario=NORMAL",
+    "tags": [
+        "40HQ",
+        "LIGHT",
+        "DOMINANT_RIGID",
+        "MEDIUM",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "零承重板件-530",
+            "w": 0.809,
+            "d": 0.565,
+            "h": 0.09,
+            "weight": 11.7,
+            "quantity": 69,
+            "maxBearingKg": 0.0
+        },
+        {
+            "sku": "SKU-002",
+            "name": "小显示器-219",
+            "w": 0.571,
+            "d": 0.061,
+            "h": 0.306,
+            "weight": 6.7,
+            "quantity": 127,
+            "allowedOrientation": "upright",
+            "allowDoorZone": true
+        },
+        {
+            "sku": "SKU-003",
+            "name": "封门面板-597",
+            "w": 0.52,
+            "d": 0.106,
+            "h": 0.426,
+            "weight": 4.7,
+            "quantity": 124,
+            "allowDoorZone": true,
+            "requirement": "封柜门"
+        },
+        {
+            "sku": "SKU-004",
+            "name": "竖放专用屏-806",
+            "w": 0.817,
+            "d": 0.05,
+            "h": 0.416,
+            "weight": 7.7,
+            "quantity": 199,
+            "allowFlat": false,
+            "allowSide": false,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "SKU-005",
+            "name": "立方箱体-756",
+            "w": 0.489,
+            "d": 0.542,
+            "h": 0.517,
+            "weight": 15.8,
+            "quantity": 61
+        },
+        {
+            "sku": "SKU-006",
+            "name": "长条形管箱-498",
+            "w": 1.101,
+            "d": 0.228,
+            "h": 0.24,
+            "weight": 17.0,
+            "quantity": 51,
+            "allowFlat": true
+        }
+    ]
+}

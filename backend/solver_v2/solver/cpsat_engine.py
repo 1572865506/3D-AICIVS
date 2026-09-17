@@ -62,6 +62,14 @@ class MacroAllocationResult:
     solve_time_ms: float
 
 
+DEFAULT_OBJECTIVE_WEIGHTS: Dict[str, int] = {
+    "rigid_fulfillment": 10000,
+    "compactness": 1000,
+    "com_stability": 200,
+    "elastic": 1,
+}
+
+
 class CPSATMacroAllocator:
     """
     CP-SAT Macro Allocator Engine.
@@ -228,15 +236,21 @@ class CPSATMacroAllocator:
                                 return combos
         return combos
 
+
     def _build_cpsat_model(
         self,
         cargo_list: List[UniversalCargoTensor],
         candidate_strips: List[CandidateStrip],
         min_rigid_ratio: float = 1.0,
         x_limit: Optional[float] = None,
+        weights: Optional[Dict[str, int]] = None,
     ) -> Tuple[cp_model.CpModel, Dict[int, cp_model.IntVar], Dict[str, cp_model.IntVar]]:
         model = cp_model.CpModel()
         max_x = x_limit if x_limit is not None else self.cL
+
+        w_cfg = dict(DEFAULT_OBJECTIVE_WEIGHTS)
+        if weights:
+            w_cfg.update(weights)
 
         strip_used: Dict[int, cp_model.IntVar] = {}
         for i, strip in enumerate(candidate_strips):
@@ -248,6 +262,7 @@ class CPSATMacroAllocator:
             upper = cargo.quantity_required if not cargo.is_elastic else max(cargo.quantity_required * 3, 500)
             sku_placed[cargo.sku_id] = model.NewIntVar(0, upper, f"placed_{cargo.sku_id}")
 
+        # 1. Total X length budget constraint
         SCALE = 10000
         model.Add(
             sum(
@@ -257,6 +272,7 @@ class CPSATMacroAllocator:
             <= int(round(max_x * SCALE))
         )
 
+        # 2. Link strip usage to SKU placed counts
         for cargo in cargo_list:
             terms = []
             for i, strip in enumerate(candidate_strips):
@@ -268,16 +284,20 @@ class CPSATMacroAllocator:
             else:
                 model.Add(sku_placed[cargo.sku_id] == 0)
 
+        # 3. Rigid hard constraints vs Elastic soft optimization
         for cargo in cargo_list:
             if not cargo.is_elastic:
+                # Force rigid items to exactly meet required quantity if feasible
                 model.Add(sku_placed[cargo.sku_id] <= cargo.quantity_required)
                 min_qty = int(math.floor(cargo.quantity_required * min_rigid_ratio))
                 if min_qty > 0:
                     model.Add(sku_placed[cargo.sku_id] >= min_qty)
 
+        # 4. Total weight limit
         WEIGHT_SCALE = 100
         weight_terms = []
         cargo_weight_map = {c.sku_id: c.weight_kg for c in cargo_list}
+        cargo_floor_map = {c.sku_id: getattr(c, "must_be_on_floor", False) for c in cargo_list}
         for i, strip in enumerate(candidate_strips):
             s_weight = sum(
                 item.count_per_instance * cargo_weight_map.get(item.sku_id, 0.0)
@@ -288,14 +308,43 @@ class CPSATMacroAllocator:
         max_payload = getattr(self.container, "max_payload_kg", 30000.0)
         model.Add(sum(weight_terms) <= int(round(max_payload * WEIGHT_SCALE)))
 
+        # 5. Multi-objective construction
+        # Term A: Rigid Cargo Fulfillment (10000x multiplier guarantees zero priority inversion)
         VOL_SCALE = 1000
         obj_terms = []
+        w_rigid = w_cfg.get("rigid_fulfillment", 10000)
+        w_elastic = w_cfg.get("elastic", 1)
+        w_compact = w_cfg.get("compactness", 1000)
+        w_com = w_cfg.get("com_stability", 200)
+
         for cargo in cargo_list:
             unit_vol = max(1, int(round(cargo.volume_m3 * VOL_SCALE)))
             if not cargo.is_elastic:
-                obj_terms.append(sku_placed[cargo.sku_id] * unit_vol * 10)
+                obj_terms.append(sku_placed[cargo.sku_id] * unit_vol * w_rigid)
             else:
-                obj_terms.append(sku_placed[cargo.sku_id] * unit_vol * 1)
+                obj_terms.append(sku_placed[cargo.sku_id] * unit_vol * w_elastic)
+
+        # Term B: Compactness Objective (Rewards full cross-section coverage, penalizes void fragmentation)
+        for i, strip in enumerate(candidate_strips):
+            vol_box = max(1e-4, strip.x_depth * self.cW * self.cH)
+            fill_ratio = min(1.0, strip.volume_filled / vol_box)
+            # Higher y_coverage & z_coverage yields significantly more compact and stable walls
+            coverage_factor = strip.y_coverage * strip.z_coverage
+            compact_score = int(round(fill_ratio * coverage_factor * w_compact))
+            if compact_score > 0:
+                obj_terms.append(strip_used[i] * compact_score)
+
+        # Term C: Center-of-Mass & Ground Stacking Stability
+        for i, strip in enumerate(candidate_strips):
+            has_floor_req = any(cargo_floor_map.get(item.sku_id, False) for item in strip.items)
+            # Low center-of-mass & high density base strips receive stability bonus
+            s_weight = sum(item.count_per_instance * cargo_weight_map.get(item.sku_id, 0.0) for item in strip.items)
+            density_score = min(100, int(round((s_weight / max(1e-3, strip.volume_filled)) / 20.0)))
+            floor_bonus = 50 if has_floor_req else 0
+            # Strips that are too slender or have weak z_coverage are penalized
+            tipping_safety_score = max(0, int(round((density_score + floor_bonus) * (w_com / 100.0))))
+            if tipping_safety_score > 0:
+                obj_terms.append(strip_used[i] * tipping_safety_score)
 
         model.Maximize(sum(obj_terms))
         return model, strip_used, sku_placed
@@ -304,8 +353,23 @@ class CPSATMacroAllocator:
         self,
         cargo_list: List[UniversalCargoTensor],
         time_limit_seconds: float = 60.0,
+        weights: Optional[Dict[str, int]] = None,
     ) -> MacroAllocationResult:
         t0 = time.perf_counter()
+
+        # Pre-check: feasibility of rigid cargo volume
+        rigid_tensors = [t for t in cargo_list if not t.is_elastic]
+        total_rigid_vol = sum(t.volume_m3 * t.quantity_required for t in rigid_tensors)
+        container_vol = self.container.volume
+        if container_vol > 0 and total_rigid_vol > container_vol * 0.98:
+            return MacroAllocationResult(
+                strips=[],
+                total_allocated={c.sku_id: 0 for c in cargo_list},
+                solver_status="INFEASIBLE",
+                objective_value=0.0,
+                solve_time_ms=(time.perf_counter() - t0) * 1000.0,
+            )
+
         candidate_strips = self._generate_candidate_strips(cargo_list)
 
         if not candidate_strips:
@@ -317,7 +381,8 @@ class CPSATMacroAllocator:
                 solve_time_ms=(time.perf_counter() - t0) * 1000.0,
             )
 
-        relaxation_levels = [1.0, 0.95, 0.90, 0.80, 0.50, 0.0]
+        # Rigid fulfillment priority ladder: try 100% hard constraint first
+        relaxation_levels = [1.0, 0.99, 0.95, 0.90, 0.80, 0.50, 0.0]
         per_level_time = max(2.0, time_limit_seconds / len(relaxation_levels))
 
         for level in relaxation_levels:
@@ -325,7 +390,7 @@ class CPSATMacroAllocator:
             current_time_limit = min(per_level_time, rem_time)
 
             model, strip_used, sku_placed = self._build_cpsat_model(
-                cargo_list, candidate_strips, min_rigid_ratio=level
+                cargo_list, candidate_strips, min_rigid_ratio=level, weights=weights
             )
 
             solver = cp_model.CpSolver()
@@ -372,15 +437,18 @@ class CPSATMacroAllocator:
             if count > 0:
                 selected_strip_indices.append((i, count))
 
-        def zone_priority(item_idx: int) -> int:
-            cand = candidate_strips[item_idx]
-            if cand.zone == "INNER":
-                return 0
-            if cand.zone == "MIDDLE":
-                return 1
-            return 2
+        cargo_weight_map = {c.sku_id: c.weight_kg for c in cargo_list}
+        cargo_floor_map = {c.sku_id: getattr(c, "must_be_on_floor", False) for c in cargo_list}
 
-        selected_strip_indices.sort(key=lambda pair: zone_priority(pair[0]))
+        def strip_placement_priority(item_idx: int) -> Tuple[int, int, float, float]:
+            cand = candidate_strips[item_idx]
+            z_prio = 0 if cand.zone == "INNER" else (1 if cand.zone == "MIDDLE" else 2)
+            has_floor = 0 if any(cargo_floor_map.get(it.sku_id, False) for it in cand.items) else 1
+            s_weight = sum(it.count_per_instance * cargo_weight_map.get(it.sku_id, 0.0) for it in cand.items)
+            density = s_weight / max(1e-3, cand.volume_filled)
+            return (z_prio, has_floor, -round(density, 2), -round(cand.y_coverage, 2))
+
+        selected_strip_indices.sort(key=lambda pair: strip_placement_priority(pair[0]))
 
         for idx, count in selected_strip_indices:
             cand = candidate_strips[idx]

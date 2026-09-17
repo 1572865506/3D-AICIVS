@@ -1,0 +1,84 @@
+{
+    "case_id": "GEN-P1-02-04",
+    "case_name": "自动生成: 40HQ-轻约束-NORMAL",
+    "description": "Auto-generated: container=40HQ, constraint=LIGHT, rigid=DOMINANT_RIGID, hetero=MEDIUM, scenario=NORMAL",
+    "tags": [
+        "40HQ",
+        "LIGHT",
+        "DOMINANT_RIGID",
+        "MEDIUM",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "扁平板材-362",
+            "w": 0.74,
+            "d": 0.936,
+            "h": 0.08,
+            "weight": 20.8,
+            "quantity": 52,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-002",
+            "name": "封门面板-378",
+            "w": 0.581,
+            "d": 0.093,
+            "h": 0.41,
+            "weight": 5.9,
+            "quantity": 185,
+            "allowDoorZone": true,
+            "requirement": "封柜门"
+        },
+        {
+            "sku": "SKU-003",
+            "name": "高瘦箱体-962",
+            "w": 0.461,
+            "d": 0.355,
+            "h": 0.998,
+            "weight": 8.5,
+            "quantity": 46,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "SKU-004",
+            "name": "零承重板件-616",
+            "w": 0.652,
+            "d": 0.689,
+            "h": 0.127,
+            "weight": 15.7,
+            "quantity": 61,
+            "maxBearingKg": 0.0
+        },
+        {
+            "sku": "SKU-005",
+            "name": "标准纸箱-490",
+            "w": 0.45,
+            "d": 0.338,
+            "h": 0.384,
+            "weight": 9.6,
+            "quantity": 266
+        },
+        {
+            "sku": "SKU-006",
+            "name": "精密仪器箱-590",
+            "w": 0.575,
+            "d": 0.468,
+            "h": 0.457,
+            "weight": 28.3,
+            "quantity": 51,
+            "maxBearingKg": 20.0,
+            "allowStackingOnTop": false
+        }
+    ]
+}

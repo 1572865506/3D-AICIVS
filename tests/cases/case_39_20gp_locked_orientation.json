@@ -1,0 +1,51 @@
+{
+    "case_id": "20GP-LOCKED-ORIENTATION",
+    "case_name": "20GP短柜朝向全锁定 (测紧凑空间无旋转装柜)",
+    "description": "20GP standard container with zero rotational degrees of freedom",
+    "container": {
+        "usable": {
+            "L": 5.898,
+            "W": 2.352,
+            "H": 2.385
+        },
+        "maxPayloadTons": 21.8
+    },
+    "cargo": [
+        {
+            "sku": "20-LOCK-A",
+            "name": "锁向箱A",
+            "w": 0.6,
+            "d": 0.4,
+            "h": 0.35,
+            "weight": 14.0,
+            "quantity": 70,
+            "allowFlat": false,
+            "allowSide": false,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "20-LOCK-B",
+            "name": "锁向箱B",
+            "w": 0.5,
+            "d": 0.3,
+            "h": 0.4,
+            "weight": 11.0,
+            "quantity": 90,
+            "allowFlat": false,
+            "allowSide": false,
+            "allowedOrientation": "upright"
+        },
+        {
+            "sku": "20-LOCK-ELAS",
+            "name": "锁向弹性件",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.2,
+            "weight": 2.0,
+            "quantity": 120,
+            "isElastic": true,
+            "allowFlat": false,
+            "allowSide": false
+        }
+    ]
+}

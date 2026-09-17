@@ -1,0 +1,157 @@
+{
+    "case_id": "GEN-P1-03-02",
+    "case_name": "自动生成: 40HQ-中约束-NORMAL",
+    "description": "Auto-generated: container=40HQ, constraint=MEDIUM, rigid=HIGH_RIGID, hetero=HIGH, scenario=NORMAL",
+    "tags": [
+        "40HQ",
+        "MEDIUM",
+        "HIGH_RIGID",
+        "HIGH",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "零承重板件-501",
+            "w": 0.884,
+            "d": 0.499,
+            "h": 0.146,
+            "weight": 17.8,
+            "quantity": 33,
+            "maxBearingKg": 0.0,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-002",
+            "name": "限层堆叠箱-318",
+            "w": 0.613,
+            "d": 0.453,
+            "h": 0.301,
+            "weight": 12.4,
+            "quantity": 96,
+            "max_stack_layers": 2,
+            "maxBearingKg": 30.0
+        },
+        {
+            "sku": "SKU-003",
+            "name": "封门面板-185",
+            "w": 0.563,
+            "d": 0.083,
+            "h": 0.343,
+            "weight": 7.9,
+            "quantity": 104,
+            "allowDoorZone": true,
+            "requirement": "封柜门",
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-004",
+            "name": "托盘化大件-656",
+            "w": 1.151,
+            "d": 1.174,
+            "h": 0.916,
+            "weight": 86.1,
+            "quantity": 15,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-005",
+            "name": "高瘦箱体-332",
+            "w": 0.359,
+            "d": 0.259,
+            "h": 0.944,
+            "weight": 9.3,
+            "quantity": 74,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-006",
+            "name": "小配件箱-277",
+            "w": 0.269,
+            "d": 0.28,
+            "h": 0.163,
+            "weight": 2.1,
+            "quantity": 432,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-007",
+            "name": "扁平板材-646",
+            "w": 0.968,
+            "d": 0.675,
+            "h": 0.171,
+            "weight": 19.9,
+            "quantity": 68,
+            "allowStackingOnTop": false,
+            "max_stack_layers": 3
+        },
+        {
+            "sku": "SKU-008",
+            "name": "可侧放箱体-149",
+            "w": 0.644,
+            "d": 0.424,
+            "h": 0.364,
+            "weight": 12.2,
+            "quantity": 101,
+            "allowFlat": true,
+            "allowSide": true,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-009",
+            "name": "大尺寸电视-415",
+            "w": 1.481,
+            "d": 0.167,
+            "h": 0.961,
+            "weight": 16.0,
+            "quantity": 82,
+            "allowedOrientation": "upright",
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-010",
+            "name": "长条形管箱-732",
+            "w": 1.2,
+            "d": 0.156,
+            "h": 0.231,
+            "weight": 5.3,
+            "quantity": 97,
+            "allowFlat": true,
+            "max_stack_layers": 4
+        },
+        {
+            "sku": "SKU-011",
+            "name": "微型方块-936",
+            "w": 0.126,
+            "d": 0.134,
+            "h": 0.187,
+            "weight": 1.7,
+            "quantity": 620,
+            "isElastic": true,
+            "max_stack_layers": 2
+        },
+        {
+            "sku": "SKU-012",
+            "name": "弹性填充件-682",
+            "w": 0.251,
+            "d": 0.158,
+            "h": 0.241,
+            "weight": 3.5,
+            "quantity": 346,
+            "isElastic": true,
+            "requirement": "按需调节",
+            "max_stack_layers": 4
+        }
+    ]
+}

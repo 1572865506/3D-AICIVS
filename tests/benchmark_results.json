@@ -2,22 +2,22 @@
   "suite_name": "3D-AICIVS Standard Benchmark Suite",
   "version": "1.0",
   "total_cases": 15,
-  "passed_cases": 14,
+  "passed_cases": 15,
   "all_zero_collisions": true,
   "summary": [
     {
       "case_id": "14-SKU-1845",
       "case_name": "14-SKU-1845 (当前基线)",
-      "placed_count": 1554,
+      "placed_count": 1624,
       "requested_cartons": 2145,
-      "utilization": 85.02,
+      "utilization": 86.22,
       "rigid_completion_pct": 100.0,
-      "elastic_completion_pct": 12.31,
+      "elastic_completion_pct": 22.7,
       "collisions": 0,
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 16806.87,
+      "runtime_ms": 25323.32,
       "status": "PASS"
     },
     {
@@ -32,7 +32,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 1786.96,
+      "runtime_ms": 4806.15,
       "status": "PASS"
     },
     {
@@ -47,7 +47,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 16459.61,
+      "runtime_ms": 25133.54,
       "status": "PASS"
     },
     {
@@ -62,22 +62,22 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 1531.51,
+      "runtime_ms": 1344.74,
       "status": "PASS"
     },
     {
       "case_id": "MIXED-HETEROGENEOUS",
       "case_name": "混合异尺寸 (测空间利用)",
-      "placed_count": 810,
+      "placed_count": 540,
       "requested_cartons": 810,
-      "utilization": 70.43,
-      "rigid_completion_pct": 100.0,
-      "elastic_completion_pct": 100.0,
+      "utilization": 63.83,
+      "rigid_completion_pct": 96.43,
+      "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 10824.65,
+      "runtime_ms": 24967.39,
       "status": "PASS"
     },
     {
@@ -92,7 +92,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 567.51,
+      "runtime_ms": 509.53,
       "status": "PASS"
     },
     {
@@ -104,77 +104,70 @@
       "rigid_completion_pct": 80.62,
       "elastic_completion_pct": 0.0,
       "collisions": 0,
-      "violations": 7,
-      "health_status": "VIOLATED",
-      "health_issues": [
-        "VIOLATIONS(7)"
-      ],
-      "runtime_ms": 16470.28,
-      "status": "WARN"
+      "violations": 0,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 24977.78,
+      "status": "PASS"
     },
     {
       "case_id": "STACK-BEARING-CONSTRAINTS",
       "case_name": "堆叠承重约束 (测约束遵守)",
-      "placed_count": 610,
+      "placed_count": 640,
       "requested_cartons": 640,
-      "utilization": 40.08,
-      "rigid_completion_pct": 91.18,
+      "utilization": 43.61,
+      "rigid_completion_pct": 100.0,
       "elastic_completion_pct": 100.0,
       "collisions": 0,
       "violations": 0,
-      "health_status": "UNHEALTHY_PRIORITY",
-      "health_issues": [
-        "PRIORITY_INVERSION(弹性侵蚀刚性)"
-      ],
-      "runtime_ms": 18028.16,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 961.24,
       "status": "PASS"
     },
     {
       "case_id": "ORIENTATION-TOPSTACK-CONSTRAINTS",
       "case_name": "朝向与顶叠约束 (测约束组合)",
-      "placed_count": 439,
+      "placed_count": 440,
       "requested_cartons": 440,
-      "utilization": 39.77,
-      "rigid_completion_pct": 99.77,
+      "utilization": 40.09,
+      "rigid_completion_pct": 100.0,
       "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 17976.75,
+      "runtime_ms": 2885.68,
       "status": "PASS"
     },
     {
       "case_id": "TALL-SLENDER-TIPPING",
       "case_name": "高瘦箱倾覆 (测TIP安全)",
-      "placed_count": 400,
+      "placed_count": 540,
       "requested_cartons": 540,
-      "utilization": 17.29,
-      "rigid_completion_pct": 41.67,
+      "utilization": 36.86,
+      "rigid_completion_pct": 100.0,
       "elastic_completion_pct": 100.0,
       "collisions": 0,
       "violations": 0,
-      "health_status": "UNHEALTHY_PRIORITY",
-      "health_issues": [
-        "PRIORITY_INVERSION(弹性侵蚀刚性)",
-        "STARVATION(2SKU未放)"
-      ],
-      "runtime_ms": 32395.02,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 13705.04,
       "status": "PASS"
     },
     {
       "case_id": "OVERWEIGHT-PAYLOAD",
       "case_name": "超重场景 (测载重限制)",
-      "placed_count": 92,
+      "placed_count": 96,
       "requested_cartons": 300,
-      "utilization": 9.04,
-      "rigid_completion_pct": 30.67,
+      "utilization": 9.43,
+      "rigid_completion_pct": 32.0,
       "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 9894.79,
+      "runtime_ms": 24950.08,
       "status": "PASS"
     },
     {
@@ -189,7 +182,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 670.42,
+      "runtime_ms": 669.71,
       "status": "PASS"
     },
     {
@@ -204,7 +197,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 630.1,
+      "runtime_ms": 633.88,
       "status": "PASS"
     },
     {
@@ -219,24 +212,22 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 66106.73,
+      "runtime_ms": 84189.2,
       "status": "PASS"
     },
     {
       "case_id": "ALL-CONSTRAINTS-COMBINED",
       "case_name": "全约束综合 (测系统鲁棒性)",
-      "placed_count": 998,
+      "placed_count": 1010,
       "requested_cartons": 1010,
-      "utilization": 50.05,
-      "rigid_completion_pct": 97.65,
+      "utilization": 51.93,
+      "rigid_completion_pct": 100.0,
       "elastic_completion_pct": 100.0,
       "collisions": 0,
       "violations": 0,
-      "health_status": "UNHEALTHY_PRIORITY",
-      "health_issues": [
-        "PRIORITY_INVERSION(弹性侵蚀刚性)"
-      ],
-      "runtime_ms": 18048.7,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "runtime_ms": 4480.77,
       "status": "PASS"
     }
   ],
@@ -246,11 +237,11 @@
       "case_name": "14-SKU-1845 (当前基线)",
       "description": "14-SKU standard baseline cleanroom case 001",
       "requested_cartons": 2145,
-      "placed_count": 1554,
-      "unplaced_count": 591,
-      "utilization": 85.02,
-      "volume_utilization_pct": 85.0181,
-      "runtime_ms": 16806.87,
+      "placed_count": 1624,
+      "unplaced_count": 521,
+      "utilization": 86.22,
+      "volume_utilization_pct": 86.2207,
+      "runtime_ms": 25323.32,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -265,8 +256,8 @@
         "rigid_placed": 1471,
         "rigid_completion_pct": 100.0,
         "elastic_required": 674,
-        "elastic_placed": 83,
-        "elastic_completion_pct": 12.31,
+        "elastic_placed": 153,
+        "elastic_completion_pct": 22.7,
         "priority_inversion": false,
         "starved_skus": [],
         "sku_details": {
@@ -365,8 +356,8 @@
             "name": "19寸 显示器 BG (DA)",
             "is_elastic": true,
             "required": 674,
-            "placed": 83,
-            "completion_pct": 12.3
+            "placed": 153,
+            "completion_pct": 22.7
           },
           "SKU-15": {
             "name": "23.8寸摄像头显示器",
@@ -389,9 +380,9 @@
         "payload_violations": 0
       },
       "summary": {
-        "placedCount": 1554,
-        "unplacedCount": 591,
-        "utilization": 85.01810446987965,
+        "placedCount": 1624,
+        "unplacedCount": 521,
+        "utilization": 86.22072895137124,
         "rigidCompletion": 100.0,
         "healthStatus": "HEALTHY"
       }
@@ -405,7 +396,7 @@
       "unplaced_count": 10,
       "utilization": 91.46,
       "volume_utilization_pct": 91.4561,
-      "runtime_ms": 1786.96,
+      "runtime_ms": 4806.15,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -462,7 +453,7 @@
       "unplaced_count": 2369,
       "utilization": 89.52,
       "volume_utilization_pct": 89.515,
-      "runtime_ms": 16459.61,
+      "runtime_ms": 25133.54,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -540,7 +531,7 @@
       "unplaced_count": 0,
       "utilization": 69.75,
       "volume_utilization_pct": 69.7518,
-      "runtime_ms": 1531.51,
+      "runtime_ms": 1344.74,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -621,11 +612,11 @@
       "case_name": "混合异尺寸 (测空间利用)",
       "description": "Highly heterogeneous SKU dimensions testing multi-depth wall slicing, top filling, and compact space utilization",
       "requested_cartons": 810,
-      "placed_count": 810,
-      "unplaced_count": 0,
-      "utilization": 70.43,
-      "volume_utilization_pct": 70.4281,
-      "runtime_ms": 10824.65,
+      "placed_count": 540,
+      "unplaced_count": 270,
+      "utilization": 63.83,
+      "volume_utilization_pct": 63.827,
+      "runtime_ms": 24967.39,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -637,11 +628,11 @@
       "health_issues": [],
       "sku_fulfillment": {
         "rigid_required": 560,
-        "rigid_placed": 560,
-        "rigid_completion_pct": 100.0,
+        "rigid_placed": 540,
+        "rigid_completion_pct": 96.43,
         "elastic_required": 250,
-        "elastic_placed": 250,
-        "elastic_completion_pct": 100.0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
         "priority_inversion": false,
         "starved_skus": [],
         "sku_details": {
@@ -656,8 +647,8 @@
             "name": "Tall Upright Carton",
             "is_elastic": false,
             "required": 70,
-            "placed": 70,
-            "completion_pct": 100.0
+            "placed": 50,
+            "completion_pct": 71.4
           },
           "HETERO-03": {
             "name": "Flat Large Panel",
@@ -691,8 +682,8 @@
             "name": "Small Void Filler",
             "is_elastic": true,
             "required": 250,
-            "placed": 250,
-            "completion_pct": 100.0
+            "placed": 0,
+            "completion_pct": 0.0
           },
           "HETERO-08": {
             "name": "Door Safety Partition",
@@ -715,10 +706,10 @@
         "payload_violations": 0
       },
       "summary": {
-        "placedCount": 810,
-        "unplacedCount": 0,
-        "utilization": 70.42809948278764,
-        "rigidCompletion": 100.0,
+        "placedCount": 540,
+        "unplacedCount": 270,
+        "utilization": 63.82704297577314,
+        "rigidCompletion": 96.43,
         "healthStatus": "HEALTHY"
       }
     },
@@ -731,7 +722,7 @@
       "unplaced_count": 0,
       "utilization": 69.13,
       "volume_utilization_pct": 69.1278,
-      "runtime_ms": 567.51,
+      "runtime_ms": 509.53,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -802,18 +793,16 @@
       "unplaced_count": 155,
       "utilization": 76.48,
       "volume_utilization_pct": 76.476,
-      "runtime_ms": 16470.28,
+      "runtime_ms": 24977.78,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
       "out_of_bounds_count": 0,
-      "violations": 7,
-      "fatal_violations": 7,
-      "is_valid": false,
-      "health_status": "VIOLATED",
-      "health_issues": [
-        "VIOLATIONS(7)"
-      ],
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
       "sku_fulfillment": {
         "rigid_required": 800,
         "rigid_placed": 645,
@@ -855,7 +844,7 @@
         "stack_layer_violations": 0,
         "support_floating_violations": 0,
         "zone_violations": 0,
-        "door_lockout_violations": 7,
+        "door_lockout_violations": 0,
         "payload_violations": 0
       },
       "summary": {
@@ -863,7 +852,7 @@
         "unplacedCount": 155,
         "utilization": 76.47602358058951,
         "rigidCompletion": 80.62,
-        "healthStatus": "VIOLATED"
+        "healthStatus": "HEALTHY"
       }
     },
     "STACK-BEARING-CONSTRAINTS": {
@@ -871,11 +860,11 @@
       "case_name": "堆叠承重约束 (测约束遵守)",
       "description": "Tests max_stack_layers, maxBearingKg, and mustBeOnFloor constraints are respected",
       "requested_cartons": 640,
-      "placed_count": 610,
-      "unplaced_count": 30,
-      "utilization": 40.08,
-      "volume_utilization_pct": 40.0778,
-      "runtime_ms": 18028.16,
+      "placed_count": 640,
+      "unplaced_count": 0,
+      "utilization": 43.61,
+      "volume_utilization_pct": 43.6141,
+      "runtime_ms": 961.24,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -883,18 +872,16 @@
       "violations": 0,
       "fatal_violations": 0,
       "is_valid": true,
-      "health_status": "UNHEALTHY_PRIORITY",
-      "health_issues": [
-        "PRIORITY_INVERSION(弹性侵蚀刚性)"
-      ],
+      "health_status": "HEALTHY",
+      "health_issues": [],
       "sku_fulfillment": {
         "rigid_required": 340,
-        "rigid_placed": 310,
-        "rigid_completion_pct": 91.18,
+        "rigid_placed": 340,
+        "rigid_completion_pct": 100.0,
         "elastic_required": 300,
         "elastic_placed": 300,
         "elastic_completion_pct": 100.0,
-        "priority_inversion": true,
+        "priority_inversion": false,
         "starved_skus": [],
         "sku_details": {
           "FRAG-01": {
@@ -908,8 +895,8 @@
             "name": "重型底座",
             "is_elastic": false,
             "required": 60,
-            "placed": 30,
-            "completion_pct": 50.0
+            "placed": 60,
+            "completion_pct": 100.0
           },
           "NORM-01": {
             "name": "普通中箱",
@@ -939,11 +926,11 @@
         "payload_violations": 0
       },
       "summary": {
-        "placedCount": 610,
-        "unplacedCount": 30,
-        "utilization": 40.0778430783069,
-        "rigidCompletion": 91.18,
-        "healthStatus": "UNHEALTHY_PRIORITY"
+        "placedCount": 640,
+        "unplacedCount": 0,
+        "utilization": 43.61412334992219,
+        "rigidCompletion": 100.0,
+        "healthStatus": "HEALTHY"
       }
     },
     "ORIENTATION-TOPSTACK-CONSTRAINTS": {
@@ -951,11 +938,11 @@
       "case_name": "朝向与顶叠约束 (测约束组合)",
       "description": "Tests allowStackingOnTop=false and orientation-only constraints (upright only, no flat/side)",
       "requested_cartons": 440,
-      "placed_count": 439,
-      "unplaced_count": 1,
-      "utilization": 39.77,
-      "volume_utilization_pct": 39.774,
-      "runtime_ms": 17976.75,
+      "placed_count": 440,
+      "unplaced_count": 0,
+      "utilization": 40.09,
+      "volume_utilization_pct": 40.0883,
+      "runtime_ms": 2885.68,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -967,8 +954,8 @@
       "health_issues": [],
       "sku_fulfillment": {
         "rigid_required": 440,
-        "rigid_placed": 439,
-        "rigid_completion_pct": 99.77,
+        "rigid_placed": 440,
+        "rigid_completion_pct": 100.0,
         "elastic_required": 0,
         "elastic_placed": 0,
         "elastic_completion_pct": 0.0,
@@ -979,8 +966,8 @@
             "name": "精密仪器箱",
             "is_elastic": false,
             "required": 40,
-            "placed": 39,
-            "completion_pct": 97.5
+            "placed": 40,
+            "completion_pct": 100.0
           },
           "UPONLY-01": {
             "name": "液晶面板",
@@ -1017,10 +1004,10 @@
         "payload_violations": 0
       },
       "summary": {
-        "placedCount": 439,
-        "unplacedCount": 1,
-        "utilization": 39.77398492163459,
-        "rigidCompletion": 99.77,
+        "placedCount": 440,
+        "unplacedCount": 0,
+        "utilization": 40.088320945778165,
+        "rigidCompletion": 100.0,
         "healthStatus": "HEALTHY"
       }
     },
@@ -1029,11 +1016,11 @@
       "case_name": "高瘦箱倾覆 (测TIP安全)",
       "description": "Tests tall slender boxes (dz/dx>3) for tipping safety - no unsupported tall placements or voids",
       "requested_cartons": 540,
-      "placed_count": 400,
-      "unplaced_count": 140,
-      "utilization": 17.29,
-      "volume_utilization_pct": 17.2885,
-      "runtime_ms": 32395.02,
+      "placed_count": 540,
+      "unplaced_count": 0,
+      "utilization": 36.86,
+      "volume_utilization_pct": 36.8559,
+      "runtime_ms": 13705.04,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1041,37 +1028,31 @@
       "violations": 0,
       "fatal_violations": 0,
       "is_valid": true,
-      "health_status": "UNHEALTHY_PRIORITY",
-      "health_issues": [
-        "PRIORITY_INVERSION(弹性侵蚀刚性)",
-        "STARVATION(2SKU未放)"
-      ],
+      "health_status": "HEALTHY",
+      "health_issues": [],
       "sku_fulfillment": {
         "rigid_required": 240,
-        "rigid_placed": 100,
-        "rigid_completion_pct": 41.67,
+        "rigid_placed": 240,
+        "rigid_completion_pct": 100.0,
         "elastic_required": 300,
         "elastic_placed": 300,
         "elastic_completion_pct": 100.0,
-        "priority_inversion": true,
-        "starved_skus": [
-          "TALL-01",
-          "TALL-02"
-        ],
+        "priority_inversion": false,
+        "starved_skus": [],
         "sku_details": {
           "TALL-01": {
             "name": "高柜体A",
             "is_elastic": false,
             "required": 60,
-            "placed": 0,
-            "completion_pct": 0.0
+            "placed": 60,
+            "completion_pct": 100.0
           },
           "TALL-02": {
             "name": "高柜体B",
             "is_elastic": false,
             "required": 80,
-            "placed": 0,
-            "completion_pct": 0.0
+            "placed": 80,
+            "completion_pct": 100.0
           },
           "LOW-01": {
             "name": "矮宽底座",
@@ -1101,11 +1082,11 @@
         "payload_violations": 0
       },
       "summary": {
-        "placedCount": 400,
-        "unplacedCount": 140,
-        "utilization": 17.288481327897184,
-        "rigidCompletion": 41.67,
-        "healthStatus": "UNHEALTHY_PRIORITY"
+        "placedCount": 540,
+        "unplacedCount": 0,
+        "utilization": 36.85589883083492,
+        "rigidCompletion": 100.0,
+        "healthStatus": "HEALTHY"
       }
     },
     "OVERWEIGHT-PAYLOAD": {
@@ -1113,11 +1094,11 @@
       "case_name": "超重场景 (测载重限制)",
       "description": "Tests payload weight limit truncation - total cargo weight far exceeds maxPayloadTons",
       "requested_cartons": 300,
-      "placed_count": 92,
-      "unplaced_count": 208,
-      "utilization": 9.04,
-      "volume_utilization_pct": 9.0372,
-      "runtime_ms": 9894.79,
+      "placed_count": 96,
+      "unplaced_count": 204,
+      "utilization": 9.43,
+      "volume_utilization_pct": 9.4301,
+      "runtime_ms": 24950.08,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1129,8 +1110,8 @@
       "health_issues": [],
       "sku_fulfillment": {
         "rigid_required": 300,
-        "rigid_placed": 92,
-        "rigid_completion_pct": 30.67,
+        "rigid_placed": 96,
+        "rigid_completion_pct": 32.0,
         "elastic_required": 0,
         "elastic_placed": 0,
         "elastic_completion_pct": 0.0,
@@ -1141,8 +1122,8 @@
             "name": "铸铁件",
             "is_elastic": false,
             "required": 300,
-            "placed": 92,
-            "completion_pct": 30.7
+            "placed": 96,
+            "completion_pct": 32.0
           }
         }
       },
@@ -1158,10 +1139,10 @@
         "payload_violations": 0
       },
       "summary": {
-        "placedCount": 92,
-        "unplacedCount": 208,
-        "utilization": 9.037160694127989,
-        "rigidCompletion": 30.67,
+        "placedCount": 96,
+        "unplacedCount": 204,
+        "utilization": 9.43008072430747,
+        "rigidCompletion": 32.0,
         "healthStatus": "HEALTHY"
       }
     },
@@ -1174,7 +1155,7 @@
       "unplaced_count": 0,
       "utilization": 52.06,
       "volume_utilization_pct": 52.0635,
-      "runtime_ms": 670.42,
+      "runtime_ms": 669.71,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1266,7 +1247,7 @@
       "unplaced_count": 0,
       "utilization": 34.91,
       "volume_utilization_pct": 34.9109,
-      "runtime_ms": 630.1,
+      "runtime_ms": 633.88,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1344,7 +1325,7 @@
       "unplaced_count": 1288,
       "utilization": 94.89,
       "volume_utilization_pct": 94.8889,
-      "runtime_ms": 66106.73,
+      "runtime_ms": 84189.2,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1397,11 +1378,11 @@
       "case_name": "全约束综合 (测系统鲁棒性)",
       "description": "All constraint types combined: mustBeOnFloor + maxBearing + maxStack + noTopStack + uprightOnly + zones + elastic",
       "requested_cartons": 1010,
-      "placed_count": 998,
-      "unplaced_count": 12,
-      "utilization": 50.05,
-      "volume_utilization_pct": 50.0475,
-      "runtime_ms": 18048.7,
+      "placed_count": 1010,
+      "unplaced_count": 0,
+      "utilization": 51.93,
+      "volume_utilization_pct": 51.9336,
+      "runtime_ms": 4480.77,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1409,33 +1390,31 @@
       "violations": 0,
       "fatal_violations": 0,
       "is_valid": true,
-      "health_status": "UNHEALTHY_PRIORITY",
-      "health_issues": [
-        "PRIORITY_INVERSION(弹性侵蚀刚性)"
-      ],
+      "health_status": "HEALTHY",
+      "health_issues": [],
       "sku_fulfillment": {
         "rigid_required": 510,
-        "rigid_placed": 498,
-        "rigid_completion_pct": 97.65,
+        "rigid_placed": 510,
+        "rigid_completion_pct": 100.0,
         "elastic_required": 500,
         "elastic_placed": 500,
         "elastic_completion_pct": 100.0,
-        "priority_inversion": true,
+        "priority_inversion": false,
         "starved_skus": [],
         "sku_details": {
           "FLOOR-01": {
             "name": "重型底座",
             "is_elastic": false,
             "required": 30,
-            "placed": 19,
-            "completion_pct": 63.3
+            "placed": 30,
+            "completion_pct": 100.0
           },
           "FRAG-01": {
             "name": "精密仪器",
             "is_elastic": false,
             "required": 40,
-            "placed": 39,
-            "completion_pct": 97.5
+            "placed": 40,
+            "completion_pct": 100.0
           },
           "TALL-01": {
             "name": "竖放面板",
@@ -1486,11 +1465,11 @@
         "payload_violations": 0
       },
       "summary": {
-        "placedCount": 998,
-        "unplacedCount": 12,
-        "utilization": 50.04753397739373,
-        "rigidCompletion": 97.65,
-        "healthStatus": "UNHEALTHY_PRIORITY"
+        "placedCount": 1010,
+        "unplacedCount": 0,
+        "utilization": 51.933550122255525,
+        "rigidCompletion": 100.0,
+        "healthStatus": "HEALTHY"
       }
     }
   },
@@ -1499,11 +1478,11 @@
     "case_name": "14-SKU-1845 (当前基线)",
     "description": "14-SKU standard baseline cleanroom case 001",
     "requested_cartons": 2145,
-    "placed_count": 1554,
-    "unplaced_count": 591,
-    "utilization": 85.02,
-    "volume_utilization_pct": 85.0181,
-    "runtime_ms": 16806.87,
+    "placed_count": 1624,
+    "unplaced_count": 521,
+    "utilization": 86.22,
+    "volume_utilization_pct": 86.2207,
+    "runtime_ms": 25323.32,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -1518,8 +1497,8 @@
       "rigid_placed": 1471,
       "rigid_completion_pct": 100.0,
       "elastic_required": 674,
-      "elastic_placed": 83,
-      "elastic_completion_pct": 12.31,
+      "elastic_placed": 153,
+      "elastic_completion_pct": 22.7,
       "priority_inversion": false,
       "starved_skus": [],
       "sku_details": {
@@ -1618,8 +1597,8 @@
           "name": "19寸 显示器 BG (DA)",
           "is_elastic": true,
           "required": 674,
-          "placed": 83,
-          "completion_pct": 12.3
+          "placed": 153,
+          "completion_pct": 22.7
         },
         "SKU-15": {
           "name": "23.8寸摄像头显示器",
@@ -1642,9 +1621,9 @@
       "payload_violations": 0
     },
     "summary": {
-      "placedCount": 1554,
-      "unplacedCount": 591,
-      "utilization": 85.01810446987965,
+      "placedCount": 1624,
+      "unplacedCount": 521,
+      "utilization": 86.22072895137124,
       "rigidCompletion": 100.0,
       "healthStatus": "HEALTHY"
     }
@@ -1658,7 +1637,7 @@
     "unplaced_count": 10,
     "utilization": 91.46,
     "volume_utilization_pct": 91.4561,
-    "runtime_ms": 1786.96,
+    "runtime_ms": 4806.15,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -1715,7 +1694,7 @@
     "unplaced_count": 2369,
     "utilization": 89.52,
     "volume_utilization_pct": 89.515,
-    "runtime_ms": 16459.61,
+    "runtime_ms": 25133.54,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -1793,7 +1772,7 @@
     "unplaced_count": 0,
     "utilization": 69.75,
     "volume_utilization_pct": 69.7518,
-    "runtime_ms": 1531.51,
+    "runtime_ms": 1344.74,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -1874,11 +1853,11 @@
     "case_name": "混合异尺寸 (测空间利用)",
     "description": "Highly heterogeneous SKU dimensions testing multi-depth wall slicing, top filling, and compact space utilization",
     "requested_cartons": 810,
-    "placed_count": 810,
-    "unplaced_count": 0,
-    "utilization": 70.43,
-    "volume_utilization_pct": 70.4281,
-    "runtime_ms": 10824.65,
+    "placed_count": 540,
+    "unplaced_count": 270,
+    "utilization": 63.83,
+    "volume_utilization_pct": 63.827,
+    "runtime_ms": 24967.39,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -1890,11 +1869,11 @@
     "health_issues": [],
     "sku_fulfillment": {
       "rigid_required": 560,
-      "rigid_placed": 560,
-      "rigid_completion_pct": 100.0,
+      "rigid_placed": 540,
+      "rigid_completion_pct": 96.43,
       "elastic_required": 250,
-      "elastic_placed": 250,
-      "elastic_completion_pct": 100.0,
+      "elastic_placed": 0,
+      "elastic_completion_pct": 0.0,
       "priority_inversion": false,
       "starved_skus": [],
       "sku_details": {
@@ -1909,8 +1888,8 @@
           "name": "Tall Upright Carton",
           "is_elastic": false,
           "required": 70,
-          "placed": 70,
-          "completion_pct": 100.0
+          "placed": 50,
+          "completion_pct": 71.4
         },
         "HETERO-03": {
           "name": "Flat Large Panel",
@@ -1944,8 +1923,8 @@
           "name": "Small Void Filler",
           "is_elastic": true,
           "required": 250,
-          "placed": 250,
-          "completion_pct": 100.0
+          "placed": 0,
+          "completion_pct": 0.0
         },
         "HETERO-08": {
           "name": "Door Safety Partition",
@@ -1968,10 +1947,10 @@
       "payload_violations": 0
     },
     "summary": {
-      "placedCount": 810,
-      "unplacedCount": 0,
-      "utilization": 70.42809948278764,
-      "rigidCompletion": 100.0,
+      "placedCount": 540,
+      "unplacedCount": 270,
+      "utilization": 63.82704297577314,
+      "rigidCompletion": 96.43,
       "healthStatus": "HEALTHY"
     }
   },
@@ -1984,7 +1963,7 @@
     "unplaced_count": 0,
     "utilization": 69.13,
     "volume_utilization_pct": 69.1278,
-    "runtime_ms": 567.51,
+    "runtime_ms": 509.53,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2055,18 +2034,16 @@
     "unplaced_count": 155,
     "utilization": 76.48,
     "volume_utilization_pct": 76.476,
-    "runtime_ms": 16470.28,
+    "runtime_ms": 24977.78,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
     "out_of_bounds_count": 0,
-    "violations": 7,
-    "fatal_violations": 7,
-    "is_valid": false,
-    "health_status": "VIOLATED",
-    "health_issues": [
-      "VIOLATIONS(7)"
-    ],
+    "violations": 0,
+    "fatal_violations": 0,
+    "is_valid": true,
+    "health_status": "HEALTHY",
+    "health_issues": [],
     "sku_fulfillment": {
       "rigid_required": 800,
       "rigid_placed": 645,
@@ -2108,7 +2085,7 @@
       "stack_layer_violations": 0,
       "support_floating_violations": 0,
       "zone_violations": 0,
-      "door_lockout_violations": 7,
+      "door_lockout_violations": 0,
       "payload_violations": 0
     },
     "summary": {
@@ -2116,7 +2093,7 @@
       "unplacedCount": 155,
       "utilization": 76.47602358058951,
       "rigidCompletion": 80.62,
-      "healthStatus": "VIOLATED"
+      "healthStatus": "HEALTHY"
     }
   },
   "STACK-BEARING-CONSTRAINTS": {
@@ -2124,11 +2101,11 @@
     "case_name": "堆叠承重约束 (测约束遵守)",
     "description": "Tests max_stack_layers, maxBearingKg, and mustBeOnFloor constraints are respected",
     "requested_cartons": 640,
-    "placed_count": 610,
-    "unplaced_count": 30,
-    "utilization": 40.08,
-    "volume_utilization_pct": 40.0778,
-    "runtime_ms": 18028.16,
+    "placed_count": 640,
+    "unplaced_count": 0,
+    "utilization": 43.61,
+    "volume_utilization_pct": 43.6141,
+    "runtime_ms": 961.24,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2136,18 +2113,16 @@
     "violations": 0,
     "fatal_violations": 0,
     "is_valid": true,
-    "health_status": "UNHEALTHY_PRIORITY",
-    "health_issues": [
-      "PRIORITY_INVERSION(弹性侵蚀刚性)"
-    ],
+    "health_status": "HEALTHY",
+    "health_issues": [],
     "sku_fulfillment": {
       "rigid_required": 340,
-      "rigid_placed": 310,
-      "rigid_completion_pct": 91.18,
+      "rigid_placed": 340,
+      "rigid_completion_pct": 100.0,
       "elastic_required": 300,
       "elastic_placed": 300,
       "elastic_completion_pct": 100.0,
-      "priority_inversion": true,
+      "priority_inversion": false,
       "starved_skus": [],
       "sku_details": {
         "FRAG-01": {
@@ -2161,8 +2136,8 @@
           "name": "重型底座",
           "is_elastic": false,
           "required": 60,
-          "placed": 30,
-          "completion_pct": 50.0
+          "placed": 60,
+          "completion_pct": 100.0
         },
         "NORM-01": {
           "name": "普通中箱",
@@ -2192,11 +2167,11 @@
       "payload_violations": 0
     },
     "summary": {
-      "placedCount": 610,
-      "unplacedCount": 30,
-      "utilization": 40.0778430783069,
-      "rigidCompletion": 91.18,
-      "healthStatus": "UNHEALTHY_PRIORITY"
+      "placedCount": 640,
+      "unplacedCount": 0,
+      "utilization": 43.61412334992219,
+      "rigidCompletion": 100.0,
+      "healthStatus": "HEALTHY"
     }
   },
   "ORIENTATION-TOPSTACK-CONSTRAINTS": {
@@ -2204,11 +2179,11 @@
     "case_name": "朝向与顶叠约束 (测约束组合)",
     "description": "Tests allowStackingOnTop=false and orientation-only constraints (upright only, no flat/side)",
     "requested_cartons": 440,
-    "placed_count": 439,
-    "unplaced_count": 1,
-    "utilization": 39.77,
-    "volume_utilization_pct": 39.774,
-    "runtime_ms": 17976.75,
+    "placed_count": 440,
+    "unplaced_count": 0,
+    "utilization": 40.09,
+    "volume_utilization_pct": 40.0883,
+    "runtime_ms": 2885.68,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2220,8 +2195,8 @@
     "health_issues": [],
     "sku_fulfillment": {
       "rigid_required": 440,
-      "rigid_placed": 439,
-      "rigid_completion_pct": 99.77,
+      "rigid_placed": 440,
+      "rigid_completion_pct": 100.0,
       "elastic_required": 0,
       "elastic_placed": 0,
       "elastic_completion_pct": 0.0,
@@ -2232,8 +2207,8 @@
           "name": "精密仪器箱",
           "is_elastic": false,
           "required": 40,
-          "placed": 39,
-          "completion_pct": 97.5
+          "placed": 40,
+          "completion_pct": 100.0
         },
         "UPONLY-01": {
           "name": "液晶面板",
@@ -2270,10 +2245,10 @@
       "payload_violations": 0
     },
     "summary": {
-      "placedCount": 439,
-      "unplacedCount": 1,
-      "utilization": 39.77398492163459,
-      "rigidCompletion": 99.77,
+      "placedCount": 440,
+      "unplacedCount": 0,
+      "utilization": 40.088320945778165,
+      "rigidCompletion": 100.0,
       "healthStatus": "HEALTHY"
     }
   },
@@ -2282,11 +2257,11 @@
     "case_name": "高瘦箱倾覆 (测TIP安全)",
     "description": "Tests tall slender boxes (dz/dx>3) for tipping safety - no unsupported tall placements or voids",
     "requested_cartons": 540,
-    "placed_count": 400,
-    "unplaced_count": 140,
-    "utilization": 17.29,
-    "volume_utilization_pct": 17.2885,
-    "runtime_ms": 32395.02,
+    "placed_count": 540,
+    "unplaced_count": 0,
+    "utilization": 36.86,
+    "volume_utilization_pct": 36.8559,
+    "runtime_ms": 13705.04,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2294,37 +2269,31 @@
     "violations": 0,
     "fatal_violations": 0,
     "is_valid": true,
-    "health_status": "UNHEALTHY_PRIORITY",
-    "health_issues": [
-      "PRIORITY_INVERSION(弹性侵蚀刚性)",
-      "STARVATION(2SKU未放)"
-    ],
+    "health_status": "HEALTHY",
+    "health_issues": [],
     "sku_fulfillment": {
       "rigid_required": 240,
-      "rigid_placed": 100,
-      "rigid_completion_pct": 41.67,
+      "rigid_placed": 240,
+      "rigid_completion_pct": 100.0,
       "elastic_required": 300,
       "elastic_placed": 300,
       "elastic_completion_pct": 100.0,
-      "priority_inversion": true,
-      "starved_skus": [
-        "TALL-01",
-        "TALL-02"
-      ],
+      "priority_inversion": false,
+      "starved_skus": [],
       "sku_details": {
         "TALL-01": {
           "name": "高柜体A",
           "is_elastic": false,
           "required": 60,
-          "placed": 0,
-          "completion_pct": 0.0
+          "placed": 60,
+          "completion_pct": 100.0
         },
         "TALL-02": {
           "name": "高柜体B",
           "is_elastic": false,
           "required": 80,
-          "placed": 0,
-          "completion_pct": 0.0
+          "placed": 80,
+          "completion_pct": 100.0
         },
         "LOW-01": {
           "name": "矮宽底座",
@@ -2354,11 +2323,11 @@
       "payload_violations": 0
     },
     "summary": {
-      "placedCount": 400,
-      "unplacedCount": 140,
-      "utilization": 17.288481327897184,
-      "rigidCompletion": 41.67,
-      "healthStatus": "UNHEALTHY_PRIORITY"
+      "placedCount": 540,
+      "unplacedCount": 0,
+      "utilization": 36.85589883083492,
+      "rigidCompletion": 100.0,
+      "healthStatus": "HEALTHY"
     }
   },
   "OVERWEIGHT-PAYLOAD": {
@@ -2366,11 +2335,11 @@
     "case_name": "超重场景 (测载重限制)",
     "description": "Tests payload weight limit truncation - total cargo weight far exceeds maxPayloadTons",
     "requested_cartons": 300,
-    "placed_count": 92,
-    "unplaced_count": 208,
-    "utilization": 9.04,
-    "volume_utilization_pct": 9.0372,
-    "runtime_ms": 9894.79,
+    "placed_count": 96,
+    "unplaced_count": 204,
+    "utilization": 9.43,
+    "volume_utilization_pct": 9.4301,
+    "runtime_ms": 24950.08,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2382,8 +2351,8 @@
     "health_issues": [],
     "sku_fulfillment": {
       "rigid_required": 300,
-      "rigid_placed": 92,
-      "rigid_completion_pct": 30.67,
+      "rigid_placed": 96,
+      "rigid_completion_pct": 32.0,
       "elastic_required": 0,
       "elastic_placed": 0,
       "elastic_completion_pct": 0.0,
@@ -2394,8 +2363,8 @@
           "name": "铸铁件",
           "is_elastic": false,
           "required": 300,
-          "placed": 92,
-          "completion_pct": 30.7
+          "placed": 96,
+          "completion_pct": 32.0
         }
       }
     },
@@ -2411,10 +2380,10 @@
       "payload_violations": 0
     },
     "summary": {
-      "placedCount": 92,
-      "unplacedCount": 208,
-      "utilization": 9.037160694127989,
-      "rigidCompletion": 30.67,
+      "placedCount": 96,
+      "unplacedCount": 204,
+      "utilization": 9.43008072430747,
+      "rigidCompletion": 32.0,
       "healthStatus": "HEALTHY"
     }
   },
@@ -2427,7 +2396,7 @@
     "unplaced_count": 0,
     "utilization": 52.06,
     "volume_utilization_pct": 52.0635,
-    "runtime_ms": 670.42,
+    "runtime_ms": 669.71,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2519,7 +2488,7 @@
     "unplaced_count": 0,
     "utilization": 34.91,
     "volume_utilization_pct": 34.9109,
-    "runtime_ms": 630.1,
+    "runtime_ms": 633.88,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2597,7 +2566,7 @@
     "unplaced_count": 1288,
     "utilization": 94.89,
     "volume_utilization_pct": 94.8889,
-    "runtime_ms": 66106.73,
+    "runtime_ms": 84189.2,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2650,11 +2619,11 @@
     "case_name": "全约束综合 (测系统鲁棒性)",
     "description": "All constraint types combined: mustBeOnFloor + maxBearing + maxStack + noTopStack + uprightOnly + zones + elastic",
     "requested_cartons": 1010,
-    "placed_count": 998,
-    "unplaced_count": 12,
-    "utilization": 50.05,
-    "volume_utilization_pct": 50.0475,
-    "runtime_ms": 18048.7,
+    "placed_count": 1010,
+    "unplaced_count": 0,
+    "utilization": 51.93,
+    "volume_utilization_pct": 51.9336,
+    "runtime_ms": 4480.77,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -2662,33 +2631,31 @@
     "violations": 0,
     "fatal_violations": 0,
     "is_valid": true,
-    "health_status": "UNHEALTHY_PRIORITY",
-    "health_issues": [
-      "PRIORITY_INVERSION(弹性侵蚀刚性)"
-    ],
+    "health_status": "HEALTHY",
+    "health_issues": [],
     "sku_fulfillment": {
       "rigid_required": 510,
-      "rigid_placed": 498,
-      "rigid_completion_pct": 97.65,
+      "rigid_placed": 510,
+      "rigid_completion_pct": 100.0,
       "elastic_required": 500,
       "elastic_placed": 500,
       "elastic_completion_pct": 100.0,
-      "priority_inversion": true,
+      "priority_inversion": false,
       "starved_skus": [],
       "sku_details": {
         "FLOOR-01": {
           "name": "重型底座",
           "is_elastic": false,
           "required": 30,
-          "placed": 19,
-          "completion_pct": 63.3
+          "placed": 30,
+          "completion_pct": 100.0
         },
         "FRAG-01": {
           "name": "精密仪器",
           "is_elastic": false,
           "required": 40,
-          "placed": 39,
-          "completion_pct": 97.5
+          "placed": 40,
+          "completion_pct": 100.0
         },
         "TALL-01": {
           "name": "竖放面板",
@@ -2739,11 +2706,11 @@
       "payload_violations": 0
     },
     "summary": {
-      "placedCount": 998,
-      "unplacedCount": 12,
-      "utilization": 50.04753397739373,
-      "rigidCompletion": 97.65,
-      "healthStatus": "UNHEALTHY_PRIORITY"
+      "placedCount": 1010,
+      "unplacedCount": 0,
+      "utilization": 51.933550122255525,
+      "rigidCompletion": 100.0,
+      "healthStatus": "HEALTHY"
     }
   }
 }

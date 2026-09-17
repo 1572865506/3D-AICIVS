@@ -1,0 +1,45 @@
+{
+    "case_id": "20GP-SINGLE-LAYER",
+    "case_name": "20GP小柜单层受限 (测短柜落地调度)",
+    "description": "20GP container loaded with mustBeOnFloor=true single layer machines",
+    "container": {
+        "usable": {
+            "L": 5.898,
+            "W": 2.352,
+            "H": 2.385
+        },
+        "maxPayloadTons": 21.8
+    },
+    "cargo": [
+        {
+            "sku": "MACH-20",
+            "name": "小型动力单元",
+            "w": 0.95,
+            "d": 0.75,
+            "h": 0.8,
+            "weight": 95.0,
+            "quantity": 12,
+            "mustBeOnFloor": true,
+            "max_stack_layers": 1
+        },
+        {
+            "sku": "ACC-20",
+            "name": "随机配件箱",
+            "w": 0.45,
+            "d": 0.35,
+            "h": 0.3,
+            "weight": 12.0,
+            "quantity": 80
+        },
+        {
+            "sku": "CUSH-20",
+            "name": "缓冲垫袋",
+            "w": 0.3,
+            "d": 0.2,
+            "h": 0.15,
+            "weight": 2.0,
+            "quantity": 150,
+            "isElastic": true
+        }
+    ]
+}

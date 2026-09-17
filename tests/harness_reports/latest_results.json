@@ -1,0 +1,87 @@
+{
+  "results": {
+    "SINGLE-LARGE-BOX": {
+      "case_id": "SINGLE-LARGE-BOX",
+      "case_name": "单一大箱 SKU (测极限堆叠)",
+      "description": "Single large carton SKU for monolithic block stacking and extreme volume utilization",
+      "requested_cartons": 70,
+      "placed_count": 60,
+      "unplaced_count": 10,
+      "utilization": 91.46,
+      "volume_utilization_pct": 91.4561,
+      "runtime_ms": 3945.91,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 70,
+        "rigid_placed": 60,
+        "rigid_completion_pct": 85.71,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "LARGE-SKU-01": {
+            "name": "Industrial Palletized Unit",
+            "is_elastic": false,
+            "required": 70,
+            "placed": 60,
+            "missing": 10,
+            "completion_pct": 85.7,
+            "distribution": {
+              "floor_placed": 20,
+              "door_zone_placed": 0,
+              "non_door_placed": 60
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          }
+        }
+      },
+      "quality_metrics": {
+        "hollow_ratio_pct": 0.0,
+        "enclosed_cavity_volume": 0.0,
+        "enclosed_cavity_count": 0,
+        "reachable_residual_volume": 3.155,
+        "dead_space_volume": 0.0,
+        "fragmentation_score": 0.0,
+        "cog_offset_x_pct": 0.0,
+        "cog_offset_y_pct": 0.0
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 60,
+        "unplacedCount": 10,
+        "utilization": 91.45606622457511,
+        "rigidCompletion": 85.71,
+        "healthStatus": "HEALTHY"
+      }
+    }
+  },
+  "total_cases": 1,
+  "passed": 1,
+  "failed": 0,
+  "warned": 0
+}

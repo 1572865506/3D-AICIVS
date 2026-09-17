@@ -1,0 +1,55 @@
+{
+    "case_id": "GEN-P1-01-03",
+    "case_name": "自动生成: 40HQ-无约束-NORMAL",
+    "description": "Auto-generated: container=40HQ, constraint=NONE, rigid=FULL_RIGID, hetero=LOW, scenario=NORMAL",
+    "tags": [
+        "40HQ",
+        "NONE",
+        "FULL_RIGID",
+        "LOW",
+        "NORMAL",
+        "GENERATED"
+    ],
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-001",
+            "name": "精密仪器箱-655",
+            "w": 0.673,
+            "d": 0.593,
+            "h": 0.448,
+            "weight": 29.0,
+            "quantity": 24,
+            "maxBearingKg": 20.0,
+            "allowStackingOnTop": false
+        },
+        {
+            "sku": "SKU-002",
+            "name": "限层堆叠箱-591",
+            "w": 0.523,
+            "d": 0.47,
+            "h": 0.449,
+            "weight": 21.7,
+            "quantity": 85,
+            "max_stack_layers": 2,
+            "maxBearingKg": 30.0
+        },
+        {
+            "sku": "SKU-003",
+            "name": "大尺寸电视-729",
+            "w": 1.52,
+            "d": 0.153,
+            "h": 0.841,
+            "weight": 13.0,
+            "quantity": 77,
+            "allowedOrientation": "upright"
+        }
+    ]
+}

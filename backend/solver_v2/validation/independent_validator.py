@@ -687,18 +687,44 @@ class IndependentGlobalValidator:
                         )
                     )
 
-                # Floor Only check
+                # Floor Only check (支持同SKU在max_stack_layers范围内的自承载连续落地堆叠)
                 if cargo.stacking_policy.must_be_on_floor and z > eps:
-                    rule_violations.append(
-                        ViolationDetail(
-                            violation_type=ViolationType.FLOOR_ONLY_VIOLATION,
-                            severity=ViolationSeverity.FATAL,
-                            message=f"Placement {p['placement_id']} (SKU: {sku_id}) must be placed on floor, but placed at z={z:.3f}",
-                            sku_id=sku_id,
-                            placement_id=p["placement_id"],
-                            placement_index=i,
-                        )
+                    max_allowed_layers = cargo.stacking_policy.max_stack_layers or 1
+
+                    # 检查支撑该箱体的下层箱子
+                    candidate_lowers = get_supporting_candidates(z)
+                    direct_supports = []
+                    for j in candidate_lowers:
+                        if i == j:
+                            continue
+                        p2 = placements[j]
+                        ox = min(x + dx, p2["x"] + p2["dx"]) - max(x, p2["x"])
+                        oy = min(y + dy, p2["y"] + p2["dy"]) - max(y, p2["y"])
+                        if ox > eps and oy > eps and (ox * oy) >= 0.10 * (dx * dy):
+                            direct_supports.append(j)
+
+                    has_foreign_support = any(placements[j]["sku_id"] != sku_id for j in direct_supports)
+                    same_sku_depth = self._compute_stack_column_depth(
+                        i, placements, same_sku_only=True,
+                        get_supporting_fn=get_supporting_candidates, memo=stack_depth_memo
                     )
+
+                    # 若存在异品类箱体垫底、无支撑、自身要求仅限1层、或堆叠深度超出该SKU自身允许的层数上限，则判定落地违规
+                    if has_foreign_support or not direct_supports or max_allowed_layers <= 1 or same_sku_depth > max_allowed_layers:
+                        rule_violations.append(
+                            ViolationDetail(
+                                violation_type=ViolationType.FLOOR_ONLY_VIOLATION,
+                                severity=ViolationSeverity.FATAL,
+                                message=(
+                                    f"Placement {p['placement_id']} (SKU: {sku_id}) must be grounded on floor, "
+                                    f"but placed at z={z:.3f} (stack_depth={same_sku_depth}, "
+                                    f"max_allowed_layers={max_allowed_layers}, foreign_support={has_foreign_support})"
+                                ),
+                                sku_id=sku_id,
+                                placement_id=p["placement_id"],
+                                placement_index=i,
+                            )
+                        )
 
             # --- Support Ratio & Floating Box Check ---
             if z > eps:

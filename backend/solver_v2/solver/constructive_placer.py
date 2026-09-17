@@ -47,6 +47,7 @@ class ConstructivePlacer:
     ) -> List[Placement]:
         """Places items strip by strip, enforcing all physical gates."""
         self.spatial_index.clear()
+        self.box_props: Dict[str, Dict[str, Any]] = {}
         placements: List[Placement] = []
         step_idx = 0
 
@@ -83,48 +84,70 @@ class ConstructivePlacer:
             if not items_to_place:
                 continue
 
+            # Prioritize rigid items first within composite strip
+            items_to_place.sort(key=lambda t: (0 if not t[0].is_elastic else 1, -t[0].weight_kg, -t[0].volume_m3))
+
             # If homogeneous strip (1 SKU)
             if len(items_to_place) == 1:
-                cargo, ori, count = items_to_place[0]
-                placed_in_strip = 0
+                cargo, orig_ori, count = items_to_place[0]
+                best_strip_placements: List[Placement] = []
+                best_step = step_idx
 
-                row_x = x_cursor
-                max_strip_x = strip.x_start + strip.x_depth
-                while row_x + ori.dx <= min(self.cL, max_strip_x) + 1e-4 and placed_in_strip < count:
-                    col_y = 0.0
-                    while col_y + ori.dy <= self.cW + 1e-4 and placed_in_strip < count:
-                        layer_z = 0.0
-                        max_layers = cargo.max_stack_layers or 99
-                        if getattr(cargo, "must_be_on_floor", False):
-                            max_layers = 1
-                        layer_count = 0
+                # Backtrack & try alternative orientations if primary fails to place required count
+                candidate_oris = [orig_ori] + [o for o in cargo.orientations if o.name != orig_ori.name]
 
-                        while (
-                            layer_z + ori.dz <= self.cH + 1e-4
-                            and layer_count < max_layers
-                            and placed_in_strip < count
-                        ):
-                            cand = {
-                                "x": round(row_x, 4),
-                                "y": round(col_y, 4),
-                                "z": round(layer_z, 4),
-                                "dx": ori.dx,
-                                "dy": ori.dy,
-                                "dz": ori.dz,
-                            }
-                            if self._pre_check(cand, cargo):
-                                p = self._commit_placement(cand, cargo, ori, step_idx, strip)
-                                placements.append(p)
-                                self.spatial_index.insert(p.placement_id, AABB.from_placement(p), data=p)
-                                step_idx += 1
-                                placed_in_strip += 1
-                                placed_counts[cargo.sku_id] = placed_counts.get(cargo.sku_id, 0) + 1
+                for ori in candidate_oris:
+                    trial_placements: List[Placement] = []
+                    trial_step = step_idx
+                    placed_in_strip = 0
 
-                            layer_z = round(layer_z + ori.dz, 4)
-                            layer_count += 1
+                    row_x = x_cursor
+                    max_strip_x = strip.x_start + strip.x_depth
+                    while row_x + ori.dx <= min(self.cL, max_strip_x) + 1e-4 and placed_in_strip < count:
+                        col_y = 0.0
+                        while col_y + ori.dy <= self.cW + 1e-4 and placed_in_strip < count:
+                            layer_z = 0.0
+                            max_layers = cargo.max_stack_layers or 99
+                            if getattr(cargo, "must_be_on_floor", False):
+                                max_layers = 1
+                            layer_count = 0
 
-                        col_y = round(col_y + ori.dy, 4)
-                    row_x = round(row_x + ori.dx, 4)
+                            while (
+                                layer_z + ori.dz <= self.cH + 1e-4
+                                and layer_count < max_layers
+                                and placed_in_strip < count
+                            ):
+                                cand = {
+                                    "x": round(row_x, 4),
+                                    "y": round(col_y, 4),
+                                    "z": round(layer_z, 4),
+                                    "dx": ori.dx,
+                                    "dy": ori.dy,
+                                    "dz": ori.dz,
+                                }
+                                if self._pre_check(cand, cargo, placements + trial_placements):
+                                    p = self._commit_placement(cand, cargo, ori, trial_step, strip)
+                                    trial_placements.append(p)
+                                    trial_step += 1
+                                    placed_in_strip += 1
+
+                                layer_z = round(layer_z + ori.dz, 4)
+                                layer_count += 1
+
+                            col_y = round(col_y + ori.dy, 4)
+                        row_x = round(row_x + ori.dx, 4)
+
+                    if len(trial_placements) > len(best_strip_placements):
+                        best_strip_placements = trial_placements
+                        best_step = trial_step
+                        if len(best_strip_placements) >= count:
+                            break
+
+                for p in best_strip_placements:
+                    placements.append(p)
+                    self.spatial_index.insert(p.placement_id, AABB.from_placement(p), data=p)
+                    placed_counts[p.sku_id] = placed_counts.get(p.sku_id, 0) + 1
+                step_idx = best_step
 
             else:
                 # Composite strip (multiple SKUs side by side along Y)
@@ -134,17 +157,18 @@ class ConstructivePlacer:
                     row_x = x_cursor
                     max_strip_x = strip.x_start + strip.x_depth
 
-                    # Width slice for this SKU
-                    cols_y = max(1, int(round((count / (max(1, int(self.cH / ori.dz)) * max(1, int(strip.x_depth / ori.dx)))))))
+                    # Width slice for this SKU with floor-only awareness
+                    max_stack = 1 if getattr(cargo, "must_be_on_floor", False) else (cargo.max_stack_layers or max(1, int(self.cH / ori.dz)))
+                    eff_layers = min(max_stack, max(1, int(self.cH / ori.dz)))
+                    eff_rows = max(1, int(round(strip.x_depth / max(1e-4, ori.dx))))
+                    cols_y = max(1, math.ceil(count / (eff_layers * eff_rows)))
                     sub_y_limit = min(self.cW, curr_y + cols_y * ori.dy)
 
                     while row_x + ori.dx <= min(self.cL, max_strip_x) + 1e-4 and placed_for_sku < count:
                         col_y = curr_y
                         while col_y + ori.dy <= sub_y_limit + 1e-4 and placed_for_sku < count:
                             layer_z = 0.0
-                            max_layers = cargo.max_stack_layers or 99
-                            if getattr(cargo, "must_be_on_floor", False):
-                                max_layers = 1
+                            max_layers = 1 if getattr(cargo, "must_be_on_floor", False) else (cargo.max_stack_layers or 99)
                             layer_count = 0
 
                             while (
@@ -160,7 +184,7 @@ class ConstructivePlacer:
                                     "dy": ori.dy,
                                     "dz": ori.dz,
                                 }
-                                if self._pre_check(cand, cargo):
+                                if self._pre_check(cand, cargo, placements):
                                     p = self._commit_placement(cand, cargo, ori, step_idx, strip)
                                     placements.append(p)
                                     self.spatial_index.insert(p.placement_id, AABB.from_placement(p), data=p)
@@ -178,7 +202,7 @@ class ConstructivePlacer:
 
         return placements
 
-    def _pre_check(self, cand: Dict[str, float], cargo: UniversalCargoTensor) -> bool:
+    def _pre_check(self, cand: Dict[str, float], cargo: UniversalCargoTensor, placements: List[Placement]) -> bool:
         """Physical safety pre-check before committing placement."""
         cand_aabb = AABB(
             min_x=cand["x"],
@@ -224,7 +248,41 @@ class ConstructivePlacer:
             if not self._check_bearing(cand_aabb, cargo.weight_kg):
                 return False
 
+        # 7. Tipping stability check (TIP-03)
+        if not self._is_tipping_safe(cand, placements):
+            return False
+
         return True
+
+    def _is_tipping_safe(self, cand: Dict[str, float], placements: List[Placement]) -> bool:
+        """Checks longitudinal tipping safety for slender/tall cartons."""
+        dx, dz = cand["dx"], cand["dz"]
+        if dz <= 1e-6:
+            return True
+
+        # Intrinsic safety factor under 0.5g deceleration: SF = 2.0 * dx / dz
+        intrinsic_sf = (2.0 * dx) / dz
+        if intrinsic_sf >= 1.5 - 1e-4:
+            return True
+
+        # Door flush provides rigid forward support
+        if cand["x"] + cand["dx"] >= self.cL - 0.04 - 1e-4:
+            return True
+
+        # Check forward support from adjacent cartons in +X direction
+        target_x = cand["x"] + cand["dx"]
+        min_y_ov = 0.20 * cand["dy"]
+        min_z_ov = 0.20 * cand["dz"]
+        eps = 1e-4
+
+        for other in placements:
+            if abs(other.position.x - target_x) <= 0.03:
+                y_ov = min(cand["y"] + cand["dy"], other.position.y + other.orientation.dy) - max(cand["y"], other.position.y)
+                z_ov = min(cand["z"] + cand["dz"], other.position.z + other.orientation.dz) - max(cand["z"], other.position.z)
+                if y_ov >= min_y_ov - eps and z_ov >= min_z_ov - eps:
+                    return True
+
+        return False
 
     def _calc_support_ratio(self, cand_aabb: AABB) -> float:
         """Computes contact area ratio between cand bottom face and lower boxes."""
@@ -272,16 +330,14 @@ class ConstructivePlacer:
                 oy = min(cand_aabb.max_y, item.aabb.max_y) - max(cand_aabb.min_y, item.aabb.min_y)
                 if ox > 1e-4 and oy > 1e-4:
                     p: Optional[Placement] = item.data
-                    if p and hasattr(p, "sku_id"):
-                        # If underlying box has allow_stacking_on_top == False
-                        # We can inspect attribute if stored
-                        if getattr(p, "allow_stacking_on_top", True) is False:
+                    if p:
+                        props = self.box_props.get(p.placement_id, {})
+                        if props.get("allow_stacking_on_top", True) is False:
                             return False
         return True
 
     def _check_bearing(self, cand_aabb: AABB, added_weight_kg: float) -> bool:
         """Verifies underlying boxes do not exceed their max bearing weight."""
-        # Conservative check: underneath boxes with bearing limits
         bottom_z = cand_aabb.min_z
         query_box = AABB(
             min_x=cand_aabb.min_x,
@@ -297,17 +353,18 @@ class ConstructivePlacer:
             if item and abs(item.aabb.max_z - bottom_z) < 0.005:
                 p: Optional[Placement] = item.data
                 if p:
-                    max_bearing = getattr(p, "max_bearing_kg", None)
-                    current_bearing = getattr(p, "current_bearing_kg", 0.0)
+                    props = self.box_props.get(p.placement_id, {})
+                    max_bearing = props.get("max_bearing_kg", None)
+                    current_bearing = props.get("current_bearing_kg", 0.0)
                     if max_bearing is not None and current_bearing + added_weight_kg > max_bearing:
                         return False
         return True
 
     def _infer_context(self, cand: Dict[str, float], strip: StripAllocation) -> PlacementContext:
         if cand["x"] >= self.cL - self.door_zone_len:
-            return PlacementContext.DOOR_WALL
-        if strip.zone == "INNER" or cand["x"] <= self.container.rear_zone_length_m:
-            return PlacementContext.REAR_WALL
+            return PlacementContext.DOOR_SEAL
+        if strip.zone == "INNER" or cand["x"] <= getattr(self.container, "rear_zone_length_m", 1.5):
+            return PlacementContext.FOUNDATION
         return PlacementContext.MAIN_WALL
 
     def _commit_placement(
@@ -319,8 +376,9 @@ class ConstructivePlacer:
         strip: StripAllocation,
     ) -> Placement:
         context = self._infer_context(cand, strip)
+        pid = f"cpsat-{step_idx:04d}"
         p = Placement(
-            placement_id=f"cpsat-{step_idx:04d}",
+            placement_id=pid,
             instance_id=f"{cargo.sku_id}-{step_idx:04d}",
             sku_id=cargo.sku_id,
             position=Point3D(x=cand["x"], y=cand["y"], z=cand["z"]),
@@ -337,8 +395,9 @@ class ConstructivePlacer:
             context=context,
             step_index=step_idx,
         )
-        # Attach dynamic properties for stacked checks
-        setattr(p, "allow_stacking_on_top", getattr(cargo, "allow_stacking_on_top", True))
-        setattr(p, "max_bearing_kg", getattr(cargo, "max_bearing_kg", None))
-        setattr(p, "current_bearing_kg", 0.0)
+        self.box_props[pid] = {
+            "allow_stacking_on_top": getattr(cargo, "allow_stacking_on_top", True),
+            "max_bearing_kg": getattr(cargo, "max_bearing_kg", None),
+            "current_bearing_kg": 0.0,
+        }
         return p

@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D-AICIVS 工业测试平台监控看板 | Test Harness Dashboard</title>
+    <style>
+        :root {
+            --bg-primary: #0b0f19;
+            --bg-secondary: #131b2e;
+            --bg-card: #1a233a;
+            --bg-hover: #222e4d;
+            --border-color: #2a3b61;
+            --accent-cyan: #00f0ff;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-red: #ef4444;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* 顶部导航栏 */
+        header {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            color: #000;
+            font-weight: 900;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-btn:hover {
+            background: var(--bg-card);
+            color: var(--accent-cyan);
+            border-color: var(--accent-cyan);
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--text-muted);
+        }
+
+        .status-pill.idle .status-dot { background: var(--text-muted); }
+        .status-pill.running { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+        .status-pill.running .status-dot { background: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan); animation: pulse 1.5s infinite; }
+        .status-pill.completed { border-color: var(--accent-green); color: var(--accent-green); }
+        .status-pill.completed .status-dot { background: var(--accent-green); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.3); }
+        }
+
+        /* 主体内容网格 */
+        main {
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* 控制操作卡片 */
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 18px 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 配置控制台表单 */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            align-items: end;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .control-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .select-input, .text-input {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .select-input:focus, .text-input:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 9px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: #fff;
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: #fff;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #ef4444;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 实时统计大屏 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .stat-name {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .stat-value.green { color: var(--accent-green); }
+        .stat-value.cyan { color: var(--accent-cyan); }
+        .stat-value.yellow { color: var(--accent-yellow); }
+        .stat-value.red { color: var(--accent-red); }
+
+        /* 正在运行用例卡片 */
+        .running-banner {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.08), rgba(59, 130, 246, 0.08));
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 8px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .running-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .spinner {
+            width: 22px;
+            height: 22px;
+            border: 2px solid rgba(0, 240, 255, 0.2);
+            border-top-color: var(--accent-cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 进度条 */
+        .progress-bar-wrap {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-card);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+            transition: width 0.3s ease;
+        }
+
+        /* Agent 报告一键复制条 */
+        .agent-bar {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 95, 70, 0.15));
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .agent-text-preview {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 12px;
+            color: #d1fae5;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: 6px;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn-copy {
+            background: var(--accent-green);
+            color: #000;
+            font-weight: 700;
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .btn-copy:hover {
+            background: #34d399;
+            box-shadow: 0 0 12px rgba(52, 211, 153, 0.4);
+        }
+
+        /* 故障聚类卡片网格 */
+        .clusters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 14px;
+        }
+
+        .cluster-card {
+            background: var(--bg-card);
+            border-left: 4px solid var(--accent-red);
+            border-radius: 0 8px 8px 0;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .cluster-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cluster-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #fca5a5;
+        }
+
+        .cluster-badge {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .cluster-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .cluster-fix {
+            font-size: 11px;
+            color: var(--accent-cyan);
+            background: rgba(0, 240, 255, 0.05);
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+
+        /* 用例明细表格 */
+        .table-wrap {
+            overflow-x: auto;
+            max-height: 480px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        th {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-weight: 600;
+            padding: 10px 14px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(42, 59, 97, 0.4);
+            color: var(--text-primary);
+        }
+
+        tr:hover td {
+            background: var(--bg-hover);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .badge.pass { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.4); }
+        .badge.warn { background: rgba(245, 158, 11, 0.2); color: var(--accent-yellow); border: 1px solid rgba(245, 158, 11, 0.4); }
+        .badge.fail { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.4); }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--accent-green);
+            color: #000;
+            font-weight: 700;
+            padding: 10px 18px;
+            border-radius: 6px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 模态弹窗 Modal 样式 */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 860px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            max-height: 90vh;
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+        }
+
+        .modal-close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .modal-close-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .modal-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+        }
+
+        .modal-metric {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .modal-metric .m-label { font-size: 11px; color: var(--text-muted); }
+        .modal-metric .m-val { font-size: 16px; font-weight: 700; color: #fff; }
+
+        .modal-agent-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 12px 14px;
+        }
+
+        .modal-pre-text {
+            background: rgba(0, 0, 0, 0.5);
+            color: #a7f3d0;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        .action-btn-sm {
+            padding: 3px 8px;
+            font-size: 11px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .action-btn-sm:hover {
+            background: var(--accent-blue);
+            color: #fff;
+            border-color: var(--accent-blue);
+        }
+        .action-btn-sm.copy {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        .action-btn-sm.copy:hover {
+            background: var(--accent-green);
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <span class="brand-badge">TEST HARNESS</span>
+            <div class="brand-title">3D-AICIVS 算法测试控制中心</div>
+            <div id="statusPill" class="status-pill idle">
+                <span class="status-dot"></span>
+                <span id="statusText">系统空闲</span>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-btn">📦 3D 渲染主视口</a>
+            <a href="algorithm_space.html" class="nav-btn">🌐 算法拓扑</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- 控制面板 -->
+        <section class="card">
+            <div class="card-header">
+                <div class="card-title">⚙️ 测试工况控制台</div>
+                <div style="font-size: 12px; color: var(--text-muted);" id="availableCasesCount">正在检索用例库...</div>
+            </div>
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label class="control-label">测试分层 (Tier)</label>
+                    <select id="tierSelect" class="select-input">
+                        <option value="1" selected>Tier 1 (核心基准 ~100 用例)</option>
+                        <option value="2">Tier 2 (全量覆盖 ~115+ 用例)</option>
+                        <option value="smoke">快速冒烟 (前 5 个用例)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">柜型约束过滤</label>
+                    <select id="containerSelect" class="select-input">
+                        <option value="" selected>全部集装箱柜型</option>
+                        <option value="40HQ">40HQ (标准高柜)</option>
+                        <option value="20GP">20GP (短柜)</option>
+                        <option value="45HQ">45HQ (超长柜)</option>
+                        <option value="40GP">40GP (平柜)</option>
+                        <option value="53HQ">53HQ (超大柜)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">约束特性标签</label>
+                    <select id="tagSelect" class="select-input">
+                        <option value="" selected>所有物理约束</option>
+                        <option value="door">门区防倾与封门 (door)</option>
+                        <option value="bearing">承重链与极限压强 (bearing)</option>
+                        <option value="floor">落地专属性 (floor)</option>
+                        <option value="stack">堆叠层数限制 (stack)</option>
+                        <option value="elastic">弹性件吸纳填充 (elastic)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">采样限制 (Limit)</label>
+                    <input type="number" id="limitInput" class="text-input" placeholder="留空为不限制" min="1" max="500">
+                </div>
+                <div class="btn-group">
+                    <button id="startBtn" class="btn btn-primary" onclick="startTest()">▶ 启动测试</button>
+                    <button id="stopBtn" class="btn btn-danger" onclick="stopTest()" disabled>⏹ 终止</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 实时监控看板 -->
+        <section class="card" id="monitorSection">
+            <div class="card-header">
+                <div class="card-title">⏱️ 实时执行监控</div>
+                <div style="font-size: 13px; color: var(--accent-cyan);" id="timerText">耗时: 0.0s</div>
+            </div>
+
+            <!-- 当前运行中横幅 -->
+            <div class="running-banner" id="runningBanner" style="display: none;">
+                <div class="running-info">
+                    <div class="spinner"></div>
+                    <div>
+                        <div style="font-weight: 700; font-size: 14px;" id="currentCaseId">正在初始化测试环境...</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);" id="currentCaseName">请稍候</div>
+                    </div>
+                </div>
+                <div style="font-size: 12px; color: var(--accent-cyan);" id="currentCaseTimer">已计算: 0.0s</div>
+            </div>
+
+            <!-- 进度条 -->
+            <div class="progress-bar-wrap">
+                <div id="progressBar" class="progress-bar-fill"></div>
+            </div>
+
+            <!-- 统计卡片网格 -->
+            <div class="stats-grid" style="margin-top: 14px;">
+                <div class="stat-card">
+                    <span class="stat-name">执行进度</span>
+                    <span class="stat-value cyan" id="statProgress">0 / 0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-name">平均利用率</span>
+                    <span class="stat-value" id="statUtil">0.0%</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-name">全合规 (PASS)</span>
+                    <span class="stat-value green" id="statPass">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-name">告警 (WARN)</span>
+                    <span class="stat-value yellow" id="statWarn">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-name">失败 (FAIL)</span>
+                    <span class="stat-value red" id="statFail">0</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 一键复制 Agent 诊断专区 -->
+        <section class="agent-bar">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 18px;">🤖</span>
+                <div>
+                    <div style="font-weight: 700; font-size: 13px; color: #fff;">Agent 诊断摘要一键直传</div>
+                    <div style="font-size: 11px; color: #a7f3d0;">复制精简纯文本报告，直接粘贴给 Agent 进行代码修复，节约 Token 消耗</div>
+                </div>
+            </div>
+            <div class="agent-text-preview" id="agentPreview">点击右侧按钮复制最新测试摘要...</div>
+            <button class="btn-copy" onclick="copyAgentSummary()">
+                📋 复制诊断报告发给 Agent
+            </button>
+        </section>
+
+        <!-- 故障聚类专区 (有失败时显示) -->
+        <section class="card" id="clusterSection" style="display: none;">
+            <div class="card-header">
+                <div class="card-title">🔍 核心故障聚类归因 (Root Cause Clusters)</div>
+            </div>
+            <div class="clusters-grid" id="clustersGrid">
+                <!-- 动态填充 -->
+            </div>
+        </section>
+
+        <!-- 用例明细表格 -->
+        <section class="card">
+            <div class="card-header">
+                <div class="card-title">📋 用例明细流水表</div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="searchInput" class="text-input" placeholder="搜索 Case ID 或名称..." oninput="filterTable()" style="padding: 4px 10px; font-size: 12px;">
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Case ID</th>
+                            <th>用例名称</th>
+                            <th>空间利用率</th>
+                            <th>中空死腔率</th>
+                            <th>重心偏载</th>
+                            <th>刚性交付%</th>
+                            <th>物理碰撞</th>
+                            <th>约束违规</th>
+                            <th>单例耗时</th>
+                            <th>判定状态</th>
+                            <th style="text-align: right;">操作 / 传给Agent</th>
+                        </tr>
+                    </thead>
+                    <tbody id="casesTableBody">
+                        <tr><td colspan="12" style="text-align: center; color: var(--text-muted); padding: 24px;">暂无测试数据，请在上方点击「启动测试」</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- 单用例深度诊断弹窗 (Modal) -->
+    <div id="caseDetailModal" class="modal-backdrop" style="display: none;" onclick="closeModalOnBackdrop(event)">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <div style="font-size: 11px; color: var(--accent-cyan); font-weight: 700;" id="modalCaseId">CASE_ID</div>
+                    <div style="font-size: 16px; font-weight: 700; color: #fff;" id="modalCaseName">用例名称</div>
+                </div>
+                <button class="modal-close-btn" onclick="closeCaseModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <!-- 指标概览 (扩展中空率与物理平衡) -->
+                <div class="modal-metrics-grid">
+                    <div class="modal-metric">
+                        <span class="m-label">利用率</span>
+                        <span class="m-val" id="mUtil">0.0%</span>
+                    </div>
+                    <div class="modal-metric">
+                        <span class="m-label">中空死腔率</span>
+                        <span class="m-val" id="mHollow" style="color: #f59e0b;">0.0%</span>
+                    </div>
+                    <div class="modal-metric">
+                        <span class="m-label">横向偏载</span>
+                        <span class="m-val" id="mCogY">0.0%</span>
+                    </div>
+                    <div class="modal-metric">
+                        <span class="m-label">放入 / 需求</span>
+                        <span class="m-val" id="mPlaced">0 / 0</span>
+                    </div>
+                    <div class="modal-metric">
+                        <span class="m-label">刚性履约</span>
+                        <span class="m-val" id="mRigid">0%</span>
+                    </div>
+                    <div class="modal-metric">
+                        <span class="m-label">弹性完成</span>
+                        <span class="m-val" id="mElastic">0%</span>
+                    </div>
+                    <div class="modal-metric">
+                        <span class="m-label">违规 / 碰撞</span>
+                        <span class="m-val" id="mViols">0 / 0</span>
+                    </div>
+                </div>
+
+                <!-- 复制给 Agent 专用块 -->
+                <div class="modal-agent-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span style="font-weight: 700; font-size: 12px; color: #34d399;">🤖 发给 Agent 的单点深度诊断文本 (含中空率与约束细分)</span>
+                        <button class="btn-copy" id="btnCopySingleCase" onclick="copyCurrentCaseText()" style="padding: 4px 10px; font-size: 11px;">
+                            📋 复制本用例诊断发给 Agent
+                        </button>
+                    </div>
+                    <pre class="modal-pre-text" id="modalAgentText">正在提取本用例诊断文本...</pre>
+                </div>
+
+                <!-- SKU 详细列表 (包含细分约束执行明细) -->
+                <div style="margin-top: 14px;">
+                    <div style="font-size: 13px; font-weight: 700; margin-bottom: 8px; color: #fff;">📦 本用例 SKU 明细与约束执行审计</div>
+                    <div style="max-height: 260px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px;">
+                        <table style="font-size: 12px;">
+                            <thead>
+                                <tr>
+                                    <th>SKU ID</th>
+                                    <th>品名</th>
+                                    <th>类型</th>
+                                    <th>需求 / 放置</th>
+                                    <th>漏装缺额</th>
+                                    <th>满载%</th>
+                                    <th>实际落地</th>
+                                    <th>门区件数</th>
+                                    <th>声明约束限制</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modalSkuTableBody">
+                                <!-- 动态插入 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">✅ 已成功复制诊断报告至剪贴板！可以直接发给 Agent</div>
+
+    <script>
+        let pollTimer = null;
+        let isRunning = false;
+        let rawCases = [];
+
+        // 初始化加载
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchCasesCount();
+            fetchStatus();
+            loadExistingReport();
+        });
+
+        // 获取可用用例总数
+        async function fetchCasesCount() {
+            try {
+                const res = await fetch('/api/v1/harness/cases');
+                const data = await res.json();
+                document.getElementById('availableCasesCount').innerText = `当前测试用例池总数: ${data.total} 个`;
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        // 加载历史或最新报告
+        async function loadExistingReport() {
+            try {
+                const res = await fetch('/api/v1/harness/report');
+                const data = await res.json();
+                if (data && data.results && data.results.results) {
+                    renderCompletedReport(data);
+                }
+            } catch (e) {}
+        }
+
+        // 启动测试
+        async function startTest() {
+            const tierVal = document.getElementById('tierSelect').value;
+            let tier = 1;
+            let limit = document.getElementById('limitInput').value || null;
+
+            if (tierVal === 'smoke') {
+                tier = 1;
+                limit = 5;
+            } else {
+                tier = parseInt(tierVal);
+            }
+
+            const payload = {
+                tier: tier,
+                container: document.getElementById('containerSelect').value,
+                tags: document.getElementById('tagSelect').value,
+                limit: limit ? parseInt(limit) : null,
+                timeout: 120
+            };
+
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = false;
+
+            try {
+                const res = await fetch('/api/v1/harness/run', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                const ret = await res.json();
+                if (ret.error) {
+                    alert(ret.error);
+                    document.getElementById('startBtn').disabled = false;
+                    document.getElementById('stopBtn').disabled = true;
+                    return;
+                }
+                startPolling();
+            } catch (err) {
+                alert('启动测试请求失败: ' + err);
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('stopBtn').disabled = true;
+            }
+        }
+
+        // 停止测试
+        async function stopTest() {
+            try {
+                await fetch('/api/v1/harness/stop', {method: 'POST'});
+                document.getElementById('stopBtn').disabled = true;
+            } catch (err) {
+                alert('停止失败: ' + err);
+            }
+        }
+
+        // 轮询状态
+        function startPolling() {
+            if (pollTimer) clearInterval(pollTimer);
+            pollTimer = setInterval(fetchStatus, 1000);
+            fetchStatus();
+        }
+
+        async function fetchStatus() {
+            try {
+                const res = await fetch('/api/v1/harness/status');
+                const status = await res.json();
+                renderStatus(status);
+            } catch (e) {
+                console.error("轮询状态异常:", e);
+            }
+        }
+
+        function renderStatus(s) {
+            const pill = document.getElementById('statusPill');
+            const pillText = document.getElementById('statusText');
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const banner = document.getElementById('runningBanner');
+
+            if (s.status === 'RUNNING') {
+                pill.className = 'status-pill running';
+                pillText.innerText = '正在运行测试...';
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                banner.style.display = 'flex';
+                document.getElementById('currentCaseId').innerText = s.current_case_id || '正在调度...';
+                document.getElementById('currentCaseName').innerText = s.current_case_name || '';
+                const caseSec = s.current_case_start ? (Date.now() / 1000 - s.current_case_start).toFixed(1) : 0;
+                document.getElementById('currentCaseTimer').innerText = `已计算: ${caseSec}s`;
+            } else if (s.status === 'COMPLETED') {
+                pill.className = 'status-pill completed';
+                pillText.innerText = '测试完成';
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                banner.style.display = 'none';
+                if (pollTimer) clearInterval(pollTimer);
+                loadExistingReport(); // 刷新完整报告与故障聚类
+            } else if (s.status === 'STOPPED') {
+                pill.className = 'status-pill idle';
+                pillText.innerText = '已主动停止';
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                banner.style.display = 'none';
+                if (pollTimer) clearInterval(pollTimer);
+            } else {
+                pill.className = 'status-pill idle';
+                pillText.innerText = '系统空闲';
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                banner.style.display = 'none';
+                if (pollTimer) clearInterval(pollTimer);
+            }
+
+            document.getElementById('timerText').innerText = `总耗时: ${(s.elapsed_s || 0).toFixed(1)}s`;
+            document.getElementById('statProgress').innerText = `${s.current_index || 0} / ${s.total_cases || 0}`;
+            document.getElementById('statUtil').innerText = `${(s.avg_utilization || 0).toFixed(1)}%`;
+            document.getElementById('statPass').innerText = s.passed_count || 0;
+            document.getElementById('statWarn').innerText = s.warned_count || 0;
+            document.getElementById('statFail').innerText = s.failed_count || 0;
+
+            const pct = s.total_cases > 0 ? (s.current_index / s.total_cases * 100).toFixed(1) : 0;
+            document.getElementById('progressBar').style.width = `${pct}%`;
+
+            // 实时渲染已跑完列表
+            if (s.completed_cases && s.completed_cases.length > 0) {
+                renderTableRows(s.completed_cases);
+            }
+
+            // 更新预览条文本
+            updateAgentPreview();
+        }
+
+        let currentModalCaseText = "";
+
+        function renderTableRows(cases) {
+            rawCases = cases;
+            const tbody = document.getElementById('casesTableBody');
+            tbody.innerHTML = cases.map((c, idx) => {
+                const badgeClass = c.status === 'PASS' ? 'pass' : (c.status === 'WARN' ? 'warn' : 'fail');
+                const hollowVal = (c.hollow_ratio !== undefined) ? c.hollow_ratio : 0.0;
+                const cogVal = (c.cog_offset !== undefined) ? c.cog_offset : 0.0;
+                const hollowColor = hollowVal > 15 ? 'color: var(--accent-red); font-weight: bold;' : (hollowVal > 8 ? 'color: var(--accent-yellow);' : 'color: var(--text-secondary);');
+                const cogColor = cogVal > 10 ? 'color: var(--accent-yellow);' : 'color: var(--text-muted);';
+
+                return `
+                    <tr>
+                        <td style="color: var(--text-muted);">${idx + 1}</td>
+                        <td style="font-weight: 700; color: var(--accent-cyan); font-family: monospace;">${c.case_id}</td>
+                        <td>${c.case_name || '-'}</td>
+                        <td><strong>${(c.utilization || 0).toFixed(1)}%</strong></td>
+                        <td style="${hollowColor}">${hollowVal.toFixed(1)}%</td>
+                        <td style="${cogColor}">${cogVal.toFixed(1)}%</td>
+                        <td>${(c.rigid_pct || 0).toFixed(1)}%</td>
+                        <td>${c.collisions > 0 ? `<span style="color: var(--accent-red); font-weight: bold;">${c.collisions}</span>` : '0'}</td>
+                        <td>${c.violations > 0 ? `<span style="color: var(--accent-yellow); font-weight: bold;">${c.violations}</span>` : '0'}</td>
+                        <td>${c.duration_s || 0}s</td>
+                        <td><span class="badge ${badgeClass}">${c.status}</span></td>
+                        <td style="text-align: right; white-space: nowrap;">
+                            <button class="action-btn-sm copy" title="直接复制该单例诊断发给Agent" onclick="copySingleCase('${c.case_id}')">📋 复制</button>
+                            <button class="action-btn-sm" title="查看该用例SKU明细与约束诊断" onclick="openCaseDetail('${c.case_id}')">🔍 详情</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // 单用例直接复制
+        async function copySingleCase(caseId) {
+            try {
+                const res = await fetch(`/api/v1/harness/case-summary?id=${encodeURIComponent(caseId)}`);
+                const data = await res.json();
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                await navigator.clipboard.writeText(data.agent_text);
+                showToast(`✅ 已复制用例 [${caseId}] 诊断文本至剪贴板！`);
+            } catch (err) {
+                alert('复制单用例诊断失败: ' + err);
+            }
+        }
+
+        // 打开单用例弹窗并渲染 (全面支持中空率与细分物理约束)
+        async function openCaseDetail(caseId) {
+            const modal = document.getElementById('caseDetailModal');
+            document.getElementById('modalCaseId').innerText = caseId;
+            document.getElementById('modalCaseName').innerText = '正在加载详情...';
+            document.getElementById('modalAgentText').innerText = '正在生成诊断文本...';
+            document.getElementById('modalSkuTableBody').innerHTML = '<tr><td colspan="9" style="text-align:center; padding:12px;">加载中...</td></tr>';
+            modal.style.display = 'flex';
+
+            try {
+                const res = await fetch(`/api/v1/harness/case-summary?id=${encodeURIComponent(caseId)}`);
+                const data = await res.json();
+                if (data.error) {
+                    document.getElementById('modalCaseName').innerText = '加载失败';
+                    document.getElementById('modalAgentText').innerText = data.error;
+                    return;
+                }
+
+                document.getElementById('modalCaseName').innerText = data.case_name || caseId;
+                const m = data.metrics || {};
+                const f = data.fulfillment || {};
+                const q = data.quality_metrics || {};
+
+                document.getElementById('mUtil').innerText = `${(m.utilization || 0).toFixed(1)}%`;
+                document.getElementById('mHollow').innerText = `${(q.hollow_ratio_pct || 0).toFixed(1)}% (${q.enclosed_cavity_count || 0}穴 / ${q.enclosed_cavity_volume || 0}m³)`;
+                document.getElementById('mCogY').innerText = `横偏 ${(q.cog_offset_y_pct || 0).toFixed(1)}% | 纵偏 ${(q.cog_offset_x_pct || 0).toFixed(1)}%`;
+                document.getElementById('mPlaced').innerText = `${m.placed_count || 0} / ${m.requested_cartons || 0}`;
+                document.getElementById('mRigid').innerText = `${(f.rigid_completion_pct || 0).toFixed(1)}%`;
+                document.getElementById('mElastic').innerText = `${(f.elastic_completion_pct || 0).toFixed(1)}%`;
+                document.getElementById('mViols').innerText = `${m.violations || 0} / ${m.collisions || 0}`;
+
+                currentModalCaseText = data.agent_text || "";
+                document.getElementById('modalAgentText').innerText = currentModalCaseText;
+
+                // 渲染包含物理约束执行明细的 SKU 表格
+                const details = f.sku_details || {};
+                const skuEntries = Object.entries(details);
+                if (skuEntries.length === 0) {
+                    document.getElementById('modalSkuTableBody').innerHTML = '<tr><td colspan="9" style="text-align:center; padding:12px; color:var(--text-muted);">暂无明细数据</td></tr>';
+                } else {
+                    document.getElementById('modalSkuTableBody').innerHTML = skuEntries.map(([sid, info]) => {
+                        const isMissing = info.placed < info.required;
+                        const typeBadge = info.is_elastic ? '<span style="color:#60a5fa;">弹性件</span>' : '<span style="color:#f87171;font-weight:bold;">刚性件</span>';
+                        const diff = info.required - info.placed;
+
+                        const dist = info.distribution || {};
+                        const cs = info.constraints_summary || {};
+
+                        // 格式化约束标签
+                        const cBadges = [];
+                        if (cs.must_be_on_floor) cBadges.push('<span style="color:#f59e0b;">必须落地</span>');
+                        if (cs.allow_stacking_on_top === false) cBadges.push('<span style="color:#ef4444;">禁止顶堆</span>');
+                        if (cs.max_stack_layers) cBadges.push(`<span style="color:#a78bfa;">限${cs.max_stack_layers}层</span>`);
+                        if (cs.max_bearing_kg) cBadges.push(`<span style="color:#38bdf8;">限重${cs.max_bearing_kg}kg</span>`);
+                        const constraintStr = cBadges.length > 0 ? cBadges.join(' | ') : '<span style="color:var(--text-muted);">标准装载</span>';
+
+                        return `
+                            <tr style="${isMissing && !info.is_elastic ? 'background:rgba(239,68,68,0.1);' : ''}">
+                                <td style="font-family:monospace; font-weight:700;">${sid}</td>
+                                <td>${info.name || sid}</td>
+                                <td>${typeBadge}</td>
+                                <td>${info.required} / <strong>${info.placed}</strong></td>
+                                <td>${diff > 0 ? `<span style="color:#f87171;font-weight:bold;">-${diff}</span>` : '0'}</td>
+                                <td>${info.completion_pct}%</td>
+                                <td><span style="color:#34d399;">${dist.floor_placed || 0}</span> / ${info.placed}</td>
+                                <td><span style="color:#38bdf8;">${dist.door_zone_placed || 0}</span> 件</td>
+                                <td>${constraintStr}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+
+            } catch (err) {
+                document.getElementById('modalAgentText').innerText = '网络请求异常: ' + err;
+            }
+        }
+
+        function copyCurrentCaseText() {
+            if (!currentModalCaseText) return;
+            navigator.clipboard.writeText(currentModalCaseText);
+            showToast('✅ 已复制当前用例诊断报告！可直接发送给 Agent');
+        }
+
+        function closeCaseModal() {
+            document.getElementById('caseDetailModal').style.display = 'none';
+        }
+
+        function closeModalOnBackdrop(e) {
+            if (e.target && e.target.id === 'caseDetailModal') {
+                closeCaseModal();
+            }
+        }
+
+        function filterTable() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = rawCases.filter(c => 
+                (c.case_id && c.case_id.toLowerCase().includes(query)) ||
+                (c.case_name && c.case_name.toLowerCase().includes(query))
+            );
+            renderTableRows(filtered);
+        }
+
+        function renderCompletedReport(fullData) {
+            const analysis = fullData.analysis || {};
+            const clusters = analysis.fault_clusters || [];
+            const clusterSection = document.getElementById('clusterSection');
+            const grid = document.getElementById('clustersGrid');
+
+            if (clusters.length > 0) {
+                clusterSection.style.display = 'block';
+                grid.innerHTML = clusters.map(c => {
+                    const fix = c.suggested_fix || {};
+                    return `
+                        <div class="cluster-card">
+                            <div class="cluster-head">
+                                <span class="cluster-title">${c.fault_type}</span>
+                                <span class="cluster-badge">${c.count} 用例</span>
+                            </div>
+                            <div class="cluster-desc">${fix.description || '未知约束违规'}</div>
+                            <div class="cluster-fix">🛠️ 建议: 角色 ${fix.agent_role || 'A'} 检查 <code>${fix.code_location || ''}</code></div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                clusterSection.style.display = 'none';
+            }
+        }
+
+        async function updateAgentPreview() {
+            try {
+                const res = await fetch('/api/v1/harness/agent-summary');
+                const data = await res.json();
+                if (data.agent_summary) {
+                    document.getElementById('agentPreview').innerText = data.agent_summary.split('\n')[0] + ' ... ' + (data.agent_summary.split('\n')[1] || '');
+                }
+            } catch (e) {}
+        }
+
+        // 核心亮点功能：一键复制给 Agent
+        async function copyAgentSummary() {
+            try {
+                const res = await fetch('/api/v1/harness/agent-summary');
+                const data = await res.json();
+                const text = data.agent_summary || "暂无测试摘要";
+
+                await navigator.clipboard.writeText(text);
+                showToast('✅ 已复制全量诊断报告至剪贴板！可以直接发给 Agent');
+            } catch (err) {
+                // 回退兼容方案
+                const preview = document.getElementById('agentPreview').innerText;
+                navigator.clipboard.writeText(preview);
+                showToast('✅ 已复制全量诊断报告至剪贴板！');
+            }
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            if (msg) t.innerText = msg;
+            t.classList.add('show');
+            setTimeout(() => {
+                t.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

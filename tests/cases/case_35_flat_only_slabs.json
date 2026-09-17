@@ -1,0 +1,60 @@
+{
+    "case_id": "FLAT-ONLY-SLABS",
+    "case_name": "纯平放石材板件 (测平铺堆叠与层高对齐)",
+    "description": "Heavy flat stone slabs that can only be placed flat",
+    "container": {
+        "usable": {
+            "L": 12.032,
+            "W": 2.352,
+            "H": 2.698
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SLAB-01",
+            "name": "大理石平铺厚板",
+            "w": 1.1,
+            "d": 0.7,
+            "h": 0.18,
+            "weight": 45.0,
+            "quantity": 60,
+            "allowedOrientation": "allow_flat",
+            "allowFlat": true,
+            "allowSide": false
+        },
+        {
+            "sku": "SLAB-02",
+            "name": "花岗岩平铺薄板",
+            "w": 0.8,
+            "d": 0.5,
+            "h": 0.15,
+            "weight": 25.0,
+            "quantity": 90,
+            "allowedOrientation": "allow_flat",
+            "allowFlat": true,
+            "allowSide": false
+        },
+        {
+            "sku": "FLAT-BOX",
+            "name": "配件平放长盒",
+            "w": 0.6,
+            "d": 0.4,
+            "h": 0.2,
+            "weight": 10.0,
+            "quantity": 140,
+            "allowFlat": true,
+            "allowSide": false
+        },
+        {
+            "sku": "FLAT-ELAS",
+            "name": "平置填缝袋",
+            "w": 0.3,
+            "d": 0.25,
+            "h": 0.1,
+            "weight": 1.5,
+            "quantity": 250,
+            "isElastic": true
+        }
+    ]
+}
