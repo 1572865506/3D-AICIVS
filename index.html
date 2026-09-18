@@ -2837,15 +2837,15 @@
     </div>
   </div>
 
-  <!-- 6. SKU SETTINGS & PARAMETERS CONFIGURATION MODAL (ULTRA-CLEAN UI) -->
+  <!-- 6. SKU SETTINGS & PARAMETERS CONFIGURATION MODAL (TWO-TIER INDUSTRIAL UI) -->
   <div class="modal-overlay" id="sku-settings-modal" style="display:none;">
-    <div class="modal-card" style="max-width: 580px;">
+    <div class="modal-card" style="max-width: 600px;">
       <div class="modal-header">
         <div class="modal-title">
           <div style="width:28px; height:28px; border-radius:8px; background:#eff6ff; display:flex; align-items:center; justify-content:center;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.4"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           </div>
-          <span>SKU 装载规则与空间参数配置</span>
+          <span>SKU 装载规则配置</span>
         </div>
         <button class="close-btn" onclick="closeSKUSettingsModal()">✕</button>
       </div>
@@ -2853,137 +2853,188 @@
       <div class="modal-body">
         <input type="hidden" id="sku-edit-id">
         
-        <!-- SKU Info Card -->
-        <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px;">
-          <span id="sku-modal-dot" style="width:14px; height:14px; border-radius:50%; background:#3b82f6; flex-shrink:0; box-shadow:0 0 0 3px rgba(59,130,246,0.18);"></span>
-          <div style="flex:1;">
-            <div id="sku-modal-name" style="font-weight:800; color:#0f172a; font-size:13px; line-height:1.3;">-</div>
-            <div id="sku-modal-code" style="font-size:10.5px; color:#64748b; font-family:'JetBrains Mono',monospace; font-weight:700;">SKU-00</div>
-          </div>
-        </div>
-
-        <!-- 1. Position Requirement Segmented Group -->
-        <div class="form-field">
-          <label class="form-label">
-            <span>1. 货柜纵向位置区间 (Position Zone)</span>
-            <span class="form-hint">影响进深前后装载区位</span>
-          </label>
-          <select id="sku-edit-req" class="custom-select">
-            <option value="放柜子最里面">放柜子最里面 (Deep Inside / Rear - 优先置于箱体深处)</option>
-            <option value="放中间">放中间 (Middle Section - 紧密排布于货柜中段)</option>
-            <option value="封柜门">封柜门 (Front / Door End - 作为门端封箱与防倾挡板)</option>
-          </select>
-        </div>
-
-        <!-- 2. Allowed Orientation -->
-        <div class="form-field">
-          <label class="form-label">
-            <span>2. 货物翻转与朝向权限 (Orientation Permission)</span>
-            <span class="form-hint">保护封箱胶带与直立标</span>
-          </label>
-          <select id="sku-edit-ori" class="custom-select">
-            <option value="upright">仅允许立放 (Upright Only - 正立偏航90°旋转，封箱胶带向上)</option>
-            <option value="allow_flat">允许平放 (Allow Flat - 允许大面积朝下平铺，降低重心)</option>
-            <option value="allow_side">允许侧卧 (Allow Side - 允许窄侧面竖直放置)</option>
-            <option value="any">任意翻转 (Any - 全开放 6 个空间朝向)</option>
-          </select>
-        </div>
-
-        <!-- 3. Max Stacking Layers & Max Weight & Max Pressure -->
-        <div class="form-grid-3">
-          <div class="form-card-section">
-            <label class="form-label">最大堆叠层数</label>
-            <div class="input-unit-group">
-              <input type="number" id="sku-edit-max-layers" class="custom-input" min="0" max="25" step="1" placeholder="0为不限" style="font-family:'JetBrains Mono';">
-              <span class="input-unit-tag">层</span>
+        <!-- SKU Info Card & Presets -->
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; margin-bottom:12px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span id="sku-modal-dot" style="width:14px; height:14px; border-radius:50%; background:#3b82f6; flex-shrink:0; box-shadow:0 0 0 3px rgba(59,130,246,0.18);"></span>
+            <div>
+              <div id="sku-modal-name" style="font-weight:800; color:#0f172a; font-size:13px; line-height:1.3;">-</div>
+              <div id="sku-modal-code" style="font-size:10.5px; color:#64748b; font-family:'JetBrains Mono',monospace; font-weight:700;">SKU-00</div>
             </div>
-            <span class="form-hint">填 0 或留空按柜顶算满</span>
           </div>
-
-          <div class="form-card-section">
-            <label class="form-label">承重抗压极限</label>
-            <div class="input-unit-group">
-              <input type="number" id="sku-edit-max-bearing" class="custom-input" min="10" max="1000" step="5" placeholder="默认 180" style="font-family:'JetBrains Mono';">
-              <span class="input-unit-tag">kg</span>
-            </div>
-            <span class="form-hint">上方累计最大承载重量</span>
-          </div>
-
-          <div class="form-card-section">
-            <label class="form-label">承压强度上限</label>
-            <div class="input-unit-group">
-              <input type="number" id="sku-edit-max-pressure" class="custom-input" min="0" max="10000" step="10" placeholder="0为不限" style="font-family:'JetBrains Mono';">
-              <span class="input-unit-tag">kg/m²</span>
-            </div>
-            <span class="form-hint">单位面积允许压强</span>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span style="font-size:10px; color:#64748b; font-weight:700;">一键模板:</span>
+            <button type="button" class="btn-island-action" style="padding:2px 7px; font-size:11px;" onclick="applySKUPreset('carton')" title="常规纸箱，允许立放，可叠4层，支持顶堆">📦 纸箱</button>
+            <button type="button" class="btn-island-action" style="padding:2px 7px; font-size:11px;" onclick="applySKUPreset('heavy_base')" title="重托地基，必须置底，禁止杂货压顶">⚙️ 重托</button>
+            <button type="button" class="btn-island-action" style="padding:2px 7px; font-size:11px;" onclick="applySKUPreset('fragile')" title="易碎防压，绝对封顶，禁止上方有任何物体">🥛 封顶</button>
           </div>
         </div>
 
-        <!-- 4. Capacity Trimming Strategy -->
-        <div class="form-field">
-          <label class="form-label">
-            <span>3. 模块五超容弹性核减策略 (Capacity Rule)</span>
-          </label>
-          <select id="sku-edit-elastic" class="custom-select">
-            <option value="false">刚性必装件 (Mandatory - 100% 满额履约装完)</option>
-            <option value="true">弹性缓冲件 (Elastic - 装不下时自动填满柜容并核减)</option>
-          </select>
-        </div>
+        <!-- Tier 1: 基础装载规则 (高频直观业务属性) -->
+        <div class="form-card-section" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:12px; margin-bottom:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:12px; font-weight:800; color:#0f172a;">📋 基础装载规则</span>
+            <span style="font-size:10px; color:#10b981; font-weight:700;">核心参数 • 80% 场景只需填此区</span>
+          </div>
 
-        <!-- 5. Dimensions & Quantity Micro-adjust -->
-        <div class="form-card-section" style="background:#f1f5f9;">
-          <span style="font-size:11px; font-weight:700; color:var(--slate-700);">单箱物理尺寸与计划发货数微调</span>
-          <div class="form-grid-4">
+          <!-- 尺寸重量与数量 -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:8px; margin-bottom:10px;">
             <div class="form-field">
-              <label class="form-label" style="font-size:10px;">长</label>
+              <label class="form-label" style="font-size:10px;">长 (L)</label>
+              <div class="input-unit-group"><input type="number" id="sku-edit-w" class="custom-input" step="0.001" style="font-family:'JetBrains Mono';"><span class="input-unit-tag">m</span></div>
+            </div>
+            <div class="form-field">
+              <label class="form-label" style="font-size:10px;">宽 (W)</label>
+              <div class="input-unit-group"><input type="number" id="sku-edit-d" class="custom-input" step="0.001" style="font-family:'JetBrains Mono';"><span class="input-unit-tag">m</span></div>
+            </div>
+            <div class="form-field">
+              <label class="form-label" style="font-size:10px;">高 (H)</label>
+              <div class="input-unit-group"><input type="number" id="sku-edit-h" class="custom-input" step="0.001" style="font-family:'JetBrains Mono';"><span class="input-unit-tag">m</span></div>
+            </div>
+            <div class="form-field">
+              <label class="form-label" style="font-size:10px;">发货计划数</label>
+              <div class="input-unit-group"><input type="number" id="sku-edit-qty" class="custom-input" min="1" step="1" style="font-family:'JetBrains Mono';"><span class="input-unit-tag">箱</span></div>
+            </div>
+          </div>
+
+          <!-- 摆放朝向与权限 -->
+          <div class="form-field" style="margin-bottom:10px;">
+            <label class="form-label">
+              <span>摆放与旋转朝向</span>
+              <span class="form-hint">保护封箱箭头与重心稳固</span>
+            </label>
+            <select id="sku-edit-ori" class="custom-select">
+              <option value="upright">标准立放 (默认 - 箭头向上，不允许倾侧)</option>
+              <option value="allow_flat">允许平放 (可横躺降低重心或填缝)</option>
+              <option value="any">任意朝向 (全开放 6 自由度翻转)</option>
+              <option value="flat_only">仅限平放 (严禁立放，特种板材防倾覆)</option>
+            </select>
+          </div>
+
+          <!-- 落地要求与堆叠层数 (智能互锁联动) -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
+            <div class="form-field">
+              <label class="form-label">接地位置要求</label>
+              <select id="sku-edit-floor-only" class="custom-select" onchange="onFloorOnlyChanged()">
+                <option value="false">不限高度 (可在地面或上层平台)</option>
+                <option value="true">必须落地置底 (底托重货/起堆地基)</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label class="form-label" id="lbl-stack-layers">最大堆叠层数</label>
               <div class="input-unit-group">
-                <input type="number" id="sku-edit-w" class="custom-input" step="0.001" style="font-family:'JetBrains Mono';">
-                <span class="input-unit-tag">m</span>
+                <input type="number" id="sku-edit-max-layers" class="custom-input" min="0" max="25" step="1" placeholder="留空不限" style="font-family:'JetBrains Mono';">
+                <span class="input-unit-tag">层</span>
               </div>
             </div>
+          </div>
+
+          <!-- 上方承载堆叠许可 (解耦为直观意图) -->
+          <div class="form-field" style="margin-bottom:10px;">
+            <label class="form-label">
+              <span>上方承载堆叠许可</span>
+              <span class="form-hint">定义上部货物的接触规则</span>
+            </label>
+            <select id="sku-edit-top-perm" class="custom-select">
+              <option value="ALLOW_ALL">允许任意货物堆叠 (常规承重件)</option>
+              <option value="SELF_ONLY">仅限同款自叠 (禁止其他杂货压顶)</option>
+              <option value="FORBIDDEN">绝对封顶件 (顶部严禁放置任何物品)</option>
+            </select>
+          </div>
+
+          <!-- 履约弹性策略 -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
             <div class="form-field">
-              <label class="form-label" style="font-size:10px;">宽</label>
-              <div class="input-unit-group">
-                <input type="number" id="sku-edit-d" class="custom-input" step="0.001" style="font-family:'JetBrains Mono';">
-                <span class="input-unit-tag">m</span>
-              </div>
+              <label class="form-label">履约弹性</label>
+              <select id="sku-edit-elastic" class="custom-select">
+                <option value="false">刚性件 (100% 满额必须装完)</option>
+                <option value="true">弹性缓冲件 (空间受限时可安全少装)</option>
+              </select>
             </div>
             <div class="form-field">
-              <label class="form-label" style="font-size:10px;">高</label>
+              <label class="form-label">弹性保底数量</label>
               <div class="input-unit-group">
-                <input type="number" id="sku-edit-h" class="custom-input" step="0.001" style="font-family:'JetBrains Mono';">
-                <span class="input-unit-tag">m</span>
-              </div>
-            </div>
-            <div class="form-field">
-              <label class="form-label" style="font-size:10px;">计划数</label>
-              <div class="input-unit-group">
-                <input type="number" id="sku-edit-qty" class="custom-input" min="1" step="1" style="font-family:'JetBrains Mono';">
+                <input type="number" id="sku-edit-min-qty" class="custom-input" value="0" min="0" step="1" style="font-family:'JetBrains Mono';">
                 <span class="input-unit-tag">箱</span>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 6. Structured Cargo Profile -->
-        <div class="form-card-section" style="background:#f8fafc; border-color:#dbeafe;">
-          <span style="font-size:11px; font-weight:800; color:#1d4ed8;">结构化 CargoProfile（保存后标记 USER_DEFINED）</span>
-          <div class="form-grid-3">
-            <div class="form-field"><label class="form-label" style="font-size:10px;">装载优先级</label><input type="number" id="sku-edit-load-priority" class="custom-input" value="0" step="1"></div>
-            <div class="form-field"><label class="form-label" style="font-size:10px;">最低必装数量</label><input type="number" id="sku-edit-min-qty" class="custom-input" value="0" min="0" step="1"></div>
-            <div class="form-field"><label class="form-label" style="font-size:10px;">上方可继续堆货</label><select id="sku-edit-allow-above" class="custom-select"><option value="true">允许</option><option value="false">禁止</option></select></div>
-            <div class="form-field"><label class="form-label" style="font-size:10px;">必须放在底层</label><select id="sku-edit-floor-only" class="custom-select"><option value="false">否</option><option value="true">是</option></select></div>
-            <div class="form-field"><label class="form-label" style="font-size:10px;">最小支撑比例</label><input type="number" id="sku-edit-min-support" class="custom-input" value="0.70" min="0" max="1" step="0.05"></div>
-            <div class="form-field"><label class="form-label" style="font-size:10px;">最大悬空跨度(m)</label><input type="number" id="sku-edit-max-span" class="custom-input" value="0.10" min="0" step="0.01"></div>
-            <div class="form-field"><label class="form-label" style="font-size:10px;">Top Fill准入</label><select id="sku-edit-topfill-state" class="custom-select"><option value="AUTO">AUTO安全证明</option><option value="ALLOW">明确允许</option><option value="DENY">明确禁止</option></select></div>
-            <div class="form-field"><label class="form-label" style="font-size:10px;">Top Fill最大层数</label><input type="number" id="sku-edit-topfill-layers" class="custom-input" value="0" min="0" step="1"></div>
-            <div class="form-field"><label class="form-label" style="font-size:10px;">Top Fill最低基面(m)</label><input type="number" id="sku-edit-topfill-base" class="custom-input" value="0" min="0" step="0.1"></div>
-            <div class="form-field"><label class="form-label" style="font-size:10px;">保持直立</label><select id="sku-edit-keep-upright" class="custom-select"><option value="true">是</option><option value="false">否</option></select></div>
-            <div class="form-field"><label class="form-label" style="font-size:10px;">易碎货物</label><select id="sku-edit-fragile" class="custom-select"><option value="false">否</option><option value="true">是</option></select></div>
-            <div class="form-field"><label class="form-label" style="font-size:10px;">防倾倒要求</label><select id="sku-edit-anti-tip" class="custom-select"><option value="true">启用</option><option value="false">不额外要求</option></select></div>
+        <!-- Tier 2: 高级物理力学与区位参数 (默认折叠，已内置测试推荐值) -->
+        <details id="sku-advanced-details" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px; margin-bottom:8px;">
+          <summary style="cursor:pointer; font-size:11.5px; font-weight:700; color:#2563eb; display:flex; align-items:center; justify-content:space-between; user-select:none;">
+            <span>⚙️ 高级物理力学与区位约束 (已应用工业最佳默认值)</span>
+            <span style="font-size:10px; color:#64748b; font-weight:normal;">点击展开/折叠</span>
+          </summary>
+
+          <div style="margin-top:12px; display:flex; flex-direction:column; gap:10px;">
+            <!-- 力学承重与压强 -->
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+              <div class="form-field">
+                <label class="form-label" style="font-size:10px;">单箱承重上限 (kg)</label>
+                <input type="number" id="sku-edit-max-bearing" class="custom-input" min="0" max="5000" step="5" placeholder="留空不限" style="font-family:'JetBrains Mono';">
+              </div>
+              <div class="form-field">
+                <label class="form-label" style="font-size:10px;">表面压强上限 (kg/m²)</label>
+                <input type="number" id="sku-edit-max-pressure" class="custom-input" min="0" max="10000" step="10" placeholder="留空不限" style="font-family:'JetBrains Mono';">
+              </div>
+            </div>
+
+            <!-- 接触支撑率与防倒 -->
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
+              <div class="form-field">
+                <label class="form-label" style="font-size:10px;">最小支撑率</label>
+                <input type="number" id="sku-edit-min-support" class="custom-input" value="0.70" min="0" max="1" step="0.05" style="font-family:'JetBrains Mono';">
+              </div>
+              <div class="form-field">
+                <label class="form-label" style="font-size:10px;">最大悬空跨度(m)</label>
+                <input type="number" id="sku-edit-max-span" class="custom-input" value="0.10" min="0" step="0.01" style="font-family:'JetBrains Mono';">
+              </div>
+              <div class="form-field">
+                <label class="form-label" style="font-size:10px;">0.5g防倾覆审计</label>
+                <select id="sku-edit-anti-tip" class="custom-select"><option value="true">启用</option><option value="false">关闭</option></select>
+              </div>
+            </div>
+
+            <!-- 装载区位与优先级 -->
+            <div style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:10px;">
+              <div class="form-field">
+                <label class="form-label" style="font-size:10px;">货柜纵向摆放区间</label>
+                <select id="sku-edit-req" class="custom-select">
+                  <option value="放中间">放中间 (Middle Section - 常规紧凑排布)</option>
+                  <option value="放柜子最里面">放柜子最里面 (Deep Inside / Rear - 优先置底靠前)</option>
+                  <option value="封柜门">封柜门 (Front / Door End - 门端稳固件)</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label" style="font-size:10px;">装载优先级权重</label>
+                <input type="number" id="sku-edit-load-priority" class="custom-input" value="0" step="1" style="font-family:'JetBrains Mono';">
+              </div>
+            </div>
+
+            <!-- 顶填策略与货物特性 -->
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
+              <div class="form-field">
+                <label class="form-label" style="font-size:10px;">Top Fill准入</label>
+                <select id="sku-edit-topfill-state" class="custom-select"><option value="AUTO">AUTO安全证明</option><option value="ALLOW">明确允许</option><option value="DENY">明确禁止</option></select>
+              </div>
+              <div class="form-field">
+                <label class="form-label" style="font-size:10px;">Top Fill最大层数</label>
+                <input type="number" id="sku-edit-topfill-layers" class="custom-input" value="1" min="0" step="1" style="font-family:'JetBrains Mono';">
+              </div>
+              <div class="form-field">
+                <label class="form-label" style="font-size:10px;">易碎货物标记</label>
+                <select id="sku-edit-fragile" class="custom-select"><option value="false">否</option><option value="true">是</option></select>
+              </div>
+            </div>
+
+            <!-- 隐藏的旧字段兼容占位 -->
+            <input type="hidden" id="sku-edit-allow-above" value="true">
+            <input type="hidden" id="sku-edit-keep-upright" value="true">
+            <input type="hidden" id="sku-edit-topfill-base" value="0">
           </div>
-          <div id="sku-profile-source-note" class="form-hint" style="margin-top:4px;">未明确字段继续使用 conservative DEFAULT；本表单保存的字段为 USER_DEFINED。</div>
-        </div>
+        </details>
       </div>
 
       <div class="modal-footer" style="justify-content:space-between; align-items:center;">
@@ -6837,12 +6888,24 @@
 
       document.getElementById('sku-edit-load-priority').value = placement.loadPriority || item.loadPriority || 0;
       document.getElementById('sku-edit-min-qty').value = placement.minimumQuantity || item.minimumQuantity || 0;
+
+      // 顶部堆叠许可回显 (三选一意图)
+      const topPermVal = item.topStackPermission || (
+        (stack.allowStackingOnTop === false || item.allowStackingOnTop === false)
+          ? ((item.maxStackLayers > 1 || stack.stackOnSelf === true) ? 'SELF_ONLY' : 'FORBIDDEN')
+          : 'ALLOW_ALL'
+      );
+      const topPermEl = document.getElementById('sku-edit-top-perm');
+      if (topPermEl) topPermEl.value = topPermVal;
+
       document.getElementById('sku-edit-allow-above').value = String(stack.allowStackingOnTop ?? item.allowStackingOnTop ?? true);
       document.getElementById('sku-edit-floor-only').value = String(stack.mustBeOnFloor ?? item.mustBeOnFloor ?? false);
+      if (window.onFloorOnlyChanged) window.onFloorOnlyChanged();
+
       document.getElementById('sku-edit-min-support').value = stability.minSupportRatio ?? item.minSupportRatio ?? 0.70;
       document.getElementById('sku-edit-max-span').value = stability.maxUnsupportedSpan ?? item.maxUnsupportedSpanM ?? 0.10;
       document.getElementById('sku-edit-topfill-state').value = topfill.state || 'AUTO';
-      document.getElementById('sku-edit-topfill-layers').value = topfill.maxLayers || item.maxFlatLayers || 0;
+      document.getElementById('sku-edit-topfill-layers').value = topfill.maxLayers || item.maxFlatLayers || 1;
       document.getElementById('sku-edit-topfill-base').value = topfill.minBaseHeight || 0;
       document.getElementById('sku-edit-keep-upright').value = String(handling.keepUpright ?? true);
       document.getElementById('sku-edit-fragile').value = String(handling.fragile ?? false);
@@ -6853,6 +6916,50 @@
 
       document.getElementById('sku-settings-modal').style.display = 'flex';
     }
+
+    window.onFloorOnlyChanged = function() {
+      const isFloor = document.getElementById('sku-edit-floor-only').value === 'true';
+      const lbl = document.getElementById('lbl-stack-layers');
+      if (lbl) {
+        lbl.textContent = isFloor ? '底置起堆层数 (同款自叠)' : '最大堆叠层数';
+        lbl.style.color = isFloor ? '#0284c7' : '';
+      }
+    };
+
+    window.applySKUPreset = function(type) {
+      if (type === 'carton') {
+        document.getElementById('sku-edit-ori').value = 'upright';
+        document.getElementById('sku-edit-floor-only').value = 'false';
+        document.getElementById('sku-edit-max-layers').value = '4';
+        document.getElementById('sku-edit-top-perm').value = 'ALLOW_ALL';
+        document.getElementById('sku-edit-elastic').value = 'false';
+        document.getElementById('sku-edit-min-support').value = '0.70';
+        document.getElementById('sku-edit-anti-tip').value = 'true';
+        document.getElementById('sku-edit-fragile').value = 'false';
+        showToast('已应用【标准普通纸箱】预设模板', 'info');
+      } else if (type === 'heavy_base') {
+        document.getElementById('sku-edit-ori').value = 'upright';
+        document.getElementById('sku-edit-floor-only').value = 'true';
+        document.getElementById('sku-edit-max-layers').value = '1';
+        document.getElementById('sku-edit-top-perm').value = 'SELF_ONLY';
+        document.getElementById('sku-edit-elastic').value = 'false';
+        document.getElementById('sku-edit-min-support').value = '0.80';
+        document.getElementById('sku-edit-anti-tip').value = 'true';
+        document.getElementById('sku-edit-fragile').value = 'false';
+        showToast('已应用【重托地基设备】预设模板 (必须置底，禁止杂货压顶)', 'info');
+      } else if (type === 'fragile') {
+        document.getElementById('sku-edit-ori').value = 'upright';
+        document.getElementById('sku-edit-floor-only').value = 'false';
+        document.getElementById('sku-edit-max-layers').value = '1';
+        document.getElementById('sku-edit-top-perm').value = 'FORBIDDEN';
+        document.getElementById('sku-edit-elastic').value = 'false';
+        document.getElementById('sku-edit-min-support').value = '0.75';
+        document.getElementById('sku-edit-anti-tip').value = 'true';
+        document.getElementById('sku-edit-fragile').value = 'true';
+        showToast('已应用【易碎防压封顶】预设模板 (绝对封顶，上方严禁放物品)', 'info');
+      }
+      onFloorOnlyChanged();
+    };
 
     window.closeSKUSettingsModal = function() {
       document.getElementById('sku-settings-modal').style.display = 'none';
@@ -6865,7 +6972,8 @@
 
       item.requirement = document.getElementById('sku-edit-req').value;
       item.allowedOrientation = document.getElementById('sku-edit-ori').value;
-      item.allowFlat = (item.allowedOrientation === 'allow_flat' || item.allowedOrientation === 'any');
+      item.allowFlat = (item.allowedOrientation === 'allow_flat' || item.allowedOrientation === 'any' || item.allowedOrientation === 'flat_only');
+      item.allowUpright = (item.allowedOrientation !== 'flat_only');
 
       const maxLay = parseInt(document.getElementById('sku-edit-max-layers').value, 10);
       item.maxStackLayers = (!isNaN(maxLay) && maxLay > 0) ? maxLay : null;
@@ -6888,22 +6996,43 @@
       if (!isNaN(h) && h > 0) item.h = h;
       if (!isNaN(qty) && qty > 0) item.quantity = qty;
 
+      const topPerm = document.getElementById('sku-edit-top-perm') ? document.getElementById('sku-edit-top-perm').value : 'ALLOW_ALL';
+      let allowTop = true;
+      let stackSelf = true;
+      if (topPerm === 'SELF_ONLY') {
+        allowTop = false;
+        stackSelf = true;
+      } else if (topPerm === 'FORBIDDEN') {
+        allowTop = false;
+        stackSelf = false;
+      } else {
+        allowTop = true;
+        stackSelf = true;
+      }
+
+      item.topStackPermission = topPerm;
+      item.allowStackingOnTop = allowTop;
+      item.stackOnSelf = stackSelf;
+
       const profileValues = {
         allowedOrientation: item.allowedOrientation,
+        allowUpright: item.allowUpright,
         maxStackLayers: item.maxStackLayers,
         maxBearingKg: item.maxBearingKg,
         maxPressureKgM2: item.maxPressureKgM2,
         reductionAllowed: item.isElastic,
         loadPriority: parseInt(document.getElementById('sku-edit-load-priority').value, 10) || 0,
         minimumQuantity: parseInt(document.getElementById('sku-edit-min-qty').value, 10) || 0,
-        allowStackingOnTop: document.getElementById('sku-edit-allow-above').value === 'true',
+        topStackPermission: topPerm,
+        allowStackingOnTop: allowTop,
+        stackOnSelf: stackSelf,
         mustBeOnFloor: document.getElementById('sku-edit-floor-only').value === 'true',
         minSupportRatio: parseFloat(document.getElementById('sku-edit-min-support').value),
         maxUnsupportedSpanM: parseFloat(document.getElementById('sku-edit-max-span').value),
         topFillState: document.getElementById('sku-edit-topfill-state').value,
-        topFillMaxLayers: parseInt(document.getElementById('sku-edit-topfill-layers').value, 10) || 0,
+        topFillMaxLayers: parseInt(document.getElementById('sku-edit-topfill-layers').value, 10) || 1,
         topFillMinBaseHeight: parseFloat(document.getElementById('sku-edit-topfill-base').value) || 0,
-        keepUpright: document.getElementById('sku-edit-keep-upright').value === 'true',
+        keepUpright: (item.allowedOrientation === 'upright'),
         fragile: document.getElementById('sku-edit-fragile').value === 'true',
         antiTipRequired: document.getElementById('sku-edit-anti-tip').value === 'true',
         preferredZones: /封柜门|封门|门区|door/i.test(item.requirement || '') ? ['DOOR'] : /最里面|柜尾|rear/i.test(item.requirement || '') ? ['REAR'] : ['MIDDLE'],

@@ -375,6 +375,25 @@ class CompositeStripBuilder:
             elif hasattr(c, "max_stack_layers"):
                 max_stack = c.max_stack_layers
 
+            must_floor = getattr(c, "must_be_on_floor", False) or getattr(getattr(c, "stacking_policy", None), "must_be_on_floor", False)
+            allow_top = getattr(c, "allow_stacking_on_top", True)
+            if hasattr(c, "stacking_policy") and c.stacking_policy and not c.stacking_policy.allow_stacking_on_top:
+                allow_top = False
+
+            max_bearing = getattr(c, "max_bearing_kg", None)
+            if max_bearing is None and hasattr(c, "stacking_policy") and c.stacking_policy:
+                max_bearing = getattr(c.stacking_policy, "max_bearing_kg", None)
+            if max_bearing is not None:
+                if max_bearing <= 0.0:
+                    allow_top = False
+                    max_stack = 1
+                elif weight_kg > 0:
+                    bearing_layers = 1 + int(max_bearing / max(1e-3, weight_kg))
+                    max_stack = min(max_stack or 99, max(1, bearing_layers))
+
+            if must_floor or not allow_top:
+                max_stack = 1
+
             # Determine orientations
             oris: List[Tuple[str, float, float, float, bool, bool, bool]] = []
             if isinstance(c, UniversalCargoTensor):
@@ -930,6 +949,18 @@ class WidthPatternEngine:
             allow_top = getattr(c, "allow_stacking_on_top", True)
             if hasattr(c, "stacking_policy") and c.stacking_policy and not c.stacking_policy.allow_stacking_on_top:
                 allow_top = False
+
+            max_bearing = getattr(c, "max_bearing_kg", None)
+            if max_bearing is None and hasattr(c, "stacking_policy") and c.stacking_policy:
+                max_bearing = getattr(c.stacking_policy, "max_bearing_kg", None)
+            if max_bearing is not None:
+                if max_bearing <= 0.0:
+                    allow_top = False
+                    max_stack = 1
+                elif weight_kg > 0:
+                    bearing_layers = 1 + int(max_bearing / max(1e-3, weight_kg))
+                    max_stack = min(max_stack, max(1, bearing_layers))
+
             if must_floor or not allow_top:
                 max_stack = 1
 

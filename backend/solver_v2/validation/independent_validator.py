@@ -634,6 +634,47 @@ class IndependentGlobalValidator:
             return candidates
 
         stack_depth_memo: Dict[int, int] = {}
+        transmitted_weight_memo: Dict[int, float] = {}
+
+        def get_transmitted_weight(idx: int, visited: Optional[Set[int]] = None) -> float:
+            """
+            Recursively computes total accumulated downward weight (self weight + all transmitted upper loads)
+            using physical Load Propagation DAG with contact area fractions.
+            """
+            if idx in transmitted_weight_memo:
+                return transmitted_weight_memo[idx]
+            if visited is None:
+                visited = set()
+            if idx in visited:
+                return placements[idx]["weight_kg"]
+            visited.add(idx)
+
+            p_curr = placements[idx]
+            self_w = p_curr["weight_kg"]
+            cx, cy, cz = p_curr["x"], p_curr["y"], p_curr["z"]
+            cdx, cdy, cdz = p_curr["dx"], p_curr["dy"], p_curr["dz"]
+
+            uppers = get_supported_candidates(cz + cdz)
+            accum_upper_trans_w = 0.0
+            for u_idx in uppers:
+                if u_idx == idx or u_idx in visited:
+                    continue
+                p_u = placements[u_idx]
+                ox = min(cx + cdx, p_u["x"] + p_u["dx"]) - max(cx, p_u["x"])
+                if ox > eps:
+                    oy = min(cy + cdy, p_u["y"] + p_u["dy"]) - max(cy, p_u["y"])
+                    if oy > eps:
+                        contact_area = ox * oy
+                        u_base_area = p_u["dx"] * p_u["dy"]
+                        if u_base_area > 0:
+                            contact_frac = contact_area / u_base_area
+                            u_trans = get_transmitted_weight(u_idx, visited.copy())
+                            accum_upper_trans_w += u_trans * contact_frac
+
+            total_trans = self_w + accum_upper_trans_w
+            transmitted_weight_memo[idx] = total_trans
+            return total_trans
+
         for i, p in enumerate(placements):
             sku_id = p["sku_id"]
             x, y, z = p["x"], p["y"], p["z"]
@@ -760,7 +801,6 @@ class IndependentGlobalValidator:
 
             # --- Stacking on Top, Bearing & Pressure Limits ---
             upper_boxes = []
-            upper_weight = 0.0
             candidate_uppers = get_supported_candidates(z + dz)
 
             for j in candidate_uppers:
@@ -773,43 +813,63 @@ class IndependentGlobalValidator:
                     if oy > eps:
                         contact_frac = (ox * oy) / (p2["dx"] * p2["dy"])
                         w = p2["weight_kg"] * contact_frac
-                        upper_weight += w
                         upper_boxes.append((j, p2["sku_id"], ox * oy, w))
 
-            # 1. No top stacking allowed check
-            if cargo and not cargo.stacking_policy.allow_stacking_on_top and upper_boxes:
-                rule_violations.append(
-                    ViolationDetail(
-                        violation_type=ViolationType.NO_TOP_STACK_VIOLATION,
-                        severity=ViolationSeverity.FATAL,
-                        message=f"Placement {p['placement_id']} (SKU: {sku_id}) forbids stacking on top, but has {len(upper_boxes)} boxes resting above it",
-                        sku_id=sku_id,
-                        placement_id=p["placement_id"],
-                        placement_index=i,
-                        extra_data={"upper_boxes": upper_boxes},
-                    )
-                )
+            # 物理多层向下传力累加计算（Load Propagation DAG: 自顶向下累加所有上方物体重力）
+            accum_upper_weight = max(0.0, get_transmitted_weight(i) - p["weight_kg"])
 
-            # 2. Bearing weight check
+            # 1. No top stacking allowed check (支持 stack_on_self 同款合规自叠，仅拦截异品杂货)
+            if cargo and not cargo.stacking_policy.allow_stacking_on_top and upper_boxes:
+                allow_self = getattr(cargo.stacking_policy, "stack_on_self", True)
+                foreign_uppers = [b for b in upper_boxes if b[1] != sku_id]
+
+                if not allow_self:
+                    # 绝对封顶件：连同款也不允许堆叠在上方
+                    rule_violations.append(
+                        ViolationDetail(
+                            violation_type=ViolationType.NO_TOP_STACK_VIOLATION,
+                            severity=ViolationSeverity.FATAL,
+                            message=f"Placement {p['placement_id']} (SKU: {sku_id}) strictly forbids any stacking on top (absolute cap), but has {len(upper_boxes)} boxes resting above it",
+                            sku_id=sku_id,
+                            placement_id=p["placement_id"],
+                            placement_index=i,
+                            extra_data={"upper_boxes": upper_boxes},
+                        )
+                    )
+                elif foreign_uppers:
+                    # 允许同款在层数限制内自叠，但严禁异品类杂货压顶
+                    rule_violations.append(
+                        ViolationDetail(
+                            violation_type=ViolationType.NO_TOP_STACK_VIOLATION,
+                            severity=ViolationSeverity.FATAL,
+                            message=f"Placement {p['placement_id']} (SKU: {sku_id}) forbids foreign stacking on top, but has {len(foreign_uppers)} foreign boxes resting above it",
+                            sku_id=sku_id,
+                            placement_id=p["placement_id"],
+                            placement_index=i,
+                            extra_data={"foreign_upper_boxes": foreign_uppers},
+                        )
+                    )
+
+            # 2. Bearing weight check (基于多层真实传递载荷)
             if cargo and cargo.stacking_policy.max_bearing_kg is not None:
                 max_bearing = cargo.stacking_policy.max_bearing_kg
-                if upper_weight > max_bearing + eps:
+                if accum_upper_weight > max_bearing + eps:
                     stability_violations.append(
                         ViolationDetail(
                             violation_type=ViolationType.BEARING_EXCEEDED,
                             severity=ViolationSeverity.FATAL,
-                            message=f"Placement {p['placement_id']} (SKU: {sku_id}) bearing weight ({upper_weight:.1f} kg) exceeds limit ({max_bearing:.1f} kg)",
+                            message=f"Placement {p['placement_id']} (SKU: {sku_id}) total bearing weight ({accum_upper_weight:.1f} kg) exceeds limit ({max_bearing:.1f} kg)",
                             sku_id=sku_id,
                             placement_id=p["placement_id"],
                             placement_index=i,
-                            extra_data={"upper_weight_kg": upper_weight, "max_bearing_kg": max_bearing},
+                            extra_data={"upper_weight_kg": accum_upper_weight, "max_bearing_kg": max_bearing},
                         )
                     )
 
-            # 3. Surface Pressure Limit check
+            # 3. Surface Pressure Limit check (基于多层真实传递载荷)
             if cargo and cargo.stacking_policy.max_pressure_kg_m2 is not None:
                 max_pressure = cargo.stacking_policy.max_pressure_kg_m2
-                pressure = upper_weight / (dx * dy) if (dx * dy) > 0 else 0.0
+                pressure = accum_upper_weight / (dx * dy) if (dx * dy) > 0 else 0.0
                 if pressure > max_pressure + eps:
                     stability_violations.append(
                         ViolationDetail(

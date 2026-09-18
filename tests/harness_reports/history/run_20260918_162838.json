@@ -1,0 +1,362 @@
+{
+  "run_id": "20260918_162838",
+  "timestamp": "2026-09-18T16:28:38.771439",
+  "tier": 1,
+  "total_cases": 1,
+  "passed": 0,
+  "failed": 0,
+  "warned": 1,
+  "total_runtime_s": 38.3,
+  "results": {
+    "14-SKU-1845": {
+      "case_id": "14-SKU-1845",
+      "case_name": "14-SKU-1845 (当前基线)",
+      "description": "14-SKU standard baseline cleanroom case 001",
+      "requested_cartons": 2145,
+      "placed_count": 1452,
+      "unplaced_count": 693,
+      "utilization": 82.35,
+      "volume_utilization_pct": 82.3461,
+      "runtime_ms": 38265.58,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "SKU_STARVATION",
+      "health_issues": [
+        "STARVATION(1SKU未放)"
+      ],
+      "sku_fulfillment": {
+        "rigid_required": 1471,
+        "rigid_placed": 1452,
+        "rigid_completion_pct": 98.71,
+        "elastic_required": 674,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [
+          "SKU-12"
+        ],
+        "sku_details": {
+          "SKU-01": {
+            "name": "WIFI蓝牙 / WIFI线 / WIFI贴",
+            "is_elastic": false,
+            "required": 1,
+            "placed": 1,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 1,
+              "door_zone_placed": 0,
+              "non_door_placed": 1
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-02": {
+            "name": "21.5寸 显示器 BG (DA)",
+            "is_elastic": false,
+            "required": 500,
+            "placed": 500,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 100,
+              "door_zone_placed": 0,
+              "non_door_placed": 500
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-03": {
+            "name": "34寸显示器 MX340 (DA)",
+            "is_elastic": false,
+            "required": 90,
+            "placed": 84,
+            "missing": 6,
+            "completion_pct": 93.3,
+            "distribution": {
+              "floor_placed": 14,
+              "door_zone_placed": 10,
+              "non_door_placed": 74
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-04": {
+            "name": "27寸显示器 2886A (DA)",
+            "is_elastic": false,
+            "required": 100,
+            "placed": 100,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 20,
+              "door_zone_placed": 0,
+              "non_door_placed": 100
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-05": {
+            "name": "32寸智能显示器 (DA)",
+            "is_elastic": false,
+            "required": 100,
+            "placed": 100,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 9,
+              "door_zone_placed": 0,
+              "non_door_placed": 100
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-06": {
+            "name": "15.6寸便携显示器 (14/箱)",
+            "is_elastic": false,
+            "required": 95,
+            "placed": 95,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 18,
+              "door_zone_placed": 0,
+              "non_door_placed": 95
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-07": {
+            "name": "15.6寸 双屏便携屏",
+            "is_elastic": false,
+            "required": 125,
+            "placed": 125,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 12,
+              "door_zone_placed": 0,
+              "non_door_placed": 125
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-08": {
+            "name": "21.5寸一体机整机 带键盘鼠标",
+            "is_elastic": false,
+            "required": 53,
+            "placed": 53,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 10,
+              "door_zone_placed": 0,
+              "non_door_placed": 53
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-09": {
+            "name": "19寸一体机整机",
+            "is_elastic": false,
+            "required": 24,
+            "placed": 24,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 4,
+              "door_zone_placed": 0,
+              "non_door_placed": 24
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-10": {
+            "name": "19寸液晶屏 / 19寸液晶屏玻璃",
+            "is_elastic": false,
+            "required": 22,
+            "placed": 22,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 3,
+              "door_zone_placed": 0,
+              "non_door_placed": 22
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-11": {
+            "name": "电源线",
+            "is_elastic": false,
+            "required": 10,
+            "placed": 10,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 4,
+              "door_zone_placed": 0,
+              "non_door_placed": 10
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-12": {
+            "name": "电源线 (小箱)",
+            "is_elastic": false,
+            "required": 1,
+            "placed": 0,
+            "missing": 1,
+            "completion_pct": 0.0,
+            "distribution": {
+              "floor_placed": 0,
+              "door_zone_placed": 0,
+              "non_door_placed": 0
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-13": {
+            "name": "电源",
+            "is_elastic": false,
+            "required": 50,
+            "placed": 38,
+            "missing": 12,
+            "completion_pct": 76.0,
+            "distribution": {
+              "floor_placed": 0,
+              "door_zone_placed": 0,
+              "non_door_placed": 38
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-14": {
+            "name": "19寸 显示器 BG (DA)",
+            "is_elastic": true,
+            "required": 674,
+            "placed": 0,
+            "missing": 674,
+            "completion_pct": 0.0,
+            "distribution": {
+              "floor_placed": 0,
+              "door_zone_placed": 0,
+              "non_door_placed": 0
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-15": {
+            "name": "23.8寸摄像头显示器",
+            "is_elastic": false,
+            "required": 300,
+            "placed": 300,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 18,
+              "door_zone_placed": 0,
+              "non_door_placed": 300
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          }
+        }
+      },
+      "quality_metrics": {
+        "hollow_ratio_pct": 0.0,
+        "enclosed_cavity_volume": 0.0,
+        "enclosed_cavity_count": 0,
+        "reachable_residual_volume": 8.1251,
+        "dead_space_volume": 0.0,
+        "fragmentation_score": 0.0,
+        "cog_offset_x_pct": 0.0,
+        "cog_offset_y_pct": 0.0
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 1452,
+        "unplacedCount": 693,
+        "utilization": 82.34614176761416,
+        "rigidCompletion": 98.71,
+        "healthStatus": "SKU_STARVATION"
+      },
+      "status": "WARN"
+    }
+  }
+}

@@ -110,12 +110,17 @@
   function buildCargoProfile(item, values) {
     const source = 'USER_DEFINED';
     const orientationMode = values.allowedOrientation || item.allowedOrientation || 'upright';
-    const allowFlat = orientationMode === 'allow_flat' || orientationMode === 'any';
+    const allowUpright = values.allowUpright !== false && orientationMode !== 'flat_only';
+    const allowFlat = orientationMode === 'allow_flat' || orientationMode === 'any' || orientationMode === 'flat_only';
     const allowSide = orientationMode === 'allow_side' || orientationMode === 'any';
     const topState = String(values.topFillState || 'AUTO').toUpperCase();
-    const orientationRules = [{
-      orientation: 'UPRIGHT', allowedRegions: ['MAIN_BODY', 'TOP_FILL', 'DOOR_ZONE'], condition: 'ALWAYS'
-    }];
+    const orientationRules = [];
+
+    if (allowUpright) {
+      orientationRules.push({
+        orientation: 'UPRIGHT', allowedRegions: ['MAIN_BODY', 'TOP_FILL', 'DOOR_ZONE'], condition: 'ALWAYS'
+      });
+    }
     if (allowFlat) orientationRules.push({
       orientation: 'FLAT', allowedRegions: ['TOP_FILL'],
       maxTopFillLayers: Number(values.topFillMaxLayers) || 1,
@@ -129,7 +134,7 @@
     return {
       geometryPolicy: { source, clearanceM: Number(values.clearanceM) || 0 },
       orientationPolicy: {
-        source, allowFlat, allowSide, maxFlatLayers: Number(values.topFillMaxLayers) || 1,
+        source, allowUpright, allowFlat, allowSide, maxFlatLayers: Number(values.topFillMaxLayers) || 1,
         rules: orientationRules
       },
       placementPolicy: {
@@ -141,6 +146,7 @@
       stackPolicy: {
         source,
         maxStackLayers: Number(values.maxStackLayers) || null,
+        topStackPermission: values.topStackPermission || (values.allowStackingOnTop === false ? (Number(values.maxStackLayers) > 1 ? 'SELF_ONLY' : 'FORBIDDEN') : 'ALLOW_ALL'),
         allowStackingOnTop: values.allowStackingOnTop !== false,
         mustBeOnFloor: Boolean(values.mustBeOnFloor),
         stackOnSelf: values.stackOnSelf !== false

@@ -103,12 +103,16 @@ class InputNormalizer:
     @staticmethod
     def parse_orientation_policy(raw_item: Dict[str, Any]) -> OrientationPolicy:
         """
-        Constructs canonical OrientationPolicy based on legacy orientation flags.
+        Constructs canonical OrientationPolicy with semantic interlock & mutual exclusion:
+        - keep_upright=True strictly forbids allow_flat and allow_side.
+        - allowedOrientation='flat_only' or allowUpright=False explicitly disables allow_upright.
         """
         allow_flat = bool(raw_item.get('allowFlat', False))
         allow_side = bool(raw_item.get('allowSide', False))
-        allowed_ori = raw_item.get('allowedOrientation', 'upright')
+        allowed_ori = str(raw_item.get('allowedOrientation', 'upright')).lower()
+        keep_upright = bool(raw_item.get('keepUpright', False)) or (allowed_ori == 'upright' and not allow_flat and not allow_side)
 
+        # Explicit single-mode flags
         if allowed_ori == 'allow_flat':
             allow_flat = True
         elif allowed_ori == 'allow_side':
@@ -116,6 +120,20 @@ class InputNormalizer:
         elif allowed_ori == 'any':
             allow_flat = True
             allow_side = True
+        elif allowed_ori == 'flat_only':
+            allow_flat = True
+            allow_side = False
+
+        # Upright permission (defaults to True unless flat_only or allowUpright is explicitly False)
+        allow_upright = True
+        if raw_item.get('allowUpright') is False or allowed_ori == 'flat_only':
+            allow_upright = False
+
+        # Mutual exclusion: if keep_upright is enforced, strictly disable tilt/flat/side
+        if keep_upright and raw_item.get('keepUpright') is True:
+            allow_flat = False
+            allow_side = False
+            allow_upright = True
 
         explicit_rules = []
         for raw_rule in raw_item.get('orientationRules', ()):
@@ -137,13 +155,13 @@ class InputNormalizer:
 
         contexts_flat = [PlacementContext.TOP_FILL, PlacementContext.GAP_FILL, PlacementContext.DOOR_SEAL]
         contexts_side = [PlacementContext.GAP_FILL, PlacementContext.DOOR_SEAL]
-        if allow_flat or allowed_ori in ('any', 'allow_flat') or '允许旋转' in raw_item.get('requirement', ''):
+        if allow_flat or allowed_ori in ('any', 'allow_flat', 'flat_only') or '允许旋转' in raw_item.get('requirement', ''):
             contexts_flat.extend([PlacementContext.MAIN_WALL, PlacementContext.GENERAL, PlacementContext.FOUNDATION])
         if allow_side or allowed_ori in ('any', 'allow_side') or '允许旋转' in raw_item.get('requirement', ''):
             contexts_side.extend([PlacementContext.MAIN_WALL, PlacementContext.GENERAL, PlacementContext.FOUNDATION])
 
         return OrientationPolicy(
-            allow_upright=True,
+            allow_upright=allow_upright,
             allow_flat=allow_flat,
             allow_side=allow_side,
             allowed_contexts_for_flat=tuple(contexts_flat),
@@ -155,7 +173,11 @@ class InputNormalizer:
     @staticmethod
     def parse_stacking_policy(raw_item: Dict[str, Any]) -> StackingPolicy:
         """
-        Constructs canonical StackingPolicy.
+        Constructs canonical StackingPolicy with semantic interlock synthesis:
+        - Grounding-Layering interlock: mustBeOnFloor=True + maxStackLayers>1 synthesizes Floor-Rooted stack.
+        - TopStack vs SelfStack disambiguation:
+          * 'SELF_ONLY' or (allowStackingOnTop=False and maxStackLayers>1) -> allow_stacking_on_top=False, stack_on_self=True
+          * 'FORBIDDEN' or (allowStackingOnTop=False and maxStackLayers=1) -> allow_stacking_on_top=False, stack_on_self=False
         """
         max_layers = raw_item.get('maxStackLayers')
         if max_layers is None:
@@ -176,14 +198,43 @@ class InputNormalizer:
         if max_pressure is not None:
             max_pressure = float(max_pressure)
 
+        must_be_on_floor = bool(raw_item.get('mustBeOnFloor', False))
+
+        # Disambiguate topStacking vs stackOnSelf
+        top_perm = raw_item.get('topStackPermission')
+        raw_allow_top = raw_item.get('allowStackingOnTop')
+        raw_stack_self = raw_item.get('stackOnSelf')
+
+        if top_perm == 'SELF_ONLY':
+            allow_stacking_on_top = False
+            stack_on_self = True
+        elif top_perm == 'FORBIDDEN':
+            allow_stacking_on_top = False
+            stack_on_self = False
+        elif top_perm == 'ALLOW_ALL':
+            allow_stacking_on_top = True
+            stack_on_self = True
+        elif raw_allow_top is False:
+            allow_stacking_on_top = False
+            # If user configured maxStackLayers > 1, they intend to allow self-stacking up to N layers,
+            # while forbidding other foreign cargo from resting on top!
+            if raw_stack_self is not None:
+                stack_on_self = bool(raw_stack_self)
+            else:
+                stack_on_self = True if (max_layers is None or max_layers > 1) else False
+        else:
+            allow_stacking_on_top = bool(raw_allow_top) if raw_allow_top is not None else True
+            stack_on_self = bool(raw_stack_self) if raw_stack_self is not None else True
+
         return StackingPolicy(
             max_stack_layers=max_layers,
             max_bearing_kg=max_bearing,
             max_pressure_kg_m2=max_pressure,
             min_support_ratio=float(raw_item.get('minSupportRatio', 0.70)),
             max_unsupported_span_m=float(raw_item.get('maxUnsupportedSpanM', 0.10)),
-            allow_stacking_on_top=bool(raw_item.get('allowStackingOnTop', True)),
-            must_be_on_floor=bool(raw_item.get('mustBeOnFloor', False)),
+            allow_stacking_on_top=allow_stacking_on_top,
+            must_be_on_floor=must_be_on_floor,
+            stack_on_self=stack_on_self,
         )
 
     @staticmethod
@@ -253,15 +304,39 @@ class InputNormalizer:
             max_top_load_kg=(float(compression["maxTopLoad"]) if compression.get("maxTopLoad") is not None else None),
             max_pressure_kg_m2=(float(compression["maxPressureKgM2"]) if compression.get("maxPressureKgM2") is not None else None),
         )
+        max_layers_p = int(stack["maxStackLayers"]) if stack.get("maxStackLayers") is not None else None
+        raw_allow_top_p = stack.get("allowStackingOnTop")
+        raw_stack_self_p = stack.get("stackOnSelf")
+        top_perm_p = stack.get("topStackPermission")
+
+        if top_perm_p == "SELF_ONLY":
+            allow_top_p = False
+            stack_self_p = True
+        elif top_perm_p == "FORBIDDEN":
+            allow_top_p = False
+            stack_self_p = False
+        elif top_perm_p == "ALLOW_ALL":
+            allow_top_p = True
+            stack_self_p = True
+        elif raw_allow_top_p is False:
+            allow_top_p = False
+            if raw_stack_self_p is not None:
+                stack_self_p = bool(raw_stack_self_p)
+            else:
+                stack_self_p = True if (max_layers_p is None or max_layers_p > 1) else False
+        else:
+            allow_top_p = bool(raw_allow_top_p) if raw_allow_top_p is not None else True
+            stack_self_p = bool(raw_stack_self_p) if raw_stack_self_p is not None else True
+
         stack_policy = StackingPolicy(
-            max_stack_layers=(int(stack["maxStackLayers"]) if stack.get("maxStackLayers") is not None else None),
+            max_stack_layers=max_layers_p,
             max_bearing_kg=compression_policy.max_top_load_kg,
             max_pressure_kg_m2=compression_policy.max_pressure_kg_m2,
             min_support_ratio=stability_policy.min_support_ratio,
             max_unsupported_span_m=stability_policy.max_unsupported_span_m,
-            allow_stacking_on_top=bool(stack.get("allowStackingOnTop", True)),
+            allow_stacking_on_top=allow_top_p,
             must_be_on_floor=bool(stack.get("mustBeOnFloor", False)),
-            stack_on_self=bool(stack.get("stackOnSelf", True)),
+            stack_on_self=stack_self_p,
             allowed_above_categories=tuple(CargoClass(str(v).upper()) for v in stack.get("allowedAboveCategories", ())),
             forbidden_above_categories=tuple(CargoClass(str(v).upper()) for v in stack.get("forbiddenAboveCategories", ())),
             source=source(stack),
@@ -444,7 +519,12 @@ class InputAdapter:
 
             # Policies: merge item and src so top-level properties like allowedOrientation and maxStackLayers are preserved
             policy_src = dict(src)
-            for k in ('allowedOrientation', 'allowFlat', 'allowSide', 'orientationRules', 'maxFlatLayers', 'maxStackLayers', 'max_stack_layers', 'max_stack', 'maxBearingKg', 'maxStackWeight', 'maxPressureKgM2', 'minSupportRatio', 'maxUnsupportedSpanM', 'allowStackingOnTop', 'mustBeOnFloor'):
+            for k in (
+                'allowedOrientation', 'allowFlat', 'allowSide', 'allowUpright', 'keepUpright',
+                'orientationRules', 'maxFlatLayers', 'maxStackLayers', 'max_stack_layers', 'max_stack',
+                'maxBearingKg', 'maxStackWeight', 'maxPressureKgM2', 'minSupportRatio', 'maxUnsupportedSpanM',
+                'allowStackingOnTop', 'mustBeOnFloor', 'topStackPermission', 'stackOnSelf'
+            ):
                 if k in item and k not in policy_src:
                     policy_src[k] = item[k]
                 elif k in item and policy_src.get(k) is None:

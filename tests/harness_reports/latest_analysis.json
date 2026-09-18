@@ -1,11 +1,11 @@
 {
   "summary": {
     "total": 56,
-    "passed": 49,
-    "failed": 0,
-    "warned": 7,
-    "avg_utilization": 40.73,
-    "avg_rigid_completion": 92.71,
+    "passed": 50,
+    "failed": 1,
+    "warned": 5,
+    "avg_utilization": 38.64,
+    "avg_rigid_completion": 90.65,
     "total_collisions": 0,
     "total_violations": 0
   },
@@ -13,18 +13,15 @@
     {
       "cluster_id": "CLUSTER-1",
       "fault_type": "PRIORITY_INVERSION",
-      "count": 6,
+      "count": 3,
       "case_ids": [
         "FLOOR-SPACE-COMPETITION",
         "EXTREME-PAYLOAD-BEARING",
-        "RANDOM-STRESS-CASE-01",
-        "RANDOM-STRESS-CASE-03",
-        "RANDOM-STRESS-CASE-04",
-        "RANDOM-STRESS-CASE-05"
+        "RANDOM-STRESS-CASE-01"
       ],
       "common_patterns": {
-        "avg_utilization": 37.3,
-        "avg_rigid_completion": 78.8
+        "avg_utilization": 33.1,
+        "avg_rigid_completion": 81.6
       },
       "suggested_fix": {
         "code_location": "composite_strip.py 排序逻辑",
@@ -35,18 +32,36 @@
     {
       "cluster_id": "CLUSTER-2",
       "fault_type": "RIGID_STARVATION",
-      "count": 1,
+      "count": 2,
       "case_ids": [
-        "TWELVE-SKU-COMPLEX-MOSAIC"
+        "14-SKU-1845",
+        "RANDOM-STRESS-CASE-05"
       ],
       "common_patterns": {
-        "avg_utilization": 39.0,
-        "avg_rigid_completion": 94.1
+        "avg_utilization": 53.2,
+        "avg_rigid_completion": 79.5
       },
       "suggested_fix": {
         "code_location": "composite_strip.py 刚性优先分配",
         "agent_role": "A",
         "description": "刚性 SKU 饥饿/弃装，弹性件可能抢占了截面配额"
+      }
+    },
+    {
+      "cluster_id": "CLUSTER-3",
+      "fault_type": "LOW_UTILIZATION",
+      "count": 1,
+      "case_ids": [
+        "SINGLE-SKU-MASS"
+      ],
+      "common_patterns": {
+        "avg_utilization": 0.0,
+        "avg_rigid_completion": 0.0
+      },
+      "suggested_fix": {
+        "code_location": "unified_solver.py 墙体构建 + gap_filler.py",
+        "agent_role": "A",
+        "description": "空间利用率低于 60%，需优化墙体效率和间隙填充"
       }
     }
   ],
@@ -54,17 +69,16 @@
     "new_failures": [],
     "fixed_cases": [],
     "stable_failures": [
+      "14-SKU-1845",
+      "SINGLE-SKU-MASS",
       "FLOOR-SPACE-COMPETITION",
       "EXTREME-PAYLOAD-BEARING",
-      "TWELVE-SKU-COMPLEX-MOSAIC",
       "RANDOM-STRESS-CASE-01",
-      "RANDOM-STRESS-CASE-03",
-      "RANDOM-STRESS-CASE-04",
       "RANDOM-STRESS-CASE-05"
     ],
     "utilization_trend": {
-      "previous": 40.73,
-      "current": 40.73,
+      "previous": 38.64,
+      "current": 38.64,
       "delta": 0.0
     }
   }

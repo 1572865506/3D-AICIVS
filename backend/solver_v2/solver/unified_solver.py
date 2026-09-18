@@ -335,6 +335,11 @@ class UnifiedSolver:
             )
 
         tensor_cargo_list = self._convert_cargo_skus_to_tensors(cargo_list)
+        self._has_any_bearing_constraints = any(
+            getattr(c, 'max_bearing_kg', None) is not None
+            or getattr(getattr(c, 'stacking_policy', None), 'max_bearing_kg', None) is not None
+            for c in cargo_list
+        )
 
         trials = [
             {"name": "LARGE_FIRST",   "sort": "volume_desc",    "min_sec_vol": 0.35},
@@ -362,7 +367,7 @@ class UnifiedSolver:
         else:
             active_trials = trials
 
-        default_budget = 75.0 if total_req_count >= 5000 else 25.0
+        default_budget = 75.0 if total_req_count >= 5000 else (45.0 if total_req_count >= 1000 else 25.0)
         max_time_budget = float(time_budget or default_budget)
         global_deadline = t0 + max_time_budget
 
@@ -390,6 +395,7 @@ class UnifiedSolver:
             # Compute rigid item fulfillment
             placed_rigid_count = 0
             req_rigid_count = 0
+            starved_rigid_count = 0
             placed_counts_trial: Dict[str, int] = {}
             for p in trial_placements:
                 sid = p.get("sku_id", "")
@@ -399,7 +405,10 @@ class UnifiedSolver:
                 req_q = getattr(getattr(c, "quantity", None), "required", 0) or getattr(c, "quantity_required", 0)
                 if not is_el:
                     req_rigid_count += req_q
-                    placed_rigid_count += min(req_q, placed_counts_trial.get(c.sku_id, 0))
+                    p_cnt = placed_counts_trial.get(c.sku_id, 0)
+                    placed_rigid_count += min(req_q, p_cnt)
+                    if p_cnt == 0 and req_q > 0:
+                        starved_rigid_count += 1
 
             rigid_ratio = (placed_rigid_count / max(1, req_rigid_count)) if req_rigid_count > 0 else 1.0
             score = (
@@ -408,6 +417,7 @@ class UnifiedSolver:
                 + util
                 - (10000.0 if not val_result.is_valid else 0.0)
                 - violations * 500.0
+                - starved_rigid_count * 50000.0
             )
 
             if score > best_score or not best_raw_placements:
@@ -619,21 +629,32 @@ class UnifiedSolver:
         cand_weight = cand.get("weight_kg", 0.0)
         self._curr_payload_weight = getattr(self, "_curr_payload_weight", 0.0) + cand_weight
 
-        # Accumulate bearing weight on underlying boxes
-        if cand["z"] > 1e-3:
+        # Accumulate bearing weight on all underlying boxes down to floor
+        if getattr(self, "_has_any_bearing_constraints", False) and cand["z"] > 1e-3:
             eps = 1e-4
-            cx0, cx1 = cand["x"], cand["x"] + cand["dx"]
-            cy0, cy1 = cand["y"], cand["y"] + cand["dy"]
-            cand_area = cand["dx"] * cand["dy"]
-            for p in placements[:-1]:
-                if abs(round(p["z"] + p["dz"], 4) - round(cand["z"], 4)) < 1e-3:
-                    ix0 = max(cx0, p["x"])
-                    ix1 = min(cx1, p["x"] + p["dx"])
-                    iy0 = max(cy0, p["y"])
-                    iy1 = min(cy1, p["y"] + p["dy"])
-                    if ix1 > ix0 + eps and iy1 > iy0 + eps:
-                        contact_frac = ((ix1 - ix0) * (iy1 - iy0)) / max(1e-6, cand_area)
-                        p["_bearing_load"] = p.get("_bearing_load", 0.0) + cand_weight * contact_frac
+            curr_trans = [cand]
+            while curr_trans:
+                next_trans = []
+                for chk in curr_trans:
+                    cz = chk["z"]
+                    if cz <= 1e-3:
+                        continue
+                    ch_x0, ch_x1 = chk["x"], chk["x"] + chk["dx"]
+                    ch_y0, ch_y1 = chk["y"], chk["y"] + chk["dy"]
+                    ch_area = max(1e-6, chk["dx"] * chk["dy"])
+                    for p in placements[:-1]:
+                        if abs(round(p["z"] + p["dz"], 4) - round(cz, 4)) < 1e-3:
+                            if p["x"] + p["dx"] <= ch_x0 + eps or p["x"] >= ch_x1 - eps or p["y"] + p["dy"] <= ch_y0 + eps or p["y"] >= ch_y1 - eps:
+                                continue
+                            ix0 = max(ch_x0, p["x"])
+                            ix1 = min(ch_x1, p["x"] + p["dx"])
+                            iy0 = max(ch_y0, p["y"])
+                            iy1 = min(ch_y1, p["y"] + p["dy"])
+                            if ix1 > ix0 + eps and iy1 > iy0 + eps:
+                                contact_frac = ((ix1 - ix0) * (iy1 - iy0)) / ch_area
+                                p["_bearing_load"] = p.get("_bearing_load", 0.0) + cand_weight * contact_frac
+                                next_trans.append(p)
+                curr_trans = next_trans
 
         if getattr(self, "_spatial_idx", None) is not None:
             aabb = AABB(
@@ -770,7 +791,7 @@ class UnifiedSolver:
 
             consecutive_failed_slices = 0
             while current_x < max_zone_x:
-                if deadline is not None and time.perf_counter() > deadline - 6.0:
+                if deadline is not None and time.perf_counter() > deadline - 1.5:
                     break
                 active_skus = [c for c in sku_group if remaining_qty[c.sku_id] > 0]
                 if not active_skus:
@@ -1096,6 +1117,15 @@ class UnifiedSolver:
                 primary_sku = chosen_candidate
                 opt = chosen_opt
                 max_stack = (primary_sku.max_stack_layers or 1) if getattr(primary_sku, 'must_be_on_floor', False) else (primary_sku.max_stack_layers or 99)
+                max_bearing = getattr(primary_sku, 'max_bearing_kg', None)
+                if max_bearing is not None:
+                    if max_bearing <= 0.0 or not getattr(primary_sku, 'allow_stacking_on_top', True):
+                        max_stack = 1
+                    elif primary_sku.weight_kg > 0:
+                        bearing_layers = 1 + int(max_bearing / max(1e-3, primary_sku.weight_kg))
+                        max_stack = min(max_stack, max(1, bearing_layers))
+                elif not getattr(primary_sku, 'allow_stacking_on_top', True):
+                    max_stack = 1
                 per_row_cap = max(1, int(self.cW / opt.dy)) * min(max_stack, max(1, int((self.cH - 0.04) / opt.dz)))
                 avail_p = remaining_qty[primary_sku.sku_id]
 
@@ -1241,6 +1271,15 @@ class UnifiedSolver:
                     c_rows_x = max(1, int((delta_x + 1e-4) / col_opt.dx))
                     c_cols_y = max(1, min(int((rem_w + 1e-4) / col_opt.dy), 35))
                     max_sku_layers = (col_sku.max_stack_layers or 1) if getattr(col_sku, 'must_be_on_floor', False) else (col_sku.max_stack_layers or 99)
+                    col_mb = getattr(col_sku, 'max_bearing_kg', None)
+                    if col_mb is not None:
+                        if col_mb <= 0.0 or not getattr(col_sku, 'allow_stacking_on_top', True):
+                            max_sku_layers = 1
+                        elif col_sku.weight_kg > 0:
+                            b_layers = 1 + int(col_mb / max(1e-3, col_sku.weight_kg))
+                            max_sku_layers = min(max_sku_layers, max(1, b_layers))
+                    elif not getattr(col_sku, 'allow_stacking_on_top', True):
+                        max_sku_layers = 1
                     c_layers_z = max(1, min(int((self.cH - 0.04) / col_opt.dz), max_sku_layers))
                     avail_c = remaining_qty[col_sku.sku_id]
                     # Allow top layer to be partially filled so tail cartons are not discarded
@@ -1808,25 +1847,18 @@ class UnifiedSolver:
                         break
 
         # PASS 4.6: Elastic Cavity Re-fill (Fill remaining voids with elastic cargo after rigid items)
-        # Permissive non-competing policy: allow elastic items if rigid items are done OR if remaining rigid items cannot be placed in the available space
-        has_unplaced_rigid = any(remaining_qty.get(c.sku_id, 0) > 0 and not getattr(c, 'is_elastic', False) for c in cargo_list)
-        unplaced_elastic = [c for c in cargo_list if getattr(c, 'is_elastic', False) and remaining_qty.get(c.sku_id, 0) > 0]
-        if unplaced_elastic:
-            # Check if remaining rigid items are physically blocked (e.g. must_be_on_floor and floor full, or cannot stack)
-            rigid_can_continue = False
-            if has_unplaced_rigid:
-                unplaced_rigid_items = [c for c in cargo_list if not getattr(c, 'is_elastic', False) and remaining_qty.get(c.sku_id, 0) > 0]
-                # If ALL remaining rigid items are strictly must_be_on_floor, but container length is packed, they cannot place
-                all_must_floor = all(getattr(c, 'must_be_on_floor', False) for c in unplaced_rigid_items)
-                max_x = max((p['x'] + p['dx'] for p in placements), default=0.0)
-                if all_must_floor and max_x >= self.cL - 0.20:
-                    rigid_can_continue = False
-                else:
-                    # In general, if rigid items exist, only permit elastic placement at high elevation (z >= 0.80m)
-                    # or in spaces where rigid cannot fit, preventing priority inversion while eradicating voids
-                    rigid_can_continue = True
+        # Strict mutual exclusion gate: NEVER place elastic cargo unless rigid fulfillment reaches >= 99.0%
+        tot_rigid_req = sum(getattr(c, 'quantity_required', 0) for c in cargo_list if not getattr(c, 'is_elastic', False))
+        tot_rigid_rem = sum(remaining_qty.get(c.sku_id, 0) for c in cargo_list if not getattr(c, 'is_elastic', False))
+        rigid_comp_pct = ((tot_rigid_req - tot_rigid_rem) / max(1, tot_rigid_req)) * 100.0 if tot_rigid_req > 0 else 100.0
 
-            min_fill_z = 0.80 if (has_unplaced_rigid and rigid_can_continue) else 0.0
+        if rigid_comp_pct < 99.0:
+            unplaced_elastic = []
+        else:
+            unplaced_elastic = [c for c in cargo_list if getattr(c, 'is_elastic', False) and remaining_qty.get(c.sku_id, 0) > 0]
+
+        if unplaced_elastic:
+            min_fill_z = 0.0
             for round_idx in range(25):
                 if deadline is not None and time.perf_counter() > deadline:
                     break
@@ -2328,46 +2360,55 @@ class UnifiedSolver:
                 if max_layers <= 1:
                     return False
 
-        # 3. Upper bearing check for underlying boxes
+        # 2.1 No top-stacking check if candidate forbids foreign stacking on top
+        if not getattr(c_sku, "allow_stacking_on_top", True):
+            cand_top_z = round(cand["z"] + cand["dz"], 4)
+            c_x0, c_x1 = cand["x"], cand["x"] + cand["dx"]
+            c_y0, c_y1 = cand["y"], cand["y"] + cand["dy"]
+            allow_self = getattr(c_sku, "stack_on_self", True)
+            for p in placements:
+                if abs(round(p["z"], 4) - cand_top_z) < 1e-3:
+                    if min(c_x1, p["x"] + p["dx"]) > max(c_x0, p["x"]) + eps and min(c_y1, p["y"] + p["dy"]) > max(c_y0, p["y"]) + eps:
+                        if not (allow_self and p["sku_id"] == sku_id):
+                            return False
+
+        # 3. Upper bearing check for underlying boxes in the support chain
         cand_z = cand["z"]
         if cand_z > 1e-3:
-            cx0, cx1 = cand["x"], cand["x"] + cand["dx"]
-            cy0, cy1 = cand["y"], cand["y"] + cand["dy"]
-            cand_area = cand["dx"] * cand["dy"]
             cand_weight = cand.get("weight_kg", c_sku.weight_kg)
-
-            if getattr(self, "_spatial_idx", None) is not None and len(self._spatial_idx) > 0:
-                query_aabb = AABB(
-                    min_x=cand["x"],
-                    min_y=cand["y"],
-                    min_z=cand_z - 0.05,
-                    max_x=cand["x"] + cand["dx"],
-                    max_y=cand["y"] + cand["dy"],
-                    max_z=cand_z + 0.05,
-                )
-                cand_ids = self._spatial_idx.query_candidate_ids(query_aabb, expand_eps=0.05)
-                lowers = [self._spatial_idx.get_item(cid).data for cid in cand_ids if self._spatial_idx.get_item(cid) is not None and self._spatial_idx.get_item(cid).data is not None]
-            else:
-                lowers = placements
-
-            for p in lowers:
-                if abs(round(p["z"] + p["dz"], 4) - round(cand_z, 4)) < 1e-3:
-                    ix0 = max(cx0, p["x"])
-                    ix1 = min(cx1, p["x"] + p["dx"])
-                    iy0 = max(cy0, p["y"])
-                    iy1 = min(cy1, p["y"] + p["dy"])
-                    if ix1 > ix0 + eps and iy1 > iy0 + eps:
-                        under_sku = tensor_map.get(p["sku_id"])
-                        if under_sku:
-                            if not getattr(under_sku, "allow_stacking_on_top", True):
-                                return False
-                            max_bearing = getattr(under_sku, "max_bearing_kg", None)
-                            if max_bearing is not None:
-                                contact_frac = ((ix1 - ix0) * (iy1 - iy0)) / max(1e-6, cand_area)
-                                added_w = cand_weight * contact_frac
-                                curr_bearing = p.get("_bearing_load", 0.0)
-                                if curr_bearing + added_w > max_bearing + eps:
-                                    return False
+            curr_check = [cand]
+            while curr_check:
+                next_check = []
+                for chk in curr_check:
+                    cz = chk["z"]
+                    if cz <= 1e-3:
+                        continue
+                    ch_x0, ch_x1 = chk["x"], chk["x"] + chk["dx"]
+                    ch_y0, ch_y1 = chk["y"], chk["y"] + chk["dy"]
+                    ch_area = max(1e-6, chk["dx"] * chk["dy"])
+                    for p in placements:
+                        if abs(round(p["z"] + p["dz"], 4) - round(cz, 4)) < 1e-3:
+                            ix0 = max(ch_x0, p["x"])
+                            ix1 = min(ch_x1, p["x"] + p["dx"])
+                            iy0 = max(ch_y0, p["y"])
+                            iy1 = min(ch_y1, p["y"] + p["dy"])
+                            if ix1 > ix0 + eps and iy1 > iy0 + eps:
+                                under_sku = tensor_map.get(p["sku_id"]) if tensor_map else None
+                                if under_sku:
+                                    allow_top = getattr(under_sku, "allow_stacking_on_top", True)
+                                    if not allow_top:
+                                        allow_self = getattr(under_sku, "stack_on_self", True)
+                                        if not (allow_self and cand["sku_id"] == p["sku_id"]):
+                                            return False
+                                    max_bearing = getattr(under_sku, "max_bearing_kg", None)
+                                    if max_bearing is not None:
+                                        contact_frac = ((ix1 - ix0) * (iy1 - iy0)) / ch_area
+                                        added_w = cand_weight * contact_frac
+                                        curr_bearing = p.get("_bearing_load", 0.0)
+                                        if curr_bearing + added_w > max_bearing + eps:
+                                            return False
+                                next_check.append(p)
+                curr_check = next_check
 
         # 4. Vertical Stack Layers limit check
         max_layers = getattr(c_sku, "max_stack_layers", None)
