@@ -1110,20 +1110,24 @@ class WidthPatternEngine:
             if q1 <= 0 or v1.dy > target_width:
                 continue
 
-            max_c1 = min(30, int(target_width // v1.dy))
+            max_c1 = min(15, int(target_width // v1.dy))
             for c1 in range(1, max_c1 + 1):
+                if len(patterns) >= 80:
+                    break
                 w1 = round(c1 * v1.dy, 4)
                 rem_w1 = round(target_width - w1, 4)
                 if rem_w1 < 0.05:
                     continue
 
                 for j in range(i + 1, num_v):
+                    if len(patterns) >= 80:
+                        break
                     v2 = unique_variants[j]
                     q2 = remaining_qty.get(v2.sku_id, 0)
                     if q2 <= 0 or v2.dy > rem_w1:
                         continue
 
-                    max_c2 = min(30, int(rem_w1 // v2.dy))
+                    max_c2 = min(15, int(rem_w1 // v2.dy))
                     for c2 in range(1, max_c2 + 1):
                         w2 = round(c2 * v2.dy, 4)
                         tot_w = round(w1 + w2, 4)
@@ -1209,7 +1213,7 @@ class WidthPatternEngine:
                             patterns.append(pat)
 
         patterns.sort(key=lambda p: p.score, reverse=True)
-        return patterns
+        return patterns[:40]
 
     def _find_depth_synchronization(
         self,

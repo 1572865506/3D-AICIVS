@@ -340,6 +340,18 @@ class UnifiedSolver:
             or getattr(getattr(c, 'stacking_policy', None), 'max_bearing_kg', None) is not None
             for c in cargo_list
         )
+        door_seal_skus = [
+            s for s in cargo_list
+            if (PackingRole.DOOR_SEAL in getattr(s, 'packing_roles', ()) or getattr(s, 'target_zone', None) == ZoneType.DOOR)
+        ]
+        if door_seal_skus:
+            from backend.solver_v2.door.elastic_frontier import ElasticDoorFrontier
+            frontier = ElasticDoorFrontier(container=self.container, door_skus=door_seal_skus)
+            self._actual_door_zone_len = frontier.get_metrics().minimum_closure_depth
+        elif options and "door_zone_length_m" in options:
+            self._actual_door_zone_len = float(options["door_zone_length_m"])
+        else:
+            self._actual_door_zone_len = getattr(self.container, "door_zone_length_m", 0.20) or 0.20
 
         trials = [
             {"name": "LARGE_FIRST",   "sort": "volume_desc",    "min_sec_vol": 0.35},
@@ -757,7 +769,26 @@ class UnifiedSolver:
             modular_rows = max(1, math.ceil((est_door_dx - 1e-4) / primary_door_dx))
             modular_door_len = round(modular_rows * primary_door_dx, 4)
             validator_door_len = round(max(est_door_dx, max_single_dx * 1.2, modular_door_len), 4)
-            validator_door_boundary_x = round(self.cL - validator_door_len, 4)
+
+            # Additional forward reservation for tall-slender rigid SKUs that require bracing against the door wall
+            tall_slender_dx = 0.0
+            tall_slender_skus = [
+                c for c in cargo_list
+                if not getattr(c, 'is_elastic', False)
+                and c.zone_preference != UniversalZone.DOOR
+                and all((2.0 * o.dx) / max(1e-4, o.dz) < 1.5 - 1e-4 for o in self._get_permitted_orientations(c))
+            ]
+            if tall_slender_skus:
+                for ts in tall_slender_skus:
+                    ts_oris = self._get_permitted_orientations(ts)
+                    best_ts_ori = max(ts_oris, key=lambda o: o.dx)
+                    cols_y = max(1, int(self.cW // best_ts_ori.dy))
+                    layers_z = max(1, int(self.cH // best_ts_ori.dz))
+                    slice_cap = cols_y * layers_z
+                    needed_slices = math.ceil(ts.quantity_required / max(1, slice_cap))
+                    tall_slender_dx += needed_slices * best_ts_ori.dx
+
+            validator_door_boundary_x = round(self.cL - validator_door_len - tall_slender_dx, 4)
         else:
             validator_door_boundary_x = round(self.cL - 0.04, 4)
 
@@ -786,7 +817,16 @@ class UnifiedSolver:
                 companion_pool = [c for c in cargo_list if c.zone_preference == UniversalZone.DOOR]
 
             if is_door:
+                tot_rigid_req = sum(c.quantity_required for c in cargo_list if not getattr(c, 'is_elastic', False))
+                if tot_rigid_req > 0:
+                    tot_rigid_rem = sum(remaining_qty.get(c.sku_id, 0) for c in cargo_list if not getattr(c, 'is_elastic', False))
+                    if ((tot_rigid_req - tot_rigid_rem) / tot_rigid_req) * 100.0 < 99.0:
+                        sku_group = [c for c in sku_group if not getattr(c, 'is_elastic', False)]
+                        companion_pool = [c for c in companion_pool if not getattr(c, 'is_elastic', False)]
+
+            if is_door:
                 max_zone_x = round(self.cL - 0.04, 4)
+                current_x = max(current_x, round(self.cL - validator_door_len, 4))
             elif rigid_door_group and any(remaining_qty[c.sku_id] > 0 for c in rigid_door_group):
                 max_zone_x = round(min(validator_door_boundary_x, max(0.0, self.cL - 0.04 - est_door_dx)), 4)
             else:
@@ -964,7 +1004,8 @@ class UnifiedSolver:
                                             or self._is_placement_tipping_safe(cand_pos, placements)
                                         )
 
-                                        if (not self._has_collision(cand_pos, placements) and
+                                        if (cand_pos["x"] + cand_pos["dx"] <= max_zone_x + 1e-4 and
+                                            not self._has_collision(cand_pos, placements) and
                                             self._has_sufficient_support(cand_pos, placements) and
                                             self._check_placement_constraints(cand_pos, placements) and
                                             is_tipping_safe):
@@ -1563,26 +1604,74 @@ class UnifiedSolver:
                         )
                         if is_door_allowed:
                             max_lz = min(getattr(c_rem, 'max_stack_layers', None) or 99, int((self.cH - 0.04) // o.dz))
-                            # Fine-grained door scanning from container end backwards
-                            door_x_list = []
-                            door_zone_len = getattr(self.container, "door_zone_length_m", 0.20) if has_door_skus_all else 0.0
+                            door_zone_len = getattr(self, "_actual_door_zone_len", getattr(self.container, "door_zone_length_m", 0.20) or 0.20) if has_door_skus_all else 0.0
                             is_door_sku = (getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR or "门" in (getattr(c_rem, 'raw_requirement', '') or ''))
-                            if is_door_sku or not has_door_skus_all:
-                                curr_dx = round(self.cL - 0.04 - o.dx, 4)
-                            else:
-                                curr_dx = round(self.cL - door_zone_len - o.dx - 0.005, 4)
-                            min_door_x = max(0.0, round(self.cL - 8.0, 4))
+                            # Priority 1: Direct physical contacts against existing placements
+                            for p in potential_anchors:
+                                if remaining_qty[c_rem.sku_id] <= 0:
+                                    break
+                                if deadline is not None and time.perf_counter() > deadline:
+                                    break
+                                px_lead = round(p["x"] - o.dx, 4)
+                                max_x_lim = self.cL - 0.04 - o.dx if (is_door_sku or not has_door_skus_all) else self.cL - door_zone_len - o.dx - 0.005
+                                pos_cands = []
+                                if 0.0 <= px_lead <= max_x_lim + 1e-4:
+                                    y_cands = [round(p["y"], 4), round(p["y"] + (p["dy"] - o.dy) / 2.0, 4), round(p["y"] + p["dy"] - o.dy, 4)]
+                                    max_cols_y = int((self.cW - 0.02) // o.dy)
+                                    for cy_idx in range(max_cols_y):
+                                        y_cands.append(round(cy_idx * o.dy, 4))
+                                    y_cands = sorted(list(set(y_cands)))
+                                    max_layers_z = min(max_lz, int((self.cH - 0.04) // o.dz))
+                                    for cy in y_cands:
+                                        for cz_idx in range(max_layers_z):
+                                            pos_cands.append((px_lead, cy, round(cz_idx * o.dz, 4)))
+
+                                if p["sku_id"] == c_rem.sku_id:
+                                    px_same = round(p["x"], 4)
+                                    if 0.0 <= px_same <= max_x_lim + 1e-4:
+                                        pos_cands.append((px_same, round(p["y"], 4), round(p["z"] + p["dz"], 4)))
+                                        pos_cands.append((px_same, round(p["y"] + p["dy"], 4), round(p["z"], 4)))
+                                        pos_cands.append((px_same, round(p["y"] - o.dy, 4), round(p["z"], 4)))
+
+                                for cx, cy, cz in pos_cands:
+                                    if cy < -1e-4 or cy + o.dy > self.cW - 0.02 + 1e-4:
+                                        continue
+                                    if cz < -1e-4 or cz + o.dz > self.cH - 0.04 + 1e-4:
+                                        continue
+                                    cand_res = {
+                                        "sku_id": c_rem.sku_id,
+                                        "x": cx, "y": cy, "z": cz,
+                                        "dx": o.dx, "dy": o.dy, "dz": o.dz,
+                                        "weight_kg": c_rem.weight_kg,
+                                        "orientation": o.name,
+                                        "step": step_idx,
+                                        "tag": "DOOR_SEAL" if is_door_sku else "RESIDUAL_ANCHOR",
+                                        "context": "DOOR_SEAL" if is_door_sku else "MAIN_WALL",
+                                    }
+                                    if (not self._has_collision(cand_res, placements) and
+                                        self._has_sufficient_support(cand_res, placements) and
+                                        self._check_placement_constraints(cand_res, placements) and
+                                        self._is_placement_tipping_safe(cand_res, placements)):
+                                        self._add_placement(cand_res, placements)
+                                        remaining_qty[c_rem.sku_id] -= 1
+                                        step_idx += 1
+                                        placed_rigid_item = True
+                                        potential_anchors.insert(0, cand_res)
+                                        if remaining_qty[c_rem.sku_id] <= 0:
+                                            break
+                                if remaining_qty[c_rem.sku_id] <= 0:
+                                    break
+
+                            if remaining_qty[c_rem.sku_id] <= 0:
+                                break
+
+                            # Priority 2: Fallback door zone scanning
+                            door_x_list = []
+                            curr_dx = round(self.cL - 0.04 - o.dx, 4) if (is_door_sku or not has_door_skus_all) else round(self.cL - door_zone_len - o.dx - 0.005, 4)
+                            min_door_x = max(0.0, round(curr_dx - 1.5, 4))
                             while curr_dx >= min_door_x:
                                 door_x_list.append(round(curr_dx, 4))
                                 curr_dx -= 0.05
-                            # Add anchor aligned x
-                            for p in potential_anchors[-50:]:
-                                px_lead = round(p["x"] - o.dx, 4)
-                                px_trail = round(p["x"] + p["dx"], 4)
-                                if min_door_x <= px_lead <= self.cL - 0.04 - o.dx:
-                                    door_x_list.append(px_lead)
-                                if min_door_x <= px_trail <= self.cL - 0.04 - o.dx:
-                                    door_x_list.append(px_trail)
                             door_x_list = sorted(list(set(door_x_list)), reverse=True)
 
                             door_y_list = [0.0]
@@ -1591,13 +1680,6 @@ class UnifiedSolver:
                                 door_y_list.append(round(curr_dy, 4))
                                 curr_dy += max(0.05, min(o.dy, 0.15))
                             door_y_list.append(round(self.cW - 0.02 - o.dy, 4))
-                            for p in potential_anchors[-50:]:
-                                py1 = round(p["y"] + p["dy"], 4)
-                                py0 = round(p["y"] - o.dy, 4)
-                                if 0.0 <= py1 and py1 + o.dy <= self.cW - 0.02:
-                                    door_y_list.append(py1)
-                                if 0.0 <= py0 and py0 + o.dy <= self.cW - 0.02:
-                                    door_y_list.append(py0)
                             door_y_list = sorted(list(set(door_y_list)))
 
                             for door_x in door_x_list:
@@ -2389,7 +2471,8 @@ class UnifiedSolver:
                 or "门" in (getattr(c_sku, "raw_requirement", "") or "")
             )
             if not is_door_sku:
-                door_lockout_x = getattr(self, "_door_lockout_x", self.cL - 0.20)
+                door_zone_len = getattr(self, "_actual_door_zone_len", getattr(self.container, "door_zone_length_m", 0.20) or 0.20)
+                door_lockout_x = round(self.cL - door_zone_len, 4)
                 if cand["x"] + cand["dx"] > door_lockout_x + eps:
                     return False
 
