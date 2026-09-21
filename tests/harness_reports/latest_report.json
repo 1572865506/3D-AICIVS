@@ -1,25 +1,25 @@
 {
-  "generated_at": "2026-09-18T15:33:05.581857",
+  "generated_at": "2026-09-21T10:03:45.729169",
   "results": {
-    "run_id": "20260918_153305",
-    "timestamp": "2026-09-18T15:33:05.511910",
+    "run_id": "20260921_100345",
+    "timestamp": "2026-09-21T10:03:45.414418",
     "tier": 1,
     "total_cases": 56,
-    "passed": 50,
-    "failed": 1,
-    "warned": 5,
-    "total_runtime_s": 665.2,
+    "passed": 56,
+    "failed": 0,
+    "warned": 0,
+    "total_runtime_s": 687.6,
     "results": {
       "14-SKU-1845": {
         "case_id": "14-SKU-1845",
         "case_name": "14-SKU-1845 (当前基线)",
         "description": "14-SKU standard baseline cleanroom case 001",
         "requested_cartons": 2145,
-        "placed_count": 1452,
-        "unplaced_count": 693,
-        "utilization": 82.35,
-        "volume_utilization_pct": 82.3461,
-        "runtime_ms": 36648.59,
+        "placed_count": 1435,
+        "unplaced_count": 710,
+        "utilization": 82.01,
+        "volume_utilization_pct": 82.0127,
+        "runtime_ms": 45222.68,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -27,21 +27,17 @@
         "violations": 0,
         "fatal_violations": 0,
         "is_valid": true,
-        "health_status": "SKU_STARVATION",
-        "health_issues": [
-          "STARVATION(1SKU未放)"
-        ],
+        "health_status": "HEALTHY",
+        "health_issues": [],
         "sku_fulfillment": {
           "rigid_required": 1471,
-          "rigid_placed": 1452,
-          "rigid_completion_pct": 98.71,
+          "rigid_placed": 1435,
+          "rigid_completion_pct": 97.55,
           "elastic_required": 674,
           "elastic_placed": 0,
           "elastic_completion_pct": 0.0,
           "priority_inversion": false,
-          "starved_skus": [
-            "SKU-12"
-          ],
+          "starved_skus": [],
           "sku_details": {
             "SKU-01": {
               "name": "WIFI蓝牙 / WIFI线 / WIFI贴",
@@ -85,13 +81,13 @@
               "name": "34寸显示器 MX340 (DA)",
               "is_elastic": false,
               "required": 90,
-              "placed": 84,
-              "missing": 6,
-              "completion_pct": 93.3,
+              "placed": 90,
+              "missing": 0,
+              "completion_pct": 100.0,
               "distribution": {
                 "floor_placed": 14,
                 "door_zone_placed": 10,
-                "non_door_placed": 74
+                "non_door_placed": 80
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -256,13 +252,13 @@
               "name": "电源线 (小箱)",
               "is_elastic": false,
               "required": 1,
-              "placed": 0,
-              "missing": 1,
-              "completion_pct": 0.0,
+              "placed": 1,
+              "missing": 0,
+              "completion_pct": 100.0,
               "distribution": {
                 "floor_placed": 0,
                 "door_zone_placed": 0,
-                "non_door_placed": 0
+                "non_door_placed": 1
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -275,13 +271,13 @@
               "name": "电源",
               "is_elastic": false,
               "required": 50,
-              "placed": 38,
-              "missing": 12,
-              "completion_pct": 76.0,
+              "placed": 14,
+              "missing": 36,
+              "completion_pct": 28.0,
               "distribution": {
                 "floor_placed": 0,
                 "door_zone_placed": 0,
-                "non_door_placed": 38
+                "non_door_placed": 14
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -334,7 +330,7 @@
           "hollow_ratio_pct": 0.0,
           "enclosed_cavity_volume": 0.0,
           "enclosed_cavity_count": 0,
-          "reachable_residual_volume": 8.1251,
+          "reachable_residual_volume": 8.427,
           "dead_space_volume": 0.0,
           "fragmentation_score": 0.0,
           "cog_offset_x_pct": 0.0,
@@ -352,13 +348,13 @@
           "payload_violations": 0
         },
         "summary": {
-          "placedCount": 1452,
-          "unplacedCount": 693,
-          "utilization": 82.34614176761416,
-          "rigidCompletion": 98.71,
-          "healthStatus": "SKU_STARVATION"
+          "placedCount": 1435,
+          "unplacedCount": 710,
+          "utilization": 82.01273837171492,
+          "rigidCompletion": 97.55,
+          "healthStatus": "HEALTHY"
         },
-        "status": "WARN"
+        "status": "PASS"
       },
       "SINGLE-LARGE-BOX": {
         "case_id": "SINGLE-LARGE-BOX",
@@ -369,7 +365,7 @@
         "unplaced_count": 10,
         "utilization": 91.46,
         "volume_utilization_pct": 91.4561,
-        "runtime_ms": 3839.52,
+        "runtime_ms": 3226.74,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -449,7 +445,7 @@
         "unplaced_count": 2369,
         "utilization": 89.52,
         "volume_utilization_pct": 89.515,
-        "runtime_ms": 26395.12,
+        "runtime_ms": 35805.55,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -586,7 +582,7 @@
         "unplaced_count": 0,
         "utilization": 69.75,
         "volume_utilization_pct": 69.7518,
-        "runtime_ms": 5590.12,
+        "runtime_ms": 2810.31,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -738,11 +734,11 @@
         "case_name": "混合异尺寸 (测空间利用)",
         "description": "Highly heterogeneous SKU dimensions testing multi-depth wall slicing, top filling, and compact space utilization",
         "requested_cartons": 810,
-        "placed_count": 495,
-        "unplaced_count": 315,
-        "utilization": 57.82,
-        "volume_utilization_pct": 57.8154,
-        "runtime_ms": 25026.77,
+        "placed_count": 505,
+        "unplaced_count": 305,
+        "utilization": 59.15,
+        "volume_utilization_pct": 59.1513,
+        "runtime_ms": 24951.17,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -754,8 +750,8 @@
         "health_issues": [],
         "sku_fulfillment": {
           "rigid_required": 560,
-          "rigid_placed": 495,
-          "rigid_completion_pct": 88.39,
+          "rigid_placed": 505,
+          "rigid_completion_pct": 90.18,
           "elastic_required": 250,
           "elastic_placed": 0,
           "elastic_completion_pct": 0.0,
@@ -770,7 +766,7 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 2,
+                "floor_placed": 6,
                 "door_zone_placed": 0,
                 "non_door_placed": 30
               },
@@ -785,13 +781,13 @@
               "name": "Tall Upright Carton",
               "is_elastic": false,
               "required": 70,
-              "placed": 5,
-              "missing": 65,
-              "completion_pct": 7.1,
+              "placed": 15,
+              "missing": 55,
+              "completion_pct": 21.4,
               "distribution": {
-                "floor_placed": 0,
+                "floor_placed": 4,
                 "door_zone_placed": 0,
-                "non_door_placed": 5
+                "non_door_placed": 15
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -827,7 +823,7 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 30,
+                "floor_placed": 0,
                 "door_zone_placed": 0,
                 "non_door_placed": 140
               },
@@ -920,7 +916,7 @@
           "hollow_ratio_pct": 0.0,
           "enclosed_cavity_volume": 0.0,
           "enclosed_cavity_count": 0,
-          "reachable_residual_volume": 27.3785,
+          "reachable_residual_volume": 27.4311,
           "dead_space_volume": 0.0,
           "fragmentation_score": 0.0,
           "cog_offset_x_pct": 0.0,
@@ -938,10 +934,10 @@
           "payload_violations": 0
         },
         "summary": {
-          "placedCount": 495,
-          "unplacedCount": 315,
-          "utilization": 57.81536651402656,
-          "rigidCompletion": 88.39,
+          "placedCount": 505,
+          "unplacedCount": 305,
+          "utilization": 59.1512946166367,
+          "rigidCompletion": 90.18,
           "healthStatus": "HEALTHY"
         },
         "status": "PASS"
@@ -955,7 +951,7 @@
         "unplaced_count": 0,
         "utilization": 69.13,
         "volume_utilization_pct": 69.1278,
-        "runtime_ms": 2373.78,
+        "runtime_ms": 1161.32,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -1069,11 +1065,11 @@
         "case_name": "45HQ超长柜 (测极限长度)",
         "description": "45HQ extended container testing extreme length wall construction and performance",
         "requested_cartons": 800,
-        "placed_count": 692,
-        "unplaced_count": 108,
-        "utilization": 78.95,
-        "volume_utilization_pct": 78.9452,
-        "runtime_ms": 24010.64,
+        "placed_count": 638,
+        "unplaced_count": 162,
+        "utilization": 75.79,
+        "volume_utilization_pct": 75.7925,
+        "runtime_ms": 23131.65,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -1085,8 +1081,8 @@
         "health_issues": [],
         "sku_fulfillment": {
           "rigid_required": 800,
-          "rigid_placed": 692,
-          "rigid_completion_pct": 86.5,
+          "rigid_placed": 638,
+          "rigid_completion_pct": 79.75,
           "elastic_required": 0,
           "elastic_placed": 0,
           "elastic_completion_pct": 0.0,
@@ -1097,13 +1093,13 @@
               "name": "标准箱A",
               "is_elastic": false,
               "required": 300,
-              "placed": 192,
-              "missing": 108,
-              "completion_pct": 64.0,
+              "placed": 216,
+              "missing": 84,
+              "completion_pct": 72.0,
               "distribution": {
-                "floor_placed": 30,
-                "door_zone_placed": 12,
-                "non_door_placed": 180
+                "floor_placed": 36,
+                "door_zone_placed": 0,
+                "non_door_placed": 216
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -1116,13 +1112,13 @@
               "name": "标准箱B",
               "is_elastic": false,
               "required": 400,
-              "placed": 400,
-              "missing": 0,
-              "completion_pct": 100.0,
+              "placed": 322,
+              "missing": 78,
+              "completion_pct": 80.5,
               "distribution": {
-                "floor_placed": 60,
+                "floor_placed": 46,
                 "door_zone_placed": 0,
-                "non_door_placed": 400
+                "non_door_placed": 322
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -1140,8 +1136,8 @@
               "completion_pct": 100.0,
               "distribution": {
                 "floor_placed": 20,
-                "door_zone_placed": 0,
-                "non_door_placed": 100
+                "door_zone_placed": 96,
+                "non_door_placed": 4
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -1156,7 +1152,7 @@
           "hollow_ratio_pct": 0.0,
           "enclosed_cavity_volume": 0.0,
           "enclosed_cavity_count": 0,
-          "reachable_residual_volume": 14.1857,
+          "reachable_residual_volume": 15.9281,
           "dead_space_volume": 0.0,
           "fragmentation_score": 0.0,
           "cog_offset_x_pct": 0.0,
@@ -1174,10 +1170,10 @@
           "payload_violations": 0
         },
         "summary": {
-          "placedCount": 692,
-          "unplacedCount": 108,
-          "utilization": 78.94515206436697,
-          "rigidCompletion": 86.5,
+          "placedCount": 638,
+          "unplacedCount": 162,
+          "utilization": 75.7924795370579,
+          "rigidCompletion": 79.75,
           "healthStatus": "HEALTHY"
         },
         "status": "PASS"
@@ -1191,7 +1187,7 @@
         "unplaced_count": 0,
         "utilization": 43.61,
         "volume_utilization_pct": 43.6141,
-        "runtime_ms": 4297.71,
+        "runtime_ms": 3370.39,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -1324,11 +1320,11 @@
         "case_name": "朝向与顶叠约束 (测约束组合)",
         "description": "Tests allowStackingOnTop=false and orientation-only constraints (upright only, no flat/side)",
         "requested_cartons": 440,
-        "placed_count": 440,
-        "unplaced_count": 0,
-        "utilization": 40.09,
-        "volume_utilization_pct": 40.0883,
-        "runtime_ms": 4416.92,
+        "placed_count": 438,
+        "unplaced_count": 2,
+        "utilization": 39.46,
+        "volume_utilization_pct": 39.4596,
+        "runtime_ms": 24942.88,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -1340,8 +1336,8 @@
         "health_issues": [],
         "sku_fulfillment": {
           "rigid_required": 440,
-          "rigid_placed": 440,
-          "rigid_completion_pct": 100.0,
+          "rigid_placed": 438,
+          "rigid_completion_pct": 99.55,
           "elastic_required": 0,
           "elastic_placed": 0,
           "elastic_completion_pct": 0.0,
@@ -1352,12 +1348,12 @@
               "name": "精密仪器箱",
               "is_elastic": false,
               "required": 40,
-              "placed": 40,
-              "missing": 0,
-              "completion_pct": 100.0,
+              "placed": 38,
+              "missing": 2,
+              "completion_pct": 95.0,
               "distribution": {
                 "floor_placed": 29,
-                "door_zone_placed": 2,
+                "door_zone_placed": 0,
                 "non_door_placed": 38
               },
               "constraints_summary": {
@@ -1430,7 +1426,7 @@
           "hollow_ratio_pct": 0.0,
           "enclosed_cavity_volume": 0.0,
           "enclosed_cavity_count": 0,
-          "reachable_residual_volume": 41.2528,
+          "reachable_residual_volume": 41.9491,
           "dead_space_volume": 0.0,
           "fragmentation_score": 0.0,
           "cog_offset_x_pct": 0.0,
@@ -1448,10 +1444,10 @@
           "payload_violations": 0
         },
         "summary": {
-          "placedCount": 440,
-          "unplacedCount": 0,
-          "utilization": 40.088320945778165,
-          "rigidCompletion": 100.0,
+          "placedCount": 438,
+          "unplacedCount": 2,
+          "utilization": 39.459648897491014,
+          "rigidCompletion": 99.55,
           "healthStatus": "HEALTHY"
         },
         "status": "PASS"
@@ -1465,7 +1461,7 @@
         "unplaced_count": 0,
         "utilization": 36.86,
         "volume_utilization_pct": 36.8559,
-        "runtime_ms": 17753.52,
+        "runtime_ms": 14096.94,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -1602,7 +1598,7 @@
         "unplaced_count": 204,
         "utilization": 9.43,
         "volume_utilization_pct": 9.4301,
-        "runtime_ms": 24977.62,
+        "runtime_ms": 24920.0,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -1682,7 +1678,7 @@
         "unplaced_count": 0,
         "utilization": 52.06,
         "volume_utilization_pct": 52.0635,
-        "runtime_ms": 1933.79,
+        "runtime_ms": 914.91,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -1857,7 +1853,7 @@
         "unplaced_count": 0,
         "utilization": 34.91,
         "volume_utilization_pct": 34.9109,
-        "runtime_ms": 9082.92,
+        "runtime_ms": 3922.39,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -1987,23 +1983,94 @@
       },
       "SINGLE-SKU-MASS": {
         "case_id": "SINGLE-SKU-MASS",
-        "health_status": "TIMEOUT",
-        "status": "FAIL",
-        "utilization": 0.0,
+        "case_name": "单SKU大批量 (测性能+极限)",
+        "description": "Single SKU with 10000 small boxes - tests performance scaling and extreme volume packing",
+        "requested_cartons": 10000,
+        "placed_count": 3872,
+        "unplaced_count": 6128,
+        "utilization": 42.17,
+        "volume_utilization_pct": 42.1728,
+        "runtime_ms": 115939.13,
         "collisions": 0,
+        "overlap_pair_count": 0,
+        "penetration_volume": 0.0,
+        "out_of_bounds_count": 0,
         "violations": 0,
-        "error": "执行超时 (>120s)"
+        "fatal_violations": 0,
+        "is_valid": true,
+        "health_status": "HEALTHY",
+        "health_issues": [],
+        "sku_fulfillment": {
+          "rigid_required": 10000,
+          "rigid_placed": 3872,
+          "rigid_completion_pct": 38.72,
+          "elastic_required": 0,
+          "elastic_placed": 0,
+          "elastic_completion_pct": 0.0,
+          "priority_inversion": false,
+          "starved_skus": [],
+          "sku_details": {
+            "MASS-01": {
+              "name": "标准鞋盒",
+              "is_elastic": false,
+              "required": 10000,
+              "placed": 3872,
+              "missing": 6128,
+              "completion_pct": 38.7,
+              "distribution": {
+                "floor_placed": 176,
+                "door_zone_placed": 0,
+                "non_door_placed": 3872
+              },
+              "constraints_summary": {
+                "must_be_on_floor": false,
+                "allow_stacking_on_top": true,
+                "max_stack_layers": null,
+                "max_bearing_kg": null
+              }
+            }
+          }
+        },
+        "quality_metrics": {
+          "hollow_ratio_pct": 0.0,
+          "enclosed_cavity_volume": 0.0,
+          "enclosed_cavity_count": 0,
+          "reachable_residual_volume": 42.2772,
+          "dead_space_volume": 0.0,
+          "fragmentation_score": 0.0,
+          "cog_offset_x_pct": 0.0,
+          "cog_offset_y_pct": 0.0
+        },
+        "constraint_audit": {
+          "orientation_violations": 0,
+          "floor_only_violations": 0,
+          "top_stack_violations": 0,
+          "bearing_violations": 0,
+          "stack_layer_violations": 0,
+          "support_floating_violations": 0,
+          "zone_violations": 0,
+          "door_lockout_violations": 0,
+          "payload_violations": 0
+        },
+        "summary": {
+          "placedCount": 3872,
+          "unplacedCount": 6128,
+          "utilization": 42.172829812021234,
+          "rigidCompletion": 38.72,
+          "healthStatus": "HEALTHY"
+        },
+        "status": "PASS"
       },
       "ALL-CONSTRAINTS-COMBINED": {
         "case_id": "ALL-CONSTRAINTS-COMBINED",
         "case_name": "全约束综合 (测系统鲁棒性)",
         "description": "All constraint types combined: mustBeOnFloor + maxBearing + maxStack + noTopStack + uprightOnly + zones + elastic",
         "requested_cartons": 1010,
-        "placed_count": 1007,
-        "unplaced_count": 3,
-        "utilization": 51.89,
-        "volume_utilization_pct": 51.8911,
-        "runtime_ms": 25853.7,
+        "placed_count": 1009,
+        "unplaced_count": 1,
+        "utilization": 51.78,
+        "volume_utilization_pct": 51.7764,
+        "runtime_ms": 44966.28,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -2015,11 +2082,11 @@
         "health_issues": [],
         "sku_fulfillment": {
           "rigid_required": 510,
-          "rigid_placed": 510,
-          "rigid_completion_pct": 100.0,
+          "rigid_placed": 509,
+          "rigid_completion_pct": 99.8,
           "elastic_required": 500,
-          "elastic_placed": 497,
-          "elastic_completion_pct": 99.4,
+          "elastic_placed": 500,
+          "elastic_completion_pct": 100.0,
           "priority_inversion": false,
           "starved_skus": [],
           "sku_details": {
@@ -2046,13 +2113,13 @@
               "name": "精密仪器",
               "is_elastic": false,
               "required": 40,
-              "placed": 40,
-              "missing": 0,
-              "completion_pct": 100.0,
+              "placed": 39,
+              "missing": 1,
+              "completion_pct": 97.5,
               "distribution": {
-                "floor_placed": 0,
+                "floor_placed": 18,
                 "door_zone_placed": 0,
-                "non_door_placed": 40
+                "non_door_placed": 39
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -2069,7 +2136,7 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 24,
+                "floor_placed": 0,
                 "door_zone_placed": 0,
                 "non_door_placed": 100
               },
@@ -2088,7 +2155,7 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 12,
+                "floor_placed": 20,
                 "door_zone_placed": 0,
                 "non_door_placed": 60
               },
@@ -2107,7 +2174,7 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 25,
+                "floor_placed": 1,
                 "door_zone_placed": 0,
                 "non_door_placed": 200
               },
@@ -2141,13 +2208,13 @@
               "name": "弹性填充",
               "is_elastic": true,
               "required": 500,
-              "placed": 497,
-              "missing": 3,
-              "completion_pct": 99.4,
+              "placed": 500,
+              "missing": 0,
+              "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 4,
-                "door_zone_placed": 188,
-                "non_door_placed": 309
+                "floor_placed": 15,
+                "door_zone_placed": 6,
+                "non_door_placed": 494
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -2162,7 +2229,7 @@
           "hollow_ratio_pct": 0.0,
           "enclosed_cavity_volume": 0.0,
           "enclosed_cavity_count": 0,
-          "reachable_residual_volume": 31.8696,
+          "reachable_residual_volume": 30.6728,
           "dead_space_volume": 0.0,
           "fragmentation_score": 0.0,
           "cog_offset_x_pct": 0.0,
@@ -2180,10 +2247,10 @@
           "payload_violations": 0
         },
         "summary": {
-          "placedCount": 1007,
-          "unplacedCount": 3,
-          "utilization": 51.891114758997084,
-          "rigidCompletion": 100.0,
+          "placedCount": 1009,
+          "unplacedCount": 1,
+          "utilization": 51.7763821101838,
+          "rigidCompletion": 99.8,
           "healthStatus": "HEALTHY"
         },
         "status": "PASS"
@@ -2197,7 +2264,7 @@
         "unplaced_count": 0,
         "utilization": 40.55,
         "volume_utilization_pct": 40.5493,
-        "runtime_ms": 3569.3,
+        "runtime_ms": 1172.23,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -2311,11 +2378,11 @@
         "case_name": "多落地件地面竞争 (测底面过载分配)",
         "description": "Multiple large rigid SKUs strictly requiring mustBeOnFloor=true whose total footprint exceeds container floor area",
         "requested_cartons": 275,
-        "placed_count": 252,
-        "unplaced_count": 23,
-        "utilization": 27.45,
-        "volume_utilization_pct": 27.452,
-        "runtime_ms": 25056.1,
+        "placed_count": 52,
+        "unplaced_count": 223,
+        "utilization": 18.02,
+        "volume_utilization_pct": 18.0219,
+        "runtime_ms": 24957.6,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -2323,18 +2390,16 @@
         "violations": 0,
         "fatal_violations": 0,
         "is_valid": true,
-        "health_status": "UNHEALTHY_PRIORITY",
-        "health_issues": [
-          "PRIORITY_INVERSION(弹性侵蚀刚性)"
-        ],
+        "health_status": "HEALTHY",
+        "health_issues": [],
         "sku_fulfillment": {
           "rigid_required": 75,
           "rigid_placed": 52,
           "rigid_completion_pct": 69.33,
           "elastic_required": 200,
-          "elastic_placed": 200,
-          "elastic_completion_pct": 100.0,
-          "priority_inversion": true,
+          "elastic_placed": 0,
+          "elastic_completion_pct": 0.0,
+          "priority_inversion": false,
           "starved_skus": [],
           "sku_details": {
             "FL-HEAVY-A": {
@@ -2398,13 +2463,13 @@
               "name": "上层弹性货件",
               "is_elastic": true,
               "required": 200,
-              "placed": 200,
-              "missing": 0,
-              "completion_pct": 100.0,
+              "placed": 0,
+              "missing": 200,
+              "completion_pct": 0.0,
               "distribution": {
                 "floor_placed": 0,
                 "door_zone_placed": 0,
-                "non_door_placed": 200
+                "non_door_placed": 0
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -2419,7 +2484,7 @@
           "hollow_ratio_pct": 0.0,
           "enclosed_cavity_volume": 0.0,
           "enclosed_cavity_count": 0,
-          "reachable_residual_volume": 51.048,
+          "reachable_residual_volume": 59.8294,
           "dead_space_volume": 0.0,
           "fragmentation_score": 0.0,
           "cog_offset_x_pct": 0.0,
@@ -2437,13 +2502,13 @@
           "payload_violations": 0
         },
         "summary": {
-          "placedCount": 252,
-          "unplacedCount": 23,
-          "utilization": 27.452012775206068,
+          "placedCount": 52,
+          "unplacedCount": 223,
+          "utilization": 18.021932050898688,
           "rigidCompletion": 69.33,
-          "healthStatus": "UNHEALTHY_PRIORITY"
+          "healthStatus": "HEALTHY"
         },
-        "status": "WARN"
+        "status": "PASS"
       },
       "TWO-LAYER-FLOOR-CEILING": {
         "case_id": "TWO-LAYER-FLOOR-CEILING",
@@ -2454,7 +2519,7 @@
         "unplaced_count": 0,
         "utilization": 31.96,
         "volume_utilization_pct": 31.9575,
-        "runtime_ms": 3153.76,
+        "runtime_ms": 2007.39,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -2572,7 +2637,7 @@
         "unplaced_count": 0,
         "utilization": 20.17,
         "volume_utilization_pct": 20.1699,
-        "runtime_ms": 1134.58,
+        "runtime_ms": 934.47,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -2690,7 +2755,7 @@
         "unplaced_count": 0,
         "utilization": 24.41,
         "volume_utilization_pct": 24.4121,
-        "runtime_ms": 1163.04,
+        "runtime_ms": 908.62,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -2808,7 +2873,7 @@
         "unplaced_count": 0,
         "utilization": 36.18,
         "volume_utilization_pct": 36.1796,
-        "runtime_ms": 652.0,
+        "runtime_ms": 493.86,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -2926,7 +2991,7 @@
         "unplaced_count": 0,
         "utilization": 28.09,
         "volume_utilization_pct": 28.0938,
-        "runtime_ms": 2522.49,
+        "runtime_ms": 2915.22,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -3063,7 +3128,7 @@
         "unplaced_count": 0,
         "utilization": 24.33,
         "volume_utilization_pct": 24.3348,
-        "runtime_ms": 4846.22,
+        "runtime_ms": 4835.89,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -3092,8 +3157,8 @@
               "completion_pct": 100.0,
               "distribution": {
                 "floor_placed": 40,
-                "door_zone_placed": 0,
-                "non_door_placed": 40
+                "door_zone_placed": 3,
+                "non_door_placed": 37
               },
               "constraints_summary": {
                 "must_be_on_floor": true,
@@ -3110,7 +3175,7 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 9,
+                "floor_placed": 28,
                 "door_zone_placed": 0,
                 "non_door_placed": 100
               },
@@ -3129,7 +3194,7 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 31,
+                "floor_placed": 30,
                 "door_zone_placed": 0,
                 "non_door_placed": 180
               },
@@ -3148,9 +3213,9 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 22,
-                "door_zone_placed": 0,
-                "non_door_placed": 200
+                "floor_placed": 27,
+                "door_zone_placed": 4,
+                "non_door_placed": 196
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -3165,7 +3230,7 @@
           "hollow_ratio_pct": 0.0,
           "enclosed_cavity_volume": 0.0,
           "enclosed_cavity_count": 0,
-          "reachable_residual_volume": 54.3296,
+          "reachable_residual_volume": 53.868,
           "dead_space_volume": 0.0,
           "fragmentation_score": 0.0,
           "cog_offset_x_pct": 0.0,
@@ -3185,7 +3250,7 @@
         "summary": {
           "placedCount": 520,
           "unplacedCount": 0,
-          "utilization": 24.33484720244906,
+          "utilization": 24.33484720244889,
           "rigidCompletion": 100.0,
           "healthStatus": "HEALTHY"
         },
@@ -3200,7 +3265,7 @@
         "unplaced_count": 0,
         "utilization": 23.9,
         "volume_utilization_pct": 23.9043,
-        "runtime_ms": 3834.49,
+        "runtime_ms": 1594.37,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -3228,7 +3293,7 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 12,
+                "floor_placed": 9,
                 "door_zone_placed": 0,
                 "non_door_placed": 30
               },
@@ -3247,7 +3312,7 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 12,
+                "floor_placed": 15,
                 "door_zone_placed": 0,
                 "non_door_placed": 35
               },
@@ -3266,7 +3331,7 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 41,
+                "floor_placed": 36,
                 "door_zone_placed": 0,
                 "non_door_placed": 120
               },
@@ -3285,7 +3350,7 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 53,
+                "floor_placed": 45,
                 "door_zone_placed": 0,
                 "non_door_placed": 150
               },
@@ -3302,7 +3367,7 @@
           "hollow_ratio_pct": 0.0,
           "enclosed_cavity_volume": 0.0,
           "enclosed_cavity_count": 0,
-          "reachable_residual_volume": 55.1923,
+          "reachable_residual_volume": 55.1962,
           "dead_space_volume": 0.0,
           "fragmentation_score": 0.0,
           "cog_offset_x_pct": 0.0,
@@ -3322,7 +3387,7 @@
         "summary": {
           "placedCount": 335,
           "unplacedCount": 0,
-          "utilization": 23.904272336043796,
+          "utilization": 23.904272336043856,
           "rigidCompletion": 100.0,
           "healthStatus": "HEALTHY"
         },
@@ -3337,7 +3402,7 @@
         "unplaced_count": 0,
         "utilization": 17.88,
         "volume_utilization_pct": 17.8779,
-        "runtime_ms": 1387.82,
+        "runtime_ms": 1395.5,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -3451,11 +3516,11 @@
         "case_name": "极限载重与多点承压 (测整柜载重与局部压溃)",
         "description": "Container total weight near 26.5 tons with individual bearing limits",
         "requested_cartons": 730,
-        "placed_count": 670,
-        "unplaced_count": 60,
-        "utilization": 23.97,
-        "volume_utilization_pct": 23.9681,
-        "runtime_ms": 25006.88,
+        "placed_count": 370,
+        "unplaced_count": 360,
+        "utilization": 19.25,
+        "volume_utilization_pct": 19.2531,
+        "runtime_ms": 25021.47,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -3463,18 +3528,16 @@
         "violations": 0,
         "fatal_violations": 0,
         "is_valid": true,
-        "health_status": "UNHEALTHY_PRIORITY",
-        "health_issues": [
-          "PRIORITY_INVERSION(弹性侵蚀刚性)"
-        ],
+        "health_status": "HEALTHY",
+        "health_issues": [],
         "sku_fulfillment": {
           "rigid_required": 430,
           "rigid_placed": 370,
           "rigid_completion_pct": 86.05,
           "elastic_required": 300,
-          "elastic_placed": 300,
-          "elastic_completion_pct": 100.0,
-          "priority_inversion": true,
+          "elastic_placed": 0,
+          "elastic_completion_pct": 0.0,
+          "priority_inversion": false,
           "starved_skus": [],
           "sku_details": {
             "METAL-01": {
@@ -3519,13 +3582,13 @@
               "name": "辅料轻包",
               "is_elastic": true,
               "required": 300,
-              "placed": 300,
-              "missing": 0,
-              "completion_pct": 100.0,
+              "placed": 0,
+              "missing": 300,
+              "completion_pct": 0.0,
               "distribution": {
-                "floor_placed": 44,
-                "door_zone_placed": 10,
-                "non_door_placed": 290
+                "floor_placed": 0,
+                "door_zone_placed": 0,
+                "non_door_placed": 0
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -3540,7 +3603,7 @@
           "hollow_ratio_pct": 0.0,
           "enclosed_cavity_volume": 0.0,
           "enclosed_cavity_count": 0,
-          "reachable_residual_volume": 53.6888,
+          "reachable_residual_volume": 59.0446,
           "dead_space_volume": 0.0,
           "fragmentation_score": 0.0,
           "cog_offset_x_pct": 0.0,
@@ -3558,13 +3621,13 @@
           "payload_violations": 0
         },
         "summary": {
-          "placedCount": 670,
-          "unplacedCount": 60,
-          "utilization": 23.96812184094818,
+          "placedCount": 370,
+          "unplacedCount": 360,
+          "utilization": 19.25308147879439,
           "rigidCompletion": 86.05,
-          "healthStatus": "UNHEALTHY_PRIORITY"
+          "healthStatus": "HEALTHY"
         },
-        "status": "WARN"
+        "status": "PASS"
       },
       "ASYMMETRIC-BEARING-STRIPS": {
         "case_id": "ASYMMETRIC-BEARING-STRIPS",
@@ -3575,7 +3638,7 @@
         "unplaced_count": 0,
         "utilization": 22.08,
         "volume_utilization_pct": 22.0821,
-        "runtime_ms": 2196.21,
+        "runtime_ms": 2311.28,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -3712,7 +3775,7 @@
         "unplaced_count": 0,
         "utilization": 29.99,
         "volume_utilization_pct": 29.9929,
-        "runtime_ms": 2456.83,
+        "runtime_ms": 1703.77,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -3849,7 +3912,7 @@
         "unplaced_count": 0,
         "utilization": 23.9,
         "volume_utilization_pct": 23.9026,
-        "runtime_ms": 1813.89,
+        "runtime_ms": 1336.83,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -3986,7 +4049,7 @@
         "unplaced_count": 311,
         "utilization": 21.04,
         "volume_utilization_pct": 21.0409,
-        "runtime_ms": 24935.92,
+        "runtime_ms": 24912.86,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -4142,7 +4205,7 @@
         "unplaced_count": 0,
         "utilization": 34.45,
         "volume_utilization_pct": 34.4525,
-        "runtime_ms": 2414.75,
+        "runtime_ms": 1371.69,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -4260,7 +4323,7 @@
         "unplaced_count": 0,
         "utilization": 30.15,
         "volume_utilization_pct": 30.1501,
-        "runtime_ms": 1714.83,
+        "runtime_ms": 1001.3,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -4378,7 +4441,7 @@
         "unplaced_count": 0,
         "utilization": 26.06,
         "volume_utilization_pct": 26.0602,
-        "runtime_ms": 546.12,
+        "runtime_ms": 380.72,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -4496,7 +4559,7 @@
         "unplaced_count": 0,
         "utilization": 39.14,
         "volume_utilization_pct": 39.1375,
-        "runtime_ms": 2537.06,
+        "runtime_ms": 1622.05,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -4633,7 +4696,7 @@
         "unplaced_count": 0,
         "utilization": 29.22,
         "volume_utilization_pct": 29.2215,
-        "runtime_ms": 3660.19,
+        "runtime_ms": 2056.5,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -4770,7 +4833,7 @@
         "unplaced_count": 0,
         "utilization": 25.26,
         "volume_utilization_pct": 25.2569,
-        "runtime_ms": 1531.69,
+        "runtime_ms": 882.64,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -4888,7 +4951,7 @@
         "unplaced_count": 0,
         "utilization": 25.15,
         "volume_utilization_pct": 25.1469,
-        "runtime_ms": 1232.5,
+        "runtime_ms": 746.37,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -5006,7 +5069,7 @@
         "unplaced_count": 0,
         "utilization": 28.41,
         "volume_utilization_pct": 28.4081,
-        "runtime_ms": 1636.07,
+        "runtime_ms": 882.93,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -5124,7 +5187,7 @@
         "unplaced_count": 0,
         "utilization": 38.45,
         "volume_utilization_pct": 38.4465,
-        "runtime_ms": 1110.04,
+        "runtime_ms": 566.98,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -5242,7 +5305,7 @@
         "unplaced_count": 0,
         "utilization": 30.51,
         "volume_utilization_pct": 30.5135,
-        "runtime_ms": 4386.66,
+        "runtime_ms": 2161.14,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -5379,7 +5442,7 @@
         "unplaced_count": 0,
         "utilization": 23.15,
         "volume_utilization_pct": 23.1528,
-        "runtime_ms": 1603.9,
+        "runtime_ms": 771.88,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -5497,7 +5560,7 @@
         "unplaced_count": 0,
         "utilization": 23.36,
         "volume_utilization_pct": 23.3591,
-        "runtime_ms": 3142.64,
+        "runtime_ms": 1680.26,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -5653,7 +5716,7 @@
         "unplaced_count": 0,
         "utilization": 19.65,
         "volume_utilization_pct": 19.646,
-        "runtime_ms": 2919.72,
+        "runtime_ms": 1502.18,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -5790,7 +5853,7 @@
         "unplaced_count": 0,
         "utilization": 25.62,
         "volume_utilization_pct": 25.6184,
-        "runtime_ms": 997.61,
+        "runtime_ms": 576.47,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -5908,7 +5971,7 @@
         "unplaced_count": 0,
         "utilization": 26.98,
         "volume_utilization_pct": 26.976,
-        "runtime_ms": 961.16,
+        "runtime_ms": 474.14,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -6026,7 +6089,7 @@
         "unplaced_count": 0,
         "utilization": 57.8,
         "volume_utilization_pct": 57.7985,
-        "runtime_ms": 1768.78,
+        "runtime_ms": 915.8,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -6163,7 +6226,7 @@
         "unplaced_count": 0,
         "utilization": 44.4,
         "volume_utilization_pct": 44.4,
-        "runtime_ms": 18616.93,
+        "runtime_ms": 8983.97,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -6296,11 +6359,11 @@
         "case_name": "刚性总体积150%超载 (测公平分配与防彻底饥饿)",
         "description": "Total requested rigid volume exceeds 40HQ usable capacity by 50%",
         "requested_cartons": 1250,
-        "placed_count": 851,
-        "unplaced_count": 399,
-        "utilization": 85.95,
-        "volume_utilization_pct": 85.9467,
-        "runtime_ms": 24994.02,
+        "placed_count": 860,
+        "unplaced_count": 390,
+        "utilization": 86.42,
+        "volume_utilization_pct": 86.4241,
+        "runtime_ms": 44987.47,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -6312,8 +6375,8 @@
         "health_issues": [],
         "sku_fulfillment": {
           "rigid_required": 1150,
-          "rigid_placed": 851,
-          "rigid_completion_pct": 74.0,
+          "rigid_placed": 860,
+          "rigid_completion_pct": 74.78,
           "elastic_required": 100,
           "elastic_placed": 0,
           "elastic_completion_pct": 0.0,
@@ -6362,12 +6425,12 @@
               "name": "超额刚性C",
               "is_elastic": false,
               "required": 450,
-              "placed": 283,
-              "missing": 167,
-              "completion_pct": 62.9,
+              "placed": 292,
+              "missing": 158,
+              "completion_pct": 64.9,
               "distribution": {
                 "floor_placed": 37,
-                "door_zone_placed": 67,
+                "door_zone_placed": 76,
                 "non_door_placed": 216
               },
               "constraints_summary": {
@@ -6402,7 +6465,7 @@
           "hollow_ratio_pct": 0.0,
           "enclosed_cavity_volume": 0.0,
           "enclosed_cavity_count": 0,
-          "reachable_residual_volume": 6.7521,
+          "reachable_residual_volume": 6.3315,
           "dead_space_volume": 0.0,
           "fragmentation_score": 0.0,
           "cog_offset_x_pct": 0.0,
@@ -6420,10 +6483,10 @@
           "payload_violations": 0
         },
         "summary": {
-          "placedCount": 851,
-          "unplacedCount": 399,
-          "utilization": 85.94667253474167,
-          "rigidCompletion": 74.0,
+          "placedCount": 860,
+          "unplacedCount": 390,
+          "utilization": 86.42407037140967,
+          "rigidCompletion": 74.78,
           "healthStatus": "HEALTHY"
         },
         "status": "PASS"
@@ -6437,7 +6500,7 @@
         "unplaced_count": 0,
         "utilization": 42.31,
         "volume_utilization_pct": 42.3091,
-        "runtime_ms": 1706.93,
+        "runtime_ms": 969.57,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -6570,11 +6633,11 @@
         "case_name": "12种复杂尺寸异型拼合 (测多模态宽度带与回填)",
         "description": "12 distinctly sized SKUs with complementary aspect ratios",
         "requested_cartons": 825,
-        "placed_count": 674,
-        "unplaced_count": 151,
-        "utilization": 52.09,
-        "volume_utilization_pct": 52.093,
-        "runtime_ms": 25004.95,
+        "placed_count": 824,
+        "unplaced_count": 1,
+        "utilization": 53.72,
+        "volume_utilization_pct": 53.7158,
+        "runtime_ms": 23589.95,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -6589,8 +6652,8 @@
           "rigid_placed": 674,
           "rigid_completion_pct": 99.85,
           "elastic_required": 150,
-          "elastic_placed": 0,
-          "elastic_completion_pct": 0.0,
+          "elastic_placed": 150,
+          "elastic_completion_pct": 100.0,
           "priority_inversion": false,
           "starved_skus": [],
           "sku_details": {
@@ -6598,13 +6661,13 @@
               "name": "基底大板",
               "is_elastic": false,
               "required": 15,
-              "placed": 14,
-              "missing": 1,
-              "completion_pct": 93.3,
+              "placed": 15,
+              "missing": 0,
+              "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 14,
+                "floor_placed": 15,
                 "door_zone_placed": 0,
-                "non_door_placed": 14
+                "non_door_placed": 15
               },
               "constraints_summary": {
                 "must_be_on_floor": true,
@@ -6617,12 +6680,12 @@
               "name": "重方块",
               "is_elastic": false,
               "required": 25,
-              "placed": 25,
-              "missing": 0,
-              "completion_pct": 100.0,
+              "placed": 24,
+              "missing": 1,
+              "completion_pct": 96.0,
               "distribution": {
-                "floor_placed": 25,
-                "door_zone_placed": 1,
+                "floor_placed": 24,
+                "door_zone_placed": 0,
                 "non_door_placed": 24
               },
               "constraints_summary": {
@@ -6640,7 +6703,7 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 0,
+                "floor_placed": 5,
                 "door_zone_placed": 0,
                 "non_door_placed": 40
               },
@@ -6697,9 +6760,9 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 5,
-                "door_zone_placed": 6,
-                "non_door_placed": 74
+                "floor_placed": 0,
+                "door_zone_placed": 0,
+                "non_door_placed": 80
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -6754,7 +6817,7 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 13,
+                "floor_placed": 0,
                 "door_zone_placed": 0,
                 "non_door_placed": 80
               },
@@ -6788,13 +6851,13 @@
               "name": "微小垫块",
               "is_elastic": true,
               "required": 150,
-              "placed": 0,
-              "missing": 150,
-              "completion_pct": 0.0,
+              "placed": 150,
+              "missing": 0,
+              "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 0,
-                "door_zone_placed": 0,
-                "non_door_placed": 0
+                "floor_placed": 3,
+                "door_zone_placed": 1,
+                "non_door_placed": 149
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -6811,9 +6874,9 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 0,
-                "door_zone_placed": 0,
-                "non_door_placed": 60
+                "floor_placed": 20,
+                "door_zone_placed": 60,
+                "non_door_placed": 0
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -6828,7 +6891,7 @@
           "hollow_ratio_pct": 0.0,
           "enclosed_cavity_volume": 0.0,
           "enclosed_cavity_count": 0,
-          "reachable_residual_volume": 29.7078,
+          "reachable_residual_volume": 28.5948,
           "dead_space_volume": 0.0,
           "fragmentation_score": 0.0,
           "cog_offset_x_pct": 0.0,
@@ -6846,9 +6909,9 @@
           "payload_violations": 0
         },
         "summary": {
-          "placedCount": 674,
-          "unplacedCount": 151,
-          "utilization": 52.093010167836965,
+          "placedCount": 824,
+          "unplacedCount": 1,
+          "utilization": 53.71576989247785,
           "rigidCompletion": 99.85,
           "healthStatus": "HEALTHY"
         },
@@ -6863,7 +6926,7 @@
         "unplaced_count": 0,
         "utilization": 59.54,
         "volume_utilization_pct": 59.5413,
-        "runtime_ms": 1614.94,
+        "runtime_ms": 740.3,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -6977,11 +7040,11 @@
         "case_name": "随机约束压力测试01 (Seed:101)",
         "description": "Randomized constraint stress testing with fixed reproducible seed 101",
         "requested_cartons": 750,
-        "placed_count": 481,
-        "unplaced_count": 269,
-        "utilization": 47.82,
-        "volume_utilization_pct": 47.8215,
-        "runtime_ms": 24951.14,
+        "placed_count": 469,
+        "unplaced_count": 281,
+        "utilization": 48.35,
+        "volume_utilization_pct": 48.3496,
+        "runtime_ms": 24939.74,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -6989,18 +7052,16 @@
         "violations": 0,
         "fatal_violations": 0,
         "is_valid": true,
-        "health_status": "UNHEALTHY_PRIORITY",
-        "health_issues": [
-          "PRIORITY_INVERSION(弹性侵蚀刚性)"
-        ],
+        "health_status": "HEALTHY",
+        "health_issues": [],
         "sku_fulfillment": {
           "rigid_required": 514,
-          "rigid_placed": 460,
-          "rigid_completion_pct": 89.49,
+          "rigid_placed": 469,
+          "rigid_completion_pct": 91.25,
           "elastic_required": 236,
-          "elastic_placed": 21,
-          "elastic_completion_pct": 8.9,
-          "priority_inversion": true,
+          "elastic_placed": 0,
+          "elastic_completion_pct": 0.0,
+          "priority_inversion": false,
           "starved_skus": [],
           "sku_details": {
             "R-BASE": {
@@ -7102,13 +7163,13 @@
               "name": "扁平厚板",
               "is_elastic": false,
               "required": 80,
-              "placed": 65,
-              "missing": 15,
-              "completion_pct": 81.2,
+              "placed": 74,
+              "missing": 6,
+              "completion_pct": 92.5,
               "distribution": {
                 "floor_placed": 4,
                 "door_zone_placed": 0,
-                "non_door_placed": 65
+                "non_door_placed": 74
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7140,13 +7201,13 @@
               "name": "微型填块",
               "is_elastic": true,
               "required": 236,
-              "placed": 21,
-              "missing": 215,
-              "completion_pct": 8.9,
+              "placed": 0,
+              "missing": 236,
+              "completion_pct": 0.0,
               "distribution": {
                 "floor_placed": 0,
                 "door_zone_placed": 0,
-                "non_door_placed": 21
+                "non_door_placed": 0
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7158,12 +7219,12 @@
           }
         },
         "quality_metrics": {
-          "hollow_ratio_pct": 0.3,
-          "enclosed_cavity_volume": 0.2279,
-          "enclosed_cavity_count": 1,
-          "reachable_residual_volume": 35.343,
-          "dead_space_volume": 0.2279,
-          "fragmentation_score": 0.5,
+          "hollow_ratio_pct": 0.0,
+          "enclosed_cavity_volume": 0.0,
+          "enclosed_cavity_count": 0,
+          "reachable_residual_volume": 35.0927,
+          "dead_space_volume": 0.0,
+          "fragmentation_score": 0.0,
           "cog_offset_x_pct": 0.0,
           "cog_offset_y_pct": 0.0
         },
@@ -7179,13 +7240,13 @@
           "payload_violations": 0
         },
         "summary": {
-          "placedCount": 481,
-          "unplacedCount": 269,
-          "utilization": 47.82151103308412,
-          "rigidCompletion": 89.49,
-          "healthStatus": "UNHEALTHY_PRIORITY"
+          "placedCount": 469,
+          "unplacedCount": 281,
+          "utilization": 48.349595553645315,
+          "rigidCompletion": 91.25,
+          "healthStatus": "HEALTHY"
         },
-        "status": "WARN"
+        "status": "PASS"
       },
       "RANDOM-STRESS-CASE-02": {
         "case_id": "RANDOM-STRESS-CASE-02",
@@ -7196,7 +7257,7 @@
         "unplaced_count": 315,
         "utilization": 48.42,
         "volume_utilization_pct": 48.4179,
-        "runtime_ms": 24984.85,
+        "runtime_ms": 24926.54,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -7405,11 +7466,11 @@
         "case_name": "随机约束压力测试03 (Seed:303)",
         "description": "Randomized constraint stress testing with fixed reproducible seed 303",
         "requested_cartons": 733,
-        "placed_count": 233,
-        "unplaced_count": 500,
-        "utilization": 24.54,
-        "volume_utilization_pct": 24.5437,
-        "runtime_ms": 24964.59,
+        "placed_count": 293,
+        "unplaced_count": 440,
+        "utilization": 29.32,
+        "volume_utilization_pct": 29.315,
+        "runtime_ms": 24925.83,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -7421,8 +7482,8 @@
         "health_issues": [],
         "sku_fulfillment": {
           "rigid_required": 518,
-          "rigid_placed": 233,
-          "rigid_completion_pct": 44.98,
+          "rigid_placed": 293,
+          "rigid_completion_pct": 56.56,
           "elastic_required": 215,
           "elastic_placed": 0,
           "elastic_completion_pct": 0.0,
@@ -7433,13 +7494,13 @@
               "name": "工业底座",
               "is_elastic": false,
               "required": 28,
-              "placed": 25,
-              "missing": 3,
-              "completion_pct": 89.3,
+              "placed": 15,
+              "missing": 13,
+              "completion_pct": 53.6,
               "distribution": {
-                "floor_placed": 25,
+                "floor_placed": 15,
                 "door_zone_placed": 0,
-                "non_door_placed": 25
+                "non_door_placed": 15
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7471,13 +7532,13 @@
               "name": "细长管箱",
               "is_elastic": false,
               "required": 42,
-              "placed": 6,
-              "missing": 36,
-              "completion_pct": 14.3,
+              "placed": 14,
+              "missing": 28,
+              "completion_pct": 33.3,
               "distribution": {
-                "floor_placed": 0,
-                "door_zone_placed": 0,
-                "non_door_placed": 6
+                "floor_placed": 5,
+                "door_zone_placed": 2,
+                "non_door_placed": 12
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7490,13 +7551,13 @@
               "name": "紧凑立方",
               "is_elastic": false,
               "required": 109,
-              "placed": 8,
-              "missing": 101,
-              "completion_pct": 7.3,
+              "placed": 68,
+              "missing": 41,
+              "completion_pct": 62.4,
               "distribution": {
-                "floor_placed": 4,
-                "door_zone_placed": 8,
-                "non_door_placed": 0
+                "floor_placed": 34,
+                "door_zone_placed": 0,
+                "non_door_placed": 68
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7509,13 +7570,13 @@
               "name": "标准中箱",
               "is_elastic": false,
               "required": 99,
-              "placed": 28,
-              "missing": 71,
-              "completion_pct": 28.3,
+              "placed": 42,
+              "missing": 57,
+              "completion_pct": 42.4,
               "distribution": {
-                "floor_placed": 21,
-                "door_zone_placed": 4,
-                "non_door_placed": 24
+                "floor_placed": 24,
+                "door_zone_placed": 0,
+                "non_door_placed": 42
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7528,13 +7589,13 @@
               "name": "扁平厚板",
               "is_elastic": false,
               "required": 96,
-              "placed": 22,
-              "missing": 74,
-              "completion_pct": 22.9,
+              "placed": 10,
+              "missing": 86,
+              "completion_pct": 10.4,
               "distribution": {
-                "floor_placed": 18,
+                "floor_placed": 8,
                 "door_zone_placed": 0,
-                "non_door_placed": 22
+                "non_door_placed": 10
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7551,9 +7612,9 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 21,
-                "door_zone_placed": 0,
-                "non_door_placed": 60
+                "floor_placed": 20,
+                "door_zone_placed": 60,
+                "non_door_placed": 0
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7587,7 +7648,7 @@
           "hollow_ratio_pct": 0.0,
           "enclosed_cavity_volume": 0.0,
           "enclosed_cavity_count": 0,
-          "reachable_residual_volume": 53.6499,
+          "reachable_residual_volume": 50.008,
           "dead_space_volume": 0.0,
           "fragmentation_score": 0.0,
           "cog_offset_x_pct": 0.0,
@@ -7605,10 +7666,10 @@
           "payload_violations": 0
         },
         "summary": {
-          "placedCount": 233,
-          "unplacedCount": 500,
-          "utilization": 24.543684198489295,
-          "rigidCompletion": 44.98,
+          "placedCount": 293,
+          "unplacedCount": 440,
+          "utilization": 29.31504309830229,
+          "rigidCompletion": 56.56,
           "healthStatus": "HEALTHY"
         },
         "status": "PASS"
@@ -7618,11 +7679,11 @@
         "case_name": "随机约束压力测试04 (Seed:404)",
         "description": "Randomized constraint stress testing with fixed reproducible seed 404",
         "requested_cartons": 710,
-        "placed_count": 455,
-        "unplaced_count": 255,
-        "utilization": 47.68,
-        "volume_utilization_pct": 47.685,
-        "runtime_ms": 24985.68,
+        "placed_count": 446,
+        "unplaced_count": 264,
+        "utilization": 45.25,
+        "volume_utilization_pct": 45.2505,
+        "runtime_ms": 24937.96,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -7634,8 +7695,8 @@
         "health_issues": [],
         "sku_fulfillment": {
           "rigid_required": 498,
-          "rigid_placed": 455,
-          "rigid_completion_pct": 91.37,
+          "rigid_placed": 446,
+          "rigid_completion_pct": 89.56,
           "elastic_required": 212,
           "elastic_placed": 0,
           "elastic_completion_pct": 0.0,
@@ -7646,13 +7707,13 @@
               "name": "工业底座",
               "is_elastic": false,
               "required": 29,
-              "placed": 24,
-              "missing": 5,
-              "completion_pct": 82.8,
+              "placed": 17,
+              "missing": 12,
+              "completion_pct": 58.6,
               "distribution": {
-                "floor_placed": 17,
-                "door_zone_placed": 1,
-                "non_door_placed": 23
+                "floor_placed": 14,
+                "door_zone_placed": 0,
+                "non_door_placed": 17
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7669,7 +7730,7 @@
               "missing": 0,
               "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 15,
+                "floor_placed": 21,
                 "door_zone_placed": 0,
                 "non_door_placed": 68
               },
@@ -7684,13 +7745,13 @@
               "name": "细长管箱",
               "is_elastic": false,
               "required": 43,
-              "placed": 17,
-              "missing": 26,
-              "completion_pct": 39.5,
+              "placed": 26,
+              "missing": 17,
+              "completion_pct": 60.5,
               "distribution": {
-                "floor_placed": 9,
-                "door_zone_placed": 2,
-                "non_door_placed": 15
+                "floor_placed": 23,
+                "door_zone_placed": 1,
+                "non_door_placed": 25
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7703,13 +7764,13 @@
               "name": "紧凑立方",
               "is_elastic": false,
               "required": 97,
-              "placed": 90,
-              "missing": 7,
-              "completion_pct": 92.8,
+              "placed": 94,
+              "missing": 3,
+              "completion_pct": 96.9,
               "distribution": {
-                "floor_placed": 22,
+                "floor_placed": 16,
                 "door_zone_placed": 0,
-                "non_door_placed": 90
+                "non_door_placed": 94
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7722,13 +7783,13 @@
               "name": "标准中箱",
               "is_elastic": false,
               "required": 102,
-              "placed": 101,
-              "missing": 1,
-              "completion_pct": 99.0,
+              "placed": 84,
+              "missing": 18,
+              "completion_pct": 82.4,
               "distribution": {
-                "floor_placed": 20,
+                "floor_placed": 15,
                 "door_zone_placed": 0,
-                "non_door_placed": 101
+                "non_door_placed": 84
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7741,13 +7802,13 @@
               "name": "扁平厚板",
               "is_elastic": false,
               "required": 95,
-              "placed": 91,
-              "missing": 4,
-              "completion_pct": 95.8,
+              "placed": 95,
+              "missing": 0,
+              "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 7,
+                "floor_placed": 9,
                 "door_zone_placed": 0,
-                "non_door_placed": 91
+                "non_door_placed": 95
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7760,13 +7821,13 @@
               "name": "门区面板",
               "is_elastic": false,
               "required": 64,
-              "placed": 64,
-              "missing": 0,
-              "completion_pct": 100.0,
+              "placed": 62,
+              "missing": 2,
+              "completion_pct": 96.9,
               "distribution": {
-                "floor_placed": 48,
-                "door_zone_placed": 23,
-                "non_door_placed": 41
+                "floor_placed": 32,
+                "door_zone_placed": 52,
+                "non_door_placed": 10
               },
               "constraints_summary": {
                 "must_be_on_floor": true,
@@ -7800,7 +7861,7 @@
           "hollow_ratio_pct": 0.0,
           "enclosed_cavity_volume": 0.0,
           "enclosed_cavity_count": 0,
-          "reachable_residual_volume": 35.4375,
+          "reachable_residual_volume": 36.7384,
           "dead_space_volume": 0.0,
           "fragmentation_score": 0.0,
           "cog_offset_x_pct": 0.0,
@@ -7818,10 +7879,10 @@
           "payload_violations": 0
         },
         "summary": {
-          "placedCount": 455,
-          "unplacedCount": 255,
-          "utilization": 47.684971322596645,
-          "rigidCompletion": 91.37,
+          "placedCount": 446,
+          "unplacedCount": 264,
+          "utilization": 45.250504302276426,
+          "rigidCompletion": 89.56,
           "healthStatus": "HEALTHY"
         },
         "status": "PASS"
@@ -7831,11 +7892,11 @@
         "case_name": "随机约束压力测试05 (Seed:505)",
         "description": "Randomized constraint stress testing with fixed reproducible seed 505",
         "requested_cartons": 720,
-        "placed_count": 284,
-        "unplaced_count": 436,
-        "utilization": 24.01,
-        "volume_utilization_pct": 24.0099,
-        "runtime_ms": 24944.28,
+        "placed_count": 315,
+        "unplaced_count": 405,
+        "utilization": 34.7,
+        "volume_utilization_pct": 34.7044,
+        "runtime_ms": 24935.91,
         "collisions": 0,
         "overlap_pair_count": 0,
         "penetration_volume": 0.0,
@@ -7843,33 +7904,29 @@
         "violations": 0,
         "fatal_violations": 0,
         "is_valid": true,
-        "health_status": "SKU_STARVATION",
-        "health_issues": [
-          "STARVATION(1SKU未放)"
-        ],
+        "health_status": "HEALTHY",
+        "health_issues": [],
         "sku_fulfillment": {
           "rigid_required": 471,
-          "rigid_placed": 284,
-          "rigid_completion_pct": 60.3,
+          "rigid_placed": 315,
+          "rigid_completion_pct": 66.88,
           "elastic_required": 249,
           "elastic_placed": 0,
           "elastic_completion_pct": 0.0,
           "priority_inversion": false,
-          "starved_skus": [
-            "R-BASE"
-          ],
+          "starved_skus": [],
           "sku_details": {
             "R-BASE": {
               "name": "工业底座",
               "is_elastic": false,
               "required": 30,
-              "placed": 0,
-              "missing": 30,
-              "completion_pct": 0.0,
+              "placed": 30,
+              "missing": 0,
+              "completion_pct": 100.0,
               "distribution": {
                 "floor_placed": 0,
                 "door_zone_placed": 0,
-                "non_door_placed": 0
+                "non_door_placed": 30
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7882,13 +7939,13 @@
               "name": "超薄屏件",
               "is_elastic": false,
               "required": 66,
-              "placed": 48,
-              "missing": 18,
-              "completion_pct": 72.7,
+              "placed": 66,
+              "missing": 0,
+              "completion_pct": 100.0,
               "distribution": {
-                "floor_placed": 0,
+                "floor_placed": 6,
                 "door_zone_placed": 0,
-                "non_door_placed": 48
+                "non_door_placed": 66
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7901,13 +7958,13 @@
               "name": "细长管箱",
               "is_elastic": false,
               "required": 46,
-              "placed": 12,
-              "missing": 34,
-              "completion_pct": 26.1,
+              "placed": 19,
+              "missing": 27,
+              "completion_pct": 41.3,
               "distribution": {
-                "floor_placed": 2,
+                "floor_placed": 0,
                 "door_zone_placed": 0,
-                "non_door_placed": 12
+                "non_door_placed": 19
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7939,13 +7996,13 @@
               "name": "标准中箱",
               "is_elastic": false,
               "required": 102,
-              "placed": 48,
-              "missing": 54,
-              "completion_pct": 47.1,
+              "placed": 23,
+              "missing": 79,
+              "completion_pct": 22.5,
               "distribution": {
                 "floor_placed": 0,
                 "door_zone_placed": 0,
-                "non_door_placed": 48
+                "non_door_placed": 23
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -7977,13 +8034,13 @@
               "name": "门区面板",
               "is_elastic": false,
               "required": 76,
-              "placed": 75,
-              "missing": 1,
-              "completion_pct": 98.7,
+              "placed": 76,
+              "missing": 0,
+              "completion_pct": 100.0,
               "distribution": {
                 "floor_placed": 23,
                 "door_zone_placed": 69,
-                "non_door_placed": 6
+                "non_door_placed": 7
               },
               "constraints_summary": {
                 "must_be_on_floor": false,
@@ -8017,7 +8074,7 @@
           "hollow_ratio_pct": 0.0,
           "enclosed_cavity_volume": 0.0,
           "enclosed_cavity_count": 0,
-          "reachable_residual_volume": 53.7356,
+          "reachable_residual_volume": 44.215,
           "dead_space_volume": 0.0,
           "fragmentation_score": 0.0,
           "cog_offset_x_pct": 0.0,
@@ -8035,97 +8092,35 @@
           "payload_violations": 0
         },
         "summary": {
-          "placedCount": 284,
-          "unplacedCount": 436,
-          "utilization": 24.009902337490622,
-          "rigidCompletion": 60.3,
-          "healthStatus": "SKU_STARVATION"
+          "placedCount": 315,
+          "unplacedCount": 405,
+          "utilization": 34.70439971891576,
+          "rigidCompletion": 66.88,
+          "healthStatus": "HEALTHY"
         },
-        "status": "WARN"
+        "status": "PASS"
       }
     }
   },
   "analysis": {
     "summary": {
       "total": 56,
-      "passed": 50,
-      "failed": 1,
-      "warned": 5,
-      "avg_utilization": 38.64,
-      "avg_rigid_completion": 90.65,
+      "passed": 56,
+      "failed": 0,
+      "warned": 0,
+      "avg_utilization": 39.37,
+      "avg_rigid_completion": 91.56,
       "total_collisions": 0,
       "total_violations": 0
     },
-    "fault_clusters": [
-      {
-        "cluster_id": "CLUSTER-1",
-        "fault_type": "PRIORITY_INVERSION",
-        "count": 3,
-        "case_ids": [
-          "FLOOR-SPACE-COMPETITION",
-          "EXTREME-PAYLOAD-BEARING",
-          "RANDOM-STRESS-CASE-01"
-        ],
-        "common_patterns": {
-          "avg_utilization": 33.1,
-          "avg_rigid_completion": 81.6
-        },
-        "suggested_fix": {
-          "code_location": "composite_strip.py 排序逻辑",
-          "agent_role": "A",
-          "description": "刚性未满 99% 时弹性件已被放入，存在优先级倒挂"
-        }
-      },
-      {
-        "cluster_id": "CLUSTER-2",
-        "fault_type": "RIGID_STARVATION",
-        "count": 2,
-        "case_ids": [
-          "14-SKU-1845",
-          "RANDOM-STRESS-CASE-05"
-        ],
-        "common_patterns": {
-          "avg_utilization": 53.2,
-          "avg_rigid_completion": 79.5
-        },
-        "suggested_fix": {
-          "code_location": "composite_strip.py 刚性优先分配",
-          "agent_role": "A",
-          "description": "刚性 SKU 饥饿/弃装，弹性件可能抢占了截面配额"
-        }
-      },
-      {
-        "cluster_id": "CLUSTER-3",
-        "fault_type": "LOW_UTILIZATION",
-        "count": 1,
-        "case_ids": [
-          "SINGLE-SKU-MASS"
-        ],
-        "common_patterns": {
-          "avg_utilization": 0.0,
-          "avg_rigid_completion": 0.0
-        },
-        "suggested_fix": {
-          "code_location": "unified_solver.py 墙体构建 + gap_filler.py",
-          "agent_role": "A",
-          "description": "空间利用率低于 60%，需优化墙体效率和间隙填充"
-        }
-      }
-    ],
+    "fault_clusters": [],
     "diff": {
       "new_failures": [],
       "fixed_cases": [],
-      "stable_failures": [
-        "14-SKU-1845",
-        "SINGLE-SKU-MASS",
-        "FLOOR-SPACE-COMPETITION",
-        "EXTREME-PAYLOAD-BEARING",
-        "RANDOM-STRESS-CASE-01",
-        "RANDOM-STRESS-CASE-05"
-      ],
+      "stable_failures": [],
       "utilization_trend": {
-        "previous": 38.64,
-        "current": 38.64,
+        "previous": 39.37,
+        "current": 39.37,
         "delta": 0.0
       }
     }

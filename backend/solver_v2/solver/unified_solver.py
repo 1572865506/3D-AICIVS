@@ -761,6 +761,9 @@ class UnifiedSolver:
         else:
             validator_door_boundary_x = round(self.cL - 0.04, 4)
 
+        self._has_door_skus = bool(door_group)
+        self._door_lockout_x = validator_door_boundary_x
+
         zone_sequence = [
             (UniversalZone.INNER, inner_group),
             (UniversalZone.MIDDLE, middle_group),
@@ -2353,11 +2356,41 @@ class UnifiedSolver:
         if not c_sku:
             return True
 
-        # 2. Floor-only check (允许在同款SKU上方合法自堆叠，禁止非同款杂货垫底)
+        # 2. Floor-only check (仅允许在同款SKU上方合法自堆叠，严禁非同款杂货垫底及超层)
         if getattr(c_sku, "must_be_on_floor", False):
             if cand["z"] > 1e-3:
                 max_layers = c_sku.max_stack_layers or 1
                 if max_layers <= 1:
+                    return False
+                cand_z = cand["z"]
+                cand_x0, cand_x1 = cand["x"], cand["x"] + cand["dx"]
+                cand_y0, cand_y1 = cand["y"], cand["y"] + cand["dy"]
+                direct_supports = []
+                for p in placements:
+                    if abs(round(p["z"] + p["dz"], 4) - round(cand_z, 4)) < 1e-3:
+                        ox = min(cand_x1, p["x"] + p["dx"]) - max(cand_x0, p["x"])
+                        oy = min(cand_y1, p["y"] + p["dy"]) - max(cand_y0, p["y"])
+                        if ox > eps and oy > eps and (ox * oy) >= 0.10 * (cand["dx"] * cand["dy"]):
+                            direct_supports.append(p)
+                if not direct_supports:
+                    return False
+                if any(p["sku_id"] != sku_id for p in direct_supports):
+                    return False
+                cand_layer = 1 + int(round(cand_z / max(1e-4, cand["dz"])))
+                if cand_layer > max_layers:
+                    return False
+
+        # 2.2 Door zone lockout check (禁止非封门专用件侵入门区保护阈值线)
+        if getattr(self, "_has_door_skus", False):
+            is_door_sku = (
+                getattr(c_sku, "zone_preference", None) == UniversalZone.DOOR
+                or getattr(c_sku, "target_zone", None) == ZoneType.DOOR
+                or PackingRole.DOOR_SEAL in getattr(getattr(c_sku, "sku_obj", None), "packing_roles", ())
+                or "门" in (getattr(c_sku, "raw_requirement", "") or "")
+            )
+            if not is_door_sku:
+                door_lockout_x = getattr(self, "_door_lockout_x", self.cL - 0.20)
+                if cand["x"] + cand["dx"] > door_lockout_x + eps:
                     return False
 
         # 2.1 No top-stacking check if candidate forbids foreign stacking on top
