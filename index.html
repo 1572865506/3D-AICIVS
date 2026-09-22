@@ -2140,6 +2140,9 @@
   <script src="/frontend/src/orientationRendering.js"></script>
   <script src="/frontend/src/manifestWorkflow.js"></script>
   <script src="/frontend/src/backendSwitch.js"></script>
+  <script src="/frontend/src/visualizationCore.js"></script>
+  <script src="/frontend/src/crossSectionSlicer.js"></script>
+  <script src="/frontend/src/expertAnnotation.js"></script>
 </head>
 <body>
   <div id="webgl-container"></div>
@@ -2237,6 +2240,15 @@
         <button class="btn-action-pill secondary" id="btn-toggle-weights" onclick="toggleWeightsPanel()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           <span>算法动态权重</span>
+        </button>
+
+        <button class="btn-action-pill secondary" id="btn-toggle-slicer" onclick="toggleSlicerPanel()" style="border-color: #0284c7; color: #0284c7;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          <span>3D 剖面透视</span>
+        </button>
+
+        <button class="btn-action-pill secondary" id="btn-toggle-expert" onclick="toggleExpertPanel()" style="border-color: #f59e0b; color: #b45309; font-weight:700;">
+          <span>🥇 专家评审打标</span>
         </button>
 
         <button class="btn-action-pill secondary" id="btn-toggle-studio" onclick="toggleStudioDrawer()">
@@ -2344,6 +2356,135 @@
         <button class="btn-island-action primary" style="flex:1.6; justify-content:center;" onclick="applyAlgorithmWeights()">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           <span>应用并重算</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 1.6 3D MULTI-AXIS CROSS-SECTION SLICER PANEL (FLOATING RIGHT) -->
+    <div class="glass-card algorithm-weights-panel interactive" id="cross-section-slicer-panel" style="display: none; width: 340px; border-color: #38bdf8;">
+      <div class="weights-header" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);">
+        <div class="weights-heading" style="color: #0284c7;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          <span>3D 多轴剖面透视与 X-Ray</span>
+        </div>
+        <button class="close-btn" onclick="toggleSlicerPanel()">✕</button>
+      </div>
+
+      <div class="weights-body">
+        <!-- Switch Enable -->
+        <div style="display:flex; justify-content:space-between; align-items:center; padding: 6px 10px; background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; margin-bottom:8px;">
+          <span style="font-size:11px; font-weight:700; color:#0369a1;">启用截面剖切透视</span>
+          <input type="checkbox" id="slicer-enable-chk" onchange="toggleSlicerEnabled(this.checked)" style="transform: scale(1.2); cursor:pointer;">
+        </div>
+
+        <!-- Mode Select -->
+        <div style="margin-bottom:8px;">
+          <div style="font-size:10px; font-weight:700; color:var(--slate-600); margin-bottom:4px;">透视渲染模式</div>
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:4px;">
+            <button class="btn-chip active" id="btn-slicer-clip" onclick="setSlicerMode('CLIP')">✂️ 实体截面</button>
+            <button class="btn-chip" id="btn-slicer-xray" onclick="setSlicerMode('XRAY')">👁️ X-Ray幽灵</button>
+            <button class="btn-chip" id="btn-slicer-cavity" onclick="setSlicerMode('CAVITY')">🕳️ 空腔洞察</button>
+          </div>
+        </div>
+
+        <!-- Axis Select -->
+        <div style="margin-bottom:8px;">
+          <div style="font-size:10px; font-weight:700; color:var(--slate-600); margin-bottom:4px;">主切片轴向</div>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:4px;">
+            <button class="btn-chip active" id="btn-axis-x" onclick="setSlicerAxis('X')">X 纵深</button>
+            <button class="btn-chip" id="btn-axis-y" onclick="setSlicerAxis('Y')">Y 宽度</button>
+            <button class="btn-chip" id="btn-axis-z" onclick="setSlicerAxis('Z')">Z 高度</button>
+            <button class="btn-chip" id="btn-axis-all" onclick="setSlicerAxis('ALL')">三轴全切</button>
+          </div>
+        </div>
+
+        <!-- X Slider -->
+        <div class="weight-row" id="row-slicer-x">
+          <div class="weight-meta">
+            <span>X 纵深剖切 (车尾 ➔ 门侧)</span>
+            <span class="weight-val" id="val-slicer-x">100%</span>
+          </div>
+          <input type="range" class="range-input" id="rng-slicer-x" min="0" max="100" step="1" value="100" oninput="updateSlicerCut('X', this.value)">
+        </div>
+
+        <!-- Y Slider -->
+        <div class="weight-row" id="row-slicer-y">
+          <div class="weight-meta">
+            <span>Y 横向剖切 (左壁 ➔ 右壁)</span>
+            <span class="weight-val" id="val-slicer-y">100%</span>
+          </div>
+          <input type="range" class="range-input" id="rng-slicer-y" min="0" max="100" step="1" value="100" oninput="updateSlicerCut('Y', this.value)">
+        </div>
+
+        <!-- Z Slider -->
+        <div class="weight-row" id="row-slicer-z">
+          <div class="weight-meta">
+            <span>Z 垂直剖切 (底板 ➔ 柜顶)</span>
+            <span class="weight-val" id="val-slicer-z">100%</span>
+          </div>
+          <input type="range" class="range-input" id="rng-slicer-z" min="0" max="100" step="1" value="100" oninput="updateSlicerCut('Z', this.value)">
+        </div>
+      </div>
+
+      <div class="weights-footer">
+        <button class="btn-island-action" style="flex:1; justify-content:center;" onclick="resetSlicer()">
+          <span>恢复全柜显示</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 1.7 3D EXPERT REVIEW & MANUAL ANNOTATION DOCK (FLOATING RIGHT) -->
+    <div class="glass-card algorithm-weights-panel interactive" id="expert-annotation-panel" style="display: none; width: 360px; border-color: #f59e0b;">
+      <div class="weights-header" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);">
+        <div class="weights-heading" style="color: #b45309;">
+          <span style="font-size:16px;">🥇</span>
+          <span>3D 专家评审与人工标注坞</span>
+        </div>
+        <button class="close-btn" onclick="toggleExpertPanel()">✕</button>
+      </div>
+
+      <div class="weights-body">
+        <!-- 1. Rating Tiers -->
+        <div style="margin-bottom: 10px;">
+          <div style="font-size:10px; font-weight:800; color:#b45309; text-transform:uppercase; margin-bottom:4px;">方案总评等 (Rating)</div>
+          <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+            <button class="btn-chip active-rate-gold" id="expert-rate-gold" onclick="setExpertRating('GOLD')" style="background:#fef3c7; border: 1.5px solid #f59e0b; color:#b45309; font-weight:800;">🥇 金牌示范</button>
+            <button class="btn-chip" id="expert-rate-silver" onclick="setExpertRating('SILVER')" style="background:#f1f5f9; border: 1.5px solid #cbd5e1; color:#475569; font-weight:700;">🥈 银牌合格</button>
+            <button class="btn-chip" id="expert-rate-reject" onclick="setExpertRating('REJECT')" style="background:#fef2f2; border: 1.5px solid #f87171; color:#b91c1c; font-weight:800;">❌ 驳回重算</button>
+          </div>
+        </div>
+
+        <!-- 2. Score Slider -->
+        <div class="weight-row" style="margin-bottom: 8px;">
+          <div class="weight-meta">
+            <span>实装质量评估分 (0-100)</span>
+            <span class="weight-val" id="expert-score-value" style="color:#d97706; font-size:12px; font-weight:800;">90</span>
+          </div>
+          <input type="range" class="range-input" id="expert-score-slider" min="0" max="100" step="1" value="90" oninput="setExpertScore(this.value)">
+        </div>
+
+        <!-- 3. Defect Tags Selector -->
+        <div style="margin-bottom: 8px;">
+          <div style="font-size:10px; font-weight:800; color:var(--slate-600); margin-bottom:4px;">空间特征与缺陷标签 (点击切换)</div>
+          <div id="expert-tags-container" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
+        </div>
+
+        <!-- 4. Pinned Defects List -->
+        <div style="margin-bottom: 8px;">
+          <div style="font-size:10px; font-weight:800; color:var(--slate-600); margin-bottom:3px;">圈选缺陷记录 (3D 视图联动)</div>
+          <div id="expert-defects-list" style="max-height:80px; overflow-y:auto; border:1px dashed var(--slate-300); border-radius:8px; padding:4px 6px; background:#fafafa;"></div>
+        </div>
+
+        <!-- 5. Expert Notes -->
+        <div>
+          <div style="font-size:10px; font-weight:800; color:var(--slate-600); margin-bottom:3px;">评审批注与修改建议</div>
+          <textarea id="expert-notes-input" placeholder="请记录驳回原因 (如内部蜂窝空洞、下层悬空) 或金牌示范依据..." style="width:100%; height:55px; border-radius:8px; border:1.5px solid #cbd5e1; padding:6px; font-size:11px; font-family:inherit; resize:none;" oninput="setExpertNotes(this.value)"></textarea>
+        </div>
+      </div>
+
+      <div class="weights-footer" style="background:#fffbeb;">
+        <button class="btn-island-action primary" id="expert-submit-btn" style="flex:1; justify-content:center; background:linear-gradient(135deg, #d97706 0%, #b45309 100%); border-color:#d97706; color:#ffffff; font-weight:800;" onclick="submitExpertAnnotation()">
+          <span>提交专家评审标注并归档 🚀</span>
         </button>
       </div>
     </div>
@@ -5037,6 +5178,9 @@
       const height = window.innerHeight;
 
       scene = new THREE.Scene();
+      window.scene = scene;
+      window.THREE = THREE;
+      window.currentSpec = currentSpec;
       scene.background = new THREE.Color(renderConfig.groundColor);
 
       const envTexture = createHighEndStudioEnv();
@@ -5054,9 +5198,12 @@
       );
       camera.position.set(-20, 19.8, 20);
       camera.lookAt(0, currentSpec.extH / 2, 0);
+      window.camera = camera;
 
       renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: true });
       renderer.setSize(width, height);
+      window.renderer = renderer;
+      window.boxMeshes = boxMeshes;
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -5123,6 +5270,32 @@
 
       renderer.domElement.addEventListener('dblclick', (e) => handleBoxSelection(e));
       renderer.domElement.addEventListener('click', (e) => {
+        // 1. 若专家评审面板打开，点击 3D 箱体直接圈选记录缺陷
+        const expertPanel = document.getElementById('expert-annotation-panel');
+        const isExpertOpen = expertPanel && expertPanel.style.display !== 'none';
+        if (isExpertOpen && window.expertAnnotation) {
+          raycaster.setFromCamera(mouse, camera);
+          const activeBoxes = boxMeshes.filter(b => b.visible);
+          const intersects = raycaster.intersectObjects(activeBoxes);
+          if (intersects.length > 0) {
+            const hit = intersects[0];
+            const clickedBox = hit.object;
+            const uData = clickedBox.userData || {};
+            const skuId = uData.sku || uData.name || 'SKU';
+            const boxId = uData.objectId || clickedBox.name || `box_${Date.now()}`;
+            const loc = {
+              x: Number(hit.point.x.toFixed(2)),
+              y: Number(hit.point.y.toFixed(2)),
+              z: Number(hit.point.z.toFixed(2)),
+            };
+            window.expertAnnotation.addDefect(boxId, skuId, loc);
+            if (typeof showToast === 'function') {
+              showToast(`🎯 已圈选缺陷目标: ${skuId} (${loc.x}, ${loc.y}, ${loc.z})`, 'info');
+            }
+            return;
+          }
+        }
+
         if (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey) {
           handleBoxSelection(e);
         }
@@ -5855,6 +6028,8 @@
         cargoGroup.add(boxMesh);
         boxMeshes.push(boxMesh);
       });
+      window.boxMeshes = boxMeshes;
+      window.lastLoadingResult = solution;
 
       rebuildOrientationAssist();
 
@@ -5960,6 +6135,8 @@
         cargoGroup.add(mesh);
         boxMeshes.push(mesh);
       });
+      window.boxMeshes = boxMeshes;
+      window.lastLoadingResult = loadingResult;
 
       rebuildOrientationAssist();
 
@@ -8392,6 +8569,129 @@
         renderer.render(scene, camera);
       }
     }
+
+    // --- PHASE 2: 3D SLICER & EXPERT ANNOTATION CONTROLLERS ---
+    window.toggleSlicerPanel = function() {
+      const p = document.getElementById('cross-section-slicer-panel');
+      if (!p) return;
+      const isHidden = p.style.display === 'none';
+      p.style.display = isHidden ? 'flex' : 'none';
+      const btn = document.getElementById('btn-toggle-slicer');
+      if (btn) btn.classList.toggle('active', isHidden);
+      if (isHidden && window.crossSectionSlicer) {
+        const chk = document.getElementById('slicer-enable-chk');
+        if (chk) chk.checked = true;
+        window.crossSectionSlicer.setEnabled(true);
+      }
+    };
+
+    window.toggleSlicerEnabled = function(enabled) {
+      if (window.crossSectionSlicer) {
+        window.crossSectionSlicer.setEnabled(enabled);
+      }
+    };
+
+    window.setSlicerMode = function(mode) {
+      const chk = document.getElementById('slicer-enable-chk');
+      if (chk) chk.checked = true;
+      if (window.crossSectionSlicer) {
+        window.crossSectionSlicer.setMode(mode);
+        ['clip', 'xray', 'cavity'].forEach(m => {
+          const btn = document.getElementById(`btn-slicer-${m}`);
+          if (btn) btn.classList.toggle('active', m.toUpperCase() === mode);
+        });
+      }
+    };
+
+    window.setSlicerAxis = function(axis) {
+      const chk = document.getElementById('slicer-enable-chk');
+      if (chk) chk.checked = true;
+      if (window.crossSectionSlicer) {
+        window.crossSectionSlicer.setAxis(axis);
+        ['x', 'y', 'z', 'all'].forEach(a => {
+          const btn = document.getElementById(`btn-axis-${a}`);
+          if (btn) btn.classList.toggle('active', a.toUpperCase() === axis);
+        });
+      }
+    };
+
+    window.updateSlicerCut = function(axis, val) {
+      const chk = document.getElementById('slicer-enable-chk');
+      if (chk) chk.checked = true;
+      if (window.crossSectionSlicer) {
+        if (axis === 'X') {
+          window.crossSectionSlicer.setCutX(val);
+          const el = document.getElementById('val-slicer-x');
+          if (el) el.textContent = val + '%';
+        } else if (axis === 'Y') {
+          window.crossSectionSlicer.setCutY(val);
+          const el = document.getElementById('val-slicer-y');
+          if (el) el.textContent = val + '%';
+        } else if (axis === 'Z') {
+          window.crossSectionSlicer.setCutZ(val);
+          const el = document.getElementById('val-slicer-z');
+          if (el) el.textContent = val + '%';
+        }
+      }
+    };
+
+    window.resetSlicer = function() {
+      if (window.crossSectionSlicer) {
+        window.crossSectionSlicer.reset();
+        const rx = document.getElementById('rng-slicer-x'); if (rx) rx.value = 100;
+        const ry = document.getElementById('rng-slicer-y'); if (ry) ry.value = 100;
+        const rz = document.getElementById('rng-slicer-z'); if (rz) rz.value = 100;
+        const vx = document.getElementById('val-slicer-x'); if (vx) vx.textContent = '100%';
+        const vy = document.getElementById('val-slicer-y'); if (vy) vy.textContent = '100%';
+        const vz = document.getElementById('val-slicer-z'); if (vz) vz.textContent = '100%';
+        const chk = document.getElementById('slicer-enable-chk'); if (chk) chk.checked = false;
+      }
+    };
+
+    window.toggleExpertPanel = function() {
+      const p = document.getElementById('expert-annotation-panel');
+      if (!p) return;
+      const isHidden = p.style.display === 'none';
+      p.style.display = isHidden ? 'flex' : 'none';
+      const btn = document.getElementById('btn-toggle-expert');
+      if (btn) btn.classList.toggle('active', isHidden);
+      if (isHidden && window.expertAnnotation) {
+        window.initExpertTagsUI();
+        window.expertAnnotation.updateUI();
+      }
+    };
+
+    window.initExpertTagsUI = function() {
+      const c = document.getElementById('expert-tags-container');
+      if (!c || c.children.length > 0 || !window.expertAnnotation) return;
+      window.expertAnnotation.DEFECT_DEFINITIONS.forEach(def => {
+        const btn = document.createElement('button');
+        btn.id = `tag-btn-${def.id}`;
+        btn.className = 'btn-chip';
+        btn.style.cssText = 'font-size:10px; padding:3px 7px; margin:2px;';
+        btn.innerHTML = `<span>${def.icon} ${def.label}</span>`;
+        btn.onclick = () => window.expertAnnotation.toggleTag(def.id);
+        c.appendChild(btn);
+      });
+    };
+
+    window.setExpertRating = function(r) {
+      if (window.expertAnnotation) window.expertAnnotation.setRating(r);
+    };
+
+    window.setExpertScore = function(s) {
+      if (window.expertAnnotation) window.expertAnnotation.setScore(s);
+    };
+
+    window.setExpertNotes = function(n) {
+      if (window.expertAnnotation) window.expertAnnotation.setNotes(n);
+    };
+
+    window.submitExpertAnnotation = function() {
+      if (window.expertAnnotation) {
+        window.expertAnnotation.submit().catch(() => {});
+      }
+    };
 
     function startApp() {
       if (typeof THREE === 'undefined' || typeof THREE.OrbitControls === 'undefined') {

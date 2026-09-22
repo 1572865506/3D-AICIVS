@@ -1,13 +1,11 @@
-# -*- coding: utf-8 -*-
-"""
-干净放置引擎 (Clean Placement Engine)
+"""3D-AICIVS 深度引导搜索引擎模块
 
-无条件分支的顺序放置器。按给定的货物序列逐件放置，
-每一步仅通过共享物理内核做可行性判定。
-不含任何货物类型特判 (if is_slender 等)。
-
-被谁调用:
-  - brain/inference.py (执行 Transformer 输出的放置序列)
-  - data_pipeline/solution_recorder.py (录制训练数据)
-  - __init__.py solve() 入口
+结合 Transformer 决策大脑先验与共享物理内核硬门禁，提供长耗时、高质量的装柜拓扑搜索。
 """
+
+from .guided_beam_search import GuidedBeamSearch, SearchConfig
+
+__all__ = [
+    "GuidedBeamSearch",
+    "SearchConfig",
+]

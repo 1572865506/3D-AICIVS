@@ -27,6 +27,39 @@ from solver_v2.search.config import SearchConfig, SearchProfile
 from backend.api.service import DEFAULT_LOADING_API
 from backend.api.error_response import classify_api_exception
 
+ANNOTATIONS_DIR = os.path.join(BASE_DIR, 'data', 'annotations')
+ANNOTATIONS_FILE = os.path.join(ANNOTATIONS_DIR, 'annotations.jsonl')
+
+def get_annotations(filter_solution_id=None, filter_rating=None):
+    if not os.path.exists(ANNOTATIONS_FILE):
+        return []
+    results = []
+    with open(ANNOTATIONS_FILE, 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+                if filter_solution_id and rec.get('solutionId') != filter_solution_id:
+                    continue
+                if filter_rating and rec.get('rating') != filter_rating:
+                    continue
+                results.append(rec)
+            except Exception:
+                pass
+    return results
+
+def save_annotation(payload):
+    os.makedirs(ANNOTATIONS_DIR, exist_ok=True)
+    ann_id = payload.get('annotationId') or f"ann_{int(time.time()*1000)}_{os.urandom(3).hex()}"
+    payload['annotationId'] = ann_id
+    if 'timestamp' not in payload:
+        payload['timestamp'] = time.time()
+    with open(ANNOTATIONS_FILE, 'a', encoding='utf-8') as f:
+        f.write(json.dumps(payload, ensure_ascii=False) + '\n')
+    return payload
+
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     """Handle requests in a separate thread."""
     daemon_threads = True
@@ -164,6 +197,19 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({'total': len(case_items), 'cases': case_items}, ensure_ascii=False).encode('utf-8'))
                 return
 
+        # 专家打标与方案评审 API: GET /api/v1/annotations
+        if self.path.startswith('/api/v1/annotations'):
+            from urllib.parse import urlparse, parse_qs
+            parsed_query = parse_qs(urlparse(self.path).query)
+            sol_id = parsed_query.get('solutionId', [None])[0]
+            rating = parsed_query.get('rating', [None])[0]
+            items = get_annotations(filter_solution_id=sol_id, filter_rating=rating)
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.end_headers()
+            self.wfile.write(json.dumps({'status': 'ok', 'total': len(items), 'annotations': items}, ensure_ascii=False).encode('utf-8'))
+            return
+
         loading_response = DEFAULT_LOADING_API.dispatch(self.path)
         if loading_response is not None:
             status, payload = loading_response
@@ -177,6 +223,24 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
         super().do_GET()
 
     def do_POST(self):
+        # 专家打标与方案评审 API: POST /api/v1/annotations
+        if self.path == '/api/v1/annotations':
+            content_length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body.decode('utf-8')) if body else {}
+                saved = save_annotation(data)
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                self.wfile.write(json.dumps({'status': 'ok', 'annotation': saved}, ensure_ascii=False).encode('utf-8'))
+            except Exception as e:
+                self.send_response(400)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                self.wfile.write(json.dumps({'status': 'error', 'message': str(e)}, ensure_ascii=False).encode('utf-8'))
+            return
+
         # 测试平台专用 POST API 路由
         if self.path.startswith('/api/v1/harness/'):
             from backend.harness_service import HarnessTaskManager

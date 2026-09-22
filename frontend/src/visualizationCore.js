@@ -567,6 +567,9 @@
     if (root.BLK007F78 && packageOrientationDisplayMode === root.BLK007F78.DisplayMode.ASSIST) {
       rebuildOrientationAssist();
     }
+    if (root.crossSectionSlicer && root.crossSectionSlicer.getState().enabled) {
+      root.crossSectionSlicer.apply();
+    }
     if (root.isRaycastDirty !== undefined) root.isRaycastDirty = true;
   }
 

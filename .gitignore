@@ -24,3 +24,9 @@ artifacts/*_SEQUENCE_PLANS.json
 artifacts/*_CANDIDATES.json
 artifacts/*_CARGO_POOL.json
 
+# Generated datasets
+data/factory_preview/
+data/golden_solutions/
+data/annotations/*.jsonl
+!data/annotations/.gitkeep
+
