@@ -423,6 +423,14 @@ class UnifiedSolver:
                         starved_rigid_count += 1
 
             rigid_ratio = (placed_rigid_count / max(1, req_rigid_count)) if req_rigid_count > 0 else 1.0
+            has_priority_inversion = False
+            if rigid_ratio < 0.99:
+                for c in cargo_list:
+                    is_el = bool(getattr(getattr(c, "quantity", None), "is_elastic", False) or getattr(c, "is_elastic", False))
+                    if is_el and placed_counts_trial.get(c.sku_id, 0) > 0:
+                        has_priority_inversion = True
+                        break
+
             score = (
                 rigid_ratio * 5000.0
                 + placed_vol * 100.0
@@ -430,6 +438,7 @@ class UnifiedSolver:
                 - (10000.0 if not val_result.is_valid else 0.0)
                 - violations * 500.0
                 - starved_rigid_count * 50000.0
+                - (30000.0 if has_priority_inversion else 0.0)
             )
 
             if score > best_score or not best_raw_placements:
@@ -756,40 +765,24 @@ class UnifiedSolver:
             for dc in target_res_group:
                 for d_ori in self._get_permitted_orientations(dc):
                     door_dx_candidates.append(d_ori.dx)
-            primary_door_dx = min(door_dx_candidates) if door_dx_candidates else 0.40
-            max_single_dx = max([max(c.length, c.width, c.height) for c in target_res_group], default=0.48)
+            min_single_dx = min(door_dx_candidates) if door_dx_candidates else 0.20
+            primary_door_dx = min_single_dx
+            max_single_dx = max(door_dx_candidates) if door_dx_candidates else 0.40
 
             if door_reserve_ratio is not None:
                 ratio_dx = round(self.cL * float(door_reserve_ratio), 4)
                 est_door_dx = max(est_door_dx, ratio_dx)
             else:
-                est_door_dx = max(est_door_dx, max_single_dx)
+                est_door_dx = max(est_door_dx, min_single_dx)
 
             # Quantize door reservation to exact integer multiples of primary_door_dx
             modular_rows = max(1, math.ceil((est_door_dx - 1e-4) / primary_door_dx))
             modular_door_len = round(modular_rows * primary_door_dx, 4)
-            validator_door_len = round(max(est_door_dx, max_single_dx * 1.2, modular_door_len), 4)
+            validator_door_len = round(max(est_door_dx, modular_door_len), 4)
 
-            # Additional forward reservation for tall-slender rigid SKUs that require bracing against the door wall
-            tall_slender_dx = 0.0
-            tall_slender_skus = [
-                c for c in cargo_list
-                if not getattr(c, 'is_elastic', False)
-                and c.zone_preference != UniversalZone.DOOR
-                and all((2.0 * o.dx) / max(1e-4, o.dz) < 1.5 - 1e-4 for o in self._get_permitted_orientations(c))
-            ]
-            if tall_slender_skus:
-                for ts in tall_slender_skus:
-                    ts_oris = self._get_permitted_orientations(ts)
-                    best_ts_ori = max(ts_oris, key=lambda o: o.dx)
-                    cols_y = max(1, int(self.cW // best_ts_ori.dy))
-                    layers_z = max(1, int(self.cH // best_ts_ori.dz))
-                    slice_cap = cols_y * layers_z
-                    needed_slices = math.ceil(ts.quantity_required / max(1, slice_cap))
-                    tall_slender_dx += needed_slices * best_ts_ori.dx
-
-            validator_door_boundary_x = round(self.cL - validator_door_len - tall_slender_dx, 4)
+            validator_door_boundary_x = round(self.cL - validator_door_len, 4)
         else:
+            validator_door_len = 0.0
             validator_door_boundary_x = round(self.cL - 0.04, 4)
 
         self._has_door_skus = bool(door_group)
@@ -869,7 +862,7 @@ class UnifiedSolver:
                             if (not self._has_collision(cand_pos, placements) and
                                 self._has_sufficient_support(cand_pos, placements) and
                                 self._check_placement_constraints(cand_pos, placements) and
-                                (current_x < self.cL - 0.50 or self._is_placement_tipping_safe(cand_pos, placements))):
+                                self._is_placement_tipping_safe(cand_pos, placements)):
                                 self._add_placement(cand_pos, placements)
                                 remaining_qty[c_sku.sku_id] -= 1
                                 step_idx += 1
@@ -1580,6 +1573,15 @@ class UnifiedSolver:
         # Guarantees 0-starvation for rigid items by anchoring against rigid cargo walls or top surfaces in door/rear zones.
         unplaced_rigid_skus = [c for c in cargo_list if not getattr(c, 'is_elastic', False) and remaining_qty.get(c.sku_id, 0) > 0]
         if unplaced_rigid_skus:
+            placed_counts_now: Dict[str, int] = {}
+            for p in placements:
+                placed_counts_now[p["sku_id"]] = placed_counts_now.get(p["sku_id"], 0) + 1
+            unplaced_rigid_skus.sort(
+                key=lambda c: (
+                    0 if placed_counts_now.get(c.sku_id, 0) == 0 else 1,
+                    -getattr(c, 'volume', 0.0)
+                )
+            )
             self._rebuild_spatial_index(placements)
             for c_rem in unplaced_rigid_skus:
                 c_oris = self._get_permitted_orientations(c_rem)
@@ -1937,7 +1939,7 @@ class UnifiedSolver:
         tot_rigid_rem = sum(remaining_qty.get(c.sku_id, 0) for c in cargo_list if not getattr(c, 'is_elastic', False))
         rigid_comp_pct = ((tot_rigid_req - tot_rigid_rem) / max(1, tot_rigid_req)) * 100.0 if tot_rigid_req > 0 else 100.0
 
-        if rigid_comp_pct < 99.0:
+        if tot_rigid_rem > 0 or rigid_comp_pct < 99.0:
             unplaced_elastic = []
         else:
             unplaced_elastic = [c for c in cargo_list if getattr(c, 'is_elastic', False) and remaining_qty.get(c.sku_id, 0) > 0]

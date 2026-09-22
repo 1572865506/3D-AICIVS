@@ -1,0 +1,301 @@
+{
+  "run_id": "20260922_091019",
+  "timestamp": "2026-09-22T09:10:19.645319",
+  "tier": 2,
+  "total_cases": 1,
+  "passed": 1,
+  "failed": 0,
+  "warned": 0,
+  "total_runtime_s": 45.1,
+  "results": {
+    "GEN-P1-03-03": {
+      "case_id": "GEN-P1-03-03",
+      "case_name": "自动生成: 40HQ-中约束-NORMAL",
+      "description": "Auto-generated: container=40HQ, constraint=MEDIUM, rigid=HIGH_RIGID, hetero=HIGH, scenario=NORMAL",
+      "requested_cartons": 1567,
+      "placed_count": 907,
+      "unplaced_count": 660,
+      "utilization": 81.82,
+      "volume_utilization_pct": 81.8175,
+      "runtime_ms": 45137.21,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 0,
+      "fatal_violations": 0,
+      "is_valid": true,
+      "health_status": "HEALTHY",
+      "health_issues": [],
+      "sku_fulfillment": {
+        "rigid_required": 1108,
+        "rigid_placed": 907,
+        "rigid_completion_pct": 81.86,
+        "elastic_required": 459,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "SKU-001": {
+            "name": "标准纸箱-549",
+            "is_elastic": false,
+            "required": 288,
+            "placed": 264,
+            "missing": 24,
+            "completion_pct": 91.7,
+            "distribution": {
+              "floor_placed": 6,
+              "door_zone_placed": 0,
+              "non_door_placed": 264
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": 4,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-002": {
+            "name": "零承重板件-226",
+            "is_elastic": false,
+            "required": 35,
+            "placed": 10,
+            "missing": 25,
+            "completion_pct": 28.6,
+            "distribution": {
+              "floor_placed": 0,
+              "door_zone_placed": 0,
+              "non_door_placed": 10
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": 2,
+              "max_bearing_kg": 0.0
+            }
+          },
+          "SKU-003": {
+            "name": "小显示器-992",
+            "is_elastic": false,
+            "required": 130,
+            "placed": 130,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 0,
+              "door_zone_placed": 130,
+              "non_door_placed": 0
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": 4,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-004": {
+            "name": "大尺寸电视-102",
+            "is_elastic": false,
+            "required": 74,
+            "placed": 24,
+            "missing": 50,
+            "completion_pct": 32.4,
+            "distribution": {
+              "floor_placed": 5,
+              "door_zone_placed": 0,
+              "non_door_placed": 24
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": 3,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-005": {
+            "name": "可侧放箱体-219",
+            "is_elastic": false,
+            "required": 85,
+            "placed": 44,
+            "missing": 41,
+            "completion_pct": 51.8,
+            "distribution": {
+              "floor_placed": 6,
+              "door_zone_placed": 0,
+              "non_door_placed": 44
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": 3,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-006": {
+            "name": "托盘化大件-109",
+            "is_elastic": false,
+            "required": 16,
+            "placed": 16,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 16,
+              "door_zone_placed": 0,
+              "non_door_placed": 16
+            },
+            "constraints_summary": {
+              "must_be_on_floor": true,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": 2,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-007": {
+            "name": "中尺寸电视-837",
+            "is_elastic": false,
+            "required": 136,
+            "placed": 135,
+            "missing": 1,
+            "completion_pct": 99.3,
+            "distribution": {
+              "floor_placed": 45,
+              "door_zone_placed": 0,
+              "non_door_placed": 135
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": 4,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-008": {
+            "name": "立方箱体-323",
+            "is_elastic": false,
+            "required": 89,
+            "placed": 60,
+            "missing": 29,
+            "completion_pct": 67.4,
+            "distribution": {
+              "floor_placed": 0,
+              "door_zone_placed": 0,
+              "non_door_placed": 60
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": 3,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-009": {
+            "name": "封门面板-375",
+            "is_elastic": false,
+            "required": 184,
+            "placed": 184,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 52,
+              "door_zone_placed": 184,
+              "non_door_placed": 0
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": 3,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-010": {
+            "name": "限层堆叠箱-856",
+            "is_elastic": false,
+            "required": 71,
+            "placed": 40,
+            "missing": 31,
+            "completion_pct": 56.3,
+            "distribution": {
+              "floor_placed": 0,
+              "door_zone_placed": 0,
+              "non_door_placed": 40
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": 2,
+              "max_bearing_kg": 30.0
+            }
+          },
+          "SKU-011": {
+            "name": "弹性填充件-185",
+            "is_elastic": true,
+            "required": 221,
+            "placed": 0,
+            "missing": 221,
+            "completion_pct": 0.0,
+            "distribution": {
+              "floor_placed": 0,
+              "door_zone_placed": 0,
+              "non_door_placed": 0
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": 3,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-012": {
+            "name": "弹性封门件-253",
+            "is_elastic": true,
+            "required": 238,
+            "placed": 0,
+            "missing": 238,
+            "completion_pct": 0.0,
+            "distribution": {
+              "floor_placed": 0,
+              "door_zone_placed": 0,
+              "non_door_placed": 0
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": 4,
+              "max_bearing_kg": null
+            }
+          }
+        }
+      },
+      "quality_metrics": {
+        "hollow_ratio_pct": 0.0,
+        "enclosed_cavity_volume": 0.0,
+        "enclosed_cavity_count": 0,
+        "reachable_residual_volume": 9.2615,
+        "dead_space_volume": 0.0,
+        "fragmentation_score": 0.0,
+        "cog_offset_x_pct": 0.0,
+        "cog_offset_y_pct": 0.0
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 907,
+        "unplacedCount": 660,
+        "utilization": 81.81746486771824,
+        "rigidCompletion": 81.86,
+        "healthStatus": "HEALTHY"
+      },
+      "status": "PASS"
+    }
+  }
+}

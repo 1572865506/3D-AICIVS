@@ -1,0 +1,189 @@
+{
+  "run_id": "20260921_113709",
+  "timestamp": "2026-09-21T11:37:09.754825",
+  "tier": 2,
+  "total_cases": 1,
+  "passed": 0,
+  "failed": 1,
+  "warned": 0,
+  "total_runtime_s": 23.0,
+  "results": {
+    "GEN-P1-02-02": {
+      "case_id": "GEN-P1-02-02",
+      "case_name": "自动生成: 40HQ-轻约束-NORMAL",
+      "description": "Auto-generated: container=40HQ, constraint=LIGHT, rigid=DOMINANT_RIGID, hetero=MEDIUM, scenario=NORMAL",
+      "requested_cartons": 561,
+      "placed_count": 516,
+      "unplaced_count": 45,
+      "utilization": 41.63,
+      "volume_utilization_pct": 41.6259,
+      "runtime_ms": 23039.85,
+      "collisions": 0,
+      "overlap_pair_count": 0,
+      "penetration_volume": 0.0,
+      "out_of_bounds_count": 0,
+      "violations": 10,
+      "fatal_violations": 10,
+      "is_valid": false,
+      "health_status": "VIOLATED",
+      "health_issues": [
+        "VIOLATIONS(10)"
+      ],
+      "sku_fulfillment": {
+        "rigid_required": 561,
+        "rigid_placed": 516,
+        "rigid_completion_pct": 91.98,
+        "elastic_required": 0,
+        "elastic_placed": 0,
+        "elastic_completion_pct": 0.0,
+        "priority_inversion": false,
+        "starved_skus": [],
+        "sku_details": {
+          "SKU-001": {
+            "name": "封门面板-416",
+            "is_elastic": false,
+            "required": 129,
+            "placed": 129,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 21,
+              "door_zone_placed": 126,
+              "non_door_placed": 3
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-002": {
+            "name": "中尺寸电视-565",
+            "is_elastic": false,
+            "required": 200,
+            "placed": 200,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 68,
+              "door_zone_placed": 0,
+              "non_door_placed": 200
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-003": {
+            "name": "零承重板件-771",
+            "is_elastic": false,
+            "required": 70,
+            "placed": 30,
+            "missing": 40,
+            "completion_pct": 42.9,
+            "distribution": {
+              "floor_placed": 28,
+              "door_zone_placed": 0,
+              "non_door_placed": 30
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": 0.0
+            }
+          },
+          "SKU-004": {
+            "name": "竖放专用屏-811",
+            "is_elastic": false,
+            "required": 78,
+            "placed": 78,
+            "missing": 0,
+            "completion_pct": 100.0,
+            "distribution": {
+              "floor_placed": 30,
+              "door_zone_placed": 0,
+              "non_door_placed": 78
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-005": {
+            "name": "高瘦箱体-537",
+            "is_elastic": false,
+            "required": 54,
+            "placed": 50,
+            "missing": 4,
+            "completion_pct": 92.6,
+            "distribution": {
+              "floor_placed": 25,
+              "door_zone_placed": 0,
+              "non_door_placed": 50
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": true,
+              "max_stack_layers": null,
+              "max_bearing_kg": null
+            }
+          },
+          "SKU-006": {
+            "name": "精密仪器箱-586",
+            "is_elastic": false,
+            "required": 30,
+            "placed": 29,
+            "missing": 1,
+            "completion_pct": 96.7,
+            "distribution": {
+              "floor_placed": 3,
+              "door_zone_placed": 0,
+              "non_door_placed": 29
+            },
+            "constraints_summary": {
+              "must_be_on_floor": false,
+              "allow_stacking_on_top": false,
+              "max_stack_layers": null,
+              "max_bearing_kg": 20.0
+            }
+          }
+        }
+      },
+      "quality_metrics": {
+        "hollow_ratio_pct": 0.0,
+        "enclosed_cavity_volume": 0.0,
+        "enclosed_cavity_count": 0,
+        "reachable_residual_volume": 41.7465,
+        "dead_space_volume": 0.0,
+        "fragmentation_score": 0.0,
+        "cog_offset_x_pct": 0.0,
+        "cog_offset_y_pct": 0.0
+      },
+      "constraint_audit": {
+        "orientation_violations": 0,
+        "floor_only_violations": 0,
+        "top_stack_violations": 0,
+        "bearing_violations": 0,
+        "stack_layer_violations": 0,
+        "support_floating_violations": 0,
+        "zone_violations": 0,
+        "door_lockout_violations": 0,
+        "payload_violations": 0
+      },
+      "summary": {
+        "placedCount": 516,
+        "unplacedCount": 45,
+        "utilization": 41.62589265442754,
+        "rigidCompletion": 91.98,
+        "healthStatus": "VIOLATED"
+      },
+      "status": "FAIL"
+    }
+  }
+}
