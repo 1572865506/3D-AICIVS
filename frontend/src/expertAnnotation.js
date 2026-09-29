@@ -117,6 +117,76 @@
   }
 
   /**
+   * Resets the annotation form to initial state for next annotation
+   */
+  function resetForm(keepSolution = false) {
+    if (!keepSolution) {
+      state.solutionId = '';
+    }
+    state.rating = 'GOLD';
+    state.score = 92;
+    state.selectedTags = new Set(['EXPERT_APPROVED']);
+    state.defects = [];
+    state.expertNotes = '';
+    state.isSubmitting = false;
+
+    const elNotes = document.getElementById('expert-notes-input');
+    if (elNotes) elNotes.value = '';
+
+    updateUI();
+    if (root.showToast) {
+      root.showToast('✨ 标注面板已重置，已就绪可开始下一条方案评审！', 'info');
+    }
+  }
+
+  /**
+   * Fetches all archived annotations from backend API or offline localStorage
+   */
+  async function fetchHistory() {
+    const apiUrl = getAnnotationApiUrl();
+    try {
+      const resp = await fetch(apiUrl);
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data && data.annotations) {
+          return data.annotations;
+        }
+      }
+    } catch (_) {}
+
+    // Fallback to localStorage
+    try {
+      const localKey = '3daicivs_expert_annotations';
+      return JSON.parse(localStorage.getItem(localKey) || '[]');
+    } catch (_) {
+      return [];
+    }
+  }
+
+  /**
+   * Exports all archived annotations as a downloadable JSON file
+   */
+  async function exportHistory() {
+    const list = await fetchHistory();
+    if (!list || list.length === 0) {
+      if (root.showToast) root.showToast('当前暂无已归档的标注数据！', 'warning');
+      return;
+    }
+    const blob = new Blob([JSON.stringify(list, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `annotations_export_${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    if (root.showToast) {
+      root.showToast(`📥 已成功导出 ${list.length} 条标注数据！`, 'success');
+    }
+  }
+
+  /**
    * Submits expert annotation with backend API + offline localStorage persistence
    */
   async function submitAnnotation() {
@@ -183,6 +253,11 @@
     } else {
       alert(toastMsg);
     }
+
+    // 自动重置表单为下一次标注做好准备
+    setTimeout(() => {
+      resetForm(false);
+    }, 1200);
 
     updateUI();
     return { success: true, annotationId: state.lastSubmittedId, backendSaved };
@@ -296,6 +371,9 @@
     toggleTag,
     addDefect: addDefectPin,
     removeDefect: removeDefectPin,
+    reset: resetForm,
+    getHistory: fetchHistory,
+    exportHistory: exportHistory,
     submit: submitAnnotation,
     updateUI,
   };

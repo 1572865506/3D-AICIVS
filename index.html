@@ -2434,13 +2434,17 @@
     </div>
 
     <!-- 1.7 3D EXPERT REVIEW & MANUAL ANNOTATION DOCK (FLOATING RIGHT) -->
-    <div class="glass-card algorithm-weights-panel interactive" id="expert-annotation-panel" style="display: none; width: 360px; border-color: #f59e0b;">
+    <div class="glass-card algorithm-weights-panel interactive" id="expert-annotation-panel" style="display: none; width: 380px; border-color: #f59e0b;">
       <div class="weights-header" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);">
         <div class="weights-heading" style="color: #b45309;">
           <span style="font-size:16px;">🥇</span>
           <span>3D 专家评审与人工标注坞</span>
         </div>
-        <button class="close-btn" onclick="toggleExpertPanel()">✕</button>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <button class="btn-chip" onclick="openExpertHistoryModal()" title="查看已归档的标注历史记录" style="background:#ffffff; border:1px solid #f59e0b; color:#b45309; font-size:11px; padding:2px 8px; font-weight:700;">📋 历史记录</button>
+          <button class="btn-chip" onclick="resetExpertAnnotation()" title="清空当前选项，准备下一次标注" style="background:#ffffff; border:1px solid #cbd5e1; color:#475569; font-size:11px; padding:2px 8px;">🔄 重置</button>
+          <button class="close-btn" onclick="toggleExpertPanel()">✕</button>
+        </div>
       </div>
 
       <div class="weights-body">
@@ -2471,20 +2475,26 @@
 
         <!-- 4. Pinned Defects List -->
         <div style="margin-bottom: 8px;">
-          <div style="font-size:10px; font-weight:800; color:var(--slate-600); margin-bottom:3px;">圈选缺陷记录 (3D 视图联动)</div>
-          <div id="expert-defects-list" style="max-height:80px; overflow-y:auto; border:1px dashed var(--slate-300); border-radius:8px; padding:4px 6px; background:#fafafa;"></div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3px;">
+            <span style="font-size:10px; font-weight:800; color:var(--slate-600);">圈选缺陷/关注箱体 (点击 3D 箱体打标)</span>
+            <button style="border:none; background:none; color:#ef4444; font-size:10px; cursor:pointer;" onclick="if(window.expertAnnotation) window.expertAnnotation.getState().defects.length && window.expertAnnotation.reset(true)">清空圈选</button>
+          </div>
+          <div id="expert-defects-list" style="max-height:85px; overflow-y:auto; border:1px dashed var(--slate-300); border-radius:8px; padding:4px 6px; background:#fafafa;"></div>
         </div>
 
         <!-- 5. Expert Notes -->
         <div>
           <div style="font-size:10px; font-weight:800; color:var(--slate-600); margin-bottom:3px;">评审批注与修改建议</div>
-          <textarea id="expert-notes-input" placeholder="请记录驳回原因 (如内部蜂窝空洞、下层悬空) 或金牌示范依据..." style="width:100%; height:55px; border-radius:8px; border:1.5px solid #cbd5e1; padding:6px; font-size:11px; font-family:inherit; resize:none;" oninput="setExpertNotes(this.value)"></textarea>
+          <textarea id="expert-notes-input" placeholder="请记录驳回原因 (如内部蜂窝空洞、烟囱单列易倒、下层悬空) 或金牌示范依据..." style="width:100%; height:55px; border-radius:8px; border:1.5px solid #cbd5e1; padding:6px; font-size:11px; font-family:inherit; resize:none;" oninput="setExpertNotes(this.value)"></textarea>
         </div>
       </div>
 
-      <div class="weights-footer" style="background:#fffbeb;">
+      <div class="weights-footer" style="background:#fffbeb; display:flex; gap:8px;">
+        <button class="btn-island-action" style="flex:0 0 110px; justify-content:center; background:#ffffff; border-color:#cbd5e1; color:#475569; font-size:11px;" onclick="resetExpertAnnotation()">
+          <span>🔄 下一个标注</span>
+        </button>
         <button class="btn-island-action primary" id="expert-submit-btn" style="flex:1; justify-content:center; background:linear-gradient(135deg, #d97706 0%, #b45309 100%); border-color:#d97706; color:#ffffff; font-weight:800;" onclick="submitExpertAnnotation()">
-          <span>提交专家评审标注并归档 🚀</span>
+          <span>提交归档 🚀</span>
         </button>
       </div>
     </div>
@@ -2932,6 +2942,33 @@
         </div>
       </section>
     </footer>
+  </div>
+
+  <!-- 4.8 EXPERT ANNOTATION HISTORY MODAL -->
+  <div class="modal-overlay interactive" id="expert-history-modal" style="display:none; z-index:100005; pointer-events:auto;" onclick="if(event.target===this) closeExpertHistoryModal()">
+    <div class="modal-card" style="width:720px; max-width:92vw; max-height:85vh; pointer-events:auto; border: 1.5px solid #f59e0b;">
+      <div class="modal-header" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-bottom: 1px solid #fde68a;">
+        <div class="modal-title" style="color: #92400e;">
+          <span style="font-size:20px;">📋</span>
+          <div>
+            <div style="font-size:15px; font-weight:800; color:#92400e; line-height:1.2;">专家评审与人工标注历史归档库</div>
+            <div style="font-size:11px; color:#b45309; font-weight:normal;">已同步存储于服务端 data/annotations/annotations.jsonl 与本地离线存储库</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button class="btn-chip" onclick="refreshExpertHistoryUI()" style="background:#ffffff; border:1px solid #d97706; color:#b45309; font-size:11px; padding:4px 10px; cursor:pointer;">🔄 刷新数据</button>
+          <button class="btn-chip" onclick="exportExpertAnnotations()" style="background:#d97706; border:1px solid #b45309; color:#ffffff; font-size:11px; padding:4px 10px; font-weight:700; cursor:pointer;">📥 导出全部 JSON</button>
+          <button class="close-btn" onclick="closeExpertHistoryModal()" style="font-size:18px; cursor:pointer;">✕</button>
+        </div>
+      </div>
+      <div id="expert-history-list" style="padding:16px 20px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:10px; background:#fafafa;">
+        <div style="text-align:center; padding:40px; color:#94a3b8; font-size:13px;">正在载入标注归档记录...</div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center; background:#fffbeb; border-top:1px solid #fde68a; padding:10px 20px;">
+        <span id="expert-history-count" style="font-size:12px; font-weight:700; color:#92400e;">共 0 条标注记录</span>
+        <button class="btn-island-action" onclick="closeExpertHistoryModal()" style="padding:6px 16px; background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; cursor:pointer; font-size:12px;">关闭窗口</button>
+      </div>
+    </div>
   </div>
 
   <!-- 5. EXCEL IMPORT PREVIEW MODAL -->
@@ -8691,6 +8728,93 @@
       if (window.expertAnnotation) {
         window.expertAnnotation.submit().catch(() => {});
       }
+    };
+
+    window.resetExpertAnnotation = function() {
+      if (window.expertAnnotation) {
+        window.expertAnnotation.reset(false);
+      }
+    };
+
+    window.openExpertHistoryModal = function() {
+      const modal = document.getElementById('expert-history-modal');
+      if (modal) {
+        modal.style.display = 'flex';
+        // 模态弹窗激活时，暂时冻结 3D OrbitControls，防止鼠标穿透操作 3D 视图
+        if (typeof controls !== 'undefined' && controls) {
+          controls.enabled = false;
+        }
+        window.refreshExpertHistoryUI();
+      }
+    };
+
+    window.closeExpertHistoryModal = function() {
+      const modal = document.getElementById('expert-history-modal');
+      if (modal) {
+        modal.style.display = 'none';
+        // 恢复 3D 视图交互控制
+        if (typeof controls !== 'undefined' && controls) {
+          controls.enabled = true;
+        }
+      }
+    };
+
+    window.exportExpertAnnotations = function() {
+      if (window.expertAnnotation) {
+        window.expertAnnotation.exportHistory();
+      }
+    };
+
+    window.refreshExpertHistoryUI = async function() {
+      const listEl = document.getElementById('expert-history-list');
+      const countEl = document.getElementById('expert-history-count');
+      if (!listEl || !window.expertAnnotation) return;
+
+      listEl.innerHTML = '<div style="text-align:center; padding:30px; color:#94a3b8; font-size:13px;">正在加载归档数据... ⏳</div>';
+      const items = await window.expertAnnotation.getHistory();
+
+      if (!items || items.length === 0) {
+        listEl.innerHTML = '<div style="text-align:center; padding:40px; color:#94a3b8; font-size:13px;">暂无归档标注数据。请在 3D 视图中完成一次专家评审后提交！</div>';
+        if (countEl) countEl.textContent = '共 0 条标注记录';
+        return;
+      }
+
+      if (countEl) countEl.textContent = `共 ${items.length} 条标注记录`;
+      listEl.innerHTML = '';
+
+      items.forEach((item, idx) => {
+        const row = document.createElement('div');
+        row.style.cssText = 'background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; display:flex; flex-direction:column; gap:6px; box-shadow:0 1px 3px rgba(0,0,0,0.05);';
+
+        const isGold = item.rating === 'GOLD';
+        const isReject = item.rating === 'REJECT';
+        const badgeColor = isGold ? '#b45309' : (isReject ? '#b91c1c' : '#0369a1');
+        const badgeBg = isGold ? '#fef3c7' : (isReject ? '#fee2e2' : '#e0f2fe');
+        const badgeBorder = isGold ? '#f59e0b' : (isReject ? '#ef4444' : '#0284c7');
+        const rateLabel = isGold ? '🥇 金牌标杆' : (isReject ? '❌ 驳回重算' : '🥈 银牌合格');
+        const dateStr = item.timestamp ? new Date(typeof item.timestamp === 'number' && item.timestamp < 2000000000 ? item.timestamp * 1000 : item.timestamp).toLocaleString() : '未知时间';
+
+        const tagsHtml = (item.tags || []).map(t => `<span style="font-size:10px; background:#f1f5f9; color:#475569; padding:2px 6px; border-radius:4px; border:1px solid #cbd5e1;">${t}</span>`).join(' ');
+        const defectsCount = (item.defects || []).length;
+
+        row.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-weight:800; font-size:11px; padding:2px 8px; border-radius:999px; background:${badgeBg}; color:${badgeColor}; border:1px solid ${badgeBorder};">${rateLabel}</span>
+              <span style="font-weight:800; font-size:12px; color:#1e293b;">方案: ${item.solutionId || '未命名'}</span>
+              <span style="font-size:11px; font-weight:700; color:#d97706;">得分: ${item.score ?? '--'}</span>
+            </div>
+            <span style="font-size:11px; color:#94a3b8;">${dateStr}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+            <span style="font-size:11px; color:#64748b; font-weight:600;">特征标签:</span>
+            ${tagsHtml || '<span style="font-size:11px; color:#94a3b8;">无</span>'}
+            <span style="margin-left:auto; font-size:11px; color:${defectsCount > 0 ? '#ea580c' : '#16a34a'}; font-weight:700;">圈选箱数: ${defectsCount}</span>
+          </div>
+          ${item.expertNotes ? `<div style="font-size:11px; color:#334155; background:#f8fafc; padding:6px 8px; border-radius:6px; border-left:3px solid ${badgeBorder};"><strong>批注:</strong> ${item.expertNotes}</div>` : ''}
+        `;
+        listEl.appendChild(row);
+      });
     };
 
     function startApp() {

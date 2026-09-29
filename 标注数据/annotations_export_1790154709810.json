@@ -1,0 +1,1260 @@
+[
+  {
+    "expertNotes": "验收测试标注",
+    "solutionId": "sol_test_diag",
+    "annotator": "3D-Expert-01",
+    "rating": "GOLD",
+    "score": 95,
+    "tags": [
+      "EXPERT_APPROVED",
+      "DENSE_STACK"
+    ],
+    "defects": [],
+    "annotationId": "ann_1790068965480_5fd46c",
+    "timestamp": 1790068965.480042
+  },
+  {
+    "solutionId": "sol_1790066866767_bdaaafaf",
+    "rating": "REJECT",
+    "score": 45,
+    "tags": [],
+    "defects": [
+      {
+        "id": "def_1790069126160_sya3",
+        "boxId": "plc_1406_SKU-08",
+        "skuId": "SKU-08",
+        "location": {
+          "x": 5.79,
+          "y": 0.86,
+          "z": -0.72
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (5.79, 0.86, -0.72)",
+        "timestamp": 1790069126160
+      }
+    ],
+    "expertNotes": "上层出现空洞",
+    "annotator": "3D-Expert-01",
+    "containerSpec": {
+      "code": "40HQ",
+      "intL": 12.032,
+      "intW": 2.352,
+      "intH": 2.698
+    },
+    "timestamp": 1790069173900,
+    "annotationId": "ann_1790069173908_e50f47"
+  },
+  {
+    "solutionId": "sol_1790066866767_bdaaafaf",
+    "rating": "REJECT",
+    "score": 45,
+    "tags": [
+      "POOR_INTERLOCK",
+      "TOP_HEAVY"
+    ],
+    "defects": [
+      {
+        "id": "def_1790125161431_pqco",
+        "boxId": "plc_799_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 1.05,
+          "z": -0.2
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 1.05, -0.2)",
+        "timestamp": 1790125161431
+      },
+      {
+        "id": "def_1790125166360_u0bb",
+        "boxId": "plc_817_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 2.45,
+          "z": 0.77
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 2.45, 0.77)",
+        "timestamp": 1790125166360
+      }
+    ],
+    "expertNotes": "不符合防倾倒放置要求",
+    "annotator": "3D-Expert-01",
+    "containerSpec": {
+      "code": "40HQ",
+      "intL": 12.032,
+      "intW": 2.352,
+      "intH": 2.698
+    },
+    "timestamp": 1790125244515,
+    "annotationId": "ann_1790125244527_864d85"
+  },
+  {
+    "solutionId": "sol_1790066866767_bdaaafaf",
+    "rating": "REJECT",
+    "score": 45,
+    "tags": [
+      "POOR_INTERLOCK",
+      "TOP_HEAVY",
+      "HONEYCOMB_CAVITY"
+    ],
+    "defects": [
+      {
+        "id": "def_1790125599997_9xq2",
+        "boxId": "plc_793_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 0.11,
+          "z": 0.94
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 0.11, 0.94)",
+        "timestamp": 1790125599997
+      },
+      {
+        "id": "def_1790125607804_y2cn",
+        "boxId": "plc_799_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 1.05,
+          "z": -0.59
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 1.05, -0.59)",
+        "timestamp": 1790125607804
+      },
+      {
+        "id": "def_1790125609613_txcy",
+        "boxId": "plc_801_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 0.97,
+          "z": 0.83
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 0.97, 0.83)",
+        "timestamp": 1790125609613
+      },
+      {
+        "id": "def_1790125609887_e67m",
+        "boxId": "plc_805_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 1.3,
+          "z": 0.79
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 1.3, 0.79)",
+        "timestamp": 1790125609887
+      },
+      {
+        "id": "def_1790125610212_o889",
+        "boxId": "plc_809_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 1.59,
+          "z": 0.81
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 1.59, 0.81)",
+        "timestamp": 1790125610212
+      },
+      {
+        "id": "def_1790125610733_8gux",
+        "boxId": "plc_813_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 2.03,
+          "z": 0.85
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 2.03, 0.85)",
+        "timestamp": 1790125610733
+      },
+      {
+        "id": "def_1790125611057_n3qz",
+        "boxId": "plc_817_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 2.34,
+          "z": 0.86
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 2.34, 0.86)",
+        "timestamp": 1790125611057
+      },
+      {
+        "id": "def_1790125611433_gei3",
+        "boxId": "plc_816_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 2.42,
+          "z": 0.32
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 2.42, 0.32)",
+        "timestamp": 1790125611433
+      },
+      {
+        "id": "def_1790125611813_dqus",
+        "boxId": "plc_812_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 1.92,
+          "z": 0.16
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 1.92, 0.16)",
+        "timestamp": 1790125611813
+      },
+      {
+        "id": "def_1790125612190_csuy",
+        "boxId": "plc_804_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 1.45,
+          "z": 0.18
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 1.45, 0.18)",
+        "timestamp": 1790125612190
+      },
+      {
+        "id": "def_1790125612715_kf5u",
+        "boxId": "plc_808_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 1.65,
+          "z": 0.19
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 1.65, 0.19)",
+        "timestamp": 1790125612715
+      },
+      {
+        "id": "def_1790125613155_yiju",
+        "boxId": "plc_800_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 1.08,
+          "z": 0.19
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 1.08, 0.19)",
+        "timestamp": 1790125613155
+      },
+      {
+        "id": "def_1790125613634_8h0v",
+        "boxId": "plc_796_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 0.63,
+          "z": 0.17
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 0.63, 0.17)",
+        "timestamp": 1790125613634
+      },
+      {
+        "id": "def_1790125614060_a81q",
+        "boxId": "plc_792_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 0.31,
+          "z": 0.16
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 0.31, 0.16)",
+        "timestamp": 1790125614060
+      },
+      {
+        "id": "def_1790125616094_be0c",
+        "boxId": "plc_791_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 0.34,
+          "z": -0.32
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 0.34, -0.32)",
+        "timestamp": 1790125616094
+      },
+      {
+        "id": "def_1790125616580_9d7v",
+        "boxId": "plc_795_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 0.64,
+          "z": -0.35
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 0.64, -0.35)",
+        "timestamp": 1790125616580
+      },
+      {
+        "id": "def_1790125616959_5qq4",
+        "boxId": "plc_799_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 0.99,
+          "z": -0.25
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 0.99, -0.25)",
+        "timestamp": 1790125616959
+      },
+      {
+        "id": "def_1790125617292_jayw",
+        "boxId": "plc_803_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 1.43,
+          "z": -0.23
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 1.43, -0.23)",
+        "timestamp": 1790125617292
+      },
+      {
+        "id": "def_1790125617672_ui9b",
+        "boxId": "plc_807_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 1.81,
+          "z": -0.22
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 1.81, -0.22)",
+        "timestamp": 1790125617672
+      },
+      {
+        "id": "def_1790125618059_u397",
+        "boxId": "plc_811_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 2.17,
+          "z": -0.23
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 2.17, -0.23)",
+        "timestamp": 1790125618059
+      },
+      {
+        "id": "def_1790125618336_tumc",
+        "boxId": "plc_815_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 2.45,
+          "z": -0.28
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 2.45, -0.28)",
+        "timestamp": 1790125618336
+      },
+      {
+        "id": "def_1790125618711_azw6",
+        "boxId": "plc_814_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 2.49,
+          "z": -0.89
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 2.49, -0.89)",
+        "timestamp": 1790125618711
+      },
+      {
+        "id": "def_1790125618996_if0p",
+        "boxId": "plc_810_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 2.01,
+          "z": -0.92
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 2.01, -0.92)",
+        "timestamp": 1790125618996
+      },
+      {
+        "id": "def_1790125619395_7lnp",
+        "boxId": "plc_806_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 1.54,
+          "z": -0.93
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 1.54, -0.93)",
+        "timestamp": 1790125619395
+      },
+      {
+        "id": "def_1790125619783_d5kr",
+        "boxId": "plc_802_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 1.19,
+          "z": -0.93
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 1.19, -0.93)",
+        "timestamp": 1790125619783
+      },
+      {
+        "id": "def_1790125620174_5pa9",
+        "boxId": "plc_794_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 0.8,
+          "z": -0.97
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 0.8, -0.97)",
+        "timestamp": 1790125620174
+      },
+      {
+        "id": "def_1790125620507_tj5q",
+        "boxId": "plc_794_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 0.49,
+          "z": -0.95
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 0.49, -0.95)",
+        "timestamp": 1790125620507
+      },
+      {
+        "id": "def_1790125620989_mtuq",
+        "boxId": "plc_790_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -5.97,
+          "y": 0.16,
+          "z": -0.97
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.97, 0.16, -0.97)",
+        "timestamp": 1790125620989
+      }
+    ],
+    "expertNotes": "单列易倾倒，不符合防倾倒要求，货柜打开后会倾覆，应该改成竖向排列",
+    "annotator": "3D-Expert-01",
+    "containerSpec": {
+      "code": "40HQ",
+      "intL": 12.032,
+      "intW": 2.352,
+      "intH": 2.698
+    },
+    "timestamp": 1790125692265,
+    "annotationId": "ann_1790125692273_76cee9"
+  },
+  {
+    "solutionId": "sol_1790066866767_bdaaafaf",
+    "rating": "REJECT",
+    "score": 45,
+    "tags": [
+      "HONEYCOMB_CAVITY",
+      "FALSE_HIGH_UTILIZATION"
+    ],
+    "defects": [
+      {
+        "id": "def_1790125721968_ic6y",
+        "boxId": "plc_999_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -4.95,
+          "y": 0.25,
+          "z": 1.1
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.95, 0.25, 1.1)",
+        "timestamp": 1790125721968
+      },
+      {
+        "id": "def_1790125722870_yn67",
+        "boxId": "plc_1010_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -4.9,
+          "y": 0.55,
+          "z": 1.1
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.9, 0.55, 1.1)",
+        "timestamp": 1790125722870
+      },
+      {
+        "id": "def_1790125723358_u9i6",
+        "boxId": "plc_1021_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -4.85,
+          "y": 1.02,
+          "z": 1.1
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.85, 1.02, 1.1)",
+        "timestamp": 1790125723358
+      },
+      {
+        "id": "def_1790125723847_5gqv",
+        "boxId": "plc_1032_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -4.85,
+          "y": 1.33,
+          "z": 1.1
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.85, 1.33, 1.1)",
+        "timestamp": 1790125723847
+      },
+      {
+        "id": "def_1790125724282_de4y",
+        "boxId": "plc_1043_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -4.85,
+          "y": 1.75,
+          "z": 1.1
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.85, 1.75, 1.1)",
+        "timestamp": 1790125724282
+      },
+      {
+        "id": "def_1790125724643_eojl",
+        "boxId": "plc_1054_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -4.85,
+          "y": 2.14,
+          "z": 1.1
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.85, 2.14, 1.1)",
+        "timestamp": 1790125724643
+      },
+      {
+        "id": "def_1790125725044_0zam",
+        "boxId": "plc_1065_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -4.88,
+          "y": 2.49,
+          "z": 1.1
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.88, 2.49, 1.1)",
+        "timestamp": 1790125725044
+      },
+      {
+        "id": "def_1790125726438_7hw7",
+        "boxId": "plc_1064_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -4.96,
+          "y": 2.48,
+          "z": 1.01
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.96, 2.48, 1.01)",
+        "timestamp": 1790125726439
+      },
+      {
+        "id": "def_1790125727538_o3rp",
+        "boxId": "plc_1053_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -4.96,
+          "y": 1.99,
+          "z": 1
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.96, 1.99, 1)",
+        "timestamp": 1790125727538
+      },
+      {
+        "id": "def_1790125729833_vdmn",
+        "boxId": "plc_1042_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -4.96,
+          "y": 1.64,
+          "z": 0.97
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.96, 1.64, 0.97)",
+        "timestamp": 1790125729833
+      },
+      {
+        "id": "def_1790125730544_8kdu",
+        "boxId": "plc_1031_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -4.96,
+          "y": 1.25,
+          "z": 0.97
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.96, 1.25, 0.97)",
+        "timestamp": 1790125730544
+      },
+      {
+        "id": "def_1790125731285_g6gd",
+        "boxId": "plc_1020_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -4.96,
+          "y": 1.01,
+          "z": 0.98
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.96, 1.01, 0.98)",
+        "timestamp": 1790125731285
+      },
+      {
+        "id": "def_1790125731908_z032",
+        "boxId": "plc_1009_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -4.96,
+          "y": 0.62,
+          "z": 0.98
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.96, 0.62, 0.98)",
+        "timestamp": 1790125731908
+      },
+      {
+        "id": "def_1790125732621_qh31",
+        "boxId": "plc_998_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -4.96,
+          "y": 0.28,
+          "z": 0.99
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.96, 0.28, 0.99)",
+        "timestamp": 1790125732621
+      },
+      {
+        "id": "def_1790125733946_ow3n",
+        "boxId": "plc_991_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -2.32,
+          "y": 0.2,
+          "z": 1.1
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-2.32, 0.2, 1.1)",
+        "timestamp": 1790125733946
+      },
+      {
+        "id": "def_1790125734700_ezh5",
+        "boxId": "plc_1002_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -2.32,
+          "y": 0.63,
+          "z": 1.1
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-2.32, 0.63, 1.1)",
+        "timestamp": 1790125734700
+      },
+      {
+        "id": "def_1790125735003_7pu4",
+        "boxId": "plc_1013_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -2.35,
+          "y": 0.9,
+          "z": 1.1
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-2.35, 0.9, 1.1)",
+        "timestamp": 1790125735003
+      },
+      {
+        "id": "def_1790125735429_9f65",
+        "boxId": "plc_1024_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -2.38,
+          "y": 1.32,
+          "z": 1.1
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-2.38, 1.32, 1.1)",
+        "timestamp": 1790125735429
+      },
+      {
+        "id": "def_1790125735768_ih7z",
+        "boxId": "plc_1035_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -2.43,
+          "y": 1.69,
+          "z": 1.1
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-2.43, 1.69, 1.1)",
+        "timestamp": 1790125735768
+      },
+      {
+        "id": "def_1790125736114_kmdh",
+        "boxId": "plc_1046_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -2.43,
+          "y": 2.06,
+          "z": 1.1
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-2.43, 2.06, 1.1)",
+        "timestamp": 1790125736114
+      },
+      {
+        "id": "def_1790125736394_lu3y",
+        "boxId": "plc_1057_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -2.48,
+          "y": 2.44,
+          "z": 1.1
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-2.48, 2.44, 1.1)",
+        "timestamp": 1790125736394
+      },
+      {
+        "id": "def_1790125737754_ss61",
+        "boxId": "plc_1057_SKU-02",
+        "skuId": "SKU-02",
+        "location": {
+          "x": -2.45,
+          "y": 2.46,
+          "z": 1.1
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-2.45, 2.46, 1.1)",
+        "timestamp": 1790125737754
+      }
+    ],
+    "expertNotes": "前后出现空洞，没有收紧，应该收紧位置这样可能可以再放置多一栋",
+    "annotator": "3D-Expert-01",
+    "containerSpec": {
+      "code": "40HQ",
+      "intL": 12.032,
+      "intW": 2.352,
+      "intH": 2.698
+    },
+    "timestamp": 1790153994085,
+    "annotationId": "ann_1790153994103_59721a"
+  },
+  {
+    "solutionId": "sol_1790066866767_bdaaafaf",
+    "rating": "REJECT",
+    "score": 45,
+    "tags": [
+      "HONEYCOMB_CAVITY",
+      "HIGH_FRAGMENTATION"
+    ],
+    "defects": [
+      {
+        "id": "def_1790154061989_l6yo",
+        "boxId": "plc_1396_SKU-04",
+        "skuId": "SKU-04",
+        "location": {
+          "x": -5.17,
+          "y": 1.49,
+          "z": -1.17
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.17, 1.49, -1.17)",
+        "timestamp": 1790154061989
+      },
+      {
+        "id": "def_1790154062596_k7m2",
+        "boxId": "plc_1397_SKU-04",
+        "skuId": "SKU-04",
+        "location": {
+          "x": -5.19,
+          "y": 1.52,
+          "z": -1.05
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.19, 1.52, -1.05)",
+        "timestamp": 1790154062596
+      },
+      {
+        "id": "def_1790154063566_ojk7",
+        "boxId": "plc_1398_SKU-04",
+        "skuId": "SKU-04",
+        "location": {
+          "x": -5.19,
+          "y": 1.52,
+          "z": -0.9
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.19, 1.52, -0.9)",
+        "timestamp": 1790154063566
+      },
+      {
+        "id": "def_1790154064399_ovi2",
+        "boxId": "plc_1393_SKU-04",
+        "skuId": "SKU-04",
+        "location": {
+          "x": -4.63,
+          "y": 1.52,
+          "z": -0.98
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.63, 1.52, -0.98)",
+        "timestamp": 1790154064399
+      },
+      {
+        "id": "def_1790154065247_loie",
+        "boxId": "plc_1394_SKU-04",
+        "skuId": "SKU-04",
+        "location": {
+          "x": -4.63,
+          "y": 1.52,
+          "z": -0.91
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.63, 1.52, -0.91)",
+        "timestamp": 1790154065247
+      },
+      {
+        "id": "def_1790154065660_ojad",
+        "boxId": "plc_1392_SKU-04",
+        "skuId": "SKU-04",
+        "location": {
+          "x": -4.55,
+          "y": 1.52,
+          "z": -1.12
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.55, 1.52, -1.12)",
+        "timestamp": 1790154065660
+      },
+      {
+        "id": "def_1790154066770_7y3m",
+        "boxId": "plc_1405_SKU-04",
+        "skuId": "SKU-04",
+        "location": {
+          "x": -4.11,
+          "y": 1.69,
+          "z": -1.04
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.11, 1.69, -1.04)",
+        "timestamp": 1790154066770
+      },
+      {
+        "id": "def_1790154067240_zbtv",
+        "boxId": "plc_1404_SKU-04",
+        "skuId": "SKU-04",
+        "location": {
+          "x": -4.11,
+          "y": 1.91,
+          "z": -1.17
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.11, 1.91, -1.17)",
+        "timestamp": 1790154067240
+      },
+      {
+        "id": "def_1790154068267_bc8g",
+        "boxId": "plc_1401_SKU-04",
+        "skuId": "SKU-04",
+        "location": {
+          "x": -3.34,
+          "y": 1.96,
+          "z": -0.94
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-3.34, 1.96, -0.94)",
+        "timestamp": 1790154068267
+      },
+      {
+        "id": "def_1790154069018_12p1",
+        "boxId": "plc_1402_SKU-04",
+        "skuId": "SKU-04",
+        "location": {
+          "x": -3.34,
+          "y": 1.96,
+          "z": -0.89
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-3.34, 1.96, -0.89)",
+        "timestamp": 1790154069018
+      },
+      {
+        "id": "def_1790154069709_ib8u",
+        "boxId": "plc_1400_SKU-04",
+        "skuId": "SKU-04",
+        "location": {
+          "x": -3.26,
+          "y": 1.96,
+          "z": -1.08
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-3.26, 1.96, -1.08)",
+        "timestamp": 1790154069710
+      },
+      {
+        "id": "def_1790154077715_ajzn",
+        "boxId": "plc_1390_SKU-04",
+        "skuId": "SKU-04",
+        "location": {
+          "x": -3.72,
+          "y": 1.52,
+          "z": -0.89
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-3.72, 1.52, -0.89)",
+        "timestamp": 1790154077715
+      }
+    ],
+    "expertNotes": "上方大量空间浪费",
+    "annotator": "3D-Expert-01",
+    "containerSpec": {
+      "code": "40HQ",
+      "intL": 12.032,
+      "intW": 2.352,
+      "intH": 2.698
+    },
+    "timestamp": 1790154114781,
+    "annotationId": "ann_1790154114791_c7d0d0"
+  },
+  {
+    "solutionId": "sol_1790066866767_bdaaafaf",
+    "rating": "REJECT",
+    "score": 45,
+    "tags": [
+      "HONEYCOMB_CAVITY",
+      "HIGH_FRAGMENTATION",
+      "POOR_INTERLOCK"
+    ],
+    "defects": [
+      {
+        "id": "def_1790154119635_91uy",
+        "boxId": "plc_1442_SKU-15",
+        "skuId": "SKU-15",
+        "location": {
+          "x": -5.52,
+          "y": 2.09,
+          "z": -0.65
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.52, 2.09, -0.65)",
+        "timestamp": 1790154119635
+      }
+    ],
+    "expertNotes": "",
+    "annotator": "3D-Expert-01",
+    "containerSpec": {
+      "code": "40HQ",
+      "intL": 12.032,
+      "intW": 2.352,
+      "intH": 2.698
+    },
+    "timestamp": 1790154147107,
+    "annotationId": "ann_1790154147117_18f23b"
+  },
+  {
+    "solutionId": "sol_1790066866767_bdaaafaf",
+    "rating": "REJECT",
+    "score": 45,
+    "tags": [
+      "HONEYCOMB_CAVITY"
+    ],
+    "defects": [
+      {
+        "id": "def_1790154198373_pp43",
+        "boxId": "plc_1414_SKU-05",
+        "skuId": "SKU-05",
+        "location": {
+          "x": -2.18,
+          "y": 2.37,
+          "z": -0.04
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-2.18, 2.37, -0.04)",
+        "timestamp": 1790154198373
+      },
+      {
+        "id": "def_1790154198724_878e",
+        "boxId": "plc_1413_SKU-05",
+        "skuId": "SKU-05",
+        "location": {
+          "x": -2.09,
+          "y": 2.37,
+          "z": -0.42
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-2.09, 2.37, -0.42)",
+        "timestamp": 1790154198724
+      }
+    ],
+    "expertNotes": "",
+    "annotator": "3D-Expert-01",
+    "containerSpec": {
+      "code": "40HQ",
+      "intL": 12.032,
+      "intW": 2.352,
+      "intH": 2.698
+    },
+    "timestamp": 1790154208966,
+    "annotationId": "ann_1790154208975_a56c7e"
+  },
+  {
+    "solutionId": "sol_1790066866767_bdaaafaf",
+    "rating": "REJECT",
+    "score": 45,
+    "tags": [
+      "HONEYCOMB_CAVITY",
+      "FALSE_HIGH_UTILIZATION",
+      "HIGH_FRAGMENTATION"
+    ],
+    "defects": [
+      {
+        "id": "def_1790154236465_qhel",
+        "boxId": "plc_1399_SKU-04",
+        "skuId": "SKU-04",
+        "location": {
+          "x": -5.47,
+          "y": 1.42,
+          "z": 0.26
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-5.47, 1.42, 0.26)",
+        "timestamp": 1790154236465
+      },
+      {
+        "id": "def_1790154237310_qs8b",
+        "boxId": "plc_1395_SKU-04",
+        "skuId": "SKU-04",
+        "location": {
+          "x": -4.62,
+          "y": 1.52,
+          "z": 0.25
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-4.62, 1.52, 0.25)",
+        "timestamp": 1790154237310
+      },
+      {
+        "id": "def_1790154238107_31ev",
+        "boxId": "plc_1391_SKU-04",
+        "skuId": "SKU-04",
+        "location": {
+          "x": -3.86,
+          "y": 1.52,
+          "z": 0.23
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-3.86, 1.52, 0.23)",
+        "timestamp": 1790154238107
+      }
+    ],
+    "expertNotes": "上方空间浪费，附近货物可以腾出一点空间让他再叠1-3层的",
+    "annotator": "3D-Expert-01",
+    "containerSpec": {
+      "code": "40HQ",
+      "intL": 12.032,
+      "intW": 2.352,
+      "intH": 2.698
+    },
+    "timestamp": 1790154306230,
+    "annotationId": "ann_1790154306238_227114"
+  },
+  {
+    "solutionId": "sol_1790066866767_bdaaafaf",
+    "rating": "REJECT",
+    "score": 45,
+    "tags": [
+      "HIGH_FRAGMENTATION",
+      "HONEYCOMB_CAVITY"
+    ],
+    "defects": [
+      {
+        "id": "def_1790154426826_actr",
+        "boxId": "plc_1073_SKU-15",
+        "skuId": "SKU-15",
+        "location": {
+          "x": -1.77,
+          "y": 2.66,
+          "z": 0.77
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (-1.77, 2.66, 0.77)",
+        "timestamp": 1790154426826
+      }
+    ],
+    "expertNotes": "可以考虑其他方向摆放，匹配下方货物长宽比例",
+    "annotator": "3D-Expert-01",
+    "containerSpec": {
+      "code": "40HQ",
+      "intL": 12.032,
+      "intW": 2.352,
+      "intH": 2.698
+    },
+    "timestamp": 1790154475954,
+    "annotationId": "ann_1790154475962_cb68e9"
+  },
+  {
+    "solutionId": "sol_1790066866767_bdaaafaf",
+    "rating": "REJECT",
+    "score": 45,
+    "tags": [
+      "HONEYCOMB_CAVITY",
+      "FALSE_HIGH_UTILIZATION"
+    ],
+    "defects": [
+      {
+        "id": "def_1790154506776_8q8m",
+        "boxId": "plc_476_SKU-13",
+        "skuId": "SKU-13",
+        "location": {
+          "x": 0.02,
+          "y": 1.04,
+          "z": 0.76
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (0.02, 1.04, 0.76)",
+        "timestamp": 1790154506776
+      },
+      {
+        "id": "def_1790154507121_kd0d",
+        "boxId": "plc_475_SKU-13",
+        "skuId": "SKU-13",
+        "location": {
+          "x": 0.02,
+          "y": 0.99,
+          "z": 0.47
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (0.02, 0.99, 0.47)",
+        "timestamp": 1790154507121
+      },
+      {
+        "id": "def_1790154507921_3uv6",
+        "boxId": "plc_970_SKU-10",
+        "skuId": "SKU-10",
+        "location": {
+          "x": 0.03,
+          "y": 1.64,
+          "z": 0.15
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (0.03, 1.64, 0.15)",
+        "timestamp": 1790154507921
+      },
+      {
+        "id": "def_1790154508275_15wc",
+        "boxId": "plc_972_SKU-10",
+        "skuId": "SKU-10",
+        "location": {
+          "x": 0.03,
+          "y": 1.86,
+          "z": -0.38
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (0.03, 1.86, -0.38)",
+        "timestamp": 1790154508275
+      },
+      {
+        "id": "def_1790154508567_bl2e",
+        "boxId": "plc_971_SKU-10",
+        "skuId": "SKU-10",
+        "location": {
+          "x": 0.03,
+          "y": 1.96,
+          "z": -0.84
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (0.03, 1.96, -0.84)",
+        "timestamp": 1790154508567
+      }
+    ],
+    "expertNotes": "上方没有继续堆叠其他货物形成空洞，造成空间浪费",
+    "annotator": "3D-Expert-01",
+    "containerSpec": {
+      "code": "40HQ",
+      "intL": 12.032,
+      "intW": 2.352,
+      "intH": 2.698
+    },
+    "timestamp": 1790154559856,
+    "annotationId": "ann_1790154559867_b962a3"
+  },
+  {
+    "solutionId": "sol_1790066866767_bdaaafaf",
+    "rating": "REJECT",
+    "score": 45,
+    "tags": [
+      "HONEYCOMB_CAVITY",
+      "HIGH_FRAGMENTATION"
+    ],
+    "defects": [
+      {
+        "id": "def_1790154617225_8rlj",
+        "boxId": "plc_1406_SKU-08",
+        "skuId": "SKU-08",
+        "location": {
+          "x": 5.46,
+          "y": 1.01,
+          "z": -0.78
+        },
+        "type": "EXPERT_APPROVED",
+        "note": "定位: (5.46, 1.01, -0.78)",
+        "timestamp": 1790154617225
+      }
+    ],
+    "expertNotes": "上方没有继续堆叠货物，造成空洞，并且影响两侧的货物造成倾倒的可能",
+    "annotator": "3D-Expert-01",
+    "containerSpec": {
+      "code": "40HQ",
+      "intL": 12.032,
+      "intW": 2.352,
+      "intH": 2.698
+    },
+    "timestamp": 1790154664119,
+    "annotationId": "ann_1790154664128_cab43f"
+  }
+]
