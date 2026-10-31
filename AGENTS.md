@@ -368,7 +368,7 @@ python tests/regression_guard.py
 backend/solver_v2/
 ├── __init__.py               ← solve() 入口
 ├── solver/
-│   ├── unified_solver.py     ← ⚠️ 核心引擎 (1777行)
+│   ├── unified_solver.py     ← ⚠️ 核心引擎 (2806行)
 │   ├── composite_strip.py    ← 截面宽度引擎 (49KB)
 │   ├── compaction.py         ← 缩紧后处理
 │   ├── swap_optimizer.py     ← 交换启发
@@ -389,17 +389,17 @@ backend/solver_v2/
 
 > 以上是**活跃调用路径**涉及的文件。
 > 
-> ### ⚠️ 方案 C 架构隔离铁律（冻结目录清单）
-> 以下目录属于历史实验模块与独立测试用例，**当前主算柜链路未被调用，处于严格冻结状态**：
-> - `backend/solver_v2/search/` (包括 `engine.py`, `beam.py` 等)
-> - `backend/solver_v2/topfill/` (包括 `planner.py`, `terminal_repair.py` 等)
-> - `backend/solver_v2/world/` (包括 `state.py` 等)
-> - `backend/solver_v2/loading/` (包括 `planner.py` 等)
-> - `backend/solver_v2/door/` (包括 `closure_planner.py` 等)
-> - `backend/solver_v2/structure/` (包括 `wall_model.py`, `cavity_classifier.py` 等)
-> 
+> ### ⚠️ 方案 C 架构隔离规则（冻结目录清单 — 2026-11 架构审计事实核查修订）
+> 以下目录原定性为"历史实验模块与独立测试用例，当前主算柜链路未被调用"。
+> 经架构审计核查，该前提**已过时**：它们实际被以下活跃路径直接引用（服务启动 / API 主链路 / 活跃求解器）：
+> - `backend/solver_v2/search/` ← `backend/server.py`（主服务入口导入 HierarchicalSearchSolver）
+> - `backend/solver_v2/loading/` ← `backend/api/service.py`（API 任务编排导入序列规划与修复引擎）
+> - `backend/solver_v2/world/`、`door/` ← `solver/baseline_solver.py`、`solver/gap_filler.py`（活跃代码地图所列文件）
+> - `backend/solver_v2/topfill/` ← `solver/baseline_solver.py`
+> - `backend/solver_v2/structure/` ← `backend/api/adapters/layout_adapter.py`（WallStructureAnalyzer）
+>
 > **所有 Agent 必须遵守**:
-> 1. ❌ 严禁在上述冻结模块中编写新代码或新增依赖。
-> 2. ❌ 严禁在 `unified_solver.py` 中引用这些冻结模块（避免引入死锁与计算爆炸）。
-> 3. ✅ 所有业务逻辑、装载算法优化与倾覆防范，必须严格在【活跃调用路径】所列模块中闭环解决。
-> 4. 待核心算法达标稳定后，由架构审计 Agent 统一将冻结代码迁移到 `_archive/` 目录。
+> 1. ❌ 严禁在上述目录中编写新代码或新增依赖（历史"冻结"定位维持，等待架构审计评估归档/解耦方案）。
+> 2. ❌ 严禁在 `unified_solver.py` 中新增对上述目录的引用（避免引入死锁与计算爆炸）；既有引用在归档方案确定前保持原样，不得擅自删除或重写。
+> 3. ✅ 新增业务逻辑、装载算法优化与倾覆防范，必须严格在【活跃调用路径】所列模块中闭环解决。
+> 4. 归档迁移前必须先解除上述活跃引用（迁移被调用代码或重建调用关系），由架构审计 Agent 统一执行后方可移动到 `_archive/` 目录。

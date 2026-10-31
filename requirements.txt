@@ -1,0 +1,15 @@
+# 3D-AICIVS 依赖清单
+#
+# 基础求解链路（unified_solver / physics_kernel / API 服务）仅需 Python 3.10+ 标准库即可运行，
+# 以下为可选加速依赖。快速安装：pip install -r requirements.txt
+
+# Transformer Brain（brain/packing_transformer.py）、引导式集束搜索
+# （placement_engine/guided_beam_search.py）与数据工厂（data_pipeline/）为硬导入，
+# 启用这些模块时必须安装。
+torch>=2.0
+
+# OR-Tools CP-SAT 混合优化求解器（solver/cpsat_hybrid_solver.py）。
+ortools>=9.8
+
+# 测试框架（tests/ 下 pytest 用例）。
+pytest>=7.0

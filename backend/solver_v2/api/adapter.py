@@ -44,6 +44,12 @@ class InputNormalizer:
     def normalize_box_dim(source: Dict[str, Any]) -> BoxDim:
         """
         Normalizes product length/width/height into canonical container axes (x >= y).
+
+        Accepted dimension layouts (单位均为米):
+        1. 嵌套结构 ``dimensions: {length, width, height}``（推荐，前端主链路）；
+        2. 平铺短键 ``w/x``、``d/y``、``h/z``（legacy test_suite 格式）；
+        3. 平铺全名 ``length``、``width``、``height``（第三方直连 API 常见写法，
+           修复此前被静默忽略、回退 0.1m 默认值的问题）。
         """
         if "dimensions" in source:
             d = source["dimensions"]
@@ -51,9 +57,9 @@ class InputNormalizer:
             second = float(d["width"])
             height = float(d["height"])
         else:
-            first = float(source.get("w", source.get("x", 0.1)))
-            second = float(source.get("d", source.get("y", 0.1)))
-            height = float(source.get("h", source.get("z", 0.1)))
+            first = float(source.get("w", source.get("x", source.get("length", 0.1))))
+            second = float(source.get("d", source.get("y", source.get("width", 0.1))))
+            height = float(source.get("h", source.get("z", source.get("height", 0.1))))
         return BoxDim(
             x=max(first, second),
             y=min(first, second),

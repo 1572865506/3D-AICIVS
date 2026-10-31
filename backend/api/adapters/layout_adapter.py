@@ -3,8 +3,8 @@ from collections import Counter
 import re
 
 from backend.solver_v2.structure.wall_model import WallStructureAnalyzer
-from src.cargo.intelligence import CargoProfileEngine
-from src.cargo.dimension_normalization import DimensionNormalizer
+from backend.cargo.intelligence import CargoProfileEngine
+from backend.cargo.dimension_normalization import DimensionNormalizer
 
 
 def _color(value):
