@@ -948,6 +948,7 @@ class UnifiedSolver:
                             "step_idx": step_idx,
                             "zone_counts": dict(zone_counts),
                             "payload_weight": getattr(self, "_curr_payload_weight", 0.0),
+                            "bearing_loads": [p.get("_bearing_load", 0.0) for p in placements],
                         }
 
                         wall_items = 0
@@ -963,6 +964,7 @@ class UnifiedSolver:
                                 for rx in range(col.num_rows_x):
                                     for cy in range(col.num_cols_y):
                                         if remaining_qty.get(col.variant.sku_id, 0) <= 0:
+                                            pat_success = False
                                             break
                                         is_flat = col.variant.is_flat
                                         if is_flat and col.variant.sku_id in ("SKU-14", "SKU-02"):
@@ -1021,7 +1023,9 @@ class UnifiedSolver:
                                     break
 
                             # Headroom relay for this column if there is residual vertical headroom
-                            if pat_success and col_placed > 0:
+                            # P0-3: Only relay if column was completely placed to avoid floating boxes on jagged surfaces
+                            col_expected = col.num_layers_z * col.num_rows_x * col.num_cols_y
+                            if pat_success and col_placed == col_expected:
                                 col_h = round(col.num_layers_z * col.variant.dz, 4)
                                 col_h, relay_cnt, step_idx = self._relay_headroom_for_profile(
                                     current_x=col_start_x,
@@ -1051,8 +1055,10 @@ class UnifiedSolver:
                             pattern_placed = True
                             break
                         else:
-                            # Transaction Rollback
+                            # Transaction Rollback (P0-4: strictly revert _bearing_load to eliminate phantom pressure voids)
                             del placements[tx_snapshot["placements_len"]:]
+                            for idx, b_load in enumerate(tx_snapshot.get("bearing_loads", [])):
+                                placements[idx]["_bearing_load"] = b_load
                             remaining_qty.clear()
                             remaining_qty.update(tx_snapshot["remaining_qty"])
                             current_x = tx_snapshot["current_x"]
@@ -1233,10 +1239,12 @@ class UnifiedSolver:
                                     sub_h = round(sub_col.nz * sub_col.dz, 4)
                                     sub_start_x = round(max_zone_x - sub_col.column_depth, 4) if (is_door and round(sec_start_x + sub_col.column_depth, 4) >= max_zone_x - 0.08) else sec_start_x
 
+                                    sub_stop = False
                                     for lz in range(sub_col.nz):
                                         for rx in range(sub_col.nx):
                                             for cy in range(sub_col.ny):
                                                 if remaining_qty.get(sub_col.sku_id, 0) <= 0:
+                                                    sub_stop = True
                                                     break
                                                 is_flat = ("FLAT" in sub_col.orientation_name or sub_col.dz < min(sub_col.dx, sub_col.dy))
                                                 cand_z = round(lz * sub_col.dz, 4)
@@ -1270,9 +1278,16 @@ class UnifiedSolver:
                                                     step_idx += 1
                                                     z_name = "DOOR" if is_door else ("INNER" if target_zone == UniversalZone.INNER else "MIDDLE")
                                                     zone_counts[z_name] = zone_counts.get(z_name, 0) + 1
+                                            if sub_stop:
+                                                break
+                                        if sub_stop:
+                                            break
 
                                     # Step 1.3: Multi-level Headroom Relay for each stepped sub-column
-                                    if sub_placed > 0:
+                                    # P0-3: Relay headroom only on flat uniform surfaces (at least one complete horizontal layer)
+                                    sub_fp = sub_col.nx * sub_col.ny
+                                    if sub_fp > 0 and sub_placed >= sub_fp and (sub_placed % sub_fp == 0):
+                                        sub_h = round((sub_placed // sub_fp) * sub_col.dz, 4)
                                         sub_h, relay_cnt, step_idx = self._relay_headroom_for_profile(
                                             current_x=sub_start_x,
                                             base_y=sub_y,
@@ -1341,10 +1356,12 @@ class UnifiedSolver:
                     cur_col_h = round(c_layers_z * col_opt.dz, 4)
                     strip_l = round(c_rows_x * col_opt.dx, 4)
                     col_start_x = round(max_zone_x - strip_l, 4) if (is_door and round(sec_start_x + strip_l, 4) >= max_zone_x - 0.08) else sec_start_x
+                    col_stop = False
                     for lz in range(c_layers_z):
                         for rx in range(c_rows_x):
                             for cy in range(c_cols_y):
                                 if placed_here >= needed or remaining_qty[col_sku.sku_id] <= 0:
+                                    col_stop = True
                                     break
                                 is_flat = (col_opt.is_flat or "FLAT" in col_opt.name or col_opt.dz <= min(col_sku.length, col_sku.width) + 1e-4)
                                 if is_flat and col_sku.sku_id in ("SKU-14", "SKU-02"):
@@ -1376,30 +1393,38 @@ class UnifiedSolver:
                                     step_idx += 1
                                     z_name = "DOOR" if is_door else ("INNER" if target_zone == UniversalZone.INNER else "MIDDLE")
                                     zone_counts[z_name] = zone_counts.get(z_name, 0) + 1
+                            if col_stop:
+                                break
+                        if col_stop:
+                            break
 
                     if placed_here == 0:
                         cur_y = round(cur_y + col_opt.dy, 4)
                         continue
 
                     # Pass 2 & 3: Multi-level Headroom Relay on Current Sub-strip Layer-First
-                    strip_w = c_cols_y * col_opt.dy
-                    cur_col_h, relay_cnt, step_idx = self._relay_headroom_for_profile(
-                        current_x=col_start_x,
-                        base_y=cur_y,
-                        strip_l=strip_l,
-                        strip_w=strip_w,
-                        base_h=cur_col_h,
-                        sku_group=sku_group,
-                        companion_pool=companion_pool,
-                        is_door=is_door,
-                        target_zone=target_zone,
-                        remaining_qty=remaining_qty,
-                        placements=placements,
-                        zone_counts=zone_counts,
-                        step_idx=step_idx,
-                        sort_mode=sort_mode,
-                    )
-                    placed_in_section += relay_cnt
+                    # P0-3: Only relay on complete flat layers
+                    col_fp = c_rows_x * c_cols_y
+                    if col_fp > 0 and placed_here >= col_fp and (placed_here % col_fp == 0):
+                        cur_col_h = round((placed_here // col_fp) * col_opt.dz, 4)
+                        strip_w = c_cols_y * col_opt.dy
+                        cur_col_h, relay_cnt, step_idx = self._relay_headroom_for_profile(
+                            current_x=col_start_x,
+                            base_y=cur_y,
+                            strip_l=strip_l,
+                            strip_w=strip_w,
+                            base_h=cur_col_h,
+                            sku_group=sku_group,
+                            companion_pool=companion_pool,
+                            is_door=is_door,
+                            target_zone=target_zone,
+                            remaining_qty=remaining_qty,
+                            placements=placements,
+                            zone_counts=zone_counts,
+                            step_idx=step_idx,
+                            sort_mode=sort_mode,
+                        )
+                        placed_in_section += relay_cnt
 
                     cur_y = round(cur_y + max(0.01, c_cols_y * col_opt.dy), 4)
 
