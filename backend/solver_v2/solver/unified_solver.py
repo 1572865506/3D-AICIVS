@@ -2481,20 +2481,6 @@ class UnifiedSolver:
                         return False  # Disconnected hollow bridge span
                     merged.append(seg)
 
-        # Constraint check: verify lower supporting boxes permit stacking on top
-        if getattr(self, "_sku_tensor_map", None) is not None:
-            eps = 1e-4
-            for p in relevant_placements:
-                if abs(round(p["z"] + p["dz"], 4) - round(cand["z"], 4)) < 1e-3:
-                    ix0 = max(cx0, p["x"])
-                    ix1 = min(cx1, p["x"] + p["dx"])
-                    iy0 = max(cy0, p["y"])
-                    iy1 = min(cy1, p["y"] + p["dy"])
-                    if ix1 > ix0 + eps and iy1 > iy0 + eps:
-                        under_sku = self._sku_tensor_map.get(p["sku_id"])
-                        if under_sku and not getattr(under_sku, "allow_stacking_on_top", True):
-                            return False
-
         return self._check_cog_projection(cand, relevant_placements)
 
     def _check_placement_constraints(self, cand: Dict, placements: List[Dict]) -> bool:
