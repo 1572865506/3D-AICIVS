@@ -202,7 +202,7 @@ class GapFiller:
     def _get_gap_orientations(self, sku: CargoSKU) -> List[Orientation3D]:
         raw_oris = sku.orientation_policy.get_legal_orientations(sku.box, PlacementContext.GAP_FILL)
         if not raw_oris:
-            x, y, z = sku.box.x, sku.box.y, sku.box+z
+            x, y, z = sku.box.x, sku.box.y, sku.box.z
             raw_oris = [
                 Orientation3D(dx=x, dy=y, dz=z, name='UPRIGHT_NORMAL', is_upright=True),
                 Orientation3D(dx=y, dy=x, dz=z, name='UPRIGHT_ROTATED', is_upright=True),
