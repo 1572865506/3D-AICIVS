@@ -503,9 +503,18 @@ class UnifiedSolver:
             "VALID_PARTIAL" if val_result.is_valid else "INVALID"
         )
 
+        best_rejections = raw_m.get("rejection_counts", {})
+        plc_diagnostics = self._compute_placement_diagnostics(final_placements)
+        cav_diagnostics = self._compute_cavity_diagnostics(best_raw_placements, tensor_cargo_list)
+
         telemetry = SolverTelemetry(
             runtime_ms=elapsed_ms,
             steps_committed=placed_cnt,
+            candidates_generated=raw_m.get("candidates_evaluated", placed_cnt * 2) + sum(best_rejections.values()),
+            candidates_evaluated=raw_m.get("candidates_evaluated", placed_cnt * 2),
+            candidates_rejected_by_reason=best_rejections,
+            placement_diagnostics=plc_diagnostics,
+            cavity_diagnostics=cav_diagnostics,
         )
 
         return SolverSolution(
@@ -704,6 +713,8 @@ class UnifiedSolver:
     def _solve_single_trial(self, cargo_list: List[UniversalCargoTensor], trial_cfg: Dict[str, Any], deadline: Optional[float] = None) -> Tuple[List[Dict], Dict]:
         self._sku_tensor_map = {c.sku_id: c for c in cargo_list}
         self._curr_payload_weight = 0.0
+        self._current_rejection_counts = {}
+        self._candidates_evaluated_count = 0
         remaining_qty: Dict[str, int] = {c.sku_id: c.quantity_required for c in cargo_list}
 
         inner_group: List[UniversalCargoTensor] = []
@@ -2049,7 +2060,9 @@ class UnifiedSolver:
         raw_metrics = {
             "walls_count": walls_count,
             "zone_counts": zone_counts,
-            "placed_count": len(placements)
+            "placed_count": len(placements),
+            "rejection_counts": dict(getattr(self, "_current_rejection_counts", {})),
+            "candidates_evaluated": getattr(self, "_candidates_evaluated_count", 0)
         }
         return placements, raw_metrics
 
@@ -2060,8 +2073,10 @@ class UnifiedSolver:
         cz0, cz1 = cand["z"] + eps, cand["z"] + cand["dz"] - eps
 
         if cx1 > self.cL + eps or cy1 > self.cW + eps or cz1 > self.cH + eps:
+            self._record_rejection("OUT_OF_CONTAINER")
             return True
         if cx0 < -eps or cy0 < -eps or cz0 < -eps:
+            self._record_rejection("OUT_OF_CONTAINER")
             return True
 
         if getattr(self, "_spatial_idx", None) is not None and len(self._spatial_idx) > 0:
@@ -2074,7 +2089,10 @@ class UnifiedSolver:
                 max_z=round(cand["z"] + cand["dz"], 4),
             )
             colliding = self._spatial_idx.query_intersect(cand_aabb, eps=eps)
-            return len(colliding) > 0
+            if len(colliding) > 0:
+                self._record_rejection("COLLISION")
+                return True
+            return False
 
         if placements is not None:
             for p in placements:
@@ -2630,3 +2648,175 @@ class UnifiedSolver:
             p["dz"] = round(p["dz"], 4)
 
         return len(placements)
+
+    def _record_rejection(self, reason: str, rejection_counts: Optional[Dict[str, int]] = None) -> None:
+        target = rejection_counts if rejection_counts is not None else getattr(self, "_current_rejection_counts", None)
+        if target is not None:
+            target[reason] = target.get(reason, 0) + 1
+
+    def _check_candidate_validity_with_reason(
+        self,
+        cand: Dict,
+        placements: List[Dict],
+        rejection_counts: Optional[Dict[str, int]] = None,
+    ) -> bool:
+        """
+        Unified pre-check gate with explicit rejection cause logging.
+        Evaluates boundary -> collision -> support & topology -> business constraints -> tipping safety.
+        """
+        eps = 1e-4
+        if (
+            cand["x"] < -eps or cand["y"] < -eps or cand["z"] < -eps
+            or cand["x"] + cand["dx"] > self.cL + eps
+            or cand["y"] + cand["dy"] > self.cW + eps
+            or cand["z"] + cand["dz"] > self.cH + eps
+        ):
+            self._record_rejection("OUT_OF_CONTAINER", rejection_counts)
+            return False
+
+        if self._has_collision(cand, placements):
+            if rejection_counts is not None and "COLLISION" not in rejection_counts:
+                rejection_counts["COLLISION"] = rejection_counts.get("COLLISION", 0) + 1
+            return False
+
+        if not self._has_sufficient_support(cand, placements):
+            if rejection_counts is not None and not any(k in rejection_counts for k in ("INSUFFICIENT_SUPPORT", "UNCONNECTED_SUPPORT_TOPOLOGY")):
+                rejection_counts["INSUFFICIENT_SUPPORT"] = rejection_counts.get("INSUFFICIENT_SUPPORT", 0) + 1
+            return False
+
+        if not self._check_placement_constraints(cand, placements):
+            if rejection_counts is not None and not any(k in rejection_counts for k in ("PAYLOAD_LIMIT_EXCEEDED", "MUST_BE_ON_FLOOR_VIOLATION", "DOOR_ZONE_VIOLATION", "NO_TOP_STACK_VIOLATION", "BEARING_CAPACITY_EXCEEDED", "MAX_STACKING_LAYERS_EXCEEDED")):
+                rejection_counts["CONSTRAINT_VIOLATION"] = rejection_counts.get("CONSTRAINT_VIOLATION", 0) + 1
+            return False
+
+        if not self._is_placement_tipping_safe(cand, placements):
+            if rejection_counts is not None and "TIPPING_RISK" not in rejection_counts:
+                rejection_counts["TIPPING_RISK"] = rejection_counts.get("TIPPING_RISK", 0) + 1
+            return False
+
+        return True
+
+    def _compute_placement_diagnostics(self, placements: List[Placement]) -> Dict[str, Dict[str, Any]]:
+        """
+        Computes structured geometric diagnostic metrics for every committed placement.
+        Returns mapping: placement_id -> {
+            support_ratio: float,
+            is_connected: bool,
+            contact_count: int,
+            bearing_margin_kg: float,
+            stacking_layer: int
+        }
+        """
+        diag: Dict[str, Dict[str, Any]] = {}
+        eps = 1e-4
+
+        for p in placements:
+            pid = p.placement_id
+            cand_area = max(1e-6, p.orientation.dx * p.orientation.dy)
+
+            if p.position.z < 1e-3:
+                support_ratio = 1.0
+                is_connected = True
+                contact_count = 1
+                stacking_layer = 1
+            else:
+                contact_area = 0.0
+                contact_cnt = 0
+                for other in placements:
+                    if abs(round(other.max_z, 4) - round(p.position.z, 4)) < 1e-3:
+                        ix0 = max(p.min_x, other.min_x)
+                        ix1 = min(p.max_x, other.max_x)
+                        iy0 = max(p.min_y, other.min_y)
+                        iy1 = min(p.max_y, other.max_y)
+                        if ix1 > ix0 + eps and iy1 > iy0 + eps:
+                            contact_area += (ix1 - ix0) * (iy1 - iy0)
+                            contact_cnt += 1
+                support_ratio = round(min(1.0, contact_area / cand_area), 4)
+                contact_count = max(1, contact_cnt)
+                layer_cnt = 1 + int(round(p.position.z / max(1e-3, p.orientation.dz)))
+                stacking_layer = max(1, layer_cnt)
+                is_connected = support_ratio >= 0.70 and contact_count >= 1
+
+            max_bearing = None
+            if hasattr(self, "_sku_tensor_map") and p.sku_id in self._sku_tensor_map:
+                max_bearing = getattr(self._sku_tensor_map[p.sku_id], "max_bearing_kg", None)
+
+            upper_weight = 0.0
+            for upper in placements:
+                if abs(round(upper.min_z, 4) - round(p.max_z, 4)) < 1e-3:
+                    ix0 = max(p.min_x, upper.min_x)
+                    ix1 = min(p.max_x, upper.max_x)
+                    iy0 = max(p.min_y, upper.min_y)
+                    iy1 = min(p.max_y, upper.max_y)
+                    if ix1 > ix0 + eps and iy1 > iy0 + eps:
+                        frac = ((ix1 - ix0) * (iy1 - iy0)) / max(1e-6, upper.orientation.dx * upper.orientation.dy)
+                        upper_weight += upper.weight_kg * frac
+
+            bearing_margin = round((max_bearing - upper_weight), 2) if max_bearing is not None else 999999.0
+
+            diag[pid] = {
+                "support_ratio": support_ratio,
+                "is_connected": is_connected,
+                "contact_count": contact_count,
+                "bearing_margin_kg": bearing_margin,
+                "stacking_layer": stacking_layer,
+            }
+        return diag
+
+    def _compute_cavity_diagnostics(
+        self,
+        placements: List[Dict],
+        cargo_list: List[UniversalCargoTensor],
+    ) -> List[Dict[str, Any]]:
+        """
+        Analyzes empty cavities in the container and classifies rejection reasons:
+        - PHYSICALLY_UNAVAILABLE: Cavity dimension too small to fit any SKU.
+        - CONSTRAINT_EXCLUDED: SKU fits dimensionally but is excluded by constraints.
+        - STRATEGY_ABANDONED: Feasible without constraint violation but skipped.
+        """
+        cavities: List[Dict[str, Any]] = []
+        if not placements:
+            return cavities
+
+        max_placed_x = max((p["x"] + p["dx"] for p in placements), default=0.0)
+        max_placed_z = max((p["z"] + p["dz"] for p in placements), default=0.0)
+
+        # 1. Door zone / Tail cavity if any
+        if self.cL - max_placed_x > 0.05:
+            tail_vol = (self.cL - max_placed_x) * self.cW * self.cH
+            cav_box = (round(max_placed_x, 4), 0.0, 0.0, self.cL, self.cW, self.cH)
+            eligible_skus = [c.sku_id for c in cargo_list if (self.cL - max_placed_x) >= min(c.length, c.width, c.height)]
+
+            ex_cat = "PHYSICALLY_UNAVAILABLE" if not eligible_skus else "STRATEGY_ABANDONED"
+            ex_reason = None
+            if eligible_skus and getattr(self, "_has_door_skus", False):
+                ex_cat = "CONSTRAINT_EXCLUDED"
+                ex_reason = "DOOR_ZONE_VIOLATION"
+
+            cavities.append({
+                "cavity_id": "cavity_tail_residual",
+                "box": cav_box,
+                "volume": round(tail_vol, 4),
+                "eligible_skus": eligible_skus,
+                "exclusion_category": ex_cat,
+                "excluded_by_constraint": ex_reason,
+            })
+
+        # 2. Roof headroom cavity if any
+        if self.cH - max_placed_z > 0.05:
+            roof_vol = self.cL * self.cW * (self.cH - max_placed_z)
+            cav_box = (0.0, 0.0, round(max_placed_z, 4), self.cL, self.cW, self.cH)
+            eligible_skus = [c.sku_id for c in cargo_list if (self.cH - max_placed_z) >= min(c.length, c.width, c.height)]
+            ex_cat = "PHYSICALLY_UNAVAILABLE" if not eligible_skus else "CONSTRAINT_EXCLUDED"
+            ex_reason = "INSUFFICIENT_SUPPORT" if eligible_skus else None
+
+            cavities.append({
+                "cavity_id": "cavity_roof_headroom",
+                "box": cav_box,
+                "volume": round(roof_vol, 4),
+                "eligible_skus": eligible_skus,
+                "exclusion_category": ex_cat,
+                "excluded_by_constraint": ex_reason,
+            })
+
+        return cavities

@@ -72,6 +72,8 @@ class SolverTelemetry:
     door_readiness: Optional[Dict[str, Any]] = None
     top_fill_metrics: Optional[Dict[str, Any]] = None
     wall_plan_search_metrics: Optional[Dict[str, Any]] = None
+    placement_diagnostics: Dict[str, Dict[str, Any]] = field(default_factory=dict)
+    cavity_diagnostics: List[Dict[str, Any]] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -95,6 +97,8 @@ class SolverTelemetry:
             "door_readiness": self.door_readiness,
             "top_fill_metrics": self.top_fill_metrics,
             "wall_plan_search_metrics": self.wall_plan_search_metrics,
+            "placement_diagnostics": self.placement_diagnostics,
+            "cavity_diagnostics": self.cavity_diagnostics,
         }
 
 
