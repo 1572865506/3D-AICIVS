@@ -298,6 +298,23 @@ class CompositeStripBuilder:
         if cand_bfd and cand_bfd.columns:
             candidates.append(cand_bfd)
 
+        # Strategy A2/A3 (STAGE1-C2 条带候选多样化)：不同模数排序的 BFD 变体，
+        # 让同一断面拥有"大模数占宽"与"小模数塞缝"两类可选带，由统一评分择优。
+        for variant_order in ("area_desc", "dy_asc"):
+            cand_variant = self._build_greedy_bfd_strip(
+                options=active_options,
+                target_width=target_width,
+                delta_x=delta_x,
+                available_height=available_height,
+                inventory=curr_rem_qty,
+                context=context,
+                max_subcolumns=max_subcolumns,
+                allow_mixed_skus=allow_mixed_skus,
+                order=variant_order,
+            )
+            if cand_variant and cand_variant.columns:
+                candidates.append(cand_variant)
+
         # Strategy B: Knapsack/Combinatorial optimization for near-perfect width packing
         cand_knapsack = self._build_combinatorial_strip(
             options=active_options,
@@ -459,14 +476,34 @@ class CompositeStripBuilder:
         context: PlacementContext,
         max_subcolumns: int,
         allow_mixed_skus: bool,
+        order: str = "dy_desc",
     ) -> Optional[CompositeStripResult]:
-        """Greedy Best Fit Decreasing by dy descending."""
+        """Greedy Best Fit Decreasing strip builder（STAGE1-C2: 可插拔排序，扩大条带候选多样性）。
+
+        order 变体：
+        - "dy_desc"   默认：大列宽优先，深度对齐次之
+        - "area_desc" 大占地面积优先：优先用大模数占宽，抗碎片化
+        - "dy_asc"    小列宽优先：优先塞满窄缝，减少剩余薄条
+        """
         # Sort options: prioritize larger dy, then depth alignment with delta_x, then volume
-        sorted_opts = sorted(
-            options,
-            key=lambda o: (o.dy, (o.nx * o.dx) / delta_x, o.dx * o.dy * o.dz),
-            reverse=True,
-        )
+        if order == "area_desc":
+            sorted_opts = sorted(
+                options,
+                key=lambda o: (o.dx * o.dy, o.dy, (o.nx * o.dx) / delta_x, o.dx * o.dy * o.dz),
+                reverse=True,
+            )
+        elif order == "dy_asc":
+            sorted_opts = sorted(
+                options,
+                key=lambda o: (o.dy, -(o.dx * o.dy * o.dz)),
+                reverse=False,
+            )
+        else:
+            sorted_opts = sorted(
+                options,
+                key=lambda o: (o.dy, (o.nx * o.dx) / delta_x, o.dx * o.dy * o.dz),
+                reverse=True,
+            )
 
         rem_inv = dict(inventory)
         columns: List[SubColumnConfig] = []
