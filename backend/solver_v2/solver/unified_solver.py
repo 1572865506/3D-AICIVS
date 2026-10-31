@@ -335,6 +335,10 @@ class UnifiedSolver:
             )
 
         tensor_cargo_list = self._convert_cargo_skus_to_tensors(cargo_list)
+        # STAGE1-C3: PASS4 回填锚点排序策略（对照实验用，默认保持现状"depth"深度优先）
+        _p4_anchor_order = (options or {}).get("pass4_anchor_order")
+        if _p4_anchor_order:
+            self.pass4_anchor_order = _p4_anchor_order
         self._has_any_bearing_constraints = any(
             getattr(c, 'max_bearing_kg', None) is not None
             or getattr(getattr(c, 'stacking_policy', None), 'max_bearing_kg', None) is not None
@@ -1199,6 +1203,17 @@ class UnifiedSolver:
                 else:
                     pool = base_pool
 
+                # STAGE1-C1（阶段一·项3"看剩余"评分）：预计算剩余货池在本断面内可用的列宽集合。
+                # 若某列宽选择在 rem_w 上留下一条任何剩余 SKU 都填不进的薄条，
+                # 则该选择会把这段断面宽度封死成死区，需在评分中惩罚。
+                section_fill_dys = set()
+                for fc in pool:
+                    if remaining_qty.get(fc.sku_id, 0) <= 0:
+                        continue
+                    for fo in self._get_permitted_orientations(fc):
+                        if fo.dx <= (delta_x + 1e-4) and fo.dz <= (self.cH - 0.04) + 1e-4:
+                            section_fill_dys.add(round(fo.dy, 4))
+
                 while cur_y < self.cW - 0.03:
                     rem_w = round(self.cW - cur_y, 4)
                     col_sku = None
@@ -1213,6 +1228,11 @@ class UnifiedSolver:
                             if o.dy <= (rem_w + 1e-4) and o.dx <= (delta_x + 1e-4):
                                 cols_fit = int((rem_w + 1e-4) / o.dy)
                                 cov = (cols_fit * o.dy) / rem_w
+                                # STAGE1-C1: 计算该列宽选择留下的剩余薄条是否为死区
+                                leftover_w = rem_w - cols_fit * o.dy
+                                dead_strip_pen = 0.0
+                                if leftover_w > 1e-3 and not any(ldy <= leftover_w + 1e-4 for ldy in section_fill_dys):
+                                    dead_strip_pen = 0.15 * (leftover_w / max(rem_w, 1e-6))
                                 rem_ratio = remaining_qty[cand.sku_id] / max(1, cand.quantity_required)
                                 if sort_mode == "volume_desc":
                                     score = cov * 0.40 + (0.35 if cand.sku_id == primary_sku.sku_id else 0.05) + (cand.volume_m3) * 0.25
@@ -1222,6 +1242,7 @@ class UnifiedSolver:
                                     score = cov * 0.40 + (0.35 if cand.sku_id == primary_sku.sku_id else 0.05) + rem_ratio * 0.25
                                 else:
                                     score = cov * 0.55 + (0.25 if cand.sku_id == primary_sku.sku_id else 0.05) + rem_ratio * 0.20
+                                score -= dead_strip_pen
                                 if score > best_score:
                                     best_score = score
                                     col_sku = cand
@@ -1485,7 +1506,23 @@ class UnifiedSolver:
 
             has_door_skus = any(c.zone_preference == UniversalZone.DOOR for c in cargo_list)
 
-            for ax, ay, az in sorted(list(anchors), key=lambda pt: (pt[0], pt[2], pt[1])):
+            # STAGE1-C3: PASS4 锚点扫描顺序策略化（阶段一·项2 对照实验）：
+            # - "depth"       现状默认：深度优先 (x, z, y)，先封纵深再铺宽
+            # - "wall_hug"    贴壁优先：先贴侧墙/底面成角，减少悬浮碎片腔
+            # - "layer_first" 逐层铺平：自下而上先压平每层，抑制早期高柱
+            _anchor_order = getattr(self, "pass4_anchor_order", "depth")
+            if _anchor_order == "wall_hug":
+                _anchor_iter = sorted(list(anchors), key=lambda pt: (
+                    0 if (pt[1] <= 0.02 or pt[1] >= self.cW - 0.03) else 1,
+                    0 if pt[2] <= 0.02 else 1,
+                    pt[0], pt[2], pt[1],
+                ))
+            elif _anchor_order == "layer_first":
+                _anchor_iter = sorted(list(anchors), key=lambda pt: (pt[2], pt[0], pt[1]))
+            else:
+                _anchor_iter = sorted(list(anchors), key=lambda pt: (pt[0], pt[2], pt[1]))
+
+            for ax, ay, az in _anchor_iter:
                 if deadline is not None and time.perf_counter() > deadline:
                     break
                 if ax >= self.cL - 0.04 or ay >= self.cW - 0.02 or az >= self.cH - 0.03:
