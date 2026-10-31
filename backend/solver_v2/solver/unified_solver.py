@@ -2421,7 +2421,16 @@ class UnifiedSolver:
                    abs(p["y"] - cand["y"]) <= cand["dy"] + 0.1
             ]
 
+        # Resolve required support ratio from SKU definition (P0-2)
+        req_ratio = min_ratio
+        if getattr(self, "_sku_tensor_map", None) is not None:
+            cand_sku = self._sku_tensor_map.get(cand["sku_id"])
+            if cand_sku:
+                req_ratio = max(req_ratio, getattr(cand_sku, "min_support_ratio", 0.0))
+
         support_area = 0.0
+        x_intervals = []
+        y_intervals = []
         for p in relevant_placements:
             if abs(round(p["z"] + p["dz"], 4) - round(cand["z"], 4)) < 1e-3:
                 ix0 = max(cx0, p["x"])
@@ -2430,8 +2439,29 @@ class UnifiedSolver:
                 iy1 = min(cy1, p["y"] + p["dy"])
                 if ix1 > ix0 + 1e-4 and iy1 > iy0 + 1e-4:
                     support_area += (ix1 - ix0) * (iy1 - iy0)
-        if (support_area / cand_area) < (min_ratio - 1e-4):
+                    x_intervals.append((ix0, ix1))
+                    y_intervals.append((iy0, iy1))
+
+        if (support_area / cand_area) < (req_ratio - 1e-4):
             return False
+
+        # P0-2 Anti-Bridge / Anti-Sagging Span Check:
+        # Check that supporting contacts do not leave an unsupported hollow gap > 5cm between them along X or Y
+        max_allowed_gap = max(0.04, min(0.08, 0.15 * min(cand["dx"], cand["dy"])))
+        for intervals in (x_intervals, y_intervals):
+            if not intervals:
+                return False
+            intervals.sort(key=lambda seg: seg[0])
+            merged = [intervals[0]]
+            for seg in intervals[1:]:
+                prev_s, prev_e = merged[-1]
+                if seg[0] <= prev_e + 0.03:  # touching tolerance of 3cm
+                    merged[-1] = (prev_s, max(prev_e, seg[1]))
+                else:
+                    gap = seg[0] - prev_e
+                    if gap > max_allowed_gap:
+                        return False  # Disconnected hollow bridge span
+                    merged.append(seg)
 
         # Constraint check: verify lower supporting boxes permit stacking on top
         if getattr(self, "_sku_tensor_map", None) is not None:
