@@ -1007,8 +1007,6 @@ class UnifiedSolver:
                                         # 5. Has forward touching neighbor in placements
                                         is_tipping_safe = (
                                             (rx < col.num_rows_x - 1)
-                                            or (cand_pos["x"] + cand_pos["dx"] >= self.cL - 0.05)
-                                            or ((2.0 * cand_pos["dx"] / max(1e-4, cand_pos["dz"])) >= 1.5 - 1e-4)
                                             or self._is_placement_tipping_safe(cand_pos, placements)
                                         )
 
