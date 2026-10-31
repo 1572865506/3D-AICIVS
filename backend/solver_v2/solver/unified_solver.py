@@ -952,10 +952,12 @@ class UnifiedSolver:
 
                         wall_items = 0
                         pat_success = True
+                        pat_start_x = round(max_zone_x - pat.flush_depth, 4) if (is_door and round(current_x + pat.flush_depth, 4) >= max_zone_x - 0.08) else current_x
 
                         for col in pat.columns:
                             col_y = round(col.y_start, 4)
                             col_placed = 0
+                            col_start_x = round(max_zone_x - col.col_depth, 4) if (is_door and round(pat_start_x + col.col_depth, 4) >= max_zone_x - 0.08) else pat_start_x
 
                             for lz in range(col.num_layers_z):
                                 for rx in range(col.num_rows_x):
@@ -971,7 +973,7 @@ class UnifiedSolver:
                                             ctx_val = tag_val
                                         cand_pos = {
                                             "sku_id": col.variant.sku_id,
-                                            "x": round(current_x + rx * col.variant.dx, 4),
+                                            "x": round(col_start_x + rx * col.variant.dx, 4),
                                             "y": round(col_y + cy * col.variant.dy, 4),
                                             "z": round(lz * col.variant.dz, 4),
                                             "dx": col.variant.dx,
@@ -1022,7 +1024,7 @@ class UnifiedSolver:
                             if pat_success and col_placed > 0:
                                 col_h = round(col.num_layers_z * col.variant.dz, 4)
                                 col_h, relay_cnt, step_idx = self._relay_headroom_for_profile(
-                                    current_x=current_x,
+                                    current_x=col_start_x,
                                     base_y=col_y,
                                     strip_l=col.col_depth,
                                     strip_w=col.col_width,
@@ -1044,7 +1046,7 @@ class UnifiedSolver:
 
                         if pat_success and wall_items > 0:
                             # Successfully committed pattern wall transaction!
-                            current_x = round(current_x + pat.flush_depth, 4)
+                            current_x = round(pat_start_x + pat.flush_depth, 4)
                             walls_count += 1
                             pattern_placed = True
                             break
@@ -1175,6 +1177,7 @@ class UnifiedSolver:
 
                 cur_y = 0.0
                 placed_in_section = 0
+                sec_start_x = round(max_zone_x - delta_x, 4) if (is_door and round(current_x + delta_x, 4) >= max_zone_x - 0.08) else current_x
                 base_pool = [primary_sku] + sku_group + ([] if is_door else companion_pool)
                 if has_rigid_rem:
                     pool = [c for c in base_pool if not getattr(c, 'is_elastic', False)]
@@ -1228,6 +1231,7 @@ class UnifiedSolver:
                                     sub_placed = 0
                                     sub_y = round(cur_y + sub_col.y_offset, 4)
                                     sub_h = round(sub_col.nz * sub_col.dz, 4)
+                                    sub_start_x = round(max_zone_x - sub_col.column_depth, 4) if (is_door and round(sec_start_x + sub_col.column_depth, 4) >= max_zone_x - 0.08) else sec_start_x
 
                                     for lz in range(sub_col.nz):
                                         for rx in range(sub_col.nx):
@@ -1244,7 +1248,7 @@ class UnifiedSolver:
                                                     ctx_val = tag_val
                                                 cand_pos = {
                                                     "sku_id": sub_col.sku_id,
-                                                    "x": round(current_x + rx * sub_col.dx, 4),
+                                                    "x": round(sub_start_x + rx * sub_col.dx, 4),
                                                     "y": round(sub_y + cy * sub_col.dy, 4),
                                                     "z": cand_z,
                                                     "dx": sub_col.dx, "dy": sub_col.dy, "dz": sub_col.dz,
@@ -1270,7 +1274,7 @@ class UnifiedSolver:
                                     # Step 1.3: Multi-level Headroom Relay for each stepped sub-column
                                     if sub_placed > 0:
                                         sub_h, relay_cnt, step_idx = self._relay_headroom_for_profile(
-                                            current_x=current_x,
+                                            current_x=sub_start_x,
                                             base_y=sub_y,
                                             strip_l=sub_col.column_depth,
                                             strip_w=sub_col.column_width,
@@ -1335,6 +1339,8 @@ class UnifiedSolver:
                     # Place Solid Column Layer-First
                     placed_here = 0
                     cur_col_h = round(c_layers_z * col_opt.dz, 4)
+                    strip_l = round(c_rows_x * col_opt.dx, 4)
+                    col_start_x = round(max_zone_x - strip_l, 4) if (is_door and round(sec_start_x + strip_l, 4) >= max_zone_x - 0.08) else sec_start_x
                     for lz in range(c_layers_z):
                         for rx in range(c_rows_x):
                             for cy in range(c_cols_y):
@@ -1349,7 +1355,7 @@ class UnifiedSolver:
                                     ctx_val = tag_val
                                 cand_pos = {
                                     "sku_id": col_sku.sku_id,
-                                    "x": round(current_x + rx * col_opt.dx, 4),
+                                    "x": round(col_start_x + rx * col_opt.dx, 4),
                                     "y": round(cur_y + cy * col_opt.dy, 4),
                                     "z": round(lz * col_opt.dz, 4),
                                     "dx": col_opt.dx, "dy": col_opt.dy, "dz": col_opt.dz,
@@ -1377,9 +1383,8 @@ class UnifiedSolver:
 
                     # Pass 2 & 3: Multi-level Headroom Relay on Current Sub-strip Layer-First
                     strip_w = c_cols_y * col_opt.dy
-                    strip_l = c_rows_x * col_opt.dx
                     cur_col_h, relay_cnt, step_idx = self._relay_headroom_for_profile(
-                        current_x=current_x,
+                        current_x=col_start_x,
                         base_y=cur_y,
                         strip_l=strip_l,
                         strip_w=strip_w,
@@ -1399,7 +1404,7 @@ class UnifiedSolver:
                     cur_y = round(cur_y + max(0.01, c_cols_y * col_opt.dy), 4)
 
                 if placed_in_section > 0:
-                    current_x = round(current_x + delta_x, 4)
+                    current_x = round(sec_start_x + delta_x, 4)
                     walls_count += 1
                     consecutive_failed_slices = 0
                 else:
@@ -2553,6 +2558,13 @@ class UnifiedSolver:
         return True
 
     def _compact_placements(self, placements: List[Dict]) -> int:
+        """
+        Post-placement coordinate normalization (P0-1 Fix).
+        CRITICAL ARCHITECTURAL CONTRACT:
+        - Absolute Append-Only Immutability: NEVER shift, translate, or mutate already committed placements!
+        - All placement coordinates and door alignments are strictly solved upstream in pre-check gates.
+        - This method only ensures clean canonical floating point rounding and sorting.
+        """
         placements.sort(key=lambda p: (round(p["x"], 4), round(p["y"], 4), round(p["z"], 4)))
         for p in placements:
             p["x"] = round(max(0.0, p["x"]), 4)
@@ -2561,55 +2573,5 @@ class UnifiedSolver:
             p["dx"] = round(p["dx"], 4)
             p["dy"] = round(p["dy"], 4)
             p["dz"] = round(p["dz"], 4)
-
-        # Final Door Flush Alignment:
-        # If door zone sealing boxes or frontward boundary boxes were placed, shift the frontmost layer forward
-        # so their front edge snugly touches the container door boundary (x + dx = cL - 0.04m),
-        # providing rigid door support and eliminating tipping moment violations without overlap.
-        door_skus_set = set()
-        if getattr(self, "_sku_tensor_map", None):
-            for sid, sku_t in self._sku_tensor_map.items():
-                if sku_t.zone_preference == UniversalZone.DOOR or "门" in (getattr(sku_t, 'raw_requirement', '') or ''):
-                    door_skus_set.add(sid)
-        door_p = [p for p in placements if (p.get('context') == 'DOOR_SEAL' or p.get('tag') == 'DOOR_SEAL') and (not door_skus_set or p.get('sku_id') in door_skus_set)]
-        if door_p:
-            other_p = [p for p in placements if p not in door_p]
-            max_other_x = max([p['x'] + p['dx'] for p in other_p], default=0.0)
-            max_door_x = max([p['x'] + p['dx'] for p in door_p], default=0.0)
-            min_door_x = min(p['x'] for p in door_p)
-            target_front = round(self.cL - 0.04, 4)
-            shift_dx = round(target_front - max_door_x, 4)
-            
-            # Check if any other_p items currently rely on door_p for forward stability
-            # (i.e. other_p cartons touching door_p at min_door_x that have SF < 1.5)
-            other_needs_door_support = False
-            for op in other_p:
-                if abs((op['x'] + op['dx']) - min_door_x) <= 0.03:
-                    sf = (2.0 * op['dx']) / max(1e-4, op['dz'])
-                    if sf < 1.5 - 1e-4:
-                        other_needs_door_support = True
-                        break
-
-            if shift_dx > 1e-4 and not other_needs_door_support and (min_door_x + shift_dx) >= max_other_x - 1e-4:
-                for p in door_p:
-                    p['x'] = round(p['x'] + shift_dx, 4)
-            elif abs(max_door_x - target_front) < 1e-3 and min_door_x > max_other_x + 0.03 and other_needs_door_support:
-                gap_to_other = round(min_door_x - max_other_x, 4)
-                if 0.03 < gap_to_other <= 0.35:
-                    for p in door_p:
-                        p['x'] = round(p['x'] - gap_to_other, 4)
-
-        # General Snug Door Alignment:
-        # If the frontmost wall is within 0.06m from the door boundary (cL - 0.04),
-        # micro-shift that frontmost layer to snugly touch the door boundary (x + dx = cL - 0.04).
-        max_front_x = max([p["x"] + p["dx"] for p in placements], default=0.0)
-        target_front = round(self.cL - 0.04, 4)
-        gap_to_door_target = round(target_front - max_front_x, 4)
-        if 1e-4 < gap_to_door_target <= 0.05:
-            # Shift the outermost front-touching cartons (only if no door SKUs exist, or they are door SKUs)
-            for p in placements:
-                if abs((p["x"] + p["dx"]) - max_front_x) < 1e-3:
-                    if not door_skus_set or p.get('sku_id') in door_skus_set:
-                        p["x"] = round(p["x"] + gap_to_door_target, 4)
 
         return len(placements)
