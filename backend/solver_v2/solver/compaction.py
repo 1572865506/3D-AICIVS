@@ -211,7 +211,22 @@ class CompactionPass:
                             base_area = dx * dy
                             ratio = supp_area / base_area if base_area > 0 else 0.0
                             if supp_valid and (ratio >= min_support_ratio - eps):
-                                support_ok = True
+                                # Verify bearing capacity of underlying boxes
+                                bearing_ok = True
+                                for j, other in enumerate(current_placements):
+                                    if j == i:
+                                        continue
+                                    if abs((other.position.z + other.orientation.dz) - z_try) <= z_contact_tol:
+                                        o_ox = min(x + dx, other.position.x + other.orientation.dx) - max(x, other.position.x)
+                                        o_oy = min(y + dy, other.position.y + other.orientation.dy) - max(y, other.position.y)
+                                        if o_ox > eps and o_oy > eps:
+                                            other_sku = sku_map.get(other.sku_id)
+                                            if other_sku and other_sku.stacking_policy.max_bearing_kg is not None:
+                                                if p.weight_kg > other_sku.stacking_policy.max_bearing_kg + eps:
+                                                    bearing_ok = False
+                                                    break
+                                if bearing_ok:
+                                    support_ok = True
 
                         if support_ok:
                             # Apply downward move
@@ -323,6 +338,24 @@ class CompactionPass:
 
             if not moved_in_pass:
                 break
+
+        if cargo_catalog is not None:
+            from backend.solver_v2.validation.independent_validator import IndependentGlobalValidator
+            raw_catalog = list(cargo_catalog.values()) if isinstance(cargo_catalog, dict) else cargo_catalog
+            val_res = IndependentGlobalValidator.validate(c, current_placements, raw_catalog)
+            if not val_res.is_valid:
+                # Rollback to original placements to strictly prevent corruption!
+                return CompactionResult(
+                    placements=placements,
+                    initial_bounding_box_volume=init_bbox_vol,
+                    compacted_bounding_box_volume=init_bbox_vol,
+                    released_volume_m3=0.0,
+                    boxes_moved_count=0,
+                    total_z_reduction_m=0.0,
+                    total_x_reduction_m=0.0,
+                    passes_performed=passes_performed,
+                    is_valid=True,
+                )
 
         # Final bounding metrics and space release
         final_max_x = max(p.position.x + p.orientation.dx for p in current_placements)
