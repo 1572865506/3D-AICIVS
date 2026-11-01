@@ -94,8 +94,11 @@ class TestUnifiedGateRouting:
         """源码级：全量四检查元组站点必须收敛到统一门禁。
 
         允许的 `_is_placement_tipping_safe(` 裸调用恰为 2 处：
-        - PASS1 条带列实例化的倾覆捷径站点（待产品裁决，单独轮次处理）
         - 统一门禁内部的调用
+        - PASS1 条带列实例化的倾覆捷径站点（轮6已核验为门禁前向支承豁免的
+          等价记忆化：列内行连续排布使 rx+1 行恰好满足门禁的前向搭接条件，
+          且 P0-4 事务回滚保证依赖未来箱的捷径箱永不提交——非语义分歧，
+          显式豁免并注释证明于 unified_solver.py 实例化循环处）
         统一门禁的调用点必须 >= 10（11 个全量元组站点）。
         """
         with open(SOLVER_PATH, "r", encoding="utf-8") as f:
@@ -107,6 +110,23 @@ class TestUnifiedGateRouting:
             f"仍有 {raw_tipping_calls} 处站点绕过统一门禁直接调用倾覆检查（收敛不完整）"
         )
         assert gate_calls >= 10, f"统一门禁仅 {gate_calls} 处调用点，站点收敛不完整"
+
+    def test_no_unstable_boxes_in_committed_solutions(self):
+        """端到端钉住：提交解中不得存在倾覆不安全箱。条带捷径依赖的未来箱若被
+        回滚遗漏，将在此显形为 UNSTABLE_PLACEMENT（validator Gate 11 兜底的
+        直接断言化，混合尺寸货单以触发条带列实例化路径）。"""
+        container = InputAdapter.parse_container(CONTAINER_SPEC)
+        cargo = InputAdapter.parse_cargo_list([
+            {"sku": "A1", "name": "标准箱A", "w": 1.2, "d": 1.0, "h": 1.0, "weight": 80.0, "quantity": 24},
+            {"sku": "B1", "name": "中箱B", "w": 0.8, "d": 0.6, "h": 0.6, "weight": 25.0, "quantity": 40},
+            {"sku": "C1", "name": "扁平箱C", "w": 1.0, "d": 0.8, "h": 0.35, "weight": 15.0, "quantity": 30},
+        ])
+        solver = UnifiedSolver(container)
+        sol = solver.solve(cargo)
+        assert sol.placed_count > 0
+        unstable = [v for v in sol.validation_result.violations
+                    if getattr(v.violation_type, "name", "") == "UNSTABLE_PLACEMENT"]
+        assert not unstable, f"提交解存在 {len(unstable)} 个倾覆不安全箱（捷径回滚可能遗漏）"
 
 
 if __name__ == "__main__":

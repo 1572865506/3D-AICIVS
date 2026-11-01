@@ -1003,6 +1003,16 @@ class UnifiedSolver:
                                         # 3. Intrinsic safety SF = 2.0 * dx / dz >= 1.5
                                         # 4. In intermediate container space where forward walls will be stacked, allow placement with forward support expectation
                                         # 5. Has forward touching neighbor in placements
+                                        #
+                                        # 审计核验（表A不一致项·轮6，等价性证明）：条件 1 是门禁
+                                        # _is_placement_tipping_safe 前向支承豁免的等价记忆化——
+                                        # 列内行按 rx*dx 连续排布，rx+1 行的左侧面恰位于本行右侧面
+                                        # （间距 0 <= 3cm 容差），同列同 y/z 足迹满足 20% 搭接，
+                                        # 故模式完整提交时门禁对本行必放行，捷径无语义分歧。
+                                        # rx 升序实例化下 rx+1 行尚未放置，依赖未来箱的隐患由
+                                        # 本模式的 P0-4 事务回滚兜底：pat_success=False 时整个
+                                        # 模式的箱（含捷径箱）随 tx_snapshot 一并回滚，永不提交；
+                                        # 残余风险仅剩"废试算"（Gate 11 事后兜底，56 用例 0 违规）。
                                         is_tipping_safe = (
                                             (rx < col.num_rows_x - 1)
                                             or self._is_placement_tipping_safe(cand_pos, placements)
