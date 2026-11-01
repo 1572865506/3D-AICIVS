@@ -2820,54 +2820,176 @@ class UnifiedSolver:
         cargo_list: List[UniversalCargoTensor],
     ) -> List[Dict[str, Any]]:
         """
-        Analyzes empty cavities in the container and classifies rejection reasons:
-        - PHYSICALLY_UNAVAILABLE: Cavity dimension too small to fit any SKU.
-        - CONSTRAINT_EXCLUDED: SKU fits dimensionally but is excluded by constraints.
-        - STRATEGY_ABANDONED: Feasible without constraint violation but skipped.
+        X 切片 + YZ 极大矩形自由空间分解（审计表A诊断盲区修复，替代原"尾部残余+顶部净高"两类近似）。
+
+        用途：为"不可解释空洞数"棘轮（R3 不变量2）与空腔排除类别分布提供全覆盖诊断。
+        方法：以全部放置 x 边界切分纵深处切片；每切片在 Y-Z 平面以 0.1m 栅格做
+        极大空闲矩形贪心覆盖；跨相邻切片同形矩形合并为单一空腔。分类阶梯：
+        - PHYSICALLY_UNAVAILABLE：包围盒放不进任何 SKU 的任何朝向；
+        - CONSTRAINT_EXCLUDED / DOOR_ZONE_VIOLATION：完全位于门区锁定线内且无可用的门区件；
+        - CONSTRAINT_EXCLUDED / MUST_BE_ON_FLOOR：不接触地面且全部可放入 SKU 均为落地件；
+        - STRATEGY_ABANDONED：尺寸可行且无显式约束排除（求解策略未利用，利用率机会点）。
+        输出 schema：cavity_id/box=(x0,y0,z0,x1,y1,z1)/volume/eligible_skus/
+        exclusion_category/excluded_by_constraint/resolution_m。
+        分辨率局限：0.1m 以下微隙不识别（resolution_m 字段声明）。
+        被谁调用：solve() 终态遥测；backend/solver_v2/diagnostics/export.py。
         """
         cavities: List[Dict[str, Any]] = []
         if not placements:
             return cavities
 
-        max_placed_x = max((p["x"] + p["dx"] for p in placements), default=0.0)
-        max_placed_z = max((p["z"] + p["dz"] for p in placements), default=0.0)
+        res = 0.1
+        eps = 1e-6
+        ny = max(1, int(math.ceil(self.cW / res)))
+        nz = max(1, int(math.ceil(self.cH / res)))
 
-        # 1. Door zone / Tail cavity if any
-        if self.cL - max_placed_x > 0.05:
-            tail_vol = (self.cL - max_placed_x) * self.cW * self.cH
-            cav_box = (round(max_placed_x, 4), 0.0, 0.0, self.cL, self.cW, self.cH)
-            eligible_skus = [c.sku_id for c in cargo_list if (self.cL - max_placed_x) >= min(c.length, c.width, c.height)]
+        # 1. X 切片边界（放置边界 + 容器两端），合并 <2cm 的碎切片
+        cuts = {0.0, round(self.cL, 4)}
+        for p in placements:
+            cuts.add(round(float(p["x"]), 4))
+            cuts.add(round(float(p["x"]) + float(p["dx"]), 4))
+        xs = sorted(cuts)
+        merged_cuts = [xs[0]]
+        for x in xs[1:]:
+            if x - merged_cuts[-1] >= 0.02:
+                merged_cuts.append(x)
+            else:
+                merged_cuts[-1] = x  # 吸收碎切片（保持右端外推）
+        if merged_cuts[-1] < self.cL - 1e-6:
+            merged_cuts[-1] = round(self.cL, 4)
 
-            ex_cat = "PHYSICALLY_UNAVAILABLE" if not eligible_skus else "STRATEGY_ABANDONED"
-            ex_reason = None
-            if eligible_skus and getattr(self, "_has_door_skus", False):
-                ex_cat = "CONSTRAINT_EXCLUDED"
-                ex_reason = "DOOR_ZONE_VIOLATION"
+        # 2. 逐切片构建 Y-Z 空闲栅格并提取极大矩形（贪心覆盖，上限 8 块/切片）
+        # key=(y0,z0,y1,z1)（栅格索引），value=不连续区段列表 [x_start, x_end, cells]
+        cav_runs: Dict[tuple, List[List]] = {}
 
+        def slab_rects(x_lo, x_hi):
+            """返回该切片的 [(y0,z0,y1,z1,cells)] 非重叠空闲矩形（栅格索引）。"""
+            free = [[1] * nz for _ in range(ny)]
+            for p in placements:
+                if p["x"] + p["dx"] <= x_lo + 1e-9 or p["x"] >= x_hi - 1e-9:
+                    continue
+                cy0 = max(0, int(p["y"] / res))
+                cy1 = min(ny, int(math.ceil((p["y"] + p["dy"]) / res - 1e-9)))
+                cz0 = max(0, int(p["z"] / res))
+                cz1 = min(nz, int(math.ceil((p["z"] + p["dz"]) / res - 1e-9)))
+                for iy in range(cy0, cy1):
+                    row = free[iy]
+                    for iz in range(cz0, cz1):
+                        row[iz] = 0
+            rects = []
+            heights = [0] * nz
+            min_cells = max(1, int(0.01 / (res * res * max(1e-6, x_hi - x_lo))))  # 体积阈值 0.01 m^3
+            for round_ in range(8):
+                best = None
+                for iy in range(ny):
+                    row = free[iy]
+                    for iz in range(nz):
+                        heights[iz] = heights[iz] + 1 if row[iz] else 0
+                    # 最大直方图矩形
+                    stack = []
+                    j = 0
+                    while j <= nz:
+                        h = heights[j] if j < nz else 0
+                        start_j = j
+                        while stack and stack[-1][1] >= h:
+                            sj, sh = stack.pop()
+                            width = j - sj
+                            if best is None or sh * width > best[0]:
+                                best = (sh * width, iy - sh + 1, sj, iy + 1, j)
+                            start_j = sj
+                        stack.append((start_j, h))
+                        j += 1
+                if not best or best[0] < min_cells:
+                    break
+                _, y0, z0, y1, z1 = best
+                rects.append((y0, z0, y1, z1, best[0]))
+                for iy in range(y0, y1):
+                    row = free[iy]
+                    for iz in range(z0, z1):
+                        row[iz] = 0
+                heights = [0] * nz
+            return rects
+
+        for si in range(len(merged_cuts) - 1):
+            x_lo, x_hi = merged_cuts[si], merged_cuts[si + 1]
+            for (y0, z0, y1, z1, cells) in slab_rects(x_lo, x_hi):
+                key = (y0, z0, y1, z1)
+                runs = cav_runs.setdefault(key, [])
+                if runs and abs(runs[-1][1] - x_lo) < 1e-6:
+                    runs[-1][1] = x_hi
+                    runs[-1][2] += cells
+                else:
+                    runs.append([x_lo, x_hi, cells])
+
+        # 3. 组装 + 分类阶梯
+        door_len = getattr(self, "_actual_door_zone_len", getattr(self.container, "door_zone_length_m", 0.20) or 0.20)
+        has_door_skus = getattr(self, "_has_door_skus", False)
+        cell_vol = res * res
+
+        def orientation_fits(t, dx_len, dy_len, dz_len):
+            b = (t.length, t.width, t.height)
+            for px, py, pz in ((b[0], b[1], b[2]), (b[1], b[0], b[2]), (b[0], b[2], b[1]),
+                               (b[2], b[0], b[1]), (b[1], b[2], b[0]), (b[2], b[1], b[0])):
+                if px <= dx_len + 1e-6 and py <= dy_len + 1e-6 and pz <= dz_len + 1e-6:
+                    return True
+            return False
+
+        entries = []
+        for key, runs in cav_runs.items():
+            y0, z0, y1, z1 = key
+            for (x_lo, x_hi, cells) in runs:
+                vol = cells * cell_vol * (x_hi - x_lo)
+                if vol < 0.01:
+                    continue
+                bx = (round(x_lo, 3), round(y0 * res, 3), round(z0 * res, 3),
+                      round(x_hi, 3), round(min(y1 * res, self.cW), 3), round(min(z1 * res, self.cH), 3))
+                dx_len = x_hi - x_lo
+                dy_len = min(y1 * res, self.cW) - y0 * res
+                dz_len = min(z1 * res, self.cH) - z0 * res
+                eligible = [t.sku_id for t in cargo_list if orientation_fits(t, dx_len, dy_len, dz_len)]
+
+                ex_cat = "PHYSICALLY_UNAVAILABLE"
+                ex_reason = None
+                if eligible:
+                    in_door_zone = has_door_skus and x_lo >= self.cL - door_len - 1e-6
+                    touches_floor = z0 == 0
+                    if in_door_zone and not any(
+                        getattr(t, "zone_preference", None) == UniversalZone.DOOR
+                        or "门" in (getattr(t, "raw_requirement", "") or "")
+                        for t in cargo_list if t.sku_id in eligible
+                    ):
+                        ex_cat = "CONSTRAINT_EXCLUDED"
+                        ex_reason = "DOOR_ZONE_VIOLATION"
+                    elif not touches_floor and all(
+                        getattr(t, "must_be_on_floor", False)
+                        for t in cargo_list if t.sku_id in eligible
+                    ):
+                        ex_cat = "CONSTRAINT_EXCLUDED"
+                        ex_reason = "MUST_BE_ON_FLOOR"
+                    else:
+                        ex_cat = "STRATEGY_ABANDONED"
+                entries.append((vol, bx, eligible, ex_cat, ex_reason))
+
+        entries.sort(key=lambda e: -e[0])
+        for i, (vol, bx, eligible, ex_cat, ex_reason) in enumerate(entries[:30], 1):
             cavities.append({
-                "cavity_id": "cavity_tail_residual",
-                "box": cav_box,
-                "volume": round(tail_vol, 4),
-                "eligible_skus": eligible_skus,
+                "cavity_id": f"cavity_slab_{i:02d}",
+                "box": bx,
+                "volume": round(vol, 4),
+                "eligible_skus": eligible,
                 "exclusion_category": ex_cat,
                 "excluded_by_constraint": ex_reason,
+                "resolution_m": res,
             })
-
-        # 2. Roof headroom cavity if any
-        if self.cH - max_placed_z > 0.05:
-            roof_vol = self.cL * self.cW * (self.cH - max_placed_z)
-            cav_box = (0.0, 0.0, round(max_placed_z, 4), self.cL, self.cW, self.cH)
-            eligible_skus = [c.sku_id for c in cargo_list if (self.cH - max_placed_z) >= min(c.length, c.width, c.height)]
-            ex_cat = "PHYSICALLY_UNAVAILABLE" if not eligible_skus else "CONSTRAINT_EXCLUDED"
-            ex_reason = "INSUFFICIENT_SUPPORT" if eligible_skus else None
-
+        if len(entries) > 30:
             cavities.append({
-                "cavity_id": "cavity_roof_headroom",
-                "box": cav_box,
-                "volume": round(roof_vol, 4),
-                "eligible_skus": eligible_skus,
-                "exclusion_category": ex_cat,
-                "excluded_by_constraint": ex_reason,
+                "cavity_id": "cavity_slab_residual_aggregated",
+                "box": None,
+                "volume": round(sum(e[0] for e in entries[30:]), 4),
+                "eligible_skus": [],
+                "exclusion_category": "PHYSICALLY_UNAVAILABLE",
+                "excluded_by_constraint": "MICRO_FRAGMENT_AGGREGATED",
+                "aggregated_count": len(entries) - 30,
+                "resolution_m": res,
             })
-
         return cavities
