@@ -357,8 +357,14 @@ python tests/regression_guard.py
 满足以下任一条件立即**阻止提交/拒绝合并**：
 - 刚性SKU履行率出现倒挂（刚性未满先塞弹性件）
 - 出现饥饿/弃装SKU（`starved_skus > 0`）
-- 利用率低于基准 2%
+- 利用率低于基准 2%（相对棘轮；截止时间敏感用例按 `PER_CASE_UTIL_TOLERANCE` 放宽）
 - violations > 0 或 碰撞 > 0
+- 利用率低于 `REGRESSION_THRESHOLDS` 绝对红线（兜底防线，仅评审后可移动）
+
+**锚点维护纪律（基线裁决·架构修正案 A）**：`tests/baseline_report.json` 是棘轮锚点，
+表示"已接受状态"——基准变化被接受的提交**必须在同一 commit 内显式更新锚点**
+（禁止自动覆盖，自动同步会让棘轮退化为"这次和上次比"）；
+`REGRESSION_THRESHOLDS` 绝对红线仅允许在评审后移动。
 
 ---
 
