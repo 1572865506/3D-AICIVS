@@ -2108,11 +2108,42 @@ class UnifiedSolver:
                     return True
         return False
 
+    def _same_sku_chain_depth(self, sku_id: str, x: float, y: float, z: float,
+                              dx: float, dy: float, placements: List[Dict]) -> int:
+        """同款 SKU 垂直接触链深度（含候选自身）——层数计数的唯一权威实现。
+
+        语义：自候选向下按接触层走查，同款且 X/Y 双向重叠 > 15% 视为同柱链。
+        被谁调用：_check_placement_constraints 第 4 项（权威门禁）、
+        _check_stacking_limit（PASS4 锚点预筛，与门禁共享同一实现以消除
+        5cm 列对齐旧语义的互不包含分歧——审计表A不一致项·轮5）。
+        """
+        depth = 1
+        cur_z = round(z, 4)
+        while cur_z > 1e-3:
+            found_lower = False
+            for p in placements:
+                if p["sku_id"] != sku_id:
+                    continue
+                if abs(round(p["z"] + p["dz"], 4) - cur_z) < 1e-3:
+                    ox = min(x + dx, p["x"] + p["dx"]) - max(x, p["x"])
+                    oy = min(y + dy, p["y"] + p["dy"]) - max(y, p["y"])
+                    if ox > 0.15 * min(dx, p["dx"]) and oy > 0.15 * min(dy, p["dy"]):
+                        depth += 1
+                        cur_z = round(p["z"], 4)
+                        found_lower = True
+                        break
+            if not found_lower:
+                break
+        return depth
+
     def _check_stacking_limit(self, c: UniversalCargoTensor, ax: float, ay: float, az: float, placements: List[Dict]) -> bool:
+        """PASS4 锚点预筛：与权威门禁共享同一链深实现（含候选自身 ≤ max_stack_layers）。
+        A/B 实测（轮5，9 用例）：启用/禁用该预筛的利用率与耗时差异在噪声内，
+        其价值为廉价早退；语义与门禁完全一致，不存在预筛更严的丢放置向量。"""
         if not c.max_stack_layers:
             return True
-        col_layers = sum(1 for q in placements if abs(q['x'] - ax) < 0.05 and abs(q['y'] - ay) < 0.05 and q['sku_id'] == c.sku_id and q['z'] <= az + 1e-4)
-        return col_layers < c.max_stack_layers
+        depth = self._same_sku_chain_depth(c.sku_id, ax, ay, az, c.length, c.width, placements)
+        return depth <= c.max_stack_layers
 
     def _check_layer_height_consistency(self, cand: Dict, placements: List[Dict], max_dz_diff: float = 0.005) -> bool:
         """
@@ -2537,10 +2568,9 @@ class UnifiedSolver:
                 if any(p["sku_id"] != sku_id for p in direct_supports):
                     self._record_rejection("MUST_BE_ON_FLOOR_VIOLATION")
                     return False
-                cand_layer = 1 + int(round(cand_z / max(1e-4, cand["dz"])))
-                if cand_layer > max_layers:
-                    self._record_rejection("MAX_STACKING_LAYERS_EXCEEDED")
-                    return False
+                # 层数语义收敛（表A不一致项·轮5）：此处不再用 z/dz 算术计层
+                # （混合 dz 同款堆叠时多计层数、误拒合法候选，且与下方第4项链式
+                # 计数构成双重门禁）——第4项的链式计数为唯一层数权威。
 
         # 2.2 Door zone lockout check (禁止非封门专用件侵入门区保护阈值线)
         if getattr(self, "_has_door_skus", False):
@@ -2624,26 +2654,12 @@ class UnifiedSolver:
                                     next_check.append(p)
                 curr_check = next_check
 
-        # 4. Vertical Stack Layers limit check
+        # 4. Vertical Stack Layers limit check（层数语义唯一权威：链式计数，轮5收敛）
         max_layers = getattr(c_sku, "max_stack_layers", None)
         if max_layers is not None:
             if cand["z"] > 1e-3:
-                same_sku_depth = 1
-                curr_check_z = round(cand["z"], 4)
-                while curr_check_z > 1e-3:
-                    found_lower = False
-                    for p in placements:
-                        if p["sku_id"] == sku_id and abs(round(p["z"] + p["dz"], 4) - curr_check_z) < 1e-3:
-                            ox = min(cand["x"] + cand["dx"], p["x"] + p["dx"]) - max(cand["x"], p["x"])
-                            oy = min(cand["y"] + cand["dy"], p["y"] + p["dy"]) - max(cand["y"], p["y"])
-                            if ox > 0.15 * min(cand["dx"], p["dx"]) and oy > 0.15 * min(cand["dy"], p["dy"]):
-                                same_sku_depth += 1
-                                curr_check_z = round(p["z"], 4)
-                                found_lower = True
-                                break
-                    if not found_lower:
-                        break
-                if same_sku_depth > max_layers:
+                if self._same_sku_chain_depth(sku_id, cand["x"], cand["y"], cand["z"],
+                                              cand["dx"], cand["dy"], placements) > max_layers:
                     self._record_rejection("MAX_STACKING_LAYERS_EXCEEDED")
                     return False
 
