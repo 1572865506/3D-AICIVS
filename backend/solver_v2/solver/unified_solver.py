@@ -2441,6 +2441,7 @@ class UnifiedSolver:
                 if y_ov >= min_y_ov - eps and z_ov >= min_z_ov - eps:
                     return True
 
+        self._record_rejection("TIPPING_RISK")
         return False
 
     def _has_sufficient_support(self, cand: Dict, placements: List[Dict], min_ratio: float = 0.70) -> bool:
@@ -2496,6 +2497,7 @@ class UnifiedSolver:
                     y_intervals.append((iy0, iy1))
 
         if (support_area / cand_area) < (req_ratio - 1e-4):
+            self._record_rejection("SUPPORT_RATIO_BELOW_MIN")
             return False
 
         # P0-2 Anti-Bridge / Anti-Sagging Span Check:
@@ -2503,6 +2505,7 @@ class UnifiedSolver:
         max_allowed_gap = max(0.04, min(0.08, 0.15 * min(cand["dx"], cand["dy"])))
         for intervals in (x_intervals, y_intervals):
             if not intervals:
+                self._record_rejection("SUPPORT_SPAN_DISCONNECTED")
                 return False
             intervals.sort(key=lambda seg: seg[0])
             merged = [intervals[0]]
@@ -2513,10 +2516,14 @@ class UnifiedSolver:
                 else:
                     gap = seg[0] - prev_e
                     if gap > max_allowed_gap:
+                        self._record_rejection("SUPPORT_SPAN_DISCONNECTED")
                         return False  # Disconnected hollow bridge span
                     merged.append(seg)
 
-        return self._check_cog_projection(cand, relevant_placements)
+        cog_ok = self._check_cog_projection(cand, relevant_placements)
+        if not cog_ok:
+            self._record_rejection("COG_PROJECTION_FAILED")
+        return cog_ok
 
     def _check_placement_constraints(self, cand: Dict, placements: List[Dict]) -> bool:
         """
@@ -2534,6 +2541,7 @@ class UnifiedSolver:
             curr_weight = getattr(self, "_curr_payload_weight", 0.0)
             cand_weight = cand.get("weight_kg", c_sku.weight_kg if c_sku else 0.0)
             if curr_weight + cand_weight > max_payload + eps:
+                self._record_rejection("PAYLOAD_LIMIT_EXCEEDED")
                 return False
 
         if not c_sku:
@@ -2544,6 +2552,7 @@ class UnifiedSolver:
             if cand["z"] > 1e-3:
                 max_layers = c_sku.max_stack_layers or 1
                 if max_layers <= 1:
+                    self._record_rejection("MUST_BE_ON_FLOOR_VIOLATION")
                     return False
                 cand_z = cand["z"]
                 cand_x0, cand_x1 = cand["x"], cand["x"] + cand["dx"]
@@ -2556,11 +2565,14 @@ class UnifiedSolver:
                         if ox > eps and oy > eps and (ox * oy) >= 0.10 * (cand["dx"] * cand["dy"]):
                             direct_supports.append(p)
                 if not direct_supports:
+                    self._record_rejection("MUST_BE_ON_FLOOR_VIOLATION")
                     return False
                 if any(p["sku_id"] != sku_id for p in direct_supports):
+                    self._record_rejection("MUST_BE_ON_FLOOR_VIOLATION")
                     return False
                 cand_layer = 1 + int(round(cand_z / max(1e-4, cand["dz"])))
                 if cand_layer > max_layers:
+                    self._record_rejection("MAX_STACKING_LAYERS_EXCEEDED")
                     return False
 
         # 2.2 Door zone lockout check (禁止非封门专用件侵入门区保护阈值线)
@@ -2575,6 +2587,7 @@ class UnifiedSolver:
                 door_zone_len = getattr(self, "_actual_door_zone_len", getattr(self.container, "door_zone_length_m", 0.20) or 0.20)
                 door_lockout_x = round(self.cL - door_zone_len, 4)
                 if cand["x"] + cand["dx"] > door_lockout_x + eps:
+                    self._record_rejection("DOOR_ZONE_VIOLATION")
                     return False
 
         # 2.1 No top-stacking check if candidate forbids foreign stacking on top
@@ -2587,6 +2600,7 @@ class UnifiedSolver:
                 if abs(round(p["z"], 4) - cand_top_z) < 1e-3:
                     if min(c_x1, p["x"] + p["dx"]) > max(c_x0, p["x"]) + eps and min(c_y1, p["y"] + p["dy"]) > max(c_y0, p["y"]) + eps:
                         if not (allow_self and p["sku_id"] == sku_id):
+                            self._record_rejection("NO_TOP_STACK_VIOLATION")
                             return False
 
         # 3. Upper bearing check for underlying boxes in the support chain
@@ -2616,6 +2630,7 @@ class UnifiedSolver:
                                     if not allow_top:
                                         allow_self = getattr(under_sku, "stack_on_self", True)
                                         if not (allow_self and cand["sku_id"] == p["sku_id"]):
+                                            self._record_rejection("NO_TOP_STACK_VIOLATION")
                                             return False
                                     max_bearing = getattr(under_sku, "max_bearing_kg", None)
                                     if max_bearing is not None:
@@ -2623,8 +2638,9 @@ class UnifiedSolver:
                                         added_w = cand_weight * contact_frac
                                         curr_bearing = p.get("_bearing_load", 0.0)
                                         if curr_bearing + added_w > max_bearing + eps:
+                                            self._record_rejection("BEARING_CAPACITY_EXCEEDED")
                                             return False
-                                next_check.append(p)
+                                    next_check.append(p)
                 curr_check = next_check
 
         # 4. Vertical Stack Layers limit check
@@ -2647,6 +2663,7 @@ class UnifiedSolver:
                     if not found_lower:
                         break
                 if same_sku_depth > max_layers:
+                    self._record_rejection("MAX_STACKING_LAYERS_EXCEEDED")
                     return False
 
         return True
@@ -2743,6 +2760,7 @@ class UnifiedSolver:
             else:
                 contact_area = 0.0
                 contact_cnt = 0
+                contact_rects: List[Tuple[float, float, float, float]] = []
                 for other in placements:
                     if abs(round(other.max_z, 4) - round(p.position.z, 4)) < 1e-3:
                         ix0 = max(p.min_x, other.min_x)
@@ -2752,11 +2770,16 @@ class UnifiedSolver:
                         if ix1 > ix0 + eps and iy1 > iy0 + eps:
                             contact_area += (ix1 - ix0) * (iy1 - iy0)
                             contact_cnt += 1
+                            contact_rects.append((ix0, iy0, ix1, iy1))
                 support_ratio = round(min(1.0, contact_area / cand_area), 4)
                 contact_count = max(1, contact_cnt)
                 layer_cnt = 1 + int(round(p.position.z / max(1e-3, p.orientation.dz)))
                 stacking_layer = max(1, layer_cnt)
-                is_connected = support_ratio >= 0.70 and contact_count >= 1
+                # 诊断升级（审计任务 §3）：真实 2-D 连通分量计数。
+                # 接触矩形在 X/Y 投影上间距 <=3cm 视为连通（与 P0-2 跨空桥容差一致）。
+                # 可识别"对角两点接触"：两个互不接触的分量 → is_connected=False。
+                support_components = self._count_contact_components(contact_rects)
+                is_connected = support_components <= 1
 
             max_bearing = None
             if hasattr(self, "_sku_tensor_map") and p.sku_id in self._sku_tensor_map:
@@ -2778,11 +2801,45 @@ class UnifiedSolver:
             diag[pid] = {
                 "support_ratio": support_ratio,
                 "is_connected": is_connected,
+                "support_components": (1 if p.position.z < 1e-3 else support_components),
                 "contact_count": contact_count,
                 "bearing_margin_kg": bearing_margin,
                 "stacking_layer": stacking_layer,
             }
         return diag
+
+    def _count_contact_components(self, rects: List[Tuple[float, float, float, float]]) -> int:
+        """
+        统计接触矩形集合的 2-D 连通分量数（诊断用途，不参与放置裁决）。
+        输入：[(x0, y0, x1, y1), ...]；输出：分量数。
+        判定：两矩形在 X 与 Y 投影上的间距均 <= 3cm 时视为同一分量。
+        被谁调用：_compute_placement_diagnostics。
+        """
+        if not rects:
+            return 0
+        n = len(rects)
+        parent = list(range(n))
+
+        def find(i: int) -> int:
+            while parent[i] != i:
+                parent[i] = parent[parent[i]]
+                i = parent[i]
+            return i
+
+        def union(i: int, j: int) -> None:
+            ri, rj = find(i), find(j)
+            if ri != rj:
+                parent[ri] = rj
+
+        tol = 0.03
+        for i in range(n):
+            for j in range(i + 1, n):
+                a, b = rects[i], rects[j]
+                gap_x = max(a[0], b[0]) - min(a[2], b[2])
+                gap_y = max(a[1], b[1]) - min(a[3], b[3])
+                if gap_x <= tol and gap_y <= tol:
+                    union(i, j)
+        return len({find(i) for i in range(n)})
 
     def _compute_cavity_diagnostics(
         self,
