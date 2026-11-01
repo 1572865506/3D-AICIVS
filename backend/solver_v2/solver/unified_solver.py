@@ -2590,6 +2590,20 @@ class UnifiedSolver:
                     self._record_rejection("DOOR_ZONE_VIOLATION")
                     return False
 
+        # 2.3 Cargo profile forbidden-zone gate（表A缺失项修复：zone_policy.forbidden 无独立门禁）
+        # 语义与 compaction.py Step2 既有 REAR 检查一致：forbidden 含 REAR 时禁止 x <= rear_zone_length_m。
+        # 仅在 SKU 携带显式 cargo_profile 时生效，默认货单（无 profile）零影响；
+        # DOOR 禁区已由 2.2 门区锁定覆盖，MIDDLE/FLOOR_ONLY/ROOF_ONLY 无独立一维空间语义，不设门禁。
+        _sku_obj = getattr(c_sku, "sku_obj", None)
+        if _sku_obj is not None:
+            _profile = getattr(_sku_obj, "cargo_profile", None)
+            if _profile is not None:
+                _forbidden_zones = tuple(getattr(_profile.zone_policy, "forbidden", ()) or ())
+                for fz in _forbidden_zones:
+                    if fz == ZoneType.REAR and cand["x"] <= getattr(self.container, "rear_zone_length_m", 1.0) + eps:
+                        self._record_rejection("FORBIDDEN_ZONE_VIOLATION")
+                        return False
+
         # 2.1 No top-stacking check if candidate forbids foreign stacking on top
         if not getattr(c_sku, "allow_stacking_on_top", True):
             cand_top_z = round(cand["z"] + cand["dz"], 4)
