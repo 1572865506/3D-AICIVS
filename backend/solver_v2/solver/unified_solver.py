@@ -632,11 +632,8 @@ class UnifiedSolver:
                                             "tag": tag_val,
                                             "context": ctx_val
                                         }
-                                        if (not self._has_collision(t_pos, placements) and 
-                                            self._has_sufficient_support(t_pos, placements) and 
-                                            self._check_layer_height_consistency(t_pos, placements) and 
-                                            self._check_placement_constraints(t_pos, placements) and
-                                            self._is_placement_tipping_safe(t_pos, placements)):
+                                        if (self._check_candidate_validity_with_reason(t_pos, placements) and
+                                            self._check_layer_height_consistency(t_pos, placements)):
                                             self._add_placement(t_pos, placements)
                                             remaining_qty[tc.sku_id] -= 1
                                             t_pl += 1
@@ -874,10 +871,7 @@ class UnifiedSolver:
                             }
                             if cand_pos["y"] + cand_pos["dy"] > self.cW - 0.02:
                                 continue
-                            if (not self._has_collision(cand_pos, placements) and
-                                self._has_sufficient_support(cand_pos, placements) and
-                                self._check_placement_constraints(cand_pos, placements) and
-                                self._is_placement_tipping_safe(cand_pos, placements)):
+                            if self._check_candidate_validity_with_reason(cand_pos, placements):
                                 self._add_placement(cand_pos, placements)
                                 remaining_qty[c_sku.sku_id] -= 1
                                 step_idx += 1
@@ -1296,10 +1290,7 @@ class UnifiedSolver:
                                                     "tag": tag_val,
                                                     "context": ctx_val
                                                 }
-                                                if (not self._has_collision(cand_pos, placements) and 
-                                                    self._has_sufficient_support(cand_pos, placements) and 
-                                                    self._check_placement_constraints(cand_pos, placements) and
-                                                    self._is_placement_tipping_safe(cand_pos, placements)):
+                                                if self._check_candidate_validity_with_reason(cand_pos, placements):
                                                     self._add_placement(cand_pos, placements)
                                                     remaining_qty[sub_col.sku_id] -= 1
                                                     sub_placed += 1
@@ -1412,10 +1403,7 @@ class UnifiedSolver:
                                     "tag": tag_val,
                                     "context": ctx_val
                                 }
-                                if (not self._has_collision(cand_pos, placements) and 
-                                    self._has_sufficient_support(cand_pos, placements) and 
-                                    self._check_placement_constraints(cand_pos, placements) and
-                                    self._is_placement_tipping_safe(cand_pos, placements)):
+                                if self._check_candidate_validity_with_reason(cand_pos, placements):
                                     self._add_placement(cand_pos, placements)
                                     remaining_qty[col_sku.sku_id] -= 1
                                     placed_here += 1
@@ -1616,10 +1604,7 @@ class UnifiedSolver:
                                         'tag': tag_val,
                                         'context': ctx_val
                                     }
-                                    if (not self._has_collision(cand, placements) and 
-                                        self._has_sufficient_support(cand, placements) and 
-                                        self._check_placement_constraints(cand, placements) and
-                                        self._is_placement_tipping_safe(cand, placements)):
+                                    if self._check_candidate_validity_with_reason(cand, placements):
                                         self._add_placement(cand, placements)
                                         remaining_qty[c.sku_id] -= 1
                                         step_idx += 1
@@ -1726,10 +1711,7 @@ class UnifiedSolver:
                                         "tag": "DOOR_SEAL" if is_door_sku else "RESIDUAL_ANCHOR",
                                         "context": "DOOR_SEAL" if is_door_sku else "MAIN_WALL",
                                     }
-                                    if (not self._has_collision(cand_res, placements) and
-                                        self._has_sufficient_support(cand_res, placements) and
-                                        self._check_placement_constraints(cand_res, placements) and
-                                        self._is_placement_tipping_safe(cand_res, placements)):
+                                    if self._check_candidate_validity_with_reason(cand_res, placements):
                                         self._add_placement(cand_res, placements)
                                         remaining_qty[c_rem.sku_id] -= 1
                                         step_idx += 1
@@ -1782,10 +1764,7 @@ class UnifiedSolver:
                                             "tag": "DOOR_SEAL" if getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR else "RESIDUAL_ANCHOR",
                                             "context": "DOOR_SEAL" if getattr(c_rem, 'zone_preference', None) == UniversalZone.DOOR else "MAIN_WALL",
                                         }
-                                        if (not self._has_collision(cand_res, placements) and
-                                            self._has_sufficient_support(cand_res, placements) and
-                                            self._check_placement_constraints(cand_res, placements) and
-                                            self._is_placement_tipping_safe(cand_res, placements)):
+                                        if self._check_candidate_validity_with_reason(cand_res, placements):
                                             self._add_placement(cand_res, placements)
                                             remaining_qty[c_rem.sku_id] -= 1
                                             step_idx += 1
@@ -1863,10 +1842,7 @@ class UnifiedSolver:
                                     "tag": "RESIDUAL_ANCHOR",
                                     "context": "MAIN_WALL",
                                 }
-                                if (not self._has_collision(cand_res, placements) and
-                                    self._has_sufficient_support(cand_res, placements) and
-                                    self._check_placement_constraints(cand_res, placements) and
-                                    self._is_placement_tipping_safe(cand_res, placements)):
+                                if self._check_candidate_validity_with_reason(cand_res, placements):
                                     self._add_placement(cand_res, placements)
                                     remaining_qty[c_rem.sku_id] -= 1
                                     step_idx += 1
@@ -1889,10 +1865,7 @@ class UnifiedSolver:
                                                 "tag": "RESIDUAL_ANCHOR",
                                                 "context": "MAIN_WALL",
                                             }
-                                            if (not self._has_collision(next_cand, placements) and
-                                                self._has_sufficient_support(next_cand, placements) and
-                                                self._check_placement_constraints(next_cand, placements) and
-                                                self._is_placement_tipping_safe(next_cand, placements)):
+                                            if self._check_candidate_validity_with_reason(next_cand, placements):
                                                 self._add_placement(next_cand, placements)
                                                 remaining_qty[c_rem.sku_id] -= 1
                                                 step_idx += 1
@@ -1990,10 +1963,7 @@ class UnifiedSolver:
                                             "tag": "RESIDUAL_LATTICE",
                                             "context": "MAIN_WALL",
                                         }
-                                        if (not self._has_collision(cand_res, placements) and
-                                            self._has_sufficient_support(cand_res, placements) and
-                                            self._check_placement_constraints(cand_res, placements) and
-                                            self._is_placement_tipping_safe(cand_res, placements)):
+                                        if self._check_candidate_validity_with_reason(cand_res, placements):
                                             self._add_placement(cand_res, placements)
                                             remaining_qty[c_rem.sku_id] -= 1
                                             step_idx += 1
@@ -2060,10 +2030,7 @@ class UnifiedSolver:
                                 'tag': "TOP_FILL",
                                 'context': "TOP_FILL"
                             }
-                            if (not self._has_collision(cand, placements) and
-                                self._has_sufficient_support(cand, placements) and
-                                self._check_placement_constraints(cand, placements) and
-                                self._is_placement_tipping_safe(cand, placements)):
+                            if self._check_candidate_validity_with_reason(cand, placements):
                                 self._add_placement(cand, placements)
                                 remaining_qty[c.sku_id] -= 1
                                 step_idx += 1
@@ -2714,18 +2681,10 @@ class UnifiedSolver:
     ) -> bool:
         """
         Unified pre-check gate with explicit rejection cause logging.
-        Evaluates boundary -> collision -> support & topology -> business constraints -> tipping safety.
+        Evaluates collision(incl. boundary) -> support & topology -> business constraints -> tipping safety.
+        边界检查由 _has_collision 内部承担（同一条件、同一拒绝记录），此处不再重复，
+        避免 OUT_OF_CONTAINER 双重计数。
         """
-        eps = 1e-4
-        if (
-            cand["x"] < -eps or cand["y"] < -eps or cand["z"] < -eps
-            or cand["x"] + cand["dx"] > self.cL + eps
-            or cand["y"] + cand["dy"] > self.cW + eps
-            or cand["z"] + cand["dz"] > self.cH + eps
-        ):
-            self._record_rejection("OUT_OF_CONTAINER", rejection_counts)
-            return False
-
         if self._has_collision(cand, placements):
             if rejection_counts is not None and "COLLISION" not in rejection_counts:
                 rejection_counts["COLLISION"] = rejection_counts.get("COLLISION", 0) + 1
