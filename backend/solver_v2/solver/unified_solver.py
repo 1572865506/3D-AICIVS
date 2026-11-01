@@ -6,6 +6,7 @@ Guarantees clean-room V2 interface taking ContainerSpec + List[CargoSKU] and ret
 """
 from dataclasses import dataclass, field
 import math
+import random
 import time
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, Tuple
 
@@ -458,6 +459,26 @@ class UnifiedSolver:
                 if val_result.is_valid and len(trial_placements) >= total_req_count:
                     break
 
+        # 阶段二 LNS（破坏-重建）：仅批处理模式显式启用（options["lns_enabled"]=True），
+        # 交互/默认路径零影响。重建复用统一门禁（与主流程同一约束过滤器），
+        # 接受准则为棘轮（体积升 + 刚性履行不降），保留解按构造可行、最终仍过权威校验。
+        _opts = options if isinstance(options, dict) else {}
+        if _opts.get("lns_enabled") and best_raw_placements:
+            best_raw_placements, lns_stats = self._lns_improve(
+                best_raw_placements, tensor_cargo_list, cargo_list,
+                budget_s=float(_opts.get("lns_budget_s", 8.0)),
+                max_rounds=int(_opts.get("lns_rounds", 12)),
+                seed=seed,
+            )
+            best_metrics["raw_metrics"] = dict(best_metrics["raw_metrics"])
+            best_metrics["raw_metrics"]["lns"] = lns_stats
+            val_result = IndependentGlobalValidator.validate(
+                container=self.container,
+                placements=best_raw_placements,
+                cargo_list=cargo_list,
+            )
+            best_metrics["val_result"] = val_result
+
         elapsed_ms = round((time.perf_counter() - t0) * 1000.0, 2)
         val_result: ValidationResult = best_metrics["val_result"]
         raw_m = best_metrics["raw_metrics"]
@@ -519,6 +540,7 @@ class UnifiedSolver:
             candidates_rejected_by_reason=best_rejections,
             placement_diagnostics=plc_diagnostics,
             cavity_diagnostics=cav_diagnostics,
+            lns_metrics=raw_m.get("lns"),
         )
 
         return SolverSolution(
@@ -2693,6 +2715,284 @@ class UnifiedSolver:
             p["dz"] = round(p["dz"], 4)
 
         return len(placements)
+
+    # ===================================================================
+    # 阶段二：LNS（破坏-重建）后处理改进 pass
+    # 路线图硬性要求：重建路径的每一次放置必须走与主流程完全相同的约束
+    # 过滤器（统一门禁），可行性按构造保持（存留箱不动，新增箱逐格过门禁），
+    # 接受准则为棘轮（体积升 + 刚性履行不降）。仅批处理模式显式启用。
+    # ===================================================================
+
+    def _lns_improve(
+        self,
+        placements: List[Dict],
+        tensor_cargo_list: List[UniversalCargoTensor],
+        cargo_list: List[CargoSKU],
+        budget_s: float = 8.0,
+        max_rounds: int = 12,
+        seed: Optional[int] = None,
+        destroy_lo: float = 0.05,
+        destroy_hi: float = 0.15,
+    ) -> Tuple[List[Dict], Dict[str, Any]]:
+        """阶段二 LNS（破坏-重建）主循环。
+
+        用途：在已通过全部合规门禁的解上做局部扰动，突破一次成型启发式的利用率天花板。
+        破坏：随机移除 destroy_lo~destroy_hi 比例的已放置箱（种子可复现）。
+        重建：仅对被移除的量，在剩余解的锚点网格上以统一门禁
+              _check_candidate_validity_with_reason 逐格重放（微块扩展同 PASS4）。
+        接受准则（棘轮）：轮末体积 > 当前最优 且 刚性履行数不降；否则回滚快照。
+        输入：最优试算的 placements（dict 列表）、货池张量与原始货单。
+        输出：(改进后的 placements, LNS 遥测 dict：rounds/accepted/rejected/volume_gain_m3/elapsed_ms)。
+        被谁调用：solve()（options["lns_enabled"]=True，仅批处理模式）。
+        """
+        stats: Dict[str, Any] = {"rounds": 0, "accepted": 0, "rejected": 0,
+                                 "volume_gain_m3": 0.0, "elapsed_ms": 0}
+        t0 = time.perf_counter()
+        deadline = t0 + max(1.0, budget_s)
+        rng = random.Random(seed if seed is not None else 20261101)
+        tensor_map = {t.sku_id: t for t in tensor_cargo_list}
+
+        def metrics(sol: List[Dict]) -> Tuple[float, int]:
+            vol = sum(p["dx"] * p["dy"] * p["dz"] for p in sol)
+            rigid = sum(1 for p in sol if not getattr(tensor_map.get(p["sku_id"]), "is_elastic", False))
+            return vol, rigid
+
+        best = [dict(p) for p in placements]
+        best_vol, best_rigid = metrics(best)
+        original_vol = best_vol
+
+        # 未装载量（按 SKU）：重建队列 = 被移除量 + 未装载量——
+        # LNS 的价值在于破坏腾出空间后让原本装不下的货物进入，仅重放被移除量
+        # 的理论上限是恢复原体积（首版缺陷，A/B acc=0 的根因）。
+        required: Dict[str, int] = {}
+        for c in cargo_list:
+            required[c.sku_id] = getattr(c.quantity, "required", getattr(c, "quantity_required", 0))
+        placed_by_sku: Dict[str, int] = {}
+        for p in best:
+            placed_by_sku[p["sku_id"]] = placed_by_sku.get(p["sku_id"], 0) + 1
+        unplaced_qty = {sid: max(0, required.get(sid, 0) - cnt) for sid, cnt in placed_by_sku.items()}
+        for c in cargo_list:
+            if c.sku_id not in unplaced_qty and required.get(c.sku_id, 0) > 0:
+                unplaced_qty[c.sku_id] = required[c.sku_id]
+
+        for round_idx in range(max_rounds):
+            if time.perf_counter() >= deadline:
+                break
+            n = len(best)
+            # 破坏策略三态：轮 0 纯填洞（不破坏，未装载件直接试现有空腔）；
+            # 奇数轮空腔导向（针对 STRATEGY_ABANDONED 空腔的边界箱，阶段一诊断
+            # 直接指导阶段二搜索）；偶数轮随机。均叠加"有箱压顶不可移除"过滤。
+            remove_idx: set = set()
+            if round_idx > 0:
+                if round_idx % 2 == 1:
+                    guided = self._lns_cavity_guided_indices(best, tensor_cargo_list, rng)
+                    if guided:
+                        remove_idx = guided
+                if not remove_idx:
+                    # 破坏过滤：有箱压顶的箱不可移除（否则其上的存留箱失去支撑——
+                    # 幸存箱完整性漏洞，compaction 轮同类教训）
+                    top_buckets: Dict[float, List[int]] = {}
+                    for i, p in enumerate(best):
+                        top_buckets.setdefault(round(p["z"] + p["dz"], 3), []).append(i)
+                    protected = set()
+                    for i, p in enumerate(best):
+                        ztop = round(p["z"] + p["dz"], 3)
+                        for j in top_buckets.get(ztop, []):
+                            if j == i:
+                                continue
+                            q = best[j]
+                            ox = min(p["x"] + p["dx"], q["x"] + q["dx"]) - max(p["x"], q["x"])
+                            oy = min(p["y"] + p["dy"], q["y"] + q["dy"]) - max(p["y"], q["y"])
+                            if ox > 1e-4 and oy > 1e-4:
+                                protected.add(i)
+                                break
+                    remove_pool = [i for i in range(n) if i not in protected]
+                    k = max(1, min(int(n * rng.uniform(destroy_lo, destroy_hi)), len(remove_pool)))
+                    remove_idx = set(rng.sample(remove_pool, k)) if remove_pool else set()
+            cand = [best[i] for i in range(n) if i not in remove_idx]
+            rem_qty: Dict[str, int] = dict(unplaced_qty)
+            for i in remove_idx:
+                sid = best[i]["sku_id"]
+                rem_qty[sid] = rem_qty.get(sid, 0) + 1
+
+            # 重建前重建求解器状态（载荷计数、空间索引、拒绝计数隔离）
+            self._curr_payload_weight = sum(p.get("weight_kg", 0.0) for p in cand)
+            self._rebuild_spatial_index(cand)
+            saved_rej = getattr(self, "_current_rejection_counts", {})
+            self._current_rejection_counts = {}
+            step_idx = max((p.get("step", 0) for p in cand), default=0) + 1
+            try:
+                self._lns_rebuild(cand, rem_qty, tensor_map, step_idx, deadline)
+            finally:
+                for reason, cnt in self._current_rejection_counts.items():
+                    saved_rej[reason] = saved_rej.get(reason, 0) + cnt
+                self._current_rejection_counts = saved_rej
+
+            vol, rigid = metrics(cand)
+            stats["rounds"] += 1
+            if vol > best_vol + 1e-9 and rigid >= best_rigid:
+                # 接受前全量权威校验（安全网）：破坏可能剥离幸存箱的前向支承
+                # 等门禁不覆盖幸存箱的维度，改进候选必须过完整校验才可接受。
+                if time.perf_counter() <= deadline:
+                    vres = IndependentGlobalValidator.validate(
+                        container=self.container, placements=cand, cargo_list=cargo_list)
+                    if vres.is_valid and not vres.violations:
+                        best = cand
+                        best_vol, best_rigid = vol, rigid
+                        stats["accepted"] += 1
+                    else:
+                        stats["rejected"] += 1
+                        stats["invalid_rounds"] = stats.get("invalid_rounds", 0) + 1
+                else:
+                    stats["rejected"] += 1
+            else:
+                stats["rejected"] += 1
+
+        stats["volume_gain_m3"] = round(best_vol - original_vol, 4)
+        stats["elapsed_ms"] = round((time.perf_counter() - t0) * 1000.0, 2)
+        return best, stats
+
+    def _lns_cavity_guided_indices(self, placements: List[Dict],
+                                   tensor_cargo_list: List[UniversalCargoTensor],
+                                   rng: "random.Random") -> set:
+        """空腔导向破坏：锁定最大的 STRATEGY_ABANDONED 空腔，移除其边界壳内
+        （空腔包围盒外扩 0.8m）且无箱压顶的已放置箱，为重建腾出连续可填充区域。
+        被谁调用：_lns_improve（奇数轮）。"""
+        cavities = self._compute_cavity_diagnostics(placements, tensor_cargo_list)
+        target = None
+        for c in cavities:
+            if c.get("exclusion_category") == "STRATEGY_ABANDONED" and c.get("box"):
+                if target is None or c["volume"] > target["volume"]:
+                    target = c
+        if target is None:
+            return set()
+        bx0, by0, bz0, bx1, by1, bz1 = target["box"]
+        shell = 0.8
+        ex0, ey0, ez0 = bx0 - shell, by0 - shell, bz0 - shell
+        ex1, ey1, ez1 = bx1 + shell, by1 + shell, bz1 + shell
+
+        # 有箱压顶的箱不可移除（幸存箱完整性）
+        top_buckets: Dict[float, List[int]] = {}
+        for i, p in enumerate(placements):
+            top_buckets.setdefault(round(p["z"] + p["dz"], 3), []).append(i)
+        remove = set()
+        for i, p in enumerate(placements):
+            if not (p["x"] + p["dx"] > ex0 and p["x"] < ex1
+                    and p["y"] + p["dy"] > ey0 and p["y"] < ey1
+                    and p["z"] + p["dz"] > ez0 and p["z"] < ez1):
+                continue
+            ztop = round(p["z"] + p["dz"], 3)
+            covered = False
+            for j in top_buckets.get(ztop, []):
+                if j == i:
+                    continue
+                q = placements[j]
+                ox = min(p["x"] + p["dx"], q["x"] + q["dx"]) - max(p["x"], q["x"])
+                oy = min(p["y"] + p["dy"], q["y"] + q["dy"]) - max(p["y"], q["y"])
+                if ox > 1e-4 and oy > 1e-4:
+                    covered = True
+                    break
+            if not covered:
+                remove.add(i)
+        # 上限 20% 防过度破坏
+        if len(remove) > max(1, int(len(placements) * 0.20)):
+            remove = set(rng.sample(sorted(remove), max(1, int(len(placements) * 0.20))))
+        return remove
+
+    def _lns_rebuild(self, placements: List[Dict], rem_qty: Dict[str, int],
+                     tensor_map: Dict[str, UniversalCargoTensor],
+                     step_idx: int, deadline: float) -> None:
+        """LNS 重建：锚点网格重放被移除量（统一门禁逐格裁决 + 微块扩展，镜像 PASS4）。"""
+        rebuild_list = []
+        for sid, q in rem_qty.items():
+            t = tensor_map.get(sid)
+            if t is not None and q > 0:
+                rebuild_list.append((t, q))
+        # 刚性件优先重建（防饥饿），同优先级按体积降序
+        rebuild_list.sort(key=lambda x: (getattr(x[0], "is_elastic", False), -x[0].volume_m3, -x[1]))
+
+        # 锚点集合（与 PASS4 同公式：既有箱角点 + 地面投影 + 墙面）
+        anchors: Set[Tuple[float, float, float]] = {(0.0, 0.0, 0.0)}
+        for p in placements:
+            px1, py1, pz1 = round(p["x"] + p["dx"], 4), round(p["y"] + p["dy"], 4), round(p["z"] + p["dz"], 4)
+            anchors.add((px1, round(p["y"], 4), round(p["z"], 4)))
+            anchors.add((round(p["x"], 4), py1, round(p["z"], 4)))
+            anchors.add((round(p["x"], 4), round(p["y"], 4), pz1))
+            anchors.add((px1, py1, round(p["z"], 4)))
+            anchors.add((round(p["x"], 4), round(p["y"], 4), 0.0))
+            anchors.add((px1, round(p["y"], 4), 0.0))
+            anchors.add((round(p["x"], 4), py1, 0.0))
+            anchors.add((px1, py1, 0.0))
+
+        ordered = sorted(list(anchors), key=lambda pt: (pt[0], pt[2], pt[1]))
+        for t, _q in rebuild_list:
+            remaining = rem_qty.get(t.sku_id, 0)
+            for ax, ay, az in ordered:
+                if remaining <= 0 or time.perf_counter() > deadline:
+                    break
+                if ax >= self.cL - 0.04 or ay >= self.cW - 0.02 or az >= self.cH - 0.03:
+                    continue
+                for o in self._get_permitted_orientations(t):
+                    if remaining <= 0:
+                        break
+                    if (ax + o.dx > self.cL + 1e-4 or ay + o.dy > self.cW + 1e-4
+                            or az + o.dz > self.cH + 1e-4):
+                        continue
+                    cand = {
+                        "sku_id": t.sku_id,
+                        "x": round(ax, 4), "y": round(ay, 4), "z": round(az, 4),
+                        "dx": o.dx, "dy": o.dy, "dz": o.dz,
+                        "weight_kg": t.weight_kg,
+                        "orientation": o.name,
+                        "step": step_idx,
+                        "tag": "LNS_REBUILD",
+                        "context": "MAIN_WALL",
+                    }
+                    if not self._check_candidate_validity_with_reason(cand, placements):
+                        continue
+                    # 微块扩展（层→行→列，镜像 PASS4 上限）
+                    max_rx = max(1, min(int((self.cL - ax + 1e-4) / o.dx), 8))
+                    max_cy = max(1, min(int((self.cW - ay + 1e-4) / o.dy), 12))
+                    max_lz = max(1, min(int((self.cH - az + 1e-4) / o.dz), 10))
+                    for lz in range(max_lz):
+                        if remaining <= 0:
+                            break
+                        cz = round(az + lz * o.dz, 4)
+                        if cz + o.dz > self.cH + 1e-4:
+                            break
+                        for rx in range(max_rx):
+                            if remaining <= 0:
+                                break
+                            cx = round(ax + rx * o.dx, 4)
+                            if cx + o.dx > self.cL + 1e-4:
+                                break
+                            for cy in range(max_cy):
+                                if remaining <= 0:
+                                    break
+                                cell = {
+                                    "sku_id": t.sku_id,
+                                    "x": cx, "y": round(ay + cy * o.dy, 4), "z": cz,
+                                    "dx": o.dx, "dy": o.dy, "dz": o.dz,
+                                    "weight_kg": t.weight_kg,
+                                    "orientation": o.name,
+                                    "step": step_idx,
+                                    "tag": "LNS_REBUILD",
+                                    "context": "MAIN_WALL",
+                                }
+                                if not self._check_candidate_validity_with_reason(cell, placements):
+                                    if rx == 0 and cy == 0 and lz > 0:
+                                        break
+                                    continue
+                                self._add_placement(cell, placements)
+                                rem_qty[t.sku_id] -= 1
+                                remaining -= 1
+                                step_idx += 1
+                                # 新箱角点加入锚点集（供后续 SKU 复用）
+                                nx1, ny1, nz1 = round(cell["x"] + cell["dx"], 4), round(cell["y"] + cell["dy"], 4), round(cell["z"] + cell["dz"], 4)
+                                anchors.add((nx1, round(cell["y"], 4), round(cell["z"], 4)))
+                                anchors.add((round(cell["x"], 4), ny1, round(cell["z"], 4)))
+                                anchors.add((round(cell["x"], 4), round(cell["y"], 4), nz1))
+                                anchors.add((nx1, ny1, nz1))
 
     def _record_rejection(self, reason: str, rejection_counts: Optional[Dict[str, int]] = None) -> None:
         target = rejection_counts if rejection_counts is not None else getattr(self, "_current_rejection_counts", None)
