@@ -16,7 +16,7 @@ from typing import Any, Dict, List, Optional
 GRID_M = 0.2  # 柱高采样网格（米）
 STAIRCASE_BAD_DIFF = 0.30  # 相邻列高差"硬台阶"阈值（米）
 LOW_SUPPORT_RATIO = 0.85  # 支撑面积比"明显不足"阈值
-TOP_CAVITY_LIMIT = 5
+TOP_CAVITY_LIMIT = 20
 
 
 def _box_of(p: Any):

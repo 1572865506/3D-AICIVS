@@ -2184,6 +2184,10 @@
             <span class="kpi-label">货物总重</span>
             <span class="kpi-val" id="kpi-weight">21.8<span class="kpi-unit">T</span></span>
           </div>
+          <div class="kpi-item" id="kpi-gate-item" title="交付门禁：REJECT 表示存在必须拦截的交付缺陷">
+            <span class="kpi-label">交付质检</span>
+            <span class="kpi-val" id="kpi-gate" style="font-size: 13px; font-weight: 800;">—</span>
+          </div>
           <div class="kpi-item" id="kpi-cog-item" title="实时 3D 质心偏载监控与载荷配平开关 (点击微型按钮切换)">
             <div style="display:flex; justify-content:space-between; align-items:center; width:100%; gap:4px;">
               <span class="kpi-label">3D 重心配平</span>
@@ -2245,6 +2249,10 @@
         <button class="btn-action-pill secondary" id="btn-toggle-slicer" onclick="toggleSlicerPanel()" style="border-color: #0284c7; color: #0284c7;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
           <span>3D 剖面透视</span>
+        </button>
+
+        <button class="btn-action-pill secondary" id="btn-toggle-cavity" onclick="toggleCavityOverlay()" style="border-color: #dc2626; color: #b91c1c;" title="叠加显示未填满空腔：红色=封闭空洞，橙色=顶部开口">
+          <span>🕳️ 空洞可视化</span>
         </button>
 
         <button class="btn-action-pill secondary" id="btn-toggle-expert" onclick="toggleExpertPanel()" style="border-color: #f59e0b; color: #b45309; font-weight:700;">
@@ -4740,7 +4748,8 @@
 
     // --- 5. THREE.JS SCENE SETUP & OPTIMIZED PBR PIPELINE ---
     let scene, camera, renderer, controls;
-    let containerGroup, cargoGroup, doorLeftGroup, doorRightGroup;
+    let containerGroup, cargoGroup, cavityGroup, doorLeftGroup, doorRightGroup;
+    let cavityOverlayEnabled = true;
     let foregroundCutawayMat, solidBackMat, frameSolidMat, steelFloorMat;
     let sunLight, ambientLight, hemiLight, fillLight1, fillLight2, groundMesh, contactShadowPlane, steelNormalMap;
     let boxMeshes = [];
@@ -6095,6 +6104,105 @@
       return true;
     }
 
+    // ================= 交付质检可视化（空洞叠加 + 门禁 HUD） =================
+    // 数据源：后端 metrics.cavities（{box:[x0,y0,z0,x1,y1,z1], volume_m3, dims, category, open}）
+    // 坐标映射与货箱一致：three.x = L/2 - cx，three.y = -H/2 + cz，three.z = -W/2 + cy
+    function renderCavityOverlay(loadingResult, usableDim) {
+      if (!containerGroup) return;
+      if (cavityGroup) { containerGroup.remove(cavityGroup); cavityGroup = null; }
+      cavityGroup = new THREE.Group();
+      cavityGroup.name = 'CAVITY_OVERLAY';
+      containerGroup.add(cavityGroup);
+
+      const metrics = (loadingResult && loadingResult.metrics) || {};
+      const cavs = Array.isArray(metrics.cavities) ? metrics.cavities : [];
+      cavs.forEach(function (c) {
+        if (!c || !c.box || c.box.length !== 6) return;
+        const x0 = c.box[0], y0 = c.box[1], z0 = c.box[2];
+        const x1 = c.box[3], y1 = c.box[4], z1 = c.box[5];
+        const sx = Math.max(0.01, x1 - x0), sy = Math.max(0.01, y1 - y0), sz = Math.max(0.01, z1 - z0);
+        const isOpen = !!c.open;
+        const color = isOpen ? 0xf59e0b : 0xef4444;
+        const geo = new THREE.BoxGeometry(sx, sz, sy);
+        const mat = new THREE.MeshBasicMaterial({
+          color: color, transparent: true, opacity: isOpen ? 0.10 : 0.20,
+          depthWrite: false, side: THREE.DoubleSide
+        });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.set(
+          usableDim.length / 2 - (x0 + x1) / 2,
+          -usableDim.height / 2 + (z0 + z1) / 2,
+          -usableDim.width / 2 + (y0 + y1) / 2
+        );
+        // 空洞通常被货箱包裹：线框关闭深度测试以穿透显示位置（不遮挡货箱本体）
+        const edges = new THREE.LineSegments(
+          new THREE.EdgesGeometry(geo),
+          new THREE.LineBasicMaterial({
+            color: color, transparent: true,
+            opacity: isOpen ? 0.45 : 0.85, depthTest: false
+          })
+        );
+        edges.renderOrder = 999;
+        mesh.add(edges);
+        mesh.userData = {
+          kind: 'CAVITY',
+          volume_m3: c.volume_m3,
+          dims: c.dims,
+          category: c.category,
+          constraint: c.constraint,
+          open: isOpen
+        };
+        cavityGroup.add(mesh);
+      });
+
+      cavityGroup.visible = !!cavityOverlayEnabled;
+      window.cavityGroup = cavityGroup;
+      window.cavityOverlayStats = {
+        count: cavityGroup.children.length,
+        volume_m3: cavs.reduce(function (s, c) { return s + (Number(c.volume_m3) || 0); }, 0)
+      };
+      const btn = document.getElementById('btn-toggle-cavity');
+      if (btn) btn.classList.toggle('active', !!cavityOverlayEnabled);
+    }
+
+    function toggleCavityOverlay() {
+      cavityOverlayEnabled = !cavityOverlayEnabled;
+      if (cavityGroup) cavityGroup.visible = cavityOverlayEnabled;
+      const btn = document.getElementById('btn-toggle-cavity');
+      if (btn) btn.classList.toggle('active', cavityOverlayEnabled);
+      const stats = window.cavityOverlayStats || { count: 0, volume_m3: 0 };
+      if (typeof showToast === 'function') {
+        showToast(
+          (cavityOverlayEnabled ? '已叠加显示 ' : '已隐藏 ') + stats.count + ' 个空腔，合计 ' +
+          Number(stats.volume_m3).toFixed(2) + ' m³（红色=封闭空洞，橙色=顶部开口）',
+          'info', '空洞可视化'
+        );
+      }
+    }
+
+    function updateDeliveryGateKpi(loadingResult) {
+      const el = document.getElementById('kpi-gate');
+      const item = document.getElementById('kpi-gate-item');
+      if (!el) return;
+      const gate = (loadingResult && loadingResult.metrics && loadingResult.metrics.delivery_gate) || null;
+      if (!gate) { el.textContent = '—'; if (item) item.title = '本次结果未包含交付门禁报告'; return; }
+      const colors = { PASS: '#059669', WARN: '#d97706', REJECT: '#dc2626' };
+      const color = colors[gate.verdict] || '#64748b';
+      const count = (gate.blocked_by ? gate.blocked_by.length : 0) + (gate.warnings ? gate.warnings.length : 0);
+      el.innerHTML = '<span style="color:' + color + '">' + gate.verdict +
+        (count ? ' ' + count : '') + '</span>';
+      if (item) {
+        const cog = gate.cog || {};
+        item.title = (gate.summary || '') +
+          '\n重心偏移 纵 ' + (cog.long_offset_pct != null ? cog.long_offset_pct : '—') +
+          '% / 横 ' + (cog.lat_offset_pct != null ? cog.lat_offset_pct : '—') + '%';
+      }
+      if (gate.verdict === 'REJECT' && typeof showToast === 'function') {
+        showToast('交付质检未通过：' + (gate.blocked_by || []).join(', ') + '，该结果不应直接交付',
+          'warning', '交付门禁');
+      }
+    }
+
     // BLK-007D adapter commit. Layout geometry is authoritative in LoadingResult.scene.objects.
     function applyBackendLoadingResult(loadingResult, usableDim, activeManifest, currentSpec) {
       if (!loadingResult || loadingResult.version !== 'BLK007C') return false;
@@ -6174,6 +6282,10 @@
       });
       window.boxMeshes = boxMeshes;
       window.lastLoadingResult = loadingResult;
+
+      // 交付质检可视化：空腔叠加 + 门禁 HUD
+      renderCavityOverlay(loadingResult, usableDim);
+      updateDeliveryGateKpi(loadingResult);
 
       rebuildOrientationAssist();
 

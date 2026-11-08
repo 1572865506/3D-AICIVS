@@ -82,7 +82,8 @@ class LoadingAPIService:
             {"utilization_pct": solution.volume_utilization_pct, "total_weight_kg": solution.total_weight_kg,
              "braking_stability": braking,
              "geometry_qa": solution.telemetry.geometry_qa,
-             "cavities": (solution.telemetry.cavity_diagnostics or [])[:20],
+             # 归一化空腔清单（box/volume_m3/dims/open/category），供前端叠加渲染
+             "cavities": ((solution.telemetry.geometry_qa or {}).get("cavities") or {}).get("top") or [],
              "lns_metrics": solution.telemetry.lns_metrics,
              "delivery_gate": delivery_gate},
             recomposition
