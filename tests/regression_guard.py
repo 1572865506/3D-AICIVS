@@ -157,6 +157,8 @@ def test_no_regression():
     # 交付门禁：绝对规则不得触发；REJECT 用例数只允许持平或下降（棘轮）
     gate_rejects = 0
     for case_id, cur in current.items():
+        if not isinstance(cur, dict):
+            continue  # 跳过 suite_name/version/summary 等非用例键
         gate = cur.get("delivery_gate") or {}
         if not gate:
             continue
