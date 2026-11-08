@@ -4445,12 +4445,18 @@
     }
 
     // --- LOADING RESULT PERSISTENT CACHE ---
-    const CACHED_LOADING_RESULT_KEY = '3D_AICIVS_CACHED_LOADING_RESULT_V42_FLUSH_BULKHEAD';
+    // 结果契约版本：每次 API metrics 结构变化必须 +1（当前 2 = 含 geometry_qa/cavities/delivery_gate）。
+    // 旧版本缓存一律丢弃，防止"旧引擎结果冒充新结果"直接进入交付。
+    const RESULT_SCHEMA_VERSION = 2;
+    const CACHED_LOADING_RESULT_KEY = '3D_AICIVS_CACHED_LOADING_RESULT_V43_GATE';
+    // 清理历史契约的缓存键（旧结构结果不得再被读取）
+    try { localStorage.removeItem('3D_AICIVS_CACHED_LOADING_RESULT_V42_FLUSH_BULKHEAD'); } catch (e) {}
 
     function saveLoadingResultCache(loadingResult, usableDim, manifest, spec) {
       try {
         if (!loadingResult || !Array.isArray(loadingResult.cargo) || loadingResult.cargo.length === 0) return;
         const payload = {
+          schemaVersion: RESULT_SCHEMA_VERSION,
           loadingResult: loadingResult,
           usableDim: usableDim,
           manifest: manifest,
@@ -4471,6 +4477,13 @@
         if (!raw) return false;
         const payload = JSON.parse(raw);
         if (!payload || !payload.loadingResult || !Array.isArray(payload.loadingResult.cargo) || payload.loadingResult.cargo.length === 0) {
+          return false;
+        }
+        // 契约版本校验：旧结构（无门禁/观感字段）不得恢复，强制重新计算
+        const m = payload.loadingResult.metrics || {};
+        if (payload.schemaVersion !== RESULT_SCHEMA_VERSION || !m.delivery_gate || !m.geometry_qa) {
+          console.warn('[3D-AICIVS] 丢弃过期算柜缓存（schema', payload.schemaVersion, '≠', RESULT_SCHEMA_VERSION, '）');
+          clearLoadingResultCache();
           return false;
         }
 

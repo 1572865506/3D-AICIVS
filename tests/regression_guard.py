@@ -112,6 +112,11 @@ PER_CASE_UTIL_TOLERANCE = {
     "SINGLE-SKU-MASS": 0.15,
 }
 
+# 交付门禁中"绝对不可触发"的规则（出现即阻断提交）：硬约束违规/碰撞/载重/
+# 刚性饥饿/不可解释空腔。DG-005(履约率) 与 DG-011(重心偏载) 属交付政策，
+# 部分压测用例合理不通过，仅做棘轮不设绝对值。
+ABSOLUTE_GATE_RULES = {"DG-001", "DG-002", "DG-003", "DG-004", "DG-012"}
+
 
 def test_no_regression():
     """确保新版不低于锚点且不破绝对底线 (Regression Guard Test)."""
@@ -148,6 +153,24 @@ def test_no_regression():
             failures.append(f"违规: {case_id} violations={cur.get('violations', 0)}")
 
     assert evaluated_count >= 5, f"Expected at least 5 benchmark cases evaluated, got {evaluated_count}"
+
+    # 交付门禁：绝对规则不得触发；REJECT 用例数只允许持平或下降（棘轮）
+    gate_rejects = 0
+    for case_id, cur in current.items():
+        gate = cur.get("delivery_gate") or {}
+        if not gate:
+            continue
+        blocked = set(gate.get("blocked_by") or [])
+        hard = blocked & ABSOLUTE_GATE_RULES
+        if hard:
+            failures.append(f"交付门禁硬规则: {case_id} 触发 {sorted(hard)}")
+        if gate.get("verdict") == "REJECT":
+            gate_rejects += 1
+    anchor_rejects = baseline.get("gate_reject_count")
+    if isinstance(anchor_rejects, int) and gate_rejects > anchor_rejects:
+        failures.append(f"交付门禁棘轮: REJECT 用例数 {gate_rejects} > 锚点 {anchor_rejects}")
+    print(f"交付门禁: REJECT {gate_rejects} 例（锚点 {anchor_rejects if anchor_rejects is not None else '未记录'}）")
+
     assert not failures, (
         f"回归守护阻断（{len(failures)} 项）:\n" + "\n".join(failures)
     )

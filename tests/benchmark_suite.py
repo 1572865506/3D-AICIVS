@@ -563,11 +563,26 @@ def execute_benchmark_case(
         if health_status == "HEALTHY":
             health_status = "SKU_STARVATION"
 
+    # 交付门禁（独立质检）：每个用例都给出一行 verdict，供基准报告与 CI 守护消费
+    from backend.solver_v2.validation.delivery_gate import evaluate_delivery
+    try:
+        _gate = evaluate_delivery(sol, v2_cargos, container)
+        delivery_gate = {
+            "verdict": _gate.get("verdict"),
+            "blocked_by": _gate.get("blocked_by", []),
+            "warnings": _gate.get("warnings", []),
+            "cog": _gate.get("cog", {}),
+        }
+    except Exception as _gate_err:  # 门禁自身异常不得让基准中断，但必须显式记录
+        delivery_gate = {"verdict": "ERROR", "blocked_by": [], "warnings": [],
+                         "error": str(_gate_err)}
+
     return {
         "case_id": case_id,
         "case_name": case_name,
         "description": description,
         "requested_cartons": requested_cartons,
+        "delivery_gate": delivery_gate,
         "placed_count": placed_count,
         "unplaced_count": unplaced_count,
         "utilization": round(utilization_pct, 2),
@@ -731,6 +746,8 @@ def run_benchmark_suite() -> Dict[str, Any]:
         h_issues = res.get("health_issues", [])
         
         print(f"  [{status_str}] Placed: {placed}/{req} | Util: {util:.2f}% | 刚性SKU履行: {r_comp}% | 弹性完成: {e_comp}% | 违规: {viols} | 耗时: {rt:.1f}ms")
+        gate = res.get("delivery_gate") or {}
+        print(f"         交付门禁: {gate.get('verdict')} | 拦截 {gate.get('blocked_by')} | 告警 {gate.get('warnings')}")
         if h_issues:
             print(f"         ⚠️ 审计告警: {', '.join(h_issues)}")
 
@@ -748,8 +765,17 @@ def run_benchmark_suite() -> Dict[str, Any]:
             "health_status": h_status,
             "health_issues": h_issues,
             "runtime_ms": rt,
-            "status": status_str
+            "status": status_str,
+            "delivery_gate": gate.get("verdict"),
+            "gate_blocked_by": gate.get("blocked_by", []),
+            "gate_warnings": gate.get("warnings", []),
         })
+
+    gate_counts = {"PASS": 0, "WARN": 0, "REJECT": 0, "ERROR": 0}
+    for s in summary_list:
+        v = s.get("delivery_gate")
+        if v in gate_counts:
+            gate_counts[v] += 1
 
     full_output = {
         "suite_name": "3D-AICIVS Standard Benchmark Suite",
@@ -757,6 +783,7 @@ def run_benchmark_suite() -> Dict[str, Any]:
         "total_cases": len(cases),
         "passed_cases": len([s for s in summary_list if s["status"] == "PASS"]),
         "all_zero_collisions": all_zero_collisions,
+        "delivery_gate_counts": gate_counts,
         "summary": summary_list,
         "results": results,
         **results
@@ -777,6 +804,7 @@ def run_benchmark_suite() -> Dict[str, Any]:
     print("=" * 110)
     print(f"测试结果已写入: {OUTPUT_RESULTS_PATH}")
     print(f"总用例: {len(cases)} | 全合规PASS: {full_output['passed_cases']} | 无碰撞: {all_zero_collisions}")
+    print(f"交付门禁: PASS {gate_counts['PASS']} | WARN {gate_counts['WARN']} | REJECT {gate_counts['REJECT']} | ERROR {gate_counts['ERROR']}")
     print("=" * 110)
 
     return full_output

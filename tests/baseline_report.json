@@ -8549,7 +8549,9 @@
  "anchor_provenance": {
   "synced_at": "2026-11-01",
   "source": "tests/benchmark_results.json @ HEAD (04c02e7, 56-case all-pass zero-violation)",
-  "note": "棘轮锚点=已接受状态。更新必须随\"基准变化被接受\"的 commit 显式进行（AGENTS.md 5.5），禁止自动覆盖。"
+  "note": "棘轮锚点=已接受状态。更新必须随\"基准变化被接受\"的 commit 显式进行（AGENTS.md 5.5），禁止自动覆盖。",
+  "gate_synced_at": "2026-11-08",
+  "gate_note": "交付门禁棘轮锚点：REJECT 数只允许持平或下降。当前 28 例全部来自 DG-005(履约率)/DG-011(重心偏载)，硬规则(DG-001/002/003/004/012)零触发。DG-011 大面积触发反映'重量平衡未实现'的系统级缺口，属待修复项而非门禁误设。"
  },
  "14-SKU-1845": {
   "case_id": "14-SKU-1845",
@@ -16584,5 +16586,6 @@
    "rigidCompletion": 76.65,
    "healthStatus": "HEALTHY"
   }
- }
+ },
+ "gate_reject_count": 28
 }

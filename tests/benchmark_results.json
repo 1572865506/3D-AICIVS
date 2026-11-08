@@ -4,6 +4,12 @@
   "total_cases": 56,
   "passed_cases": 56,
   "all_zero_collisions": true,
+  "delivery_gate_counts": {
+    "PASS": 11,
+    "WARN": 17,
+    "REJECT": 28,
+    "ERROR": 0
+  },
   "summary": [
     {
       "case_id": "14-SKU-1845",
@@ -17,8 +23,13 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 46165.71,
-      "status": "PASS"
+      "runtime_ms": 47147.0,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-010"
+      ]
     },
     {
       "case_id": "SINGLE-LARGE-BOX",
@@ -32,8 +43,11 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 452.29,
-      "status": "PASS"
+      "runtime_ms": 497.98,
+      "status": "PASS",
+      "delivery_gate": "PASS",
+      "gate_blocked_by": [],
+      "gate_warnings": []
     },
     {
       "case_id": "ALL-ELASTIC-SKUS",
@@ -47,8 +61,11 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 11549.15,
-      "status": "PASS"
+      "runtime_ms": 12834.82,
+      "status": "PASS",
+      "delivery_gate": "PASS",
+      "gate_blocked_by": [],
+      "gate_warnings": []
     },
     {
       "case_id": "DOOR-DENSE-SKUS",
@@ -62,8 +79,11 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 1172.41,
-      "status": "PASS"
+      "runtime_ms": 1593.6,
+      "status": "PASS",
+      "delivery_gate": "PASS",
+      "gate_blocked_by": [],
+      "gate_warnings": []
     },
     {
       "case_id": "MIXED-HETEROGENEOUS",
@@ -77,8 +97,11 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 2275.85,
-      "status": "PASS"
+      "runtime_ms": 2654.77,
+      "status": "PASS",
+      "delivery_gate": "PASS",
+      "gate_blocked_by": [],
+      "gate_warnings": []
     },
     {
       "case_id": "20GP-STANDARD",
@@ -92,8 +115,11 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 591.77,
-      "status": "PASS"
+      "runtime_ms": 728.05,
+      "status": "PASS",
+      "delivery_gate": "PASS",
+      "gate_blocked_by": [],
+      "gate_warnings": []
     },
     {
       "case_id": "45HQ-EXTENDED",
@@ -107,8 +133,11 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 11157.2,
-      "status": "PASS"
+      "runtime_ms": 12664.42,
+      "status": "PASS",
+      "delivery_gate": "PASS",
+      "gate_blocked_by": [],
+      "gate_warnings": []
     },
     {
       "case_id": "STACK-BEARING-CONSTRAINTS",
@@ -122,8 +151,11 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 1084.42,
-      "status": "PASS"
+      "runtime_ms": 1394.13,
+      "status": "PASS",
+      "delivery_gate": "PASS",
+      "gate_blocked_by": [],
+      "gate_warnings": []
     },
     {
       "case_id": "ORIENTATION-TOPSTACK-CONSTRAINTS",
@@ -137,8 +169,13 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 515.31,
-      "status": "PASS"
+      "runtime_ms": 663.93,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "TALL-SLENDER-TIPPING",
@@ -152,8 +189,17 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 1396.28,
-      "status": "PASS"
+      "runtime_ms": 1680.83,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-007",
+        "DG-010",
+        "DG-014"
+      ]
     },
     {
       "case_id": "OVERWEIGHT-PAYLOAD",
@@ -167,8 +213,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 4811.76,
-      "status": "PASS"
+      "runtime_ms": 5391.05,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-005"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "MULTI-ZONE-CONSTRAINTS",
@@ -182,8 +235,13 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 647.24,
-      "status": "PASS"
+      "runtime_ms": 873.29,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "EXTREME-ASPECT-RATIO",
@@ -197,23 +255,35 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 1189.19,
-      "status": "PASS"
+      "runtime_ms": 1422.68,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "SINGLE-SKU-MASS",
       "case_name": "单SKU大批量 (测性能+极限)",
-      "placed_count": 7744,
+      "placed_count": 6776,
       "requested_cartons": 10000,
-      "utilization": 84.35,
-      "rigid_completion_pct": 77.44,
+      "utilization": 73.8,
+      "rigid_completion_pct": 67.76,
       "elastic_completion_pct": 0.0,
       "collisions": 0,
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 136826.07,
-      "status": "PASS"
+      "runtime_ms": 149097.39,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "ALL-CONSTRAINTS-COMBINED",
@@ -227,8 +297,11 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 2563.53,
-      "status": "PASS"
+      "runtime_ms": 3277.94,
+      "status": "PASS",
+      "delivery_gate": "PASS",
+      "gate_blocked_by": [],
+      "gate_warnings": []
     },
     {
       "case_id": "STRICT-SINGLE-LAYER-FLOOR",
@@ -242,8 +315,13 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 350.92,
-      "status": "PASS"
+      "runtime_ms": 465.34,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "FLOOR-SPACE-COMPETITION",
@@ -257,8 +335,13 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 5321.82,
-      "status": "PASS"
+      "runtime_ms": 5714.29,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-005"
+      ],
+      "gate_warnings": []
     },
     {
       "case_id": "TWO-LAYER-FLOOR-CEILING",
@@ -272,8 +355,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 545.19,
-      "status": "PASS"
+      "runtime_ms": 645.0,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "DENSE-HEAVY-FLOOR-PAD",
@@ -287,8 +377,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 292.87,
-      "status": "PASS"
+      "runtime_ms": 366.26,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "LONG-BEAM-FLOOR",
@@ -302,8 +399,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 303.89,
-      "status": "PASS"
+      "runtime_ms": 373.07,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "20GP-SINGLE-LAYER",
@@ -317,8 +421,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 147.83,
-      "status": "PASS"
+      "runtime_ms": 178.76,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "THREE-TIER-BEARING-CHAIN",
@@ -332,8 +443,13 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 787.49,
-      "status": "PASS"
+      "runtime_ms": 931.27,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "LOW-BEARING-FRAGILE-MID",
@@ -347,8 +463,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 6956.47,
-      "status": "PASS"
+      "runtime_ms": 7290.66,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-005"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "HETEROGENEOUS-BEARING-LIMITS",
@@ -362,8 +485,14 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 430.11,
-      "status": "PASS"
+      "runtime_ms": 536.26,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-010",
+        "DG-014"
+      ]
     },
     {
       "case_id": "ZERO-BEARING-ELASTIC-REFILL",
@@ -377,8 +506,14 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 671.7,
-      "status": "PASS"
+      "runtime_ms": 819.78,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-007",
+        "DG-014"
+      ]
     },
     {
       "case_id": "EXTREME-PAYLOAD-BEARING",
@@ -392,8 +527,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 24611.51,
-      "status": "PASS"
+      "runtime_ms": 24936.25,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-005"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "ASYMMETRIC-BEARING-STRIPS",
@@ -407,8 +549,14 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 415.2,
-      "status": "PASS"
+      "runtime_ms": 521.83,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-007",
+        "DG-014"
+      ]
     },
     {
       "case_id": "BROAD-NO-TOP-STACK-PANELS",
@@ -422,8 +570,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 368.32,
-      "status": "PASS"
+      "runtime_ms": 478.86,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "CHECKERBOARD-NOTOP-ISOLATION",
@@ -437,8 +592,14 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 361.14,
-      "status": "PASS"
+      "runtime_ms": 496.86,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-007",
+        "DG-014"
+      ]
     },
     {
       "case_id": "MULTI-SKU-NO-TOP-STACK",
@@ -452,8 +613,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 470.2,
-      "status": "PASS"
+      "runtime_ms": 642.23,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "NOTOP-LARGE-WITH-ELASTIC-BURST",
@@ -467,8 +635,14 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 421.2,
-      "status": "PASS"
+      "runtime_ms": 587.98,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-007",
+        "DG-014"
+      ]
     },
     {
       "case_id": "FLOOR-AND-NOTOP-COMBINED",
@@ -482,8 +656,13 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 330.39,
-      "status": "PASS"
+      "runtime_ms": 424.41,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "20GP-NOTOP-SPACE",
@@ -497,8 +676,13 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 133.05,
-      "status": "PASS"
+      "runtime_ms": 174.77,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "STRICT-UPRIGHT-MONOLITHIC",
@@ -512,8 +696,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 474.3,
-      "status": "PASS"
+      "runtime_ms": 626.92,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "FLAT-ONLY-SLABS",
@@ -527,8 +718,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 721.43,
-      "status": "PASS"
+      "runtime_ms": 857.48,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "ULTRA-THIN-UPRIGHT-SCREENS",
@@ -542,8 +740,16 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 461.84,
-      "status": "PASS"
+      "runtime_ms": 598.39,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-007",
+        "DG-014"
+      ]
     },
     {
       "case_id": "MAX-FLAT-LAYERS-CONSTRAINT",
@@ -557,8 +763,16 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 579.07,
-      "status": "PASS"
+      "runtime_ms": 682.15,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-010",
+        "DG-014"
+      ]
     },
     {
       "case_id": "ORIENTATION-HEIGHT-CUTOFF",
@@ -572,8 +786,14 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 299.79,
-      "status": "PASS"
+      "runtime_ms": 355.15,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-007",
+        "DG-014"
+      ]
     },
     {
       "case_id": "20GP-LOCKED-ORIENTATION",
@@ -587,8 +807,16 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 185.97,
-      "status": "PASS"
+      "runtime_ms": 237.01,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-008",
+        "DG-014"
+      ]
     },
     {
       "case_id": "STRICT-TWO-STACK-LAYERS",
@@ -602,8 +830,16 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 616.43,
-      "status": "PASS"
+      "runtime_ms": 690.36,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-008",
+        "DG-014"
+      ]
     },
     {
       "case_id": "STRICT-THREE-STACK-LAYERS",
@@ -617,8 +853,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 287.52,
-      "status": "PASS"
+      "runtime_ms": 369.03,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "STEPPED-STACK-LAYERS-CASCADE",
@@ -632,8 +875,16 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 1235.03,
-      "status": "PASS"
+      "runtime_ms": 1470.35,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-008",
+        "DG-014"
+      ]
     },
     {
       "case_id": "INTERLEAVED-STACK-LAYERS",
@@ -647,8 +898,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 458.04,
-      "status": "PASS"
+      "runtime_ms": 575.51,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "STEPPED-HEIGHT-TIPPING-SAFETY",
@@ -662,8 +920,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 207.68,
-      "status": "PASS"
+      "runtime_ms": 284.18,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-011"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "20GP-STACK-LAYERS",
@@ -677,8 +942,13 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 140.92,
-      "status": "PASS"
+      "runtime_ms": 185.39,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "RIGID-DOMINANT-95PCT",
@@ -692,8 +962,14 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 483.3,
-      "status": "PASS"
+      "runtime_ms": 632.17,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-010",
+        "DG-014"
+      ]
     },
     {
       "case_id": "ELASTIC-DOMINANT-90PCT",
@@ -707,8 +983,11 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 3221.84,
-      "status": "PASS"
+      "runtime_ms": 4300.56,
+      "status": "PASS",
+      "delivery_gate": "PASS",
+      "gate_blocked_by": [],
+      "gate_warnings": []
     },
     {
       "case_id": "RIGID-OVERLOAD-150PCT",
@@ -722,8 +1001,11 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 45353.43,
-      "status": "PASS"
+      "runtime_ms": 45634.41,
+      "status": "PASS",
+      "delivery_gate": "PASS",
+      "gate_blocked_by": [],
+      "gate_warnings": []
     },
     {
       "case_id": "DOOR-ZONE-SPECIALIZED",
@@ -737,8 +1019,11 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 589.54,
-      "status": "PASS"
+      "runtime_ms": 760.96,
+      "status": "PASS",
+      "delivery_gate": "PASS",
+      "gate_blocked_by": [],
+      "gate_warnings": []
     },
     {
       "case_id": "TWELVE-SKU-COMPLEX-MOSAIC",
@@ -752,8 +1037,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 12099.56,
-      "status": "PASS"
+      "runtime_ms": 14467.07,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-005"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "20GP-NEAR-LIMIT",
@@ -767,8 +1059,13 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 319.14,
-      "status": "PASS"
+      "runtime_ms": 544.88,
+      "status": "PASS",
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "RANDOM-STRESS-CASE-01",
@@ -782,8 +1079,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 25010.29,
-      "status": "PASS"
+      "runtime_ms": 25103.44,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-005"
+      ],
+      "gate_warnings": [
+        "DG-014"
+      ]
     },
     {
       "case_id": "RANDOM-STRESS-CASE-02",
@@ -797,8 +1101,17 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 24976.66,
-      "status": "PASS"
+      "runtime_ms": 25076.8,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-005"
+      ],
+      "gate_warnings": [
+        "DG-008",
+        "DG-010",
+        "DG-014"
+      ]
     },
     {
       "case_id": "RANDOM-STRESS-CASE-03",
@@ -812,8 +1125,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 23380.8,
-      "status": "PASS"
+      "runtime_ms": 24994.71,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-005"
+      ],
+      "gate_warnings": [
+        "DG-010"
+      ]
     },
     {
       "case_id": "RANDOM-STRESS-CASE-04",
@@ -827,8 +1147,15 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 23803.84,
-      "status": "PASS"
+      "runtime_ms": 25101.16,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-005"
+      ],
+      "gate_warnings": [
+        "DG-010"
+      ]
     },
     {
       "case_id": "RANDOM-STRESS-CASE-05",
@@ -842,8 +1169,16 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 23854.16,
-      "status": "PASS"
+      "runtime_ms": 23206.47,
+      "status": "PASS",
+      "delivery_gate": "REJECT",
+      "gate_blocked_by": [
+        "DG-005"
+      ],
+      "gate_warnings": [
+        "DG-007",
+        "DG-014"
+      ]
     }
   ],
   "results": {
@@ -852,11 +1187,26 @@
       "case_name": "14-SKU-1845 (当前基线)",
       "description": "14-SKU standard baseline cleanroom case 001",
       "requested_cartons": 2145,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-010"
+        ],
+        "cog": {
+          "cog_x_pct": 54.46,
+          "cog_y_pct": 51.84,
+          "cog_z_pct": 49.91,
+          "long_offset_pct": 4.46,
+          "lat_offset_pct": 1.84,
+          "total_weight_kg": 12018.85
+        }
+      },
       "placed_count": 1465,
       "unplaced_count": 680,
       "utilization": 83.33,
       "volume_utilization_pct": 83.3256,
-      "runtime_ms": 46165.71,
+      "runtime_ms": 47147.0,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1197,11 +1547,24 @@
       "case_name": "单一大箱 SKU (测极限堆叠)",
       "description": "Single large carton SKU for monolithic block stacking and extreme volume utilization",
       "requested_cartons": 70,
+      "delivery_gate": {
+        "verdict": "PASS",
+        "blocked_by": [],
+        "warnings": [],
+        "cog": {
+          "cog_x_pct": 47.79,
+          "cog_y_pct": 48.89,
+          "cog_z_pct": 48.93,
+          "long_offset_pct": 2.21,
+          "lat_offset_pct": 1.11,
+          "total_weight_kg": 5100.0
+        }
+      },
       "placed_count": 60,
       "unplaced_count": 10,
       "utilization": 91.46,
       "volume_utilization_pct": 91.4561,
-      "runtime_ms": 452.29,
+      "runtime_ms": 497.98,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1276,11 +1639,24 @@
       "case_name": "全弹性件 (测核减逻辑)",
       "description": "All elastic SKUs with overcapacity demand testing automated trimming and zero overflow",
       "requested_cartons": 3200,
+      "delivery_gate": {
+        "verdict": "PASS",
+        "blocked_by": [],
+        "warnings": [],
+        "cog": {
+          "cog_x_pct": 50.31,
+          "cog_y_pct": 49.22,
+          "cog_z_pct": 47.16,
+          "long_offset_pct": 0.31,
+          "lat_offset_pct": 0.78,
+          "total_weight_kg": 9472.2
+        }
+      },
       "placed_count": 1003,
       "unplaced_count": 2197,
       "utilization": 89.59,
       "volume_utilization_pct": 89.5936,
-      "runtime_ms": 11549.15,
+      "runtime_ms": 12834.82,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1412,11 +1788,24 @@
       "case_name": "门区密集 (测门区封门)",
       "description": "Dense door-seal items testing door safety zone (rear 1.2m), wall closure, and anti-toppling",
       "requested_cartons": 980,
+      "delivery_gate": {
+        "verdict": "PASS",
+        "blocked_by": [],
+        "warnings": [],
+        "cog": {
+          "cog_x_pct": 55.95,
+          "cog_y_pct": 47.08,
+          "cog_z_pct": 44.12,
+          "long_offset_pct": 5.95,
+          "lat_offset_pct": 2.92,
+          "total_weight_kg": 8644.0
+        }
+      },
       "placed_count": 980,
       "unplaced_count": 0,
       "utilization": 69.75,
       "volume_utilization_pct": 69.7518,
-      "runtime_ms": 1172.41,
+      "runtime_ms": 1593.6,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1567,11 +1956,24 @@
       "case_name": "混合异尺寸 (测空间利用)",
       "description": "Highly heterogeneous SKU dimensions testing multi-depth wall slicing, top filling, and compact space utilization",
       "requested_cartons": 810,
+      "delivery_gate": {
+        "verdict": "PASS",
+        "blocked_by": [],
+        "warnings": [],
+        "cog": {
+          "cog_x_pct": 44.13,
+          "cog_y_pct": 50.01,
+          "cog_z_pct": 43.68,
+          "long_offset_pct": 5.87,
+          "lat_offset_pct": 0.01,
+          "total_weight_kg": 7275.0
+        }
+      },
       "placed_count": 810,
       "unplaced_count": 0,
       "utilization": 70.43,
       "volume_utilization_pct": 70.4281,
-      "runtime_ms": 2275.85,
+      "runtime_ms": 2654.77,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1779,11 +2181,24 @@
       "case_name": "20GP标准柜 (测短柜装载)",
       "description": "20GP standard container testing wall construction and door reserve adaptation for shorter containers",
       "requested_cartons": 560,
+      "delivery_gate": {
+        "verdict": "PASS",
+        "blocked_by": [],
+        "warnings": [],
+        "cog": {
+          "cog_x_pct": 44.16,
+          "cog_y_pct": 47.89,
+          "cog_z_pct": 45.67,
+          "long_offset_pct": 5.84,
+          "lat_offset_pct": 2.11,
+          "total_weight_kg": 3750.0
+        }
+      },
       "placed_count": 560,
       "unplaced_count": 0,
       "utilization": 69.13,
       "volume_utilization_pct": 69.1278,
-      "runtime_ms": 591.77,
+      "runtime_ms": 728.05,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1896,11 +2311,24 @@
       "case_name": "45HQ超长柜 (测极限长度)",
       "description": "45HQ extended container testing extreme length wall construction and performance",
       "requested_cartons": 800,
+      "delivery_gate": {
+        "verdict": "PASS",
+        "blocked_by": [],
+        "warnings": [],
+        "cog": {
+          "cog_x_pct": 52.36,
+          "cog_y_pct": 46.02,
+          "cog_z_pct": 43.98,
+          "long_offset_pct": 2.36,
+          "lat_offset_pct": 3.98,
+          "total_weight_kg": 7250.0
+        }
+      },
       "placed_count": 656,
       "unplaced_count": 144,
       "utilization": 76.84,
       "volume_utilization_pct": 76.8434,
-      "runtime_ms": 11157.2,
+      "runtime_ms": 12664.42,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -2013,11 +2441,24 @@
       "case_name": "堆叠承重约束 (测约束遵守)",
       "description": "Tests max_stack_layers, maxBearingKg, and mustBeOnFloor constraints are respected",
       "requested_cartons": 640,
+      "delivery_gate": {
+        "verdict": "PASS",
+        "blocked_by": [],
+        "warnings": [],
+        "cog": {
+          "cog_x_pct": 49.4,
+          "cog_y_pct": 45.81,
+          "cog_z_pct": 25.52,
+          "long_offset_pct": 0.6,
+          "lat_offset_pct": 4.19,
+          "total_weight_kg": 7700.0
+        }
+      },
       "placed_count": 640,
       "unplaced_count": 0,
       "utilization": 43.61,
       "volume_utilization_pct": 43.6141,
-      "runtime_ms": 1084.42,
+      "runtime_ms": 1394.13,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -2149,11 +2590,26 @@
       "case_name": "朝向与顶叠约束 (测约束组合)",
       "description": "Tests allowStackingOnTop=false and orientation-only constraints (upright only, no flat/side)",
       "requested_cartons": 440,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 31.39,
+          "cog_y_pct": 50.63,
+          "cog_z_pct": 38.84,
+          "long_offset_pct": 18.61,
+          "lat_offset_pct": 0.63,
+          "total_weight_kg": 4560.0
+        }
+      },
       "placed_count": 440,
       "unplaced_count": 0,
       "utilization": 40.09,
       "volume_utilization_pct": 40.0883,
-      "runtime_ms": 515.31,
+      "runtime_ms": 663.93,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -2285,11 +2741,30 @@
       "case_name": "高瘦箱倾覆 (测TIP安全)",
       "description": "Tests tall slender boxes (dz/dx>3) for tipping safety - no unsupported tall placements or voids",
       "requested_cartons": 540,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-007",
+          "DG-010",
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 43.59,
+          "cog_y_pct": 38.7,
+          "cog_z_pct": 43.54,
+          "long_offset_pct": 6.41,
+          "lat_offset_pct": 11.3,
+          "total_weight_kg": 4940.0
+        }
+      },
       "placed_count": 540,
       "unplaced_count": 0,
       "utilization": 36.86,
       "volume_utilization_pct": 36.8559,
-      "runtime_ms": 1396.28,
+      "runtime_ms": 1680.83,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -2421,11 +2896,28 @@
       "case_name": "超重场景 (测载重限制)",
       "description": "Tests payload weight limit truncation - total cargo weight far exceeds maxPayloadTons",
       "requested_cartons": 300,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-005"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 49.87,
+          "cog_y_pct": 42.52,
+          "cog_z_pct": 5.56,
+          "long_offset_pct": 0.13,
+          "lat_offset_pct": 7.48,
+          "total_weight_kg": 38.4
+        }
+      },
       "placed_count": 96,
       "unplaced_count": 204,
       "utilization": 9.43,
       "volume_utilization_pct": 9.4301,
-      "runtime_ms": 4811.76,
+      "runtime_ms": 5391.05,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -2500,11 +2992,26 @@
       "case_name": "多区位约束 (测区域调度)",
       "description": "Tests INNER/MIDDLE/DOOR zone dispatching with multiple zone-specific SKUs",
       "requested_cartons": 650,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 36.29,
+          "cog_y_pct": 44.9,
+          "cog_z_pct": 42.86,
+          "long_offset_pct": 13.71,
+          "lat_offset_pct": 5.1,
+          "total_weight_kg": 6275.0
+        }
+      },
       "placed_count": 650,
       "unplaced_count": 0,
       "utilization": 52.06,
       "volume_utilization_pct": 52.0635,
-      "runtime_ms": 647.24,
+      "runtime_ms": 873.29,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -2674,11 +3181,28 @@
       "case_name": "极端长宽比 (测朝向+排列)",
       "description": "Tests extreme aspect ratio items: long planks (2.4m), tubes (1.5m), thin sheets (30mm)",
       "requested_cartons": 570,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 24.69,
+          "cog_y_pct": 48.17,
+          "cog_z_pct": 36.67,
+          "long_offset_pct": 25.31,
+          "lat_offset_pct": 1.83,
+          "total_weight_kg": 4300.0
+        }
+      },
       "placed_count": 570,
       "unplaced_count": 0,
       "utilization": 34.91,
       "volume_utilization_pct": 34.9109,
-      "runtime_ms": 1189.19,
+      "runtime_ms": 1422.68,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -2810,11 +3334,26 @@
       "case_name": "单SKU大批量 (测性能+极限)",
       "description": "Single SKU with 10000 small boxes - tests performance scaling and extreme volume packing",
       "requested_cartons": 10000,
-      "placed_count": 7744,
-      "unplaced_count": 2256,
-      "utilization": 84.35,
-      "volume_utilization_pct": 84.3457,
-      "runtime_ms": 136826.07,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 38.4,
+          "cog_y_pct": 49.11,
+          "cog_z_pct": 48.93,
+          "long_offset_pct": 11.6,
+          "lat_offset_pct": 0.89,
+          "total_weight_kg": 8131.2
+        }
+      },
+      "placed_count": 6776,
+      "unplaced_count": 3224,
+      "utilization": 73.8,
+      "volume_utilization_pct": 73.8025,
+      "runtime_ms": 149097.39,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -2826,8 +3365,8 @@
       "health_issues": [],
       "sku_fulfillment": {
         "rigid_required": 10000,
-        "rigid_placed": 7744,
-        "rigid_completion_pct": 77.44,
+        "rigid_placed": 6776,
+        "rigid_completion_pct": 67.76,
         "elastic_required": 0,
         "elastic_placed": 0,
         "elastic_completion_pct": 0.0,
@@ -2838,13 +3377,13 @@
             "name": "标准鞋盒",
             "is_elastic": false,
             "required": 10000,
-            "placed": 7744,
-            "missing": 2256,
-            "completion_pct": 77.4,
+            "placed": 6776,
+            "missing": 3224,
+            "completion_pct": 67.8,
             "distribution": {
-              "floor_placed": 352,
+              "floor_placed": 308,
               "door_zone_placed": 0,
-              "non_door_placed": 7744
+              "non_door_placed": 6776
             },
             "constraints_summary": {
               "must_be_on_floor": false,
@@ -2859,7 +3398,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 8.834,
+        "reachable_residual_volume": 17.6681,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -2877,10 +3416,10 @@
         "payload_violations": 0
       },
       "summary": {
-        "placedCount": 7744,
-        "unplacedCount": 2256,
-        "utilization": 84.34565962404294,
-        "rigidCompletion": 77.44,
+        "placedCount": 6776,
+        "unplacedCount": 3224,
+        "utilization": 73.80245217103784,
+        "rigidCompletion": 67.76,
         "healthStatus": "HEALTHY"
       }
     },
@@ -2889,11 +3428,24 @@
       "case_name": "全约束综合 (测系统鲁棒性)",
       "description": "All constraint types combined: mustBeOnFloor + maxBearing + maxStack + noTopStack + uprightOnly + zones + elastic",
       "requested_cartons": 1010,
+      "delivery_gate": {
+        "verdict": "PASS",
+        "blocked_by": [],
+        "warnings": [],
+        "cog": {
+          "cog_x_pct": 45.72,
+          "cog_y_pct": 47.23,
+          "cog_z_pct": 35.58,
+          "long_offset_pct": 4.28,
+          "lat_offset_pct": 2.77,
+          "total_weight_kg": 7260.0
+        }
+      },
       "placed_count": 1010,
       "unplaced_count": 0,
       "utilization": 51.93,
       "volume_utilization_pct": 51.9336,
-      "runtime_ms": 2563.53,
+      "runtime_ms": 3277.94,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -3082,11 +3634,26 @@
       "case_name": "绝对单层底铺 (测单层约束)",
       "description": "Large heavy equipment bases with mustBeOnFloor=true and max_stack_layers=1, upper space filled by light boxes",
       "requested_cartons": 438,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 38.93,
+          "cog_y_pct": 42.52,
+          "cog_z_pct": 35.64,
+          "long_offset_pct": 11.07,
+          "lat_offset_pct": 7.48,
+          "total_weight_kg": 3840.0
+        }
+      },
       "placed_count": 438,
       "unplaced_count": 0,
       "utilization": 40.55,
       "volume_utilization_pct": 40.5493,
-      "runtime_ms": 350.92,
+      "runtime_ms": 465.34,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -3199,11 +3766,26 @@
       "case_name": "多落地件地面竞争 (测底面过载分配)",
       "description": "Multiple large rigid SKUs strictly requiring mustBeOnFloor=true whose total footprint exceeds container floor area",
       "requested_cartons": 275,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-005"
+        ],
+        "warnings": [],
+        "cog": {
+          "cog_x_pct": 45.95,
+          "cog_y_pct": 46.52,
+          "cog_z_pct": 10.25,
+          "long_offset_pct": 4.05,
+          "lat_offset_pct": 3.48,
+          "total_weight_kg": 3140.0
+        }
+      },
       "placed_count": 52,
       "unplaced_count": 223,
       "utilization": 18.02,
       "volume_utilization_pct": 18.0219,
-      "runtime_ms": 5321.82,
+      "runtime_ms": 5714.29,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -3335,11 +3917,28 @@
       "case_name": "双层落地封顶约束 (测自限高与空腔渗透)",
       "description": "Floor-bound items strictly capped at 2 layers, followed by multi-layer stackable items",
       "requested_cartons": 470,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 28.38,
+          "cog_y_pct": 43.85,
+          "cog_z_pct": 34.79,
+          "long_offset_pct": 21.62,
+          "lat_offset_pct": 6.15,
+          "total_weight_kg": 4310.0
+        }
+      },
       "placed_count": 470,
       "unplaced_count": 0,
       "utilization": 31.96,
       "volume_utilization_pct": 31.9575,
-      "runtime_ms": 545.19,
+      "runtime_ms": 645.0,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -3452,11 +4051,28 @@
       "case_name": "高密重件铺底 (测轴荷与承载分布)",
       "description": "Extremely dense, heavy small metal castings requiring floor placement",
       "requested_cartons": 420,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 16.16,
+          "cog_y_pct": 42.52,
+          "cog_z_pct": 37.65,
+          "long_offset_pct": 33.84,
+          "lat_offset_pct": 7.48,
+          "total_weight_kg": 1689.98
+        }
+      },
       "placed_count": 420,
       "unplaced_count": 0,
       "utilization": 20.17,
       "volume_utilization_pct": 20.1699,
-      "runtime_ms": 292.87,
+      "runtime_ms": 366.26,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -3569,11 +4185,28 @@
       "case_name": "长条异形底座落地 (测横纵铺排与底支撑)",
       "description": "Long structural bases (2.2m) requiring floor placement, supporting normal boxes",
       "requested_cartons": 416,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 22.33,
+          "cog_y_pct": 44.78,
+          "cog_z_pct": 31.16,
+          "long_offset_pct": 27.67,
+          "lat_offset_pct": 5.22,
+          "total_weight_kg": 3940.0
+        }
+      },
       "placed_count": 416,
       "unplaced_count": 0,
       "utilization": 24.41,
       "volume_utilization_pct": 24.4121,
-      "runtime_ms": 303.89,
+      "runtime_ms": 373.07,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -3686,11 +4319,28 @@
       "case_name": "20GP小柜单层受限 (测短柜落地调度)",
       "description": "20GP container loaded with mustBeOnFloor=true single layer machines",
       "requested_cartons": 242,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 28.31,
+          "cog_y_pct": 45.36,
+          "cog_z_pct": 34.03,
+          "long_offset_pct": 21.69,
+          "lat_offset_pct": 4.64,
+          "total_weight_kg": 2400.0
+        }
+      },
       "placed_count": 242,
       "unplaced_count": 0,
       "utilization": 36.18,
       "volume_utilization_pct": 36.1796,
-      "runtime_ms": 147.83,
+      "runtime_ms": 178.76,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -3803,11 +4453,26 @@
       "case_name": "三级承重递减受力链 (测承压极限与物理分层)",
       "description": "Rigid bearing hierarchy: Heavy (maxBearing 180kg) -> Mid (maxBearing 35kg) -> Fragile (maxBearing 0kg)",
       "requested_cartons": 530,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 38.84,
+          "cog_y_pct": 42.7,
+          "cog_z_pct": 19.33,
+          "long_offset_pct": 11.16,
+          "lat_offset_pct": 7.3,
+          "total_weight_kg": 4775.0
+        }
+      },
       "placed_count": 530,
       "unplaced_count": 0,
       "utilization": 28.09,
       "volume_utilization_pct": 28.0938,
-      "runtime_ms": 787.49,
+      "runtime_ms": 931.27,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -3939,11 +4604,28 @@
       "case_name": "低承重中箱堆叠 (测自重承压熔断)",
       "description": "Mid-sized boxes with maxBearingKg equal to their own weight",
       "requested_cartons": 520,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-005"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 39.42,
+          "cog_y_pct": 43.01,
+          "cog_z_pct": 13.61,
+          "long_offset_pct": 10.58,
+          "lat_offset_pct": 6.99,
+          "total_weight_kg": 2970.0
+        }
+      },
       "placed_count": 317,
       "unplaced_count": 203,
       "utilization": 21.8,
       "volume_utilization_pct": 21.8044,
-      "runtime_ms": 6956.47,
+      "runtime_ms": 7290.66,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -4075,11 +4757,27 @@
       "case_name": "异构货物混合承重约束 (测接触面承载折算)",
       "description": "Boxes of varying dimensions and bearing capacities sharing layers",
       "requested_cartons": 335,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-010",
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 32.69,
+          "cog_y_pct": 41.94,
+          "cog_z_pct": 20.74,
+          "long_offset_pct": 17.31,
+          "lat_offset_pct": 8.06,
+          "total_weight_kg": 5005.0
+        }
+      },
       "placed_count": 335,
       "unplaced_count": 0,
       "utilization": 23.9,
       "volume_utilization_pct": 23.9043,
-      "runtime_ms": 430.11,
+      "runtime_ms": 536.26,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -4211,11 +4909,27 @@
       "case_name": "顶层零承重与弹性填充 (测上层防压机制)",
       "description": "Zero-bearing top-tier cartons alongside massive elastic parcels",
       "requested_cartons": 440,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-007",
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 30.72,
+          "cog_y_pct": 42.55,
+          "cog_z_pct": 22.94,
+          "long_offset_pct": 19.28,
+          "lat_offset_pct": 7.45,
+          "total_weight_kg": 3100.0
+        }
+      },
       "placed_count": 440,
       "unplaced_count": 0,
       "utilization": 17.88,
       "volume_utilization_pct": 17.8779,
-      "runtime_ms": 671.7,
+      "runtime_ms": 819.78,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -4328,11 +5042,28 @@
       "case_name": "极限载重与多点承压 (测整柜载重与局部压溃)",
       "description": "Container total weight near 26.5 tons with individual bearing limits",
       "requested_cartons": 730,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-005"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 35.16,
+          "cog_y_pct": 40.04,
+          "cog_z_pct": 15.96,
+          "long_offset_pct": 14.84,
+          "lat_offset_pct": 9.96,
+          "total_weight_kg": 13500.0
+        }
+      },
       "placed_count": 370,
       "unplaced_count": 360,
       "utilization": 19.25,
       "volume_utilization_pct": 19.2531,
-      "runtime_ms": 24611.51,
+      "runtime_ms": 24936.25,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -4445,11 +5176,27 @@
       "case_name": "不对称承重长条箱 (测跨箱承压与接触积分)",
       "description": "Long boxes spanning across multiple lower boxes with differing bearing capacities",
       "requested_cartons": 340,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-007",
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 38.07,
+          "cog_y_pct": 43.38,
+          "cog_z_pct": 16.64,
+          "long_offset_pct": 11.93,
+          "lat_offset_pct": 6.62,
+          "total_weight_kg": 3350.0
+        }
+      },
       "placed_count": 340,
       "unplaced_count": 0,
       "utilization": 22.08,
       "volume_utilization_pct": 22.0821,
-      "runtime_ms": 415.2,
+      "runtime_ms": 521.83,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -4581,11 +5328,28 @@
       "case_name": "大面积禁压面板 (测孤岛上方空腔智能绕行)",
       "description": "Large fragile panels forbidding top stacking",
       "requested_cartons": 465,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 33.75,
+          "cog_y_pct": 39.78,
+          "cog_z_pct": 27.52,
+          "long_offset_pct": 16.25,
+          "lat_offset_pct": 10.22,
+          "total_weight_kg": 3980.0
+        }
+      },
       "placed_count": 465,
       "unplaced_count": 0,
       "utilization": 29.99,
       "volume_utilization_pct": 29.9929,
-      "runtime_ms": 368.32,
+      "runtime_ms": 478.86,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -4717,11 +5481,27 @@
       "case_name": "棋盘式交错禁压 (测非连续表面支承与落空)",
       "description": "Alternating no-top cartons creating discontinuous roof surfaces",
       "requested_cartons": 460,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-007",
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 49.09,
+          "cog_y_pct": 42.0,
+          "cog_z_pct": 21.21,
+          "long_offset_pct": 0.91,
+          "lat_offset_pct": 8.0,
+          "total_weight_kg": 2775.0
+        }
+      },
       "placed_count": 460,
       "unplaced_count": 0,
       "utilization": 23.9,
       "volume_utilization_pct": 23.9026,
-      "runtime_ms": 361.14,
+      "runtime_ms": 496.86,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -4853,11 +5633,28 @@
       "case_name": "多品类并发禁压 (测全截面封顶防护)",
       "description": "Three distinct SKUs all having allowStackingOnTop=false",
       "requested_cartons": 470,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 33.11,
+          "cog_y_pct": 39.3,
+          "cog_z_pct": 30.51,
+          "long_offset_pct": 16.89,
+          "lat_offset_pct": 10.7,
+          "total_weight_kg": 3900.0
+        }
+      },
       "placed_count": 470,
       "unplaced_count": 0,
       "utilization": 25.23,
       "volume_utilization_pct": 25.2255,
-      "runtime_ms": 470.2,
+      "runtime_ms": 642.23,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -5008,11 +5805,27 @@
       "case_name": "禁压件与高密度弹性件 (测空腔深度吞吐与反穿)",
       "description": "Capped height due to no-top items, requiring large elastic items to consume clear headroom",
       "requested_cartons": 495,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-007",
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 66.81,
+          "cog_y_pct": 46.12,
+          "cog_z_pct": 30.56,
+          "long_offset_pct": 16.81,
+          "lat_offset_pct": 3.88,
+          "total_weight_kg": 3680.0
+        }
+      },
       "placed_count": 495,
       "unplaced_count": 0,
       "utilization": 34.45,
       "volume_utilization_pct": 34.4525,
-      "runtime_ms": 421.2,
+      "runtime_ms": 587.98,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -5125,11 +5938,26 @@
       "case_name": "落地兼禁压双重限制 (测绝对底部单层且上方完全禁入)",
       "description": "Boxes that must be on floor AND cannot have anything stacked on top",
       "requested_cartons": 416,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 42.6,
+          "cog_y_pct": 43.2,
+          "cog_z_pct": 32.01,
+          "long_offset_pct": 7.4,
+          "lat_offset_pct": 6.8,
+          "total_weight_kg": 4470.0
+        }
+      },
       "placed_count": 416,
       "unplaced_count": 0,
       "utilization": 30.15,
       "volume_utilization_pct": 30.1501,
-      "runtime_ms": 330.39,
+      "runtime_ms": 424.41,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -5242,11 +6070,26 @@
       "case_name": "20GP小柜禁压调度 (测短柜禁叠空间利用)",
       "description": "20GP container with fragile unstackable modules",
       "requested_cartons": 284,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 50.04,
+          "cog_y_pct": 55.04,
+          "cog_z_pct": 26.16,
+          "long_offset_pct": 0.04,
+          "lat_offset_pct": 5.04,
+          "total_weight_kg": 1750.0
+        }
+      },
       "placed_count": 284,
       "unplaced_count": 0,
       "utilization": 26.06,
       "volume_utilization_pct": 26.0602,
-      "runtime_ms": 133.05,
+      "runtime_ms": 174.77,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -5359,11 +6202,28 @@
       "case_name": "全品类严苛立放锁定 (测单自由度排布与截面匹配)",
       "description": "All SKUs strictly locked to upright orientation only",
       "requested_cartons": 530,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 22.61,
+          "cog_y_pct": 50.49,
+          "cog_z_pct": 44.98,
+          "long_offset_pct": 27.39,
+          "lat_offset_pct": 0.49,
+          "total_weight_kg": 4500.0
+        }
+      },
       "placed_count": 530,
       "unplaced_count": 0,
       "utilization": 39.14,
       "volume_utilization_pct": 39.1375,
-      "runtime_ms": 474.3,
+      "runtime_ms": 626.92,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -5495,11 +6355,28 @@
       "case_name": "纯平放石材板件 (测平铺堆叠与层高对齐)",
       "description": "Heavy flat stone slabs that can only be placed flat",
       "requested_cartons": 540,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 18.98,
+          "cog_y_pct": 43.19,
+          "cog_z_pct": 36.16,
+          "long_offset_pct": 31.02,
+          "lat_offset_pct": 6.81,
+          "total_weight_kg": 6725.0
+        }
+      },
       "placed_count": 540,
       "unplaced_count": 0,
       "utilization": 29.22,
       "volume_utilization_pct": 29.2215,
-      "runtime_ms": 721.43,
+      "runtime_ms": 857.48,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -5631,11 +6508,29 @@
       "case_name": "超薄直立屏防倾覆 (测极限厚度与侧向支撑)",
       "description": "Thin glass sheets (thickness 0.08m) with strict upright constraints",
       "requested_cartons": 520,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-007",
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 28.93,
+          "cog_y_pct": 41.36,
+          "cog_z_pct": 32.14,
+          "long_offset_pct": 21.07,
+          "lat_offset_pct": 8.64,
+          "total_weight_kg": 3700.0
+        }
+      },
       "placed_count": 520,
       "unplaced_count": 0,
       "utilization": 25.26,
       "volume_utilization_pct": 25.2569,
-      "runtime_ms": 461.84,
+      "runtime_ms": 598.39,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -5748,11 +6643,29 @@
       "case_name": "平放层数限制约束 (测平躺堆叠上限)",
       "description": "Cargo items allowing flat orientation but capped at maxFlatLayers=2",
       "requested_cartons": 430,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-010",
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 19.71,
+          "cog_y_pct": 44.85,
+          "cog_z_pct": 32.96,
+          "long_offset_pct": 30.29,
+          "lat_offset_pct": 5.15,
+          "total_weight_kg": 3640.0
+        }
+      },
       "placed_count": 430,
       "unplaced_count": 0,
       "utilization": 25.15,
       "volume_utilization_pct": 25.1469,
-      "runtime_ms": 579.07,
+      "runtime_ms": 682.15,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -5865,11 +6778,27 @@
       "case_name": "高度与朝向联动截断 (测高位平放与低位立放)",
       "description": "Tall boxes that are upright near floor but must be flat if placed high",
       "requested_cartons": 385,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-007",
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 35.65,
+          "cog_y_pct": 40.86,
+          "cog_z_pct": 29.43,
+          "long_offset_pct": 14.35,
+          "lat_offset_pct": 9.14,
+          "total_weight_kg": 3750.0
+        }
+      },
       "placed_count": 385,
       "unplaced_count": 0,
       "utilization": 28.41,
       "volume_utilization_pct": 28.4081,
-      "runtime_ms": 299.79,
+      "runtime_ms": 355.15,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -5982,11 +6911,29 @@
       "case_name": "20GP短柜朝向全锁定 (测紧凑空间无旋转装柜)",
       "description": "20GP standard container with zero rotational degrees of freedom",
       "requested_cartons": 280,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-008",
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 24.52,
+          "cog_y_pct": 45.95,
+          "cog_z_pct": 38.97,
+          "long_offset_pct": 25.48,
+          "lat_offset_pct": 4.05,
+          "total_weight_kg": 2210.0
+        }
+      },
       "placed_count": 280,
       "unplaced_count": 0,
       "utilization": 38.45,
       "volume_utilization_pct": 38.4465,
-      "runtime_ms": 185.97,
+      "runtime_ms": 237.01,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -6099,11 +7046,29 @@
       "case_name": "严格双层堆叠限制 (测同品垂直深度计数)",
       "description": "Multiple SKUs strictly restricted to max 2 vertical layers",
       "requested_cartons": 540,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-008",
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 24.27,
+          "cog_y_pct": 46.51,
+          "cog_z_pct": 34.74,
+          "long_offset_pct": 25.73,
+          "lat_offset_pct": 3.49,
+          "total_weight_kg": 3900.0
+        }
+      },
       "placed_count": 540,
       "unplaced_count": 0,
       "utilization": 30.51,
       "volume_utilization_pct": 30.5135,
-      "runtime_ms": 616.43,
+      "runtime_ms": 690.36,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -6235,11 +7200,28 @@
       "case_name": "严格三层堆叠限制 (测层数达到后截断与上层平接)",
       "description": "SKUs capping precisely at 3 layers",
       "requested_cartons": 385,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 15.64,
+          "cog_y_pct": 45.34,
+          "cog_z_pct": 38.21,
+          "long_offset_pct": 34.36,
+          "lat_offset_pct": 4.66,
+          "total_weight_kg": 3390.0
+        }
+      },
       "placed_count": 385,
       "unplaced_count": 0,
       "utilization": 23.15,
       "volume_utilization_pct": 23.1528,
-      "runtime_ms": 287.52,
+      "runtime_ms": 369.03,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -6352,11 +7334,29 @@
       "case_name": "梯度层数级联阶梯 (测多层数阈值混合排布)",
       "description": "Layer hierarchy with 1-layer, 2-layer, 3-layer, and unlimited stack limits",
       "requested_cartons": 558,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-008",
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 20.76,
+          "cog_y_pct": 42.74,
+          "cog_z_pct": 36.05,
+          "long_offset_pct": 29.24,
+          "lat_offset_pct": 7.26,
+          "total_weight_kg": 3805.0
+        }
+      },
       "placed_count": 558,
       "unplaced_count": 0,
       "utilization": 23.36,
       "volume_utilization_pct": 23.3591,
-      "runtime_ms": 1235.03,
+      "runtime_ms": 1470.35,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -6507,11 +7507,28 @@
       "case_name": "夹心非连续同品层数 (测间接垂直投影层数合规)",
       "description": "Testing whether layer depth accumulates across intermediate other-SKU layers",
       "requested_cartons": 460,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 17.47,
+          "cog_y_pct": 43.05,
+          "cog_z_pct": 36.99,
+          "long_offset_pct": 32.53,
+          "lat_offset_pct": 6.95,
+          "total_weight_kg": 2480.0
+        }
+      },
       "placed_count": 460,
       "unplaced_count": 0,
       "utilization": 19.65,
       "volume_utilization_pct": 19.646,
-      "runtime_ms": 458.04,
+      "runtime_ms": 575.51,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -6643,11 +7660,28 @@
       "case_name": "阶梯断层防倾覆 (测层数截断处边缘跌落安全)",
       "description": "Sudden height drop from layer-capped columns creating free edges",
       "requested_cartons": 340,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 24.73,
+          "cog_y_pct": 41.52,
+          "cog_z_pct": 39.15,
+          "long_offset_pct": 25.27,
+          "lat_offset_pct": 8.48,
+          "total_weight_kg": 2890.0
+        }
+      },
       "placed_count": 340,
       "unplaced_count": 0,
       "utilization": 25.62,
       "volume_utilization_pct": 25.6184,
-      "runtime_ms": 207.68,
+      "runtime_ms": 284.18,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -6760,11 +7794,26 @@
       "case_name": "20GP短柜层数限制 (测紧凑小柜低层截断)",
       "description": "20GP container with max_stack_layers=2 items",
       "requested_cartons": 290,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 40.69,
+          "cog_y_pct": 40.39,
+          "cog_z_pct": 21.57,
+          "long_offset_pct": 9.31,
+          "lat_offset_pct": 9.61,
+          "total_weight_kg": 1790.0
+        }
+      },
       "placed_count": 290,
       "unplaced_count": 0,
       "utilization": 26.98,
       "volume_utilization_pct": 26.976,
-      "runtime_ms": 140.92,
+      "runtime_ms": 185.39,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -6877,11 +7926,27 @@
       "case_name": "刚性占95%极致压榨 (测高密度刚性件密排与0饥饿)",
       "description": "95% of container volume occupied by rigid items",
       "requested_cartons": 580,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-010",
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 37.67,
+          "cog_y_pct": 46.94,
+          "cog_z_pct": 42.6,
+          "long_offset_pct": 12.33,
+          "lat_offset_pct": 3.06,
+          "total_weight_kg": 8730.0
+        }
+      },
       "placed_count": 580,
       "unplaced_count": 0,
       "utilization": 57.8,
       "volume_utilization_pct": 57.7985,
-      "runtime_ms": 483.3,
+      "runtime_ms": 632.17,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -7013,11 +8078,24 @@
       "case_name": "弹性占90%海量吞吐 (测优先保证刚性100%不倒挂)",
       "description": "Small batch of rigid items (10%) immersed in massive pool of elastic goods (90%)",
       "requested_cartons": 1465,
+      "delivery_gate": {
+        "verdict": "PASS",
+        "blocked_by": [],
+        "warnings": [],
+        "cog": {
+          "cog_x_pct": 41.52,
+          "cog_y_pct": 46.66,
+          "cog_z_pct": 42.51,
+          "long_offset_pct": 8.48,
+          "lat_offset_pct": 3.34,
+          "total_weight_kg": 7225.0
+        }
+      },
       "placed_count": 1465,
       "unplaced_count": 0,
       "utilization": 44.4,
       "volume_utilization_pct": 44.4,
-      "runtime_ms": 3221.84,
+      "runtime_ms": 4300.56,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -7149,11 +8227,24 @@
       "case_name": "刚性总体积150%超载 (测公平分配与防彻底饥饿)",
       "description": "Total requested rigid volume exceeds 40HQ usable capacity by 50%",
       "requested_cartons": 1250,
+      "delivery_gate": {
+        "verdict": "PASS",
+        "blocked_by": [],
+        "warnings": [],
+        "cog": {
+          "cog_x_pct": 50.0,
+          "cog_y_pct": 51.25,
+          "cog_z_pct": 44.76,
+          "long_offset_pct": 0.0,
+          "lat_offset_pct": 1.25,
+          "total_weight_kg": 12640.0
+        }
+      },
       "placed_count": 864,
       "unplaced_count": 386,
       "utilization": 86.64,
       "volume_utilization_pct": 86.6362,
-      "runtime_ms": 45353.43,
+      "runtime_ms": 45634.41,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -7285,11 +8376,24 @@
       "case_name": "门区专用密集装载 (测封门区段排他性与平整)",
       "description": "Specialized door zone SKUs requiring door zone placement and strict sealing",
       "requested_cartons": 630,
+      "delivery_gate": {
+        "verdict": "PASS",
+        "blocked_by": [],
+        "warnings": [],
+        "cog": {
+          "cog_x_pct": 40.58,
+          "cog_y_pct": 46.89,
+          "cog_z_pct": 38.82,
+          "long_offset_pct": 9.42,
+          "lat_offset_pct": 3.11,
+          "total_weight_kg": 5950.0
+        }
+      },
       "placed_count": 630,
       "unplaced_count": 0,
       "utilization": 42.31,
       "volume_utilization_pct": 42.3091,
-      "runtime_ms": 589.54,
+      "runtime_ms": 760.96,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -7421,11 +8525,28 @@
       "case_name": "12种复杂尺寸异型拼合 (测多模态宽度带与回填)",
       "description": "12 distinctly sized SKUs with complementary aspect ratios",
       "requested_cartons": 825,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-005"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 38.87,
+          "cog_y_pct": 44.31,
+          "cog_z_pct": 43.85,
+          "long_offset_pct": 11.13,
+          "lat_offset_pct": 5.69,
+          "total_weight_kg": 6460.0
+        }
+      },
       "placed_count": 670,
       "unplaced_count": 155,
       "utilization": 51.11,
       "volume_utilization_pct": 51.1107,
-      "runtime_ms": 12099.56,
+      "runtime_ms": 14467.07,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -7709,11 +8830,26 @@
       "case_name": "20GP小柜超限利用 (测短柜极限空间压缩)",
       "description": "20GP container packed with complementary dimensions",
       "requested_cartons": 440,
+      "delivery_gate": {
+        "verdict": "WARN",
+        "blocked_by": [],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 36.67,
+          "cog_y_pct": 48.09,
+          "cog_z_pct": 42.74,
+          "long_offset_pct": 13.33,
+          "lat_offset_pct": 1.91,
+          "total_weight_kg": 3880.0
+        }
+      },
       "placed_count": 440,
       "unplaced_count": 0,
       "utilization": 59.54,
       "volume_utilization_pct": 59.5413,
-      "runtime_ms": 319.14,
+      "runtime_ms": 544.88,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -7826,11 +8962,28 @@
       "case_name": "随机约束压力测试01 (Seed:101)",
       "description": "Randomized constraint stress testing with fixed reproducible seed 101",
       "requested_cartons": 750,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-005"
+        ],
+        "warnings": [
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 37.35,
+          "cog_y_pct": 42.54,
+          "cog_z_pct": 37.82,
+          "long_offset_pct": 12.65,
+          "lat_offset_pct": 7.46,
+          "total_weight_kg": 6528.0
+        }
+      },
       "placed_count": 465,
       "unplaced_count": 285,
       "utilization": 48.3,
       "volume_utilization_pct": 48.2988,
-      "runtime_ms": 25010.29,
+      "runtime_ms": 25103.44,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -8038,11 +9191,30 @@
       "case_name": "随机约束压力测试02 (Seed:202)",
       "description": "Randomized constraint stress testing with fixed reproducible seed 202",
       "requested_cartons": 734,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-005"
+        ],
+        "warnings": [
+          "DG-008",
+          "DG-010",
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 51.24,
+          "cog_y_pct": 43.03,
+          "cog_z_pct": 32.11,
+          "long_offset_pct": 1.24,
+          "lat_offset_pct": 6.97,
+          "total_weight_kg": 6531.0
+        }
+      },
       "placed_count": 441,
       "unplaced_count": 293,
       "utilization": 49.55,
       "volume_utilization_pct": 49.5515,
-      "runtime_ms": 24976.66,
+      "runtime_ms": 25076.8,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -8250,11 +9422,28 @@
       "case_name": "随机约束压力测试03 (Seed:303)",
       "description": "Randomized constraint stress testing with fixed reproducible seed 303",
       "requested_cartons": 733,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-005"
+        ],
+        "warnings": [
+          "DG-010"
+        ],
+        "cog": {
+          "cog_x_pct": 44.52,
+          "cog_y_pct": 46.42,
+          "cog_z_pct": 25.64,
+          "long_offset_pct": 5.48,
+          "lat_offset_pct": 3.58,
+          "total_weight_kg": 5424.0
+        }
+      },
       "placed_count": 362,
       "unplaced_count": 371,
       "utilization": 39.81,
       "volume_utilization_pct": 39.8083,
-      "runtime_ms": 23380.8,
+      "runtime_ms": 24994.71,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -8462,11 +9651,28 @@
       "case_name": "随机约束压力测试04 (Seed:404)",
       "description": "Randomized constraint stress testing with fixed reproducible seed 404",
       "requested_cartons": 710,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-005"
+        ],
+        "warnings": [
+          "DG-010"
+        ],
+        "cog": {
+          "cog_x_pct": 41.74,
+          "cog_y_pct": 53.09,
+          "cog_z_pct": 34.37,
+          "long_offset_pct": 8.26,
+          "lat_offset_pct": 3.09,
+          "total_weight_kg": 6679.0
+        }
+      },
       "placed_count": 479,
       "unplaced_count": 231,
       "utilization": 48.25,
       "volume_utilization_pct": 48.2529,
-      "runtime_ms": 23803.84,
+      "runtime_ms": 25101.16,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -8674,11 +9880,29 @@
       "case_name": "随机约束压力测试05 (Seed:505)",
       "description": "Randomized constraint stress testing with fixed reproducible seed 505",
       "requested_cartons": 720,
+      "delivery_gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-005"
+        ],
+        "warnings": [
+          "DG-007",
+          "DG-014"
+        ],
+        "cog": {
+          "cog_x_pct": 40.79,
+          "cog_y_pct": 44.73,
+          "cog_z_pct": 25.87,
+          "long_offset_pct": 9.21,
+          "lat_offset_pct": 5.27,
+          "total_weight_kg": 4979.0
+        }
+      },
       "placed_count": 361,
       "unplaced_count": 359,
       "utilization": 37.21,
       "volume_utilization_pct": 37.2104,
-      "runtime_ms": 23854.16,
+      "runtime_ms": 23206.47,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -8887,11 +10111,26 @@
     "case_name": "14-SKU-1845 (当前基线)",
     "description": "14-SKU standard baseline cleanroom case 001",
     "requested_cartons": 2145,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-010"
+      ],
+      "cog": {
+        "cog_x_pct": 54.46,
+        "cog_y_pct": 51.84,
+        "cog_z_pct": 49.91,
+        "long_offset_pct": 4.46,
+        "lat_offset_pct": 1.84,
+        "total_weight_kg": 12018.85
+      }
+    },
     "placed_count": 1465,
     "unplaced_count": 680,
     "utilization": 83.33,
     "volume_utilization_pct": 83.3256,
-    "runtime_ms": 46165.71,
+    "runtime_ms": 47147.0,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -9232,11 +10471,24 @@
     "case_name": "单一大箱 SKU (测极限堆叠)",
     "description": "Single large carton SKU for monolithic block stacking and extreme volume utilization",
     "requested_cartons": 70,
+    "delivery_gate": {
+      "verdict": "PASS",
+      "blocked_by": [],
+      "warnings": [],
+      "cog": {
+        "cog_x_pct": 47.79,
+        "cog_y_pct": 48.89,
+        "cog_z_pct": 48.93,
+        "long_offset_pct": 2.21,
+        "lat_offset_pct": 1.11,
+        "total_weight_kg": 5100.0
+      }
+    },
     "placed_count": 60,
     "unplaced_count": 10,
     "utilization": 91.46,
     "volume_utilization_pct": 91.4561,
-    "runtime_ms": 452.29,
+    "runtime_ms": 497.98,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -9311,11 +10563,24 @@
     "case_name": "全弹性件 (测核减逻辑)",
     "description": "All elastic SKUs with overcapacity demand testing automated trimming and zero overflow",
     "requested_cartons": 3200,
+    "delivery_gate": {
+      "verdict": "PASS",
+      "blocked_by": [],
+      "warnings": [],
+      "cog": {
+        "cog_x_pct": 50.31,
+        "cog_y_pct": 49.22,
+        "cog_z_pct": 47.16,
+        "long_offset_pct": 0.31,
+        "lat_offset_pct": 0.78,
+        "total_weight_kg": 9472.2
+      }
+    },
     "placed_count": 1003,
     "unplaced_count": 2197,
     "utilization": 89.59,
     "volume_utilization_pct": 89.5936,
-    "runtime_ms": 11549.15,
+    "runtime_ms": 12834.82,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -9447,11 +10712,24 @@
     "case_name": "门区密集 (测门区封门)",
     "description": "Dense door-seal items testing door safety zone (rear 1.2m), wall closure, and anti-toppling",
     "requested_cartons": 980,
+    "delivery_gate": {
+      "verdict": "PASS",
+      "blocked_by": [],
+      "warnings": [],
+      "cog": {
+        "cog_x_pct": 55.95,
+        "cog_y_pct": 47.08,
+        "cog_z_pct": 44.12,
+        "long_offset_pct": 5.95,
+        "lat_offset_pct": 2.92,
+        "total_weight_kg": 8644.0
+      }
+    },
     "placed_count": 980,
     "unplaced_count": 0,
     "utilization": 69.75,
     "volume_utilization_pct": 69.7518,
-    "runtime_ms": 1172.41,
+    "runtime_ms": 1593.6,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -9602,11 +10880,24 @@
     "case_name": "混合异尺寸 (测空间利用)",
     "description": "Highly heterogeneous SKU dimensions testing multi-depth wall slicing, top filling, and compact space utilization",
     "requested_cartons": 810,
+    "delivery_gate": {
+      "verdict": "PASS",
+      "blocked_by": [],
+      "warnings": [],
+      "cog": {
+        "cog_x_pct": 44.13,
+        "cog_y_pct": 50.01,
+        "cog_z_pct": 43.68,
+        "long_offset_pct": 5.87,
+        "lat_offset_pct": 0.01,
+        "total_weight_kg": 7275.0
+      }
+    },
     "placed_count": 810,
     "unplaced_count": 0,
     "utilization": 70.43,
     "volume_utilization_pct": 70.4281,
-    "runtime_ms": 2275.85,
+    "runtime_ms": 2654.77,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -9814,11 +11105,24 @@
     "case_name": "20GP标准柜 (测短柜装载)",
     "description": "20GP standard container testing wall construction and door reserve adaptation for shorter containers",
     "requested_cartons": 560,
+    "delivery_gate": {
+      "verdict": "PASS",
+      "blocked_by": [],
+      "warnings": [],
+      "cog": {
+        "cog_x_pct": 44.16,
+        "cog_y_pct": 47.89,
+        "cog_z_pct": 45.67,
+        "long_offset_pct": 5.84,
+        "lat_offset_pct": 2.11,
+        "total_weight_kg": 3750.0
+      }
+    },
     "placed_count": 560,
     "unplaced_count": 0,
     "utilization": 69.13,
     "volume_utilization_pct": 69.1278,
-    "runtime_ms": 591.77,
+    "runtime_ms": 728.05,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -9931,11 +11235,24 @@
     "case_name": "45HQ超长柜 (测极限长度)",
     "description": "45HQ extended container testing extreme length wall construction and performance",
     "requested_cartons": 800,
+    "delivery_gate": {
+      "verdict": "PASS",
+      "blocked_by": [],
+      "warnings": [],
+      "cog": {
+        "cog_x_pct": 52.36,
+        "cog_y_pct": 46.02,
+        "cog_z_pct": 43.98,
+        "long_offset_pct": 2.36,
+        "lat_offset_pct": 3.98,
+        "total_weight_kg": 7250.0
+      }
+    },
     "placed_count": 656,
     "unplaced_count": 144,
     "utilization": 76.84,
     "volume_utilization_pct": 76.8434,
-    "runtime_ms": 11157.2,
+    "runtime_ms": 12664.42,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -10048,11 +11365,24 @@
     "case_name": "堆叠承重约束 (测约束遵守)",
     "description": "Tests max_stack_layers, maxBearingKg, and mustBeOnFloor constraints are respected",
     "requested_cartons": 640,
+    "delivery_gate": {
+      "verdict": "PASS",
+      "blocked_by": [],
+      "warnings": [],
+      "cog": {
+        "cog_x_pct": 49.4,
+        "cog_y_pct": 45.81,
+        "cog_z_pct": 25.52,
+        "long_offset_pct": 0.6,
+        "lat_offset_pct": 4.19,
+        "total_weight_kg": 7700.0
+      }
+    },
     "placed_count": 640,
     "unplaced_count": 0,
     "utilization": 43.61,
     "volume_utilization_pct": 43.6141,
-    "runtime_ms": 1084.42,
+    "runtime_ms": 1394.13,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -10184,11 +11514,26 @@
     "case_name": "朝向与顶叠约束 (测约束组合)",
     "description": "Tests allowStackingOnTop=false and orientation-only constraints (upright only, no flat/side)",
     "requested_cartons": 440,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 31.39,
+        "cog_y_pct": 50.63,
+        "cog_z_pct": 38.84,
+        "long_offset_pct": 18.61,
+        "lat_offset_pct": 0.63,
+        "total_weight_kg": 4560.0
+      }
+    },
     "placed_count": 440,
     "unplaced_count": 0,
     "utilization": 40.09,
     "volume_utilization_pct": 40.0883,
-    "runtime_ms": 515.31,
+    "runtime_ms": 663.93,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -10320,11 +11665,30 @@
     "case_name": "高瘦箱倾覆 (测TIP安全)",
     "description": "Tests tall slender boxes (dz/dx>3) for tipping safety - no unsupported tall placements or voids",
     "requested_cartons": 540,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-007",
+        "DG-010",
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 43.59,
+        "cog_y_pct": 38.7,
+        "cog_z_pct": 43.54,
+        "long_offset_pct": 6.41,
+        "lat_offset_pct": 11.3,
+        "total_weight_kg": 4940.0
+      }
+    },
     "placed_count": 540,
     "unplaced_count": 0,
     "utilization": 36.86,
     "volume_utilization_pct": 36.8559,
-    "runtime_ms": 1396.28,
+    "runtime_ms": 1680.83,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -10456,11 +11820,28 @@
     "case_name": "超重场景 (测载重限制)",
     "description": "Tests payload weight limit truncation - total cargo weight far exceeds maxPayloadTons",
     "requested_cartons": 300,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-005"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 49.87,
+        "cog_y_pct": 42.52,
+        "cog_z_pct": 5.56,
+        "long_offset_pct": 0.13,
+        "lat_offset_pct": 7.48,
+        "total_weight_kg": 38.4
+      }
+    },
     "placed_count": 96,
     "unplaced_count": 204,
     "utilization": 9.43,
     "volume_utilization_pct": 9.4301,
-    "runtime_ms": 4811.76,
+    "runtime_ms": 5391.05,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -10535,11 +11916,26 @@
     "case_name": "多区位约束 (测区域调度)",
     "description": "Tests INNER/MIDDLE/DOOR zone dispatching with multiple zone-specific SKUs",
     "requested_cartons": 650,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 36.29,
+        "cog_y_pct": 44.9,
+        "cog_z_pct": 42.86,
+        "long_offset_pct": 13.71,
+        "lat_offset_pct": 5.1,
+        "total_weight_kg": 6275.0
+      }
+    },
     "placed_count": 650,
     "unplaced_count": 0,
     "utilization": 52.06,
     "volume_utilization_pct": 52.0635,
-    "runtime_ms": 647.24,
+    "runtime_ms": 873.29,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -10709,11 +12105,28 @@
     "case_name": "极端长宽比 (测朝向+排列)",
     "description": "Tests extreme aspect ratio items: long planks (2.4m), tubes (1.5m), thin sheets (30mm)",
     "requested_cartons": 570,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 24.69,
+        "cog_y_pct": 48.17,
+        "cog_z_pct": 36.67,
+        "long_offset_pct": 25.31,
+        "lat_offset_pct": 1.83,
+        "total_weight_kg": 4300.0
+      }
+    },
     "placed_count": 570,
     "unplaced_count": 0,
     "utilization": 34.91,
     "volume_utilization_pct": 34.9109,
-    "runtime_ms": 1189.19,
+    "runtime_ms": 1422.68,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -10845,11 +12258,26 @@
     "case_name": "单SKU大批量 (测性能+极限)",
     "description": "Single SKU with 10000 small boxes - tests performance scaling and extreme volume packing",
     "requested_cartons": 10000,
-    "placed_count": 7744,
-    "unplaced_count": 2256,
-    "utilization": 84.35,
-    "volume_utilization_pct": 84.3457,
-    "runtime_ms": 136826.07,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 38.4,
+        "cog_y_pct": 49.11,
+        "cog_z_pct": 48.93,
+        "long_offset_pct": 11.6,
+        "lat_offset_pct": 0.89,
+        "total_weight_kg": 8131.2
+      }
+    },
+    "placed_count": 6776,
+    "unplaced_count": 3224,
+    "utilization": 73.8,
+    "volume_utilization_pct": 73.8025,
+    "runtime_ms": 149097.39,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -10861,8 +12289,8 @@
     "health_issues": [],
     "sku_fulfillment": {
       "rigid_required": 10000,
-      "rigid_placed": 7744,
-      "rigid_completion_pct": 77.44,
+      "rigid_placed": 6776,
+      "rigid_completion_pct": 67.76,
       "elastic_required": 0,
       "elastic_placed": 0,
       "elastic_completion_pct": 0.0,
@@ -10873,13 +12301,13 @@
           "name": "标准鞋盒",
           "is_elastic": false,
           "required": 10000,
-          "placed": 7744,
-          "missing": 2256,
-          "completion_pct": 77.4,
+          "placed": 6776,
+          "missing": 3224,
+          "completion_pct": 67.8,
           "distribution": {
-            "floor_placed": 352,
+            "floor_placed": 308,
             "door_zone_placed": 0,
-            "non_door_placed": 7744
+            "non_door_placed": 6776
           },
           "constraints_summary": {
             "must_be_on_floor": false,
@@ -10894,7 +12322,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 8.834,
+      "reachable_residual_volume": 17.6681,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -10912,10 +12340,10 @@
       "payload_violations": 0
     },
     "summary": {
-      "placedCount": 7744,
-      "unplacedCount": 2256,
-      "utilization": 84.34565962404294,
-      "rigidCompletion": 77.44,
+      "placedCount": 6776,
+      "unplacedCount": 3224,
+      "utilization": 73.80245217103784,
+      "rigidCompletion": 67.76,
       "healthStatus": "HEALTHY"
     }
   },
@@ -10924,11 +12352,24 @@
     "case_name": "全约束综合 (测系统鲁棒性)",
     "description": "All constraint types combined: mustBeOnFloor + maxBearing + maxStack + noTopStack + uprightOnly + zones + elastic",
     "requested_cartons": 1010,
+    "delivery_gate": {
+      "verdict": "PASS",
+      "blocked_by": [],
+      "warnings": [],
+      "cog": {
+        "cog_x_pct": 45.72,
+        "cog_y_pct": 47.23,
+        "cog_z_pct": 35.58,
+        "long_offset_pct": 4.28,
+        "lat_offset_pct": 2.77,
+        "total_weight_kg": 7260.0
+      }
+    },
     "placed_count": 1010,
     "unplaced_count": 0,
     "utilization": 51.93,
     "volume_utilization_pct": 51.9336,
-    "runtime_ms": 2563.53,
+    "runtime_ms": 3277.94,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -11117,11 +12558,26 @@
     "case_name": "绝对单层底铺 (测单层约束)",
     "description": "Large heavy equipment bases with mustBeOnFloor=true and max_stack_layers=1, upper space filled by light boxes",
     "requested_cartons": 438,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 38.93,
+        "cog_y_pct": 42.52,
+        "cog_z_pct": 35.64,
+        "long_offset_pct": 11.07,
+        "lat_offset_pct": 7.48,
+        "total_weight_kg": 3840.0
+      }
+    },
     "placed_count": 438,
     "unplaced_count": 0,
     "utilization": 40.55,
     "volume_utilization_pct": 40.5493,
-    "runtime_ms": 350.92,
+    "runtime_ms": 465.34,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -11234,11 +12690,26 @@
     "case_name": "多落地件地面竞争 (测底面过载分配)",
     "description": "Multiple large rigid SKUs strictly requiring mustBeOnFloor=true whose total footprint exceeds container floor area",
     "requested_cartons": 275,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-005"
+      ],
+      "warnings": [],
+      "cog": {
+        "cog_x_pct": 45.95,
+        "cog_y_pct": 46.52,
+        "cog_z_pct": 10.25,
+        "long_offset_pct": 4.05,
+        "lat_offset_pct": 3.48,
+        "total_weight_kg": 3140.0
+      }
+    },
     "placed_count": 52,
     "unplaced_count": 223,
     "utilization": 18.02,
     "volume_utilization_pct": 18.0219,
-    "runtime_ms": 5321.82,
+    "runtime_ms": 5714.29,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -11370,11 +12841,28 @@
     "case_name": "双层落地封顶约束 (测自限高与空腔渗透)",
     "description": "Floor-bound items strictly capped at 2 layers, followed by multi-layer stackable items",
     "requested_cartons": 470,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 28.38,
+        "cog_y_pct": 43.85,
+        "cog_z_pct": 34.79,
+        "long_offset_pct": 21.62,
+        "lat_offset_pct": 6.15,
+        "total_weight_kg": 4310.0
+      }
+    },
     "placed_count": 470,
     "unplaced_count": 0,
     "utilization": 31.96,
     "volume_utilization_pct": 31.9575,
-    "runtime_ms": 545.19,
+    "runtime_ms": 645.0,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -11487,11 +12975,28 @@
     "case_name": "高密重件铺底 (测轴荷与承载分布)",
     "description": "Extremely dense, heavy small metal castings requiring floor placement",
     "requested_cartons": 420,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 16.16,
+        "cog_y_pct": 42.52,
+        "cog_z_pct": 37.65,
+        "long_offset_pct": 33.84,
+        "lat_offset_pct": 7.48,
+        "total_weight_kg": 1689.98
+      }
+    },
     "placed_count": 420,
     "unplaced_count": 0,
     "utilization": 20.17,
     "volume_utilization_pct": 20.1699,
-    "runtime_ms": 292.87,
+    "runtime_ms": 366.26,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -11604,11 +13109,28 @@
     "case_name": "长条异形底座落地 (测横纵铺排与底支撑)",
     "description": "Long structural bases (2.2m) requiring floor placement, supporting normal boxes",
     "requested_cartons": 416,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 22.33,
+        "cog_y_pct": 44.78,
+        "cog_z_pct": 31.16,
+        "long_offset_pct": 27.67,
+        "lat_offset_pct": 5.22,
+        "total_weight_kg": 3940.0
+      }
+    },
     "placed_count": 416,
     "unplaced_count": 0,
     "utilization": 24.41,
     "volume_utilization_pct": 24.4121,
-    "runtime_ms": 303.89,
+    "runtime_ms": 373.07,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -11721,11 +13243,28 @@
     "case_name": "20GP小柜单层受限 (测短柜落地调度)",
     "description": "20GP container loaded with mustBeOnFloor=true single layer machines",
     "requested_cartons": 242,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 28.31,
+        "cog_y_pct": 45.36,
+        "cog_z_pct": 34.03,
+        "long_offset_pct": 21.69,
+        "lat_offset_pct": 4.64,
+        "total_weight_kg": 2400.0
+      }
+    },
     "placed_count": 242,
     "unplaced_count": 0,
     "utilization": 36.18,
     "volume_utilization_pct": 36.1796,
-    "runtime_ms": 147.83,
+    "runtime_ms": 178.76,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -11838,11 +13377,26 @@
     "case_name": "三级承重递减受力链 (测承压极限与物理分层)",
     "description": "Rigid bearing hierarchy: Heavy (maxBearing 180kg) -> Mid (maxBearing 35kg) -> Fragile (maxBearing 0kg)",
     "requested_cartons": 530,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 38.84,
+        "cog_y_pct": 42.7,
+        "cog_z_pct": 19.33,
+        "long_offset_pct": 11.16,
+        "lat_offset_pct": 7.3,
+        "total_weight_kg": 4775.0
+      }
+    },
     "placed_count": 530,
     "unplaced_count": 0,
     "utilization": 28.09,
     "volume_utilization_pct": 28.0938,
-    "runtime_ms": 787.49,
+    "runtime_ms": 931.27,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -11974,11 +13528,28 @@
     "case_name": "低承重中箱堆叠 (测自重承压熔断)",
     "description": "Mid-sized boxes with maxBearingKg equal to their own weight",
     "requested_cartons": 520,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-005"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 39.42,
+        "cog_y_pct": 43.01,
+        "cog_z_pct": 13.61,
+        "long_offset_pct": 10.58,
+        "lat_offset_pct": 6.99,
+        "total_weight_kg": 2970.0
+      }
+    },
     "placed_count": 317,
     "unplaced_count": 203,
     "utilization": 21.8,
     "volume_utilization_pct": 21.8044,
-    "runtime_ms": 6956.47,
+    "runtime_ms": 7290.66,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -12110,11 +13681,27 @@
     "case_name": "异构货物混合承重约束 (测接触面承载折算)",
     "description": "Boxes of varying dimensions and bearing capacities sharing layers",
     "requested_cartons": 335,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-010",
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 32.69,
+        "cog_y_pct": 41.94,
+        "cog_z_pct": 20.74,
+        "long_offset_pct": 17.31,
+        "lat_offset_pct": 8.06,
+        "total_weight_kg": 5005.0
+      }
+    },
     "placed_count": 335,
     "unplaced_count": 0,
     "utilization": 23.9,
     "volume_utilization_pct": 23.9043,
-    "runtime_ms": 430.11,
+    "runtime_ms": 536.26,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -12246,11 +13833,27 @@
     "case_name": "顶层零承重与弹性填充 (测上层防压机制)",
     "description": "Zero-bearing top-tier cartons alongside massive elastic parcels",
     "requested_cartons": 440,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-007",
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 30.72,
+        "cog_y_pct": 42.55,
+        "cog_z_pct": 22.94,
+        "long_offset_pct": 19.28,
+        "lat_offset_pct": 7.45,
+        "total_weight_kg": 3100.0
+      }
+    },
     "placed_count": 440,
     "unplaced_count": 0,
     "utilization": 17.88,
     "volume_utilization_pct": 17.8779,
-    "runtime_ms": 671.7,
+    "runtime_ms": 819.78,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -12363,11 +13966,28 @@
     "case_name": "极限载重与多点承压 (测整柜载重与局部压溃)",
     "description": "Container total weight near 26.5 tons with individual bearing limits",
     "requested_cartons": 730,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-005"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 35.16,
+        "cog_y_pct": 40.04,
+        "cog_z_pct": 15.96,
+        "long_offset_pct": 14.84,
+        "lat_offset_pct": 9.96,
+        "total_weight_kg": 13500.0
+      }
+    },
     "placed_count": 370,
     "unplaced_count": 360,
     "utilization": 19.25,
     "volume_utilization_pct": 19.2531,
-    "runtime_ms": 24611.51,
+    "runtime_ms": 24936.25,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -12480,11 +14100,27 @@
     "case_name": "不对称承重长条箱 (测跨箱承压与接触积分)",
     "description": "Long boxes spanning across multiple lower boxes with differing bearing capacities",
     "requested_cartons": 340,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-007",
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 38.07,
+        "cog_y_pct": 43.38,
+        "cog_z_pct": 16.64,
+        "long_offset_pct": 11.93,
+        "lat_offset_pct": 6.62,
+        "total_weight_kg": 3350.0
+      }
+    },
     "placed_count": 340,
     "unplaced_count": 0,
     "utilization": 22.08,
     "volume_utilization_pct": 22.0821,
-    "runtime_ms": 415.2,
+    "runtime_ms": 521.83,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -12616,11 +14252,28 @@
     "case_name": "大面积禁压面板 (测孤岛上方空腔智能绕行)",
     "description": "Large fragile panels forbidding top stacking",
     "requested_cartons": 465,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 33.75,
+        "cog_y_pct": 39.78,
+        "cog_z_pct": 27.52,
+        "long_offset_pct": 16.25,
+        "lat_offset_pct": 10.22,
+        "total_weight_kg": 3980.0
+      }
+    },
     "placed_count": 465,
     "unplaced_count": 0,
     "utilization": 29.99,
     "volume_utilization_pct": 29.9929,
-    "runtime_ms": 368.32,
+    "runtime_ms": 478.86,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -12752,11 +14405,27 @@
     "case_name": "棋盘式交错禁压 (测非连续表面支承与落空)",
     "description": "Alternating no-top cartons creating discontinuous roof surfaces",
     "requested_cartons": 460,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-007",
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 49.09,
+        "cog_y_pct": 42.0,
+        "cog_z_pct": 21.21,
+        "long_offset_pct": 0.91,
+        "lat_offset_pct": 8.0,
+        "total_weight_kg": 2775.0
+      }
+    },
     "placed_count": 460,
     "unplaced_count": 0,
     "utilization": 23.9,
     "volume_utilization_pct": 23.9026,
-    "runtime_ms": 361.14,
+    "runtime_ms": 496.86,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -12888,11 +14557,28 @@
     "case_name": "多品类并发禁压 (测全截面封顶防护)",
     "description": "Three distinct SKUs all having allowStackingOnTop=false",
     "requested_cartons": 470,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 33.11,
+        "cog_y_pct": 39.3,
+        "cog_z_pct": 30.51,
+        "long_offset_pct": 16.89,
+        "lat_offset_pct": 10.7,
+        "total_weight_kg": 3900.0
+      }
+    },
     "placed_count": 470,
     "unplaced_count": 0,
     "utilization": 25.23,
     "volume_utilization_pct": 25.2255,
-    "runtime_ms": 470.2,
+    "runtime_ms": 642.23,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -13043,11 +14729,27 @@
     "case_name": "禁压件与高密度弹性件 (测空腔深度吞吐与反穿)",
     "description": "Capped height due to no-top items, requiring large elastic items to consume clear headroom",
     "requested_cartons": 495,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-007",
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 66.81,
+        "cog_y_pct": 46.12,
+        "cog_z_pct": 30.56,
+        "long_offset_pct": 16.81,
+        "lat_offset_pct": 3.88,
+        "total_weight_kg": 3680.0
+      }
+    },
     "placed_count": 495,
     "unplaced_count": 0,
     "utilization": 34.45,
     "volume_utilization_pct": 34.4525,
-    "runtime_ms": 421.2,
+    "runtime_ms": 587.98,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -13160,11 +14862,26 @@
     "case_name": "落地兼禁压双重限制 (测绝对底部单层且上方完全禁入)",
     "description": "Boxes that must be on floor AND cannot have anything stacked on top",
     "requested_cartons": 416,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 42.6,
+        "cog_y_pct": 43.2,
+        "cog_z_pct": 32.01,
+        "long_offset_pct": 7.4,
+        "lat_offset_pct": 6.8,
+        "total_weight_kg": 4470.0
+      }
+    },
     "placed_count": 416,
     "unplaced_count": 0,
     "utilization": 30.15,
     "volume_utilization_pct": 30.1501,
-    "runtime_ms": 330.39,
+    "runtime_ms": 424.41,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -13277,11 +14994,26 @@
     "case_name": "20GP小柜禁压调度 (测短柜禁叠空间利用)",
     "description": "20GP container with fragile unstackable modules",
     "requested_cartons": 284,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 50.04,
+        "cog_y_pct": 55.04,
+        "cog_z_pct": 26.16,
+        "long_offset_pct": 0.04,
+        "lat_offset_pct": 5.04,
+        "total_weight_kg": 1750.0
+      }
+    },
     "placed_count": 284,
     "unplaced_count": 0,
     "utilization": 26.06,
     "volume_utilization_pct": 26.0602,
-    "runtime_ms": 133.05,
+    "runtime_ms": 174.77,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -13394,11 +15126,28 @@
     "case_name": "全品类严苛立放锁定 (测单自由度排布与截面匹配)",
     "description": "All SKUs strictly locked to upright orientation only",
     "requested_cartons": 530,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 22.61,
+        "cog_y_pct": 50.49,
+        "cog_z_pct": 44.98,
+        "long_offset_pct": 27.39,
+        "lat_offset_pct": 0.49,
+        "total_weight_kg": 4500.0
+      }
+    },
     "placed_count": 530,
     "unplaced_count": 0,
     "utilization": 39.14,
     "volume_utilization_pct": 39.1375,
-    "runtime_ms": 474.3,
+    "runtime_ms": 626.92,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -13530,11 +15279,28 @@
     "case_name": "纯平放石材板件 (测平铺堆叠与层高对齐)",
     "description": "Heavy flat stone slabs that can only be placed flat",
     "requested_cartons": 540,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 18.98,
+        "cog_y_pct": 43.19,
+        "cog_z_pct": 36.16,
+        "long_offset_pct": 31.02,
+        "lat_offset_pct": 6.81,
+        "total_weight_kg": 6725.0
+      }
+    },
     "placed_count": 540,
     "unplaced_count": 0,
     "utilization": 29.22,
     "volume_utilization_pct": 29.2215,
-    "runtime_ms": 721.43,
+    "runtime_ms": 857.48,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -13666,11 +15432,29 @@
     "case_name": "超薄直立屏防倾覆 (测极限厚度与侧向支撑)",
     "description": "Thin glass sheets (thickness 0.08m) with strict upright constraints",
     "requested_cartons": 520,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-007",
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 28.93,
+        "cog_y_pct": 41.36,
+        "cog_z_pct": 32.14,
+        "long_offset_pct": 21.07,
+        "lat_offset_pct": 8.64,
+        "total_weight_kg": 3700.0
+      }
+    },
     "placed_count": 520,
     "unplaced_count": 0,
     "utilization": 25.26,
     "volume_utilization_pct": 25.2569,
-    "runtime_ms": 461.84,
+    "runtime_ms": 598.39,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -13783,11 +15567,29 @@
     "case_name": "平放层数限制约束 (测平躺堆叠上限)",
     "description": "Cargo items allowing flat orientation but capped at maxFlatLayers=2",
     "requested_cartons": 430,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-010",
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 19.71,
+        "cog_y_pct": 44.85,
+        "cog_z_pct": 32.96,
+        "long_offset_pct": 30.29,
+        "lat_offset_pct": 5.15,
+        "total_weight_kg": 3640.0
+      }
+    },
     "placed_count": 430,
     "unplaced_count": 0,
     "utilization": 25.15,
     "volume_utilization_pct": 25.1469,
-    "runtime_ms": 579.07,
+    "runtime_ms": 682.15,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -13900,11 +15702,27 @@
     "case_name": "高度与朝向联动截断 (测高位平放与低位立放)",
     "description": "Tall boxes that are upright near floor but must be flat if placed high",
     "requested_cartons": 385,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-007",
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 35.65,
+        "cog_y_pct": 40.86,
+        "cog_z_pct": 29.43,
+        "long_offset_pct": 14.35,
+        "lat_offset_pct": 9.14,
+        "total_weight_kg": 3750.0
+      }
+    },
     "placed_count": 385,
     "unplaced_count": 0,
     "utilization": 28.41,
     "volume_utilization_pct": 28.4081,
-    "runtime_ms": 299.79,
+    "runtime_ms": 355.15,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -14017,11 +15835,29 @@
     "case_name": "20GP短柜朝向全锁定 (测紧凑空间无旋转装柜)",
     "description": "20GP standard container with zero rotational degrees of freedom",
     "requested_cartons": 280,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-008",
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 24.52,
+        "cog_y_pct": 45.95,
+        "cog_z_pct": 38.97,
+        "long_offset_pct": 25.48,
+        "lat_offset_pct": 4.05,
+        "total_weight_kg": 2210.0
+      }
+    },
     "placed_count": 280,
     "unplaced_count": 0,
     "utilization": 38.45,
     "volume_utilization_pct": 38.4465,
-    "runtime_ms": 185.97,
+    "runtime_ms": 237.01,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -14134,11 +15970,29 @@
     "case_name": "严格双层堆叠限制 (测同品垂直深度计数)",
     "description": "Multiple SKUs strictly restricted to max 2 vertical layers",
     "requested_cartons": 540,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-008",
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 24.27,
+        "cog_y_pct": 46.51,
+        "cog_z_pct": 34.74,
+        "long_offset_pct": 25.73,
+        "lat_offset_pct": 3.49,
+        "total_weight_kg": 3900.0
+      }
+    },
     "placed_count": 540,
     "unplaced_count": 0,
     "utilization": 30.51,
     "volume_utilization_pct": 30.5135,
-    "runtime_ms": 616.43,
+    "runtime_ms": 690.36,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -14270,11 +16124,28 @@
     "case_name": "严格三层堆叠限制 (测层数达到后截断与上层平接)",
     "description": "SKUs capping precisely at 3 layers",
     "requested_cartons": 385,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 15.64,
+        "cog_y_pct": 45.34,
+        "cog_z_pct": 38.21,
+        "long_offset_pct": 34.36,
+        "lat_offset_pct": 4.66,
+        "total_weight_kg": 3390.0
+      }
+    },
     "placed_count": 385,
     "unplaced_count": 0,
     "utilization": 23.15,
     "volume_utilization_pct": 23.1528,
-    "runtime_ms": 287.52,
+    "runtime_ms": 369.03,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -14387,11 +16258,29 @@
     "case_name": "梯度层数级联阶梯 (测多层数阈值混合排布)",
     "description": "Layer hierarchy with 1-layer, 2-layer, 3-layer, and unlimited stack limits",
     "requested_cartons": 558,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-008",
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 20.76,
+        "cog_y_pct": 42.74,
+        "cog_z_pct": 36.05,
+        "long_offset_pct": 29.24,
+        "lat_offset_pct": 7.26,
+        "total_weight_kg": 3805.0
+      }
+    },
     "placed_count": 558,
     "unplaced_count": 0,
     "utilization": 23.36,
     "volume_utilization_pct": 23.3591,
-    "runtime_ms": 1235.03,
+    "runtime_ms": 1470.35,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -14542,11 +16431,28 @@
     "case_name": "夹心非连续同品层数 (测间接垂直投影层数合规)",
     "description": "Testing whether layer depth accumulates across intermediate other-SKU layers",
     "requested_cartons": 460,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 17.47,
+        "cog_y_pct": 43.05,
+        "cog_z_pct": 36.99,
+        "long_offset_pct": 32.53,
+        "lat_offset_pct": 6.95,
+        "total_weight_kg": 2480.0
+      }
+    },
     "placed_count": 460,
     "unplaced_count": 0,
     "utilization": 19.65,
     "volume_utilization_pct": 19.646,
-    "runtime_ms": 458.04,
+    "runtime_ms": 575.51,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -14678,11 +16584,28 @@
     "case_name": "阶梯断层防倾覆 (测层数截断处边缘跌落安全)",
     "description": "Sudden height drop from layer-capped columns creating free edges",
     "requested_cartons": 340,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-011"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 24.73,
+        "cog_y_pct": 41.52,
+        "cog_z_pct": 39.15,
+        "long_offset_pct": 25.27,
+        "lat_offset_pct": 8.48,
+        "total_weight_kg": 2890.0
+      }
+    },
     "placed_count": 340,
     "unplaced_count": 0,
     "utilization": 25.62,
     "volume_utilization_pct": 25.6184,
-    "runtime_ms": 207.68,
+    "runtime_ms": 284.18,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -14795,11 +16718,26 @@
     "case_name": "20GP短柜层数限制 (测紧凑小柜低层截断)",
     "description": "20GP container with max_stack_layers=2 items",
     "requested_cartons": 290,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 40.69,
+        "cog_y_pct": 40.39,
+        "cog_z_pct": 21.57,
+        "long_offset_pct": 9.31,
+        "lat_offset_pct": 9.61,
+        "total_weight_kg": 1790.0
+      }
+    },
     "placed_count": 290,
     "unplaced_count": 0,
     "utilization": 26.98,
     "volume_utilization_pct": 26.976,
-    "runtime_ms": 140.92,
+    "runtime_ms": 185.39,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -14912,11 +16850,27 @@
     "case_name": "刚性占95%极致压榨 (测高密度刚性件密排与0饥饿)",
     "description": "95% of container volume occupied by rigid items",
     "requested_cartons": 580,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-010",
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 37.67,
+        "cog_y_pct": 46.94,
+        "cog_z_pct": 42.6,
+        "long_offset_pct": 12.33,
+        "lat_offset_pct": 3.06,
+        "total_weight_kg": 8730.0
+      }
+    },
     "placed_count": 580,
     "unplaced_count": 0,
     "utilization": 57.8,
     "volume_utilization_pct": 57.7985,
-    "runtime_ms": 483.3,
+    "runtime_ms": 632.17,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -15048,11 +17002,24 @@
     "case_name": "弹性占90%海量吞吐 (测优先保证刚性100%不倒挂)",
     "description": "Small batch of rigid items (10%) immersed in massive pool of elastic goods (90%)",
     "requested_cartons": 1465,
+    "delivery_gate": {
+      "verdict": "PASS",
+      "blocked_by": [],
+      "warnings": [],
+      "cog": {
+        "cog_x_pct": 41.52,
+        "cog_y_pct": 46.66,
+        "cog_z_pct": 42.51,
+        "long_offset_pct": 8.48,
+        "lat_offset_pct": 3.34,
+        "total_weight_kg": 7225.0
+      }
+    },
     "placed_count": 1465,
     "unplaced_count": 0,
     "utilization": 44.4,
     "volume_utilization_pct": 44.4,
-    "runtime_ms": 3221.84,
+    "runtime_ms": 4300.56,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -15184,11 +17151,24 @@
     "case_name": "刚性总体积150%超载 (测公平分配与防彻底饥饿)",
     "description": "Total requested rigid volume exceeds 40HQ usable capacity by 50%",
     "requested_cartons": 1250,
+    "delivery_gate": {
+      "verdict": "PASS",
+      "blocked_by": [],
+      "warnings": [],
+      "cog": {
+        "cog_x_pct": 50.0,
+        "cog_y_pct": 51.25,
+        "cog_z_pct": 44.76,
+        "long_offset_pct": 0.0,
+        "lat_offset_pct": 1.25,
+        "total_weight_kg": 12640.0
+      }
+    },
     "placed_count": 864,
     "unplaced_count": 386,
     "utilization": 86.64,
     "volume_utilization_pct": 86.6362,
-    "runtime_ms": 45353.43,
+    "runtime_ms": 45634.41,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -15320,11 +17300,24 @@
     "case_name": "门区专用密集装载 (测封门区段排他性与平整)",
     "description": "Specialized door zone SKUs requiring door zone placement and strict sealing",
     "requested_cartons": 630,
+    "delivery_gate": {
+      "verdict": "PASS",
+      "blocked_by": [],
+      "warnings": [],
+      "cog": {
+        "cog_x_pct": 40.58,
+        "cog_y_pct": 46.89,
+        "cog_z_pct": 38.82,
+        "long_offset_pct": 9.42,
+        "lat_offset_pct": 3.11,
+        "total_weight_kg": 5950.0
+      }
+    },
     "placed_count": 630,
     "unplaced_count": 0,
     "utilization": 42.31,
     "volume_utilization_pct": 42.3091,
-    "runtime_ms": 589.54,
+    "runtime_ms": 760.96,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -15456,11 +17449,28 @@
     "case_name": "12种复杂尺寸异型拼合 (测多模态宽度带与回填)",
     "description": "12 distinctly sized SKUs with complementary aspect ratios",
     "requested_cartons": 825,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-005"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 38.87,
+        "cog_y_pct": 44.31,
+        "cog_z_pct": 43.85,
+        "long_offset_pct": 11.13,
+        "lat_offset_pct": 5.69,
+        "total_weight_kg": 6460.0
+      }
+    },
     "placed_count": 670,
     "unplaced_count": 155,
     "utilization": 51.11,
     "volume_utilization_pct": 51.1107,
-    "runtime_ms": 12099.56,
+    "runtime_ms": 14467.07,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -15744,11 +17754,26 @@
     "case_name": "20GP小柜超限利用 (测短柜极限空间压缩)",
     "description": "20GP container packed with complementary dimensions",
     "requested_cartons": 440,
+    "delivery_gate": {
+      "verdict": "WARN",
+      "blocked_by": [],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 36.67,
+        "cog_y_pct": 48.09,
+        "cog_z_pct": 42.74,
+        "long_offset_pct": 13.33,
+        "lat_offset_pct": 1.91,
+        "total_weight_kg": 3880.0
+      }
+    },
     "placed_count": 440,
     "unplaced_count": 0,
     "utilization": 59.54,
     "volume_utilization_pct": 59.5413,
-    "runtime_ms": 319.14,
+    "runtime_ms": 544.88,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -15861,11 +17886,28 @@
     "case_name": "随机约束压力测试01 (Seed:101)",
     "description": "Randomized constraint stress testing with fixed reproducible seed 101",
     "requested_cartons": 750,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-005"
+      ],
+      "warnings": [
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 37.35,
+        "cog_y_pct": 42.54,
+        "cog_z_pct": 37.82,
+        "long_offset_pct": 12.65,
+        "lat_offset_pct": 7.46,
+        "total_weight_kg": 6528.0
+      }
+    },
     "placed_count": 465,
     "unplaced_count": 285,
     "utilization": 48.3,
     "volume_utilization_pct": 48.2988,
-    "runtime_ms": 25010.29,
+    "runtime_ms": 25103.44,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -16073,11 +18115,30 @@
     "case_name": "随机约束压力测试02 (Seed:202)",
     "description": "Randomized constraint stress testing with fixed reproducible seed 202",
     "requested_cartons": 734,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-005"
+      ],
+      "warnings": [
+        "DG-008",
+        "DG-010",
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 51.24,
+        "cog_y_pct": 43.03,
+        "cog_z_pct": 32.11,
+        "long_offset_pct": 1.24,
+        "lat_offset_pct": 6.97,
+        "total_weight_kg": 6531.0
+      }
+    },
     "placed_count": 441,
     "unplaced_count": 293,
     "utilization": 49.55,
     "volume_utilization_pct": 49.5515,
-    "runtime_ms": 24976.66,
+    "runtime_ms": 25076.8,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -16285,11 +18346,28 @@
     "case_name": "随机约束压力测试03 (Seed:303)",
     "description": "Randomized constraint stress testing with fixed reproducible seed 303",
     "requested_cartons": 733,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-005"
+      ],
+      "warnings": [
+        "DG-010"
+      ],
+      "cog": {
+        "cog_x_pct": 44.52,
+        "cog_y_pct": 46.42,
+        "cog_z_pct": 25.64,
+        "long_offset_pct": 5.48,
+        "lat_offset_pct": 3.58,
+        "total_weight_kg": 5424.0
+      }
+    },
     "placed_count": 362,
     "unplaced_count": 371,
     "utilization": 39.81,
     "volume_utilization_pct": 39.8083,
-    "runtime_ms": 23380.8,
+    "runtime_ms": 24994.71,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -16497,11 +18575,28 @@
     "case_name": "随机约束压力测试04 (Seed:404)",
     "description": "Randomized constraint stress testing with fixed reproducible seed 404",
     "requested_cartons": 710,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-005"
+      ],
+      "warnings": [
+        "DG-010"
+      ],
+      "cog": {
+        "cog_x_pct": 41.74,
+        "cog_y_pct": 53.09,
+        "cog_z_pct": 34.37,
+        "long_offset_pct": 8.26,
+        "lat_offset_pct": 3.09,
+        "total_weight_kg": 6679.0
+      }
+    },
     "placed_count": 479,
     "unplaced_count": 231,
     "utilization": 48.25,
     "volume_utilization_pct": 48.2529,
-    "runtime_ms": 23803.84,
+    "runtime_ms": 25101.16,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -16709,11 +18804,29 @@
     "case_name": "随机约束压力测试05 (Seed:505)",
     "description": "Randomized constraint stress testing with fixed reproducible seed 505",
     "requested_cartons": 720,
+    "delivery_gate": {
+      "verdict": "REJECT",
+      "blocked_by": [
+        "DG-005"
+      ],
+      "warnings": [
+        "DG-007",
+        "DG-014"
+      ],
+      "cog": {
+        "cog_x_pct": 40.79,
+        "cog_y_pct": 44.73,
+        "cog_z_pct": 25.87,
+        "long_offset_pct": 9.21,
+        "lat_offset_pct": 5.27,
+        "total_weight_kg": 4979.0
+      }
+    },
     "placed_count": 361,
     "unplaced_count": 359,
     "utilization": 37.21,
     "volume_utilization_pct": 37.2104,
-    "runtime_ms": 23854.16,
+    "runtime_ms": 23206.47,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
