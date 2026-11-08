@@ -366,6 +366,22 @@ python tests/regression_guard.py
 （禁止自动覆盖，自动同步会让棘轮退化为"这次和上次比"）；
 `REGRESSION_THRESHOLDS` 绝对红线仅允许在评审后移动。
 
+### 5.6 交付门禁（Delivery Gate）
+
+求解结果**不得直接交付**，必须先通过独立质检门禁：
+
+```bash
+# API 结果中的 metrics.delivery_gate 即为门禁报告；verdict ∈ PASS / WARN / REJECT
+```
+
+- 实现：`backend/solver_v2/validation/delivery_gate.py`，策略：`config/delivery_gate.json`；
+- 独立于求解器（只读 placements + 独立验证器 + 几何体检），不采信求解器自述；
+- **BLOCK 类**（不通过必须拦截）：硬约束违规、碰撞、载重超限、刚性 SKU 饥饿、
+  体积可装下时履约率不足 99%、重心严重偏载（纵向>20% 或 横向>10%）、不可解释空腔；
+- **WARN 类**（提示）：隐蔽空洞、顶面硬台阶、半悬空箱、孤立箱、重心偏载提示、
+  顺序可行性（尚未建模多点卸货）；
+- 阈值属交付政策，业务可调；调整须记录理由，不得用于掩盖算法缺陷。
+
 ---
 
 ## 六、当前活跃代码地图（Agent 必读）

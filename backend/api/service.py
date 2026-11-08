@@ -75,13 +75,16 @@ class LoadingAPIService:
         repair = None
         recomposition = (solution.telemetry.wall_plan_search_metrics or {}).get("cargo_recomposition")
         braking = (solution.telemetry.wall_plan_search_metrics or {}).get("braking_stability")
+        from backend.solver_v2.validation.delivery_gate import evaluate_delivery
+        delivery_gate = evaluate_delivery(solution, cargo, container)
         result = build_loading_result(
             job_id, container, cargo, solution.placements, plan, repair,
             {"utilization_pct": solution.volume_utilization_pct, "total_weight_kg": solution.total_weight_kg,
              "braking_stability": braking,
              "geometry_qa": solution.telemetry.geometry_qa,
              "cavities": (solution.telemetry.cavity_diagnostics or [])[:20],
-             "lns_metrics": solution.telemetry.lns_metrics},
+             "lns_metrics": solution.telemetry.lns_metrics,
+             "delivery_gate": delivery_gate},
             recomposition
         )
         self.store.put(job_id, result)
