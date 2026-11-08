@@ -531,6 +531,8 @@ class UnifiedSolver:
         best_rejections = raw_m.get("rejection_counts", {})
         plc_diagnostics = self._compute_placement_diagnostics(final_placements)
         cav_diagnostics = self._compute_cavity_diagnostics(best_raw_placements, tensor_cargo_list)
+        from backend.solver_v2.diagnostics.geometry_qa import compute_geometry_qa
+        geom_qa = compute_geometry_qa(self.container, final_placements, cav_diagnostics)
 
         telemetry = SolverTelemetry(
             runtime_ms=elapsed_ms,
@@ -540,6 +542,7 @@ class UnifiedSolver:
             candidates_rejected_by_reason=best_rejections,
             placement_diagnostics=plc_diagnostics,
             cavity_diagnostics=cav_diagnostics,
+            geometry_qa=geom_qa,
             lns_metrics=raw_m.get("lns"),
         )
 
@@ -3185,8 +3188,9 @@ class UnifiedSolver:
             merged_cuts[-1] = round(self.cL, 4)
 
         # 2. 逐切片构建 Y-Z 空闲栅格并提取极大矩形（贪心覆盖，上限 8 块/切片）
-        # key=(y0,z0,y1,z1)（栅格索引），value=不连续区段列表 [x_start, x_end, cells]
+        # key=(y0,z0,y1,z1)（栅格索引），value=不连续区段列表 [x_start, x_end, volume_m3]
         cav_runs: Dict[tuple, List[List]] = {}
+        cell_vol = res * res
 
         def slab_rects(x_lo, x_hi):
             """返回该切片的 [(y0,z0,y1,z1,cells)] 非重叠空闲矩形（栅格索引）。"""
@@ -3240,17 +3244,19 @@ class UnifiedSolver:
             x_lo, x_hi = merged_cuts[si], merged_cuts[si + 1]
             for (y0, z0, y1, z1, cells) in slab_rects(x_lo, x_hi):
                 key = (y0, z0, y1, z1)
+                # 体积按切片累加（cells 是"每切片"的 YZ 单元格数，
+                # 不能乘以整段宽度——否则跨 N 个切片会放大 N 倍，实测虚高 3.2×）
+                slab_vol = cells * cell_vol * (x_hi - x_lo)
                 runs = cav_runs.setdefault(key, [])
                 if runs and abs(runs[-1][1] - x_lo) < 1e-6:
                     runs[-1][1] = x_hi
-                    runs[-1][2] += cells
+                    runs[-1][2] += slab_vol
                 else:
-                    runs.append([x_lo, x_hi, cells])
+                    runs.append([x_lo, x_hi, slab_vol])
 
         # 3. 组装 + 分类阶梯
         door_len = getattr(self, "_actual_door_zone_len", getattr(self.container, "door_zone_length_m", 0.20) or 0.20)
         has_door_skus = getattr(self, "_has_door_skus", False)
-        cell_vol = res * res
 
         def orientation_fits(t, dx_len, dy_len, dz_len):
             b = (t.length, t.width, t.height)
@@ -3263,8 +3269,7 @@ class UnifiedSolver:
         entries = []
         for key, runs in cav_runs.items():
             y0, z0, y1, z1 = key
-            for (x_lo, x_hi, cells) in runs:
-                vol = cells * cell_vol * (x_hi - x_lo)
+            for (x_lo, x_hi, vol) in runs:
                 if vol < 0.01:
                     continue
                 bx = (round(x_lo, 3), round(y0 * res, 3), round(z0 * res, 3),

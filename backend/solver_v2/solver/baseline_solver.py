@@ -74,6 +74,7 @@ class SolverTelemetry:
     wall_plan_search_metrics: Optional[Dict[str, Any]] = None
     placement_diagnostics: Dict[str, Dict[str, Any]] = field(default_factory=dict)
     cavity_diagnostics: List[Dict[str, Any]] = field(default_factory=list)
+    geometry_qa: Optional[Dict[str, Any]] = None  # 几何观感体检（包围盒空洞率/台阶度/支撑分布/空腔清单）
     lns_metrics: Optional[Dict[str, Any]] = None  # 阶段二 LNS 遥测（仅 options["lns_enabled"] 时非空）
 
     def to_dict(self) -> Dict[str, Any]:
@@ -100,6 +101,7 @@ class SolverTelemetry:
             "wall_plan_search_metrics": self.wall_plan_search_metrics,
             "placement_diagnostics": self.placement_diagnostics,
             "cavity_diagnostics": self.cavity_diagnostics,
+            "geometry_qa": self.geometry_qa,
             "lns_metrics": self.lns_metrics,
         }
 

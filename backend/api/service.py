@@ -77,7 +77,11 @@ class LoadingAPIService:
         braking = (solution.telemetry.wall_plan_search_metrics or {}).get("braking_stability")
         result = build_loading_result(
             job_id, container, cargo, solution.placements, plan, repair,
-            {"utilization_pct": solution.volume_utilization_pct, "total_weight_kg": solution.total_weight_kg, "braking_stability": braking},
+            {"utilization_pct": solution.volume_utilization_pct, "total_weight_kg": solution.total_weight_kg,
+             "braking_stability": braking,
+             "geometry_qa": solution.telemetry.geometry_qa,
+             "cavities": (solution.telemetry.cavity_diagnostics or [])[:20],
+             "lns_metrics": solution.telemetry.lns_metrics},
             recomposition
         )
         self.store.put(job_id, result)
