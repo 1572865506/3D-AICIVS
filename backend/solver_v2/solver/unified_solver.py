@@ -299,6 +299,10 @@ class UnifiedSolver:
                 is_elastic=is_elastic,
             ))
             setattr(tensor_list[-1], "allow_stacking_on_top", getattr(s.stacking_policy, "allow_stacking_on_top", True))
+            setattr(tensor_list[-1], "min_support_ratio",
+                    float(getattr(s.stacking_policy, "min_support_ratio", 0.70) or 0.70))
+            setattr(tensor_list[-1], "max_pressure_kg_m2",
+                    getattr(s.stacking_policy, "max_pressure_kg_m2", None))
             setattr(tensor_list[-1], "allow_upright",
                     bool(getattr(s.orientation_policy, "allow_upright", True)))
             setattr(tensor_list[-1], "flat_only_on_top",
@@ -813,6 +817,7 @@ class UnifiedSolver:
                             if ix1 > ix0 + eps and iy1 > iy0 + eps:
                                 contact_frac = ((ix1 - ix0) * (iy1 - iy0)) / ch_area
                                 p["_bearing_load"] = p.get("_bearing_load", 0.0) + cand_weight * contact_frac
+                                p["_pressure_load"] = p.get("_pressure_load", 0.0) + cand_weight / max(1e-6, ch_area)
                                 next_trans.append(p)
                 curr_trans = next_trans
 
@@ -1247,6 +1252,7 @@ class UnifiedSolver:
                             "zone_counts": dict(zone_counts),
                             "payload_weight": getattr(self, "_curr_payload_weight", 0.0),
                             "bearing_loads": [p.get("_bearing_load", 0.0) for p in placements],
+                            "pressure_loads": [p.get("_pressure_load", 0.0) for p in placements],
                         }
 
                         wall_items = 0
@@ -1365,6 +1371,8 @@ class UnifiedSolver:
                             del placements[tx_snapshot["placements_len"]:]
                             for idx, b_load in enumerate(tx_snapshot.get("bearing_loads", [])):
                                 placements[idx]["_bearing_load"] = b_load
+                            for idx, p_load in enumerate(tx_snapshot.get("pressure_loads", [])):
+                                placements[idx]["_pressure_load"] = p_load
                             remaining_qty.clear()
                             remaining_qty.update(tx_snapshot["remaining_qty"])
                             current_x = tx_snapshot["current_x"]
@@ -2980,6 +2988,15 @@ class UnifiedSolver:
                                         curr_bearing = p.get("_bearing_load", 0.0)
                                         if curr_bearing + added_w > max_bearing + eps:
                                             self._record_rejection("BEARING_CAPACITY_EXCEEDED")
+                                            return False
+                                    # 表面压强（kg/m²）：传递载荷 / 接触面积 = 单件重量 / 底面面积
+                                    # （与接触比例无关），累计值防止逐层叠加后超限。
+                                    max_pressure = getattr(under_sku, "max_pressure_kg_m2", None)
+                                    if max_pressure is not None and max_pressure > 0:
+                                        added_p = cand_weight / max(1e-6, ch_area)
+                                        curr_p = p.get("_pressure_load", 0.0)
+                                        if curr_p + added_p > float(max_pressure) + eps:
+                                            self._record_rejection("PRESSURE_LIMIT_EXCEEDED")
                                             return False
                                     next_check.append(p)
                 curr_check = next_check
