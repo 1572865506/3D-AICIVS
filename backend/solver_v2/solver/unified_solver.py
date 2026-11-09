@@ -299,6 +299,8 @@ class UnifiedSolver:
                 is_elastic=is_elastic,
             ))
             setattr(tensor_list[-1], "allow_stacking_on_top", getattr(s.stacking_policy, "allow_stacking_on_top", True))
+            setattr(tensor_list[-1], "allow_upright",
+                    bool(getattr(s.orientation_policy, "allow_upright", True)))
             setattr(tensor_list[-1], "flat_only_on_top",
                     bool(getattr(s.orientation_policy, "flat_only_on_top", False)))
             setattr(tensor_list[-1], "max_flat_layers",
@@ -652,15 +654,24 @@ class UnifiedSolver:
         )
 
     def _get_permitted_orientations(self, c: UniversalCargoTensor) -> List[OrientationSpec]:
+        """返回该 SKU 在策略上允许的朝向集合。
+
+        修复：upstart 朝向此前无条件放行，忽略 allow_upright=False（导致
+        "仅平放(flat_only)"的货被立放、最终被独立验证器判 FORBIDDEN_ORIENTATION）；
+        同时删除"无任何合法朝向就回退全部朝向"的静默放行——无合法朝向时应返回空，
+        由调用方跳过该 SKU，而不是悄悄违反策略。
+        """
         valid: List[OrientationSpec] = []
+        allow_upright = bool(getattr(c, "allow_upright", True))
         for o in c.orientations:
             if o.is_upright:
-                valid.append(o)
-            elif c.allow_flat and not o.is_upright and not o.is_side:
+                if allow_upright:
+                    valid.append(o)
+            elif c.allow_flat and not o.is_side:
                 valid.append(o)
             elif c.allow_side and o.is_side:
                 valid.append(o)
-        return valid if valid else c.orientations
+        return valid
 
     def _relay_headroom_for_profile(
         self,
