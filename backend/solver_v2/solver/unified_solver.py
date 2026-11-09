@@ -808,6 +808,127 @@ class UnifiedSolver:
             )
             self._spatial_idx.insert(f"item_{idx}_{p['x']}_{p['y']}_{p['z']}", aabb, p)
 
+    def _elastic_fill_allowed(self, rigid_comp_pct: float) -> bool:
+        """弹性填充放行判据（AGENTS.md 1.1 反倒挂铁律的可观测形式）。
+
+        刚性履行率 ≥ 99% 才允许弹性件进入（99% 为项目验收线）；低于该线时弹性件
+        一律不得抢占空间，杜绝优先级倒挂。抽取为独立方法以便单测钉住。
+        """
+        return rigid_comp_pct >= 99.0
+
+    def _elastic_free_space_sweep(
+        self,
+        placements: List[Dict],
+        rem_qty: Dict[str, int],
+        elastic_skus: List[UniversalCargoTensor],
+        deadline: Optional[float],
+        step_xy: float = 0.2,
+        max_checks: int = 8000,
+    ) -> int:
+        """弹性件自由空间网格扫描（薄板/小件专用码放通道）。
+
+        背景：PASS4.6 的锚点集合来自已放置箱的角点，天然都是"被占用"位置，
+        薄板件（如 0.488×0.08×0.336 立放面板）大量候选直接碰撞（实测 4 万次），
+        导致 674 箱仅装入 107 箱、柜内仍余 11m³。本方法改为直接扫描空闲网格，
+        在 (x,y) 列上自下而上连续码放，逐格走统一门禁（与主流程同一过滤器）。
+
+        返回：新增放置数；受 max_checks 与 deadline 双重预算保护。
+        """
+        added = 0
+        checks = 0
+        if not elastic_skus:
+            return 0
+        # 按占地面积从小到大试（小件更容易塞缝）
+        ordered = sorted(elastic_skus, key=lambda t: t.length * t.width)
+        nx = int(self.cL / step_xy) + 1
+        ny = int(self.cW / step_xy) + 1
+        for sku in ordered:
+            if rem_qty.get(sku.sku_id, 0) <= 0:
+                continue
+            oris = self._get_permitted_orientations(sku)
+            if not oris:
+                continue
+            for ix in range(nx):
+                if rem_qty.get(sku.sku_id, 0) <= 0 or checks >= max_checks:
+                    break
+                if deadline is not None and time.perf_counter() > deadline:
+                    return added
+                x = round(ix * step_xy, 3)
+                for iy in range(ny):
+                    if rem_qty.get(sku.sku_id, 0) <= 0 or checks >= max_checks:
+                        break
+                    y = round(iy * step_xy, 3)
+                    placed_col = 0
+                    # 候选支撑面：该列上所有重叠箱的顶面 + 地面，按高度降序尝试
+                    # （只取最高点会漏掉"高处只有窄箱、低处有完整平面"的可放层）
+                    cell_x1 = x + step_xy
+                    cell_y1 = y + step_xy
+                    level_set = {0.0}
+                    for p in placements:
+                        if (p["x"] < cell_x1 - 1e-6 and p["x"] + p["dx"] > x + 1e-6
+                                and p["y"] < cell_y1 - 1e-6 and p["y"] + p["dy"] > y + 1e-6):
+                            level_set.add(round(p["z"] + p["dz"], 4))
+                    levels = sorted(level_set, reverse=True)
+                    z = None
+                    for lv in levels:
+                        if checks >= max_checks:
+                            break
+                        if lv >= self.cH - 0.05:
+                            continue
+                        for o in oris:
+                            checks += 1
+                            if (x + o.dx > self.cL + 1e-4 or y + o.dy > self.cW + 1e-4
+                                    or lv + o.dz > self.cH + 1e-4):
+                                continue
+                            cand = {
+                                "sku_id": sku.sku_id, "x": x, "y": y, "z": round(lv, 4),
+                                "dx": o.dx, "dy": o.dy, "dz": o.dz,
+                                "weight_kg": sku.weight_kg, "orientation": o.name,
+                                "step": len(placements) + 1,
+                                "tag": "GAP_FILL", "context": "GAP_FILL",
+                            }
+                            if self._check_candidate_validity_with_reason(cand, placements):
+                                self._add_placement(cand, placements)
+                                rem_qty[sku.sku_id] -= 1
+                                added += 1
+                                placed_col += 1
+                                z = round(lv + o.dz, 4)
+                                break
+                        if z is not None:
+                            break
+                    # 从成功层继续向上码放同列
+                    while (z is not None and z < self.cH - 0.05
+                           and rem_qty.get(sku.sku_id, 0) > 0 and checks < max_checks):
+                        ok_here = False
+                        for o in oris:
+                            checks += 1
+                            if (x + o.dx > self.cL + 1e-4 or y + o.dy > self.cW + 1e-4
+                                    or z + o.dz > self.cH + 1e-4):
+                                continue
+                            cand = {
+                                "sku_id": sku.sku_id,
+                                "x": x, "y": y, "z": round(z, 4),
+                                "dx": o.dx, "dy": o.dy, "dz": o.dz,
+                                "weight_kg": sku.weight_kg,
+                                "orientation": o.name,
+                                "step": len(placements) + 1,
+                                "tag": "GAP_FILL",
+                                "context": "GAP_FILL",
+                            }
+                            if self._check_candidate_validity_with_reason(cand, placements):
+                                self._add_placement(cand, placements)
+                                rem_qty[sku.sku_id] -= 1
+                                added += 1
+                                placed_col += 1
+                                ok_here = True
+                                break
+                        if not ok_here:
+                            break
+                        # 用刚放置箱的高度推进（不同朝向高度可能不同）
+                        z = round(placements[-1]["z"] + placements[-1]["dz"], 4)
+                    # 该列已尽力，继续下一列
+        return added
+
     def _balance_penalty(self, placements: List[Dict]) -> float:
         """重心偏移惩罚（百分比加权：横向权重 2 倍，因横向包络更窄更危险）。
 
@@ -2113,16 +2234,21 @@ class UnifiedSolver:
 
         # PASS 4.6: Elastic Cavity Re-fill (Fill remaining voids with elastic cargo after rigid items)
         # Strict mutual exclusion gate: NEVER place elastic cargo unless rigid fulfillment reaches >= 99.0%
+        # （互斥判据按"刚性履行率 ≥ 99%"而非"刚性剩余为 0"：99% 是项目验收线，
+        #   PASS4/4.5 已穷尽刚性放置轮次，剩余个别刚性件已属可证不可放；
+        #   若仍要求剩余为 0，6 箱卡死会让 674 箱弹性件全部弃装、白丢 12.7m³ 空间。）
         tot_rigid_req = sum(getattr(c, 'quantity_required', 0) for c in cargo_list if not getattr(c, 'is_elastic', False))
         tot_rigid_rem = sum(remaining_qty.get(c.sku_id, 0) for c in cargo_list if not getattr(c, 'is_elastic', False))
         rigid_comp_pct = ((tot_rigid_req - tot_rigid_rem) / max(1, tot_rigid_req)) * 100.0 if tot_rigid_req > 0 else 100.0
 
-        if tot_rigid_rem > 0 or rigid_comp_pct < 99.0:
-            unplaced_elastic = []
-        else:
+        if self._elastic_fill_allowed(rigid_comp_pct):
             unplaced_elastic = [c for c in cargo_list if getattr(c, 'is_elastic', False) and remaining_qty.get(c.sku_id, 0) > 0]
+        else:
+            unplaced_elastic = []
 
         if unplaced_elastic:
+            # 先做自由空间网格列式码放（薄板/小件），再用原有锚点通道补缝
+            self._elastic_free_space_sweep(placements, remaining_qty, unplaced_elastic, deadline)
             min_fill_z = 0.0
             for round_idx in range(25):
                 if deadline is not None and time.perf_counter() > deadline:
