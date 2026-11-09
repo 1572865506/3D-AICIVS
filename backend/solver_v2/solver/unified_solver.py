@@ -838,6 +838,9 @@ class UnifiedSolver:
         checks = 0
         if not elastic_skus:
             return 0
+        # 步号必须全局唯一（placement_id = plc_{step}_{sku}），
+        # 用已有最大步号 +1 递增，不能用 len(placements)（会与既有步号冲撞）。
+        next_step = max((p.get("step", 0) for p in placements), default=0) + 1
         # 按占地面积从小到大试（小件更容易塞缝）
         ordered = sorted(elastic_skus, key=lambda t: t.length * t.width)
         nx = int(self.cL / step_xy) + 1
@@ -884,7 +887,7 @@ class UnifiedSolver:
                                 "sku_id": sku.sku_id, "x": x, "y": y, "z": round(lv, 4),
                                 "dx": o.dx, "dy": o.dy, "dz": o.dz,
                                 "weight_kg": sku.weight_kg, "orientation": o.name,
-                                "step": len(placements) + 1,
+                                "step": next_step,
                                 "tag": "GAP_FILL", "context": "GAP_FILL",
                             }
                             if self._check_candidate_validity_with_reason(cand, placements):
@@ -892,6 +895,7 @@ class UnifiedSolver:
                                 rem_qty[sku.sku_id] -= 1
                                 added += 1
                                 placed_col += 1
+                                next_step += 1
                                 z = round(lv + o.dz, 4)
                                 break
                         if z is not None:
@@ -911,7 +915,7 @@ class UnifiedSolver:
                                 "dx": o.dx, "dy": o.dy, "dz": o.dz,
                                 "weight_kg": sku.weight_kg,
                                 "orientation": o.name,
-                                "step": len(placements) + 1,
+                                "step": next_step,
                                 "tag": "GAP_FILL",
                                 "context": "GAP_FILL",
                             }
@@ -920,6 +924,7 @@ class UnifiedSolver:
                                 rem_qty[sku.sku_id] -= 1
                                 added += 1
                                 placed_col += 1
+                                next_step += 1
                                 ok_here = True
                                 break
                         if not ok_here:
@@ -2249,6 +2254,8 @@ class UnifiedSolver:
         if unplaced_elastic:
             # 先做自由空间网格列式码放（薄板/小件），再用原有锚点通道补缝
             self._elastic_free_space_sweep(placements, remaining_qty, unplaced_elastic, deadline)
+            # 扫描已推进步号，同步锚点通道的 step_idx（否则 placement_id 冲撞）
+            step_idx = max((p.get("step", 0) for p in placements), default=step_idx) + 1
             min_fill_z = 0.0
             for round_idx in range(25):
                 if deadline is not None and time.perf_counter() > deadline:
