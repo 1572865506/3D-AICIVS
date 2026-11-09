@@ -278,6 +278,14 @@ class UnifiedSolver:
 
             allow_flat = s.orientation_policy.allow_flat
             allow_side = s.orientation_policy.allow_side
+            # 显式朝向规则（orientationRules）优先：由规则家族推导允许标志，
+            # 否则张量根本不会生成对应朝向规格（实测规则=FLAT/TOP_FILL 时
+            # 朝向列表为空 → 回退默认立放 → 约束被绕过）。
+            _rules_pol = tuple(getattr(s.orientation_policy, "rules", ()) or ())
+            if _rules_pol:
+                _modes = {str(getattr(r.orientation, "value", r.orientation)).upper() for r in _rules_pol}
+                allow_flat = "FLAT" in _modes
+                allow_side = "SIDE" in _modes
             max_stack = s.stacking_policy.max_stack_layers
             must_be_on_floor = getattr(s.stacking_policy, 'must_be_on_floor', False)
             is_elastic = getattr(s.quantity, 'is_elastic', False) or '可以减少' in req or '可减少' in req or '少放' in req
@@ -299,12 +307,22 @@ class UnifiedSolver:
                 is_elastic=is_elastic,
             ))
             setattr(tensor_list[-1], "allow_stacking_on_top", getattr(s.stacking_policy, "allow_stacking_on_top", True))
+            # 显式朝向规则（orientationRules）：求解器此前完全不读，与验证器语义分裂。
+            # 携带原始规则，由朝向过滤与门禁共同使用。
+            setattr(tensor_list[-1], "orientation_rules",
+                    tuple(getattr(s.orientation_policy, "rules", ()) or ()))
+            # topFillPolicy.enabled 仅在客户端显式提供时生效（默认为 False 且 AUTO，
+            # 直接按 False 拦截会误禁全部顶层填充）。
+            _tf = getattr(getattr(s, "cargo_profile", None), "top_fill_policy", None)
+            setattr(tensor_list[-1], "topfill_enabled_explicit",
+                    None if _tf is None else getattr(_tf, "explicit_enabled", None))
             setattr(tensor_list[-1], "min_support_ratio",
                     float(getattr(s.stacking_policy, "min_support_ratio", 0.70) or 0.70))
             setattr(tensor_list[-1], "max_pressure_kg_m2",
                     getattr(s.stacking_policy, "max_pressure_kg_m2", None))
             setattr(tensor_list[-1], "allow_upright",
-                    bool(getattr(s.orientation_policy, "allow_upright", True)))
+                    (("UPRIGHT" in _modes) if _rules_pol
+                     else bool(getattr(s.orientation_policy, "allow_upright", True))))
             setattr(tensor_list[-1], "flat_only_on_top",
                     bool(getattr(s.orientation_policy, "flat_only_on_top", False)))
             setattr(tensor_list[-1], "max_flat_layers",
@@ -667,13 +685,21 @@ class UnifiedSolver:
         """
         valid: List[OrientationSpec] = []
         allow_upright = bool(getattr(c, "allow_upright", True))
+        allow_flat_f = c.allow_flat
+        allow_side_f = c.allow_side
+        rules = tuple(getattr(c, "orientation_rules", ()) or ())
+        if rules:
+            modes = {str(getattr(r.orientation, "value", r.orientation)).upper() for r in rules}
+            allow_upright = "UPRIGHT" in modes
+            allow_flat_f = "FLAT" in modes
+            allow_side_f = "SIDE" in modes
         for o in c.orientations:
             if o.is_upright:
                 if allow_upright:
                     valid.append(o)
-            elif c.allow_flat and not o.is_side:
+            elif allow_flat_f and not o.is_side:
                 valid.append(o)
-            elif c.allow_side and o.is_side:
+            elif allow_side_f and o.is_side:
                 valid.append(o)
         return valid
 
@@ -3009,6 +3035,38 @@ class UnifiedSolver:
                                               cand["dx"], cand["dy"], placements) > max_layers:
                     self._record_rejection("MAX_STACKING_LAYERS_EXCEEDED")
                     return False
+
+        # 4.5 显式朝向规则（orientationRules）按 context 校验：
+        #     求解器的朝向过滤是家族级（不区分 context），而验证器按 region 校验；
+        #     此处补齐 context 级判断，保证"求解器放行 = 验证器通过"。
+        _rules = tuple(getattr(c_sku, "orientation_rules", ()) or ())
+        if _rules:
+            _oname = str(cand.get("orientation", "")).upper()
+            _mode = "FLAT" if "FLAT" in _oname else ("SIDE" if "SIDE" in _oname else "UPRIGHT")
+            _ctx_raw = cand.get("context", "MAIN_WALL")
+            try:
+                _ctx = PlacementContext[_ctx_raw] if isinstance(_ctx_raw, str) else _ctx_raw
+            except KeyError:
+                _ctx = PlacementContext.MAIN_WALL
+            _allowed_here = False
+            _pol = getattr(getattr(c_sku, "sku_obj", None), "orientation_policy", None)
+            _region = _pol.context_region(_ctx) if _pol is not None else None
+            for _r in _rules:
+                if str(getattr(_r.orientation, "value", _r.orientation)).upper() != _mode:
+                    continue
+                _regions = tuple(getattr(_r, "allowed_regions", ()) or ())
+                if not _regions or _region is None or _region in _regions:
+                    _allowed_here = True
+                    break
+            if not _allowed_here:
+                self._record_rejection("ORIENTATION_NOT_ALLOWED_IN_CONTEXT")
+                return False
+
+        # 4.6 顶层填充显式关闭（topFillPolicy.enabled=false 且非默认来源）
+        if (getattr(c_sku, "topfill_enabled_explicit", None) is False
+                and str(cand.get("context", "")).upper() == "TOP_FILL"):
+            self._record_rejection("TOP_FILL_DISABLED")
+            return False
 
         # 5. 平放顶层约束（flat_only_on_top）：平放仅作顶层覆盖层——
         #    不得落地；同款平放链不超过 max_flat_layers 层。

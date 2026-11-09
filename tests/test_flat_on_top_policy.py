@@ -34,6 +34,8 @@ def _solver_and_tensors(cargo_raw):
     tensors = solver._convert_cargo_skus_to_tensors(cargo)
     solver._sku_tensor_map = {t.sku_id: t for t in tensors}
     solver._current_rejection_counts = {}
+    # 第6条"覆盖层上方禁压"按货单是否含 flat_only_on_top SKU 启用
+    solver._has_flat_cover_skus = any(getattr(t, "flat_only_on_top", False) for t in tensors)
     return container, solver, tensors
 
 

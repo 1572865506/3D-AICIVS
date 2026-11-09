@@ -358,6 +358,7 @@ class InputNormalizer:
         )
         topfill_policy = TopFillPolicy(
             source=source(topfill),
+            explicit_enabled=(bool(topfill["enabled"]) if "enabled" in topfill else None),
             admission_state=TopFillAdmissionState(str(topfill.get(
                 "state",
                 "ALLOW" if topfill.get("enabled", False) else (

@@ -302,6 +302,8 @@ class TopFillPolicy:
     source: PolicySource = PolicySource.DEFAULT
     admission_state: TopFillAdmissionState = TopFillAdmissionState.AUTO
     enabled: bool = False
+    # 客户端是否显式提供了 enabled（用于区分"未配置"与"显式关闭"）
+    explicit_enabled: Optional[bool] = None
     allowed_orientations: Tuple[OrientationMode, ...] = ()
     conditional_orientations: Tuple[OrientationMode, ...] = ()
     max_layers: int = 0
