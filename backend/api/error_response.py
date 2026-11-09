@@ -2,6 +2,10 @@
 import json
 
 INPUT_CONSTRAINT_ERRORS = {
+    "CONFIG_UNSATISFIABLE": (
+        "货单约束组合无可行解（例如：仅允许平放且限定顶层，但没有可作为底座的货物）。"
+        "请调整该 SKU 的朝向/层数/区域规则后重试。"
+    ),
     "NO_VALID_DOOR_WALL": (
         "门墙安全配置未满足。请在 SKU 参数中明确配置至少一种“封柜门”货物，"
         "并检查其尺寸、数量、单件重量及合法方向。"

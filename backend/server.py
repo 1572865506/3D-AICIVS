@@ -291,6 +291,14 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                     container_spec = InputAdapter.parse_container(raw_container)
                     cargo_skus = InputAdapter.parse_cargo_list(raw_manifest)
 
+                    # 货单约束可满足性预检：把"约束组合无解"从求解后的静默饥饿
+                    # 提前暴露为明确的配置错误（422），避免用户拿到 0 装结果不知所措。
+                    from backend.solver_v2.validation.config_precheck import precheck_manifest
+                    _pre = precheck_manifest(cargo_skus, container_spec)
+                    if _pre["errors"]:
+                        _detail = "；".join(e["message"] for e in _pre["errors"][:5])
+                        raise ValueError(f"CONFIG_UNSATISFIABLE: {_detail}")
+
                     # Read-only request audit for diagnosing policy-vs-deployment
                     # differences between the browser's persisted manifest and
                     # the repository preset.  Do not include names or requirement
