@@ -340,6 +340,21 @@ class UnifiedSolver:
             )
 
         tensor_cargo_list = self._convert_cargo_skus_to_tensors(cargo_list)
+        # 区域约束执行模式：
+        #   - 显式 options["zone_enforcement"] 优先
+        #   - 未指定时自动判定：货单中"非弹性件"声明了区域要求（最里面/封柜门/放中间）
+        #     → strict（按客户指令计算）；否则 soft（区域仅作排序偏好）
+        #   - 弹性件永远豁免区域硬约束（本义是填充物，"可以减少点"已授权灵活摆放）
+        _zone_mode = (options or {}).get("zone_enforcement")
+        if _zone_mode is None:
+            _has_zone_directive = any(
+                (not getattr(s, "is_elastic", False))
+                and any(k in (getattr(s, "source_requirement_text", "") or "")
+                        for k in ("最里面", "封柜门", "封门", "放中间"))
+                for s in cargo_list
+            )
+            _zone_mode = "strict" if _has_zone_directive else "soft"
+        self._zone_enforcement = str(_zone_mode).lower()
         # STAGE1-C3: PASS4 回填锚点排序策略（对照实验用，默认保持现状"depth"深度优先）
         _p4_anchor_order = (options or {}).get("pass4_anchor_order")
         if _p4_anchor_order:
@@ -969,6 +984,10 @@ class UnifiedSolver:
         # 都全表遍历，6776 箱用例下会吃光时间预算——SINGLE-SKU-MASS 曾因此掉到 63%）
         self._has_flat_cover_skus = any(
             getattr(t, "flat_only_on_top", False) for t in cargo_list)
+        # 是否存在"最里面"货物：只有存在时才把后区视为被占用，从而禁止中部货物
+        # 使用后区；否则后区无人认领，中部货物可用（避免无谓损失 5~7pp 利用率）。
+        self._has_inner_skus = any(
+            getattr(t, "zone_preference", None) == UniversalZone.INNER for t in cargo_list)
         self._curr_payload_weight = 0.0
         self._current_rejection_counts = {}
         self._candidates_evaluated_count = 0
@@ -2890,6 +2909,29 @@ class UnifiedSolver:
                         if not (allow_self and p["sku_id"] == sku_id):
                             self._record_rejection("NO_TOP_STACK_VIOLATION")
                             return False
+
+        # 2.4 区域硬约束（zone_enforcement=strict 时生效）：
+        #     - MIDDLE（放中间）：不得进入后区(x < rear_zone_length_m)与门区锁定线
+        #     - INNER（最里面）：不得进入门区锁定线
+        #     默认 soft：区域仅作为排序偏好，不硬性拦截（保持既有装载率）。
+        if (getattr(self, "_zone_enforcement", "soft") == "strict"
+                and not getattr(c_sku, "is_elastic", False)):
+            _door_len_z = getattr(self, "_actual_door_zone_len",
+                                  getattr(self.container, "door_zone_length_m", 0.20) or 0.20)
+            _door_lock_x = round(self.cL - _door_len_z, 4)
+            _rear_len_z = float(getattr(self.container, "rear_zone_length_m", 1.0) or 1.0)
+            _zp = getattr(c_sku, "zone_preference", None)
+            if _zp == UniversalZone.MIDDLE:
+                if getattr(self, "_has_inner_skus", False) and cand["x"] < _rear_len_z - eps:
+                    self._record_rejection("ZONE_MIDDLE_IN_REAR")
+                    return False
+                if cand["x"] + cand["dx"] > _door_lock_x + eps:
+                    self._record_rejection("ZONE_MIDDLE_IN_DOOR")
+                    return False
+            elif _zp == UniversalZone.INNER:
+                if cand["x"] + cand["dx"] > _door_lock_x + eps:
+                    self._record_rejection("ZONE_INNER_IN_DOOR")
+                    return False
 
         # 3. Upper bearing check for underlying boxes in the support chain
         cand_z = cand["z"]

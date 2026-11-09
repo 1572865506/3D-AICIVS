@@ -24,6 +24,35 @@ from backend.solver_v2.solver.unified_solver import UnifiedSolver
 from backend.solver_v2.validation.delivery_gate import evaluate_delivery
 
 
+def _zone_compliance(case, sol, container):
+    """逐 SKU 检查声明区域与实际摆放位置是否一致（中位纵深判定）。"""
+    req = {c["sku"]: (c.get("requirement") or "") for c in case["cargo"]}
+    xs = {}
+    for p in sol.placements:
+        xs.setdefault(p.sku_id, []).append(p.position.x + p.orientation.dx / 2)
+    L = container.Lx
+    door_line = L - 0.2
+    rows, violations = [], 0
+    for sku, arr in sorted(xs.items()):
+        arr.sort()
+        med = arr[len(arr) // 2]
+        text = req.get(sku, "")
+        if "最里面" in text:
+            expect, ok = "后区(优先靠柜尾)", med <= L * 0.45
+        elif "封柜门" in text:
+            expect, ok = "门区(优先靠门)", med >= L * 0.55
+        elif "放中间" in text:
+            expect, ok = "中部(不贴两端)", (container.rear_zone_length_m < med < door_line)
+        else:
+            expect, ok = "无区域要求", True
+        if not ok:
+            violations += 1
+        rows.append({"sku": sku, "requirement": text, "expected": expect,
+                     "median_x": round(med, 2), "min_x": round(arr[0], 2),
+                     "max_x": round(arr[-1], 2), "count": len(arr), "compliant": ok})
+    return {"container_length": L, "violations": violations, "rows": rows}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("fixture", help="用例 JSON 路径（container/cargo/case_id）")
@@ -98,6 +127,7 @@ def main() -> int:
             "islands": qa.get("islands"),
         },
         "cavities_top": (qa.get("cavities") or {}).get("top", [])[:5],
+        "zone_compliance": _zone_compliance(case, sol, container),
         "rejections_top": dict(sorted(
             (sol.telemetry.candidates_rejected_by_reason or {}).items(),
             key=lambda kv: -kv[1])[:8]),
@@ -137,6 +167,14 @@ def main() -> int:
     print("  空腔 Top5:")
     for c in report["cavities_top"]:
         print(f"    {c['volume_m3']:>7.3f} m3 {c['dims']} {c['category']} open={c['open']}")
+    zc = report["zone_compliance"]
+    if zc["violations"] == 0:
+        print("区域合规: OK（全部符合声明区域）")
+    else:
+        print("区域合规: " + str(zc["violations"]) + " 项偏离")
+        for r in zc["rows"]:
+            if not r["compliant"]:
+                print(f"   X {r['sku']} 要求[{r['requirement']}] 期望 {r['expected']}，实际中位 x={r['median_x']}m")
     print(f"拒绝原因 Top: {report['rejections_top']}")
     print("=" * 78)
     return 0
