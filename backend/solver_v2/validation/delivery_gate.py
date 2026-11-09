@@ -198,14 +198,23 @@ def evaluate_delivery(
             req_vol += box.x * box.y * box.z * req
     cfg5 = rules["DG-005"]
     fillable_ratio = req_vol / max(1e-9, getattr(cont, "volume", 1e9))
-    if fillable_ratio <= cfg5.get("trigger_fillable_ratio", 0.95) and required_total > 0:
+    # 载重受限货单（请求总重超过柜体载重上限）无法全装属物理必然，
+    # 履约率不设硬门槛，避免把合规的"装不完"误判为不可交付。
+    _req_weight = 0.0
+    for c in cargo_list:
+        _req_weight += float(getattr(c, "weight_kg", 0.0) or 0.0) * (
+            getattr(getattr(c, "quantity", None), "required", 0) or 0)
+    _payload_cap = getattr(cont, "max_payload_kg", None)
+    _payload_limited = bool(_payload_cap) and _req_weight > float(_payload_cap)
+    if fillable_ratio <= cfg5.get("trigger_fillable_ratio", 0.95) and required_total > 0 and not _payload_limited:
         fulfillment = placed_total / max(1, required_total)
         add("DG-005", round(100.0 * fulfillment, 2), round(100.0 * cfg5["min_fulfillment"], 2),
             fulfillment >= cfg5["min_fulfillment"],
             f"请求体积占柜容 {fillable_ratio*100:.0f}%（可装下，强制履约）")
     else:
         add("DG-005", round(100.0 * placed_total / max(1, required_total), 2), None, True,
-            f"请求体积占柜容 {fillable_ratio*100:.0f}%（超载，履约率不设硬门槛）")
+            f"请求体积占柜容 {fillable_ratio*100:.0f}%，请求总重 {_req_weight:.0f}kg"
+            + (f" > 柜限 {_payload_cap:.0f}kg（载重受限，不设硬门槛）" if _payload_limited else "（超载，履约率不设硬门槛）"))
 
     # DG-006~010 几何观感
     if qa:
@@ -227,13 +236,36 @@ def evaluate_delivery(
             add(rid, None, None, True, "无几何体检数据，跳过")
 
     # DG-011 重心严重偏载（BLOCK） / DG-014 偏载提示（WARN）
+    # 政策例外：若货单含"封柜门/放最里面"等区域强制要求，偏载是业务约束的必然结果，
+    # DG-011 降级为 WARN（仍提示但不拦截交付），避免把合规装载误判为不可交付。
+    _zone_pinned = False
+    for c in cargo_list:
+        tz = getattr(getattr(c, "target_zone", None), "value", None)
+        if tz in ("REAR", "DOOR"):
+            _zone_pinned = True
+            break
+        roles = getattr(c, "packing_roles", ()) or ()
+        if any(getattr(r, "value", str(r)) == "DOOR_SEAL" for r in roles):
+            _zone_pinned = True
+            break
+        req_text = getattr(c, "source_requirement_text", "") or ""
+        if any(k in req_text for k in ("最里面", "封柜门", "封门")):
+            _zone_pinned = True
+            break
     cog = _compute_cog(cont, placements) if cont is not None else {}
     if cog:
         c11 = rules["DG-011"]
-        add("DG-011", {"long_pct": cog["long_offset_pct"], "lat_pct": cog["lat_offset_pct"]},
-            {"long_pct": c11["max_cog_long_pct"], "lat_pct": c11["max_cog_lat_pct"]},
-            cog["long_offset_pct"] <= c11["max_cog_long_pct"]
-            and cog["lat_offset_pct"] <= c11["max_cog_lat_pct"])
+        severe = (cog["long_offset_pct"] > c11["max_cog_long_pct"]
+                  or cog["lat_offset_pct"] > c11["max_cog_lat_pct"])
+        if severe and _zone_pinned:
+            add("DG-011", {"long_pct": cog["long_offset_pct"], "lat_pct": cog["lat_offset_pct"]},
+                {"long_pct": c11["max_cog_long_pct"], "lat_pct": c11["max_cog_lat_pct"]},
+                False, "区域强制（封柜门/最里面）导致的偏载：按政策降级为提示")
+            checks[-1]["severity"] = "WARN"
+        else:
+            add("DG-011", {"long_pct": cog["long_offset_pct"], "lat_pct": cog["lat_offset_pct"]},
+                {"long_pct": c11["max_cog_long_pct"], "lat_pct": c11["max_cog_lat_pct"]},
+                not severe)
         c14 = rules["DG-014"]
         add("DG-014", {"long_pct": cog["long_offset_pct"], "lat_pct": cog["lat_offset_pct"]},
             {"long_pct": c14["max_cog_long_pct"], "lat_pct": c14["max_cog_lat_pct"]},

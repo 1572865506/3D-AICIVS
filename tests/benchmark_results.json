@@ -5,9 +5,9 @@
   "passed_cases": 56,
   "all_zero_collisions": true,
   "delivery_gate_counts": {
-    "PASS": 11,
-    "WARN": 17,
-    "REJECT": 28,
+    "PASS": 14,
+    "WARN": 30,
+    "REJECT": 12,
     "ERROR": 0
   },
   "summary": [
@@ -23,7 +23,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 47147.0,
+      "runtime_ms": 47020.95,
       "status": "PASS",
       "delivery_gate": "WARN",
       "gate_blocked_by": [],
@@ -43,7 +43,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 497.98,
+      "runtime_ms": 464.05,
       "status": "PASS",
       "delivery_gate": "PASS",
       "gate_blocked_by": [],
@@ -61,7 +61,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 12834.82,
+      "runtime_ms": 11741.16,
       "status": "PASS",
       "delivery_gate": "PASS",
       "gate_blocked_by": [],
@@ -79,7 +79,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 1593.6,
+      "runtime_ms": 1484.05,
       "status": "PASS",
       "delivery_gate": "PASS",
       "gate_blocked_by": [],
@@ -97,7 +97,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 2654.77,
+      "runtime_ms": 2483.84,
       "status": "PASS",
       "delivery_gate": "PASS",
       "gate_blocked_by": [],
@@ -115,7 +115,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 728.05,
+      "runtime_ms": 697.92,
       "status": "PASS",
       "delivery_gate": "PASS",
       "gate_blocked_by": [],
@@ -133,7 +133,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 12664.42,
+      "runtime_ms": 11196.05,
       "status": "PASS",
       "delivery_gate": "PASS",
       "gate_blocked_by": [],
@@ -151,7 +151,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 1394.13,
+      "runtime_ms": 1254.59,
       "status": "PASS",
       "delivery_gate": "PASS",
       "gate_blocked_by": [],
@@ -169,7 +169,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 663.93,
+      "runtime_ms": 601.26,
       "status": "PASS",
       "delivery_gate": "WARN",
       "gate_blocked_by": [],
@@ -189,7 +189,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 1680.83,
+      "runtime_ms": 1520.43,
       "status": "PASS",
       "delivery_gate": "REJECT",
       "gate_blocked_by": [
@@ -213,7 +213,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 5391.05,
+      "runtime_ms": 4953.24,
       "status": "PASS",
       "delivery_gate": "REJECT",
       "gate_blocked_by": [
@@ -235,7 +235,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 873.29,
+      "runtime_ms": 842.77,
       "status": "PASS",
       "delivery_gate": "WARN",
       "gate_blocked_by": [],
@@ -255,13 +255,12 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 1422.68,
+      "runtime_ms": 4311.27,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
+        "DG-007",
         "DG-014"
       ]
     },
@@ -277,7 +276,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 149097.39,
+      "runtime_ms": 122482.89,
       "status": "PASS",
       "delivery_gate": "WARN",
       "gate_blocked_by": [],
@@ -297,7 +296,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 3277.94,
+      "runtime_ms": 2939.35,
       "status": "PASS",
       "delivery_gate": "PASS",
       "gate_blocked_by": [],
@@ -315,7 +314,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 465.34,
+      "runtime_ms": 433.53,
       "status": "PASS",
       "delivery_gate": "WARN",
       "gate_blocked_by": [],
@@ -335,7 +334,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 5714.29,
+      "runtime_ms": 5078.02,
       "status": "PASS",
       "delivery_gate": "REJECT",
       "gate_blocked_by": [
@@ -355,12 +354,10 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 645.0,
+      "runtime_ms": 940.46,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
         "DG-014"
       ]
@@ -377,13 +374,12 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 366.26,
+      "runtime_ms": 516.4,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
+        "DG-007",
         "DG-014"
       ]
     },
@@ -399,13 +395,12 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 373.07,
+      "runtime_ms": 499.6,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
+        "DG-007",
         "DG-014"
       ]
     },
@@ -421,15 +416,11 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 178.76,
+      "runtime_ms": 241.48,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
-      "gate_warnings": [
-        "DG-014"
-      ]
+      "delivery_gate": "PASS",
+      "gate_blocked_by": [],
+      "gate_warnings": []
     },
     {
       "case_id": "THREE-TIER-BEARING-CHAIN",
@@ -443,7 +434,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 931.27,
+      "runtime_ms": 846.58,
       "status": "PASS",
       "delivery_gate": "WARN",
       "gate_blocked_by": [],
@@ -463,7 +454,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 7290.66,
+      "runtime_ms": 6586.87,
       "status": "PASS",
       "delivery_gate": "REJECT",
       "gate_blocked_by": [
@@ -485,12 +476,11 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 536.26,
+      "runtime_ms": 798.6,
       "status": "PASS",
       "delivery_gate": "WARN",
       "gate_blocked_by": [],
       "gate_warnings": [
-        "DG-010",
         "DG-014"
       ]
     },
@@ -506,7 +496,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 819.78,
+      "runtime_ms": 1335.61,
       "status": "PASS",
       "delivery_gate": "WARN",
       "gate_blocked_by": [],
@@ -527,7 +517,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 24936.25,
+      "runtime_ms": 25003.73,
       "status": "PASS",
       "delivery_gate": "REJECT",
       "gate_blocked_by": [
@@ -549,7 +539,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 521.83,
+      "runtime_ms": 490.55,
       "status": "PASS",
       "delivery_gate": "WARN",
       "gate_blocked_by": [],
@@ -570,13 +560,12 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 478.86,
+      "runtime_ms": 702.08,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
+        "DG-007",
         "DG-014"
       ]
     },
@@ -592,7 +581,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 496.86,
+      "runtime_ms": 436.96,
       "status": "PASS",
       "delivery_gate": "WARN",
       "gate_blocked_by": [],
@@ -613,13 +602,12 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 642.23,
+      "runtime_ms": 819.26,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
+        "DG-007",
         "DG-014"
       ]
     },
@@ -635,7 +623,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 587.98,
+      "runtime_ms": 504.54,
       "status": "PASS",
       "delivery_gate": "WARN",
       "gate_blocked_by": [],
@@ -656,7 +644,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 424.41,
+      "runtime_ms": 611.29,
       "status": "PASS",
       "delivery_gate": "WARN",
       "gate_blocked_by": [],
@@ -676,7 +664,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 174.77,
+      "runtime_ms": 239.24,
       "status": "PASS",
       "delivery_gate": "WARN",
       "gate_blocked_by": [],
@@ -696,15 +684,11 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 626.92,
+      "runtime_ms": 873.49,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
-      "gate_warnings": [
-        "DG-014"
-      ]
+      "delivery_gate": "PASS",
+      "gate_blocked_by": [],
+      "gate_warnings": []
     },
     {
       "case_id": "FLAT-ONLY-SLABS",
@@ -718,13 +702,12 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 857.48,
+      "runtime_ms": 1578.8,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
+        "DG-010",
         "DG-014"
       ]
     },
@@ -740,12 +723,10 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 598.39,
+      "runtime_ms": 676.14,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
         "DG-007",
         "DG-014"
@@ -763,15 +744,13 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 682.15,
+      "runtime_ms": 1670.98,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
-        "DG-010",
-        "DG-014"
+        "DG-007",
+        "DG-010"
       ]
     },
     {
@@ -786,7 +765,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 355.15,
+      "runtime_ms": 330.07,
       "status": "PASS",
       "delivery_gate": "WARN",
       "gate_blocked_by": [],
@@ -807,15 +786,12 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 237.01,
+      "runtime_ms": 338.86,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
-        "DG-008",
-        "DG-014"
+        "DG-008"
       ]
     },
     {
@@ -830,14 +806,11 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 690.36,
+      "runtime_ms": 1194.69,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
-        "DG-008",
         "DG-014"
       ]
     },
@@ -853,14 +826,12 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 369.03,
+      "runtime_ms": 512.51,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
-        "DG-014"
+        "DG-007"
       ]
     },
     {
@@ -875,13 +846,14 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 1470.35,
+      "runtime_ms": 1802.03,
       "status": "PASS",
       "delivery_gate": "REJECT",
       "gate_blocked_by": [
         "DG-011"
       ],
       "gate_warnings": [
+        "DG-007",
         "DG-008",
         "DG-014"
       ]
@@ -898,13 +870,13 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 575.51,
+      "runtime_ms": 928.02,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
+        "DG-007",
+        "DG-008",
         "DG-014"
       ]
     },
@@ -920,13 +892,12 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 284.18,
+      "runtime_ms": 375.23,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
+        "DG-007",
         "DG-014"
       ]
     },
@@ -942,7 +913,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 185.39,
+      "runtime_ms": 166.83,
       "status": "PASS",
       "delivery_gate": "WARN",
       "gate_blocked_by": [],
@@ -962,7 +933,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 632.17,
+      "runtime_ms": 589.71,
       "status": "PASS",
       "delivery_gate": "WARN",
       "gate_blocked_by": [],
@@ -983,7 +954,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 4300.56,
+      "runtime_ms": 7300.37,
       "status": "PASS",
       "delivery_gate": "PASS",
       "gate_blocked_by": [],
@@ -1001,7 +972,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 45634.41,
+      "runtime_ms": 45651.09,
       "status": "PASS",
       "delivery_gate": "PASS",
       "gate_blocked_by": [],
@@ -1019,7 +990,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 760.96,
+      "runtime_ms": 777.57,
       "status": "PASS",
       "delivery_gate": "PASS",
       "gate_blocked_by": [],
@@ -1037,7 +1008,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 14467.07,
+      "runtime_ms": 12577.02,
       "status": "PASS",
       "delivery_gate": "REJECT",
       "gate_blocked_by": [
@@ -1059,13 +1030,11 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 544.88,
+      "runtime_ms": 555.11,
       "status": "PASS",
-      "delivery_gate": "WARN",
+      "delivery_gate": "PASS",
       "gate_blocked_by": [],
-      "gate_warnings": [
-        "DG-014"
-      ]
+      "gate_warnings": []
     },
     {
       "case_id": "RANDOM-STRESS-CASE-01",
@@ -1079,7 +1048,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 25103.44,
+      "runtime_ms": 25076.1,
       "status": "PASS",
       "delivery_gate": "REJECT",
       "gate_blocked_by": [
@@ -1101,7 +1070,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 25076.8,
+      "runtime_ms": 25049.73,
       "status": "PASS",
       "delivery_gate": "REJECT",
       "gate_blocked_by": [
@@ -1125,7 +1094,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 24994.71,
+      "runtime_ms": 23468.93,
       "status": "PASS",
       "delivery_gate": "REJECT",
       "gate_blocked_by": [
@@ -1147,7 +1116,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 25101.16,
+      "runtime_ms": 24007.7,
       "status": "PASS",
       "delivery_gate": "REJECT",
       "gate_blocked_by": [
@@ -1169,7 +1138,7 @@
       "violations": 0,
       "health_status": "HEALTHY",
       "health_issues": [],
-      "runtime_ms": 23206.47,
+      "runtime_ms": 23700.94,
       "status": "PASS",
       "delivery_gate": "REJECT",
       "gate_blocked_by": [
@@ -1206,7 +1175,7 @@
       "unplaced_count": 680,
       "utilization": 83.33,
       "volume_utilization_pct": 83.3256,
-      "runtime_ms": 47147.0,
+      "runtime_ms": 47020.95,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1564,7 +1533,7 @@
       "unplaced_count": 10,
       "utilization": 91.46,
       "volume_utilization_pct": 91.4561,
-      "runtime_ms": 497.98,
+      "runtime_ms": 464.05,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1656,7 +1625,7 @@
       "unplaced_count": 2197,
       "utilization": 89.59,
       "volume_utilization_pct": 89.5936,
-      "runtime_ms": 12834.82,
+      "runtime_ms": 11741.16,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1805,7 +1774,7 @@
       "unplaced_count": 0,
       "utilization": 69.75,
       "volume_utilization_pct": 69.7518,
-      "runtime_ms": 1593.6,
+      "runtime_ms": 1484.05,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -1973,7 +1942,7 @@
       "unplaced_count": 0,
       "utilization": 70.43,
       "volume_utilization_pct": 70.4281,
-      "runtime_ms": 2654.77,
+      "runtime_ms": 2483.84,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -2198,7 +2167,7 @@
       "unplaced_count": 0,
       "utilization": 69.13,
       "volume_utilization_pct": 69.1278,
-      "runtime_ms": 728.05,
+      "runtime_ms": 697.92,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -2328,7 +2297,7 @@
       "unplaced_count": 144,
       "utilization": 76.84,
       "volume_utilization_pct": 76.8434,
-      "runtime_ms": 12664.42,
+      "runtime_ms": 11196.05,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -2458,7 +2427,7 @@
       "unplaced_count": 0,
       "utilization": 43.61,
       "volume_utilization_pct": 43.6141,
-      "runtime_ms": 1394.13,
+      "runtime_ms": 1254.59,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -2609,7 +2578,7 @@
       "unplaced_count": 0,
       "utilization": 40.09,
       "volume_utilization_pct": 40.0883,
-      "runtime_ms": 663.93,
+      "runtime_ms": 601.26,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -2764,7 +2733,7 @@
       "unplaced_count": 0,
       "utilization": 36.86,
       "volume_utilization_pct": 36.8559,
-      "runtime_ms": 1680.83,
+      "runtime_ms": 1520.43,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -2917,7 +2886,7 @@
       "unplaced_count": 204,
       "utilization": 9.43,
       "volume_utilization_pct": 9.4301,
-      "runtime_ms": 5391.05,
+      "runtime_ms": 4953.24,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -3011,7 +2980,7 @@
       "unplaced_count": 0,
       "utilization": 52.06,
       "volume_utilization_pct": 52.0635,
-      "runtime_ms": 873.29,
+      "runtime_ms": 842.77,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -3182,19 +3151,18 @@
       "description": "Tests extreme aspect ratio items: long planks (2.4m), tubes (1.5m), thin sheets (30mm)",
       "requested_cartons": 570,
       "delivery_gate": {
-        "verdict": "REJECT",
-        "blocked_by": [
-          "DG-011"
-        ],
+        "verdict": "WARN",
+        "blocked_by": [],
         "warnings": [
+          "DG-007",
           "DG-014"
         ],
         "cog": {
-          "cog_x_pct": 24.69,
-          "cog_y_pct": 48.17,
-          "cog_z_pct": 36.67,
-          "long_offset_pct": 25.31,
-          "lat_offset_pct": 1.83,
+          "cog_x_pct": 44.26,
+          "cog_y_pct": 40.58,
+          "cog_z_pct": 45.47,
+          "long_offset_pct": 5.74,
+          "lat_offset_pct": 9.42,
           "total_weight_kg": 4300.0
         }
       },
@@ -3202,7 +3170,7 @@
       "unplaced_count": 0,
       "utilization": 34.91,
       "volume_utilization_pct": 34.9109,
-      "runtime_ms": 1422.68,
+      "runtime_ms": 4311.27,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -3230,7 +3198,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 7,
+              "floor_placed": 0,
               "door_zone_placed": 0,
               "non_door_placed": 150
             },
@@ -3249,7 +3217,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 6,
+              "floor_placed": 8,
               "door_zone_placed": 0,
               "non_door_placed": 100
             },
@@ -3287,7 +3255,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 5,
+              "floor_placed": 20,
               "door_zone_placed": 0,
               "non_door_placed": 200
             },
@@ -3304,7 +3272,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 47.0078,
+        "reachable_residual_volume": 46.2142,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -3324,7 +3292,7 @@
       "summary": {
         "placedCount": 570,
         "unplacedCount": 0,
-        "utilization": 34.91094468144699,
+        "utilization": 34.91094468144663,
         "rigidCompletion": 100.0,
         "healthStatus": "HEALTHY"
       }
@@ -3353,7 +3321,7 @@
       "unplaced_count": 3224,
       "utilization": 73.8,
       "volume_utilization_pct": 73.8025,
-      "runtime_ms": 149097.39,
+      "runtime_ms": 122482.89,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -3445,7 +3413,7 @@
       "unplaced_count": 0,
       "utilization": 51.93,
       "volume_utilization_pct": 51.9336,
-      "runtime_ms": 3277.94,
+      "runtime_ms": 2939.35,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -3653,7 +3621,7 @@
       "unplaced_count": 0,
       "utilization": 40.55,
       "volume_utilization_pct": 40.5493,
-      "runtime_ms": 465.34,
+      "runtime_ms": 433.53,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -3785,7 +3753,7 @@
       "unplaced_count": 223,
       "utilization": 18.02,
       "volume_utilization_pct": 18.0219,
-      "runtime_ms": 5714.29,
+      "runtime_ms": 5078.02,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -3918,18 +3886,16 @@
       "description": "Floor-bound items strictly capped at 2 layers, followed by multi-layer stackable items",
       "requested_cartons": 470,
       "delivery_gate": {
-        "verdict": "REJECT",
-        "blocked_by": [
-          "DG-011"
-        ],
+        "verdict": "WARN",
+        "blocked_by": [],
         "warnings": [
           "DG-014"
         ],
         "cog": {
-          "cog_x_pct": 28.38,
+          "cog_x_pct": 47.21,
           "cog_y_pct": 43.85,
           "cog_z_pct": 34.79,
-          "long_offset_pct": 21.62,
+          "long_offset_pct": 2.79,
           "lat_offset_pct": 6.15,
           "total_weight_kg": 4310.0
         }
@@ -3938,7 +3904,7 @@
       "unplaced_count": 0,
       "utilization": 31.96,
       "volume_utilization_pct": 31.9575,
-      "runtime_ms": 645.0,
+      "runtime_ms": 940.46,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -4021,7 +3987,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 48.8288,
+        "reachable_residual_volume": 48.635,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -4052,18 +4018,17 @@
       "description": "Extremely dense, heavy small metal castings requiring floor placement",
       "requested_cartons": 420,
       "delivery_gate": {
-        "verdict": "REJECT",
-        "blocked_by": [
-          "DG-011"
-        ],
+        "verdict": "WARN",
+        "blocked_by": [],
         "warnings": [
+          "DG-007",
           "DG-014"
         ],
         "cog": {
-          "cog_x_pct": 16.16,
+          "cog_x_pct": 46.21,
           "cog_y_pct": 42.52,
           "cog_z_pct": 37.65,
-          "long_offset_pct": 33.84,
+          "long_offset_pct": 3.79,
           "lat_offset_pct": 7.48,
           "total_weight_kg": 1689.98
         }
@@ -4072,7 +4037,7 @@
       "unplaced_count": 0,
       "utilization": 20.17,
       "volume_utilization_pct": 20.1699,
-      "runtime_ms": 366.26,
+      "runtime_ms": 516.4,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -4186,18 +4151,17 @@
       "description": "Long structural bases (2.2m) requiring floor placement, supporting normal boxes",
       "requested_cartons": 416,
       "delivery_gate": {
-        "verdict": "REJECT",
-        "blocked_by": [
-          "DG-011"
-        ],
+        "verdict": "WARN",
+        "blocked_by": [],
         "warnings": [
+          "DG-007",
           "DG-014"
         ],
         "cog": {
-          "cog_x_pct": 22.33,
+          "cog_x_pct": 42.41,
           "cog_y_pct": 44.78,
           "cog_z_pct": 31.16,
-          "long_offset_pct": 27.67,
+          "long_offset_pct": 7.59,
           "lat_offset_pct": 5.22,
           "total_weight_kg": 3940.0
         }
@@ -4206,7 +4170,7 @@
       "unplaced_count": 0,
       "utilization": 24.41,
       "volume_utilization_pct": 24.4121,
-      "runtime_ms": 373.07,
+      "runtime_ms": 499.6,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -4320,18 +4284,14 @@
       "description": "20GP container loaded with mustBeOnFloor=true single layer machines",
       "requested_cartons": 242,
       "delivery_gate": {
-        "verdict": "REJECT",
-        "blocked_by": [
-          "DG-011"
-        ],
-        "warnings": [
-          "DG-014"
-        ],
+        "verdict": "PASS",
+        "blocked_by": [],
+        "warnings": [],
         "cog": {
-          "cog_x_pct": 28.31,
+          "cog_x_pct": 46.1,
           "cog_y_pct": 45.36,
           "cog_z_pct": 34.03,
-          "long_offset_pct": 21.69,
+          "long_offset_pct": 3.9,
           "lat_offset_pct": 4.64,
           "total_weight_kg": 2400.0
         }
@@ -4340,7 +4300,7 @@
       "unplaced_count": 0,
       "utilization": 36.18,
       "volume_utilization_pct": 36.1796,
-      "runtime_ms": 178.76,
+      "runtime_ms": 241.48,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -4423,7 +4383,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 19.8146,
+        "reachable_residual_volume": 19.7746,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -4472,7 +4432,7 @@
       "unplaced_count": 0,
       "utilization": 28.09,
       "volume_utilization_pct": 28.0938,
-      "runtime_ms": 931.27,
+      "runtime_ms": 846.58,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -4625,7 +4585,7 @@
       "unplaced_count": 203,
       "utilization": 21.8,
       "volume_utilization_pct": 21.8044,
-      "runtime_ms": 7290.66,
+      "runtime_ms": 6586.87,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -4761,15 +4721,14 @@
         "verdict": "WARN",
         "blocked_by": [],
         "warnings": [
-          "DG-010",
           "DG-014"
         ],
         "cog": {
-          "cog_x_pct": 32.69,
-          "cog_y_pct": 41.94,
-          "cog_z_pct": 20.74,
-          "long_offset_pct": 17.31,
-          "lat_offset_pct": 8.06,
+          "cog_x_pct": 43.38,
+          "cog_y_pct": 40.95,
+          "cog_z_pct": 20.67,
+          "long_offset_pct": 6.62,
+          "lat_offset_pct": 9.05,
           "total_weight_kg": 5005.0
         }
       },
@@ -4777,7 +4736,7 @@
       "unplaced_count": 0,
       "utilization": 23.9,
       "volume_utilization_pct": 23.9043,
-      "runtime_ms": 536.26,
+      "runtime_ms": 798.6,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -4843,7 +4802,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 35,
+              "floor_placed": 39,
               "door_zone_placed": 0,
               "non_door_placed": 120
             },
@@ -4862,7 +4821,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 53,
+              "floor_placed": 29,
               "door_zone_placed": 0,
               "non_door_placed": 150
             },
@@ -4879,7 +4838,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 55.1904,
+        "reachable_residual_volume": 55.244,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -4899,7 +4858,7 @@
       "summary": {
         "placedCount": 335,
         "unplacedCount": 0,
-        "utilization": 23.90427233604388,
+        "utilization": 23.904272336043974,
         "rigidCompletion": 100.0,
         "healthStatus": "HEALTHY"
       }
@@ -4917,10 +4876,10 @@
           "DG-014"
         ],
         "cog": {
-          "cog_x_pct": 30.72,
+          "cog_x_pct": 49.55,
           "cog_y_pct": 42.55,
           "cog_z_pct": 22.94,
-          "long_offset_pct": 19.28,
+          "long_offset_pct": 0.45,
           "lat_offset_pct": 7.45,
           "total_weight_kg": 3100.0
         }
@@ -4929,7 +4888,7 @@
       "unplaced_count": 0,
       "utilization": 17.88,
       "volume_utilization_pct": 17.8779,
-      "runtime_ms": 819.78,
+      "runtime_ms": 1335.61,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -5012,7 +4971,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 60.144,
+        "reachable_residual_volume": 59.9132,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -5063,7 +5022,7 @@
       "unplaced_count": 360,
       "utilization": 19.25,
       "volume_utilization_pct": 19.2531,
-      "runtime_ms": 24936.25,
+      "runtime_ms": 25003.73,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -5196,7 +5155,7 @@
       "unplaced_count": 0,
       "utilization": 22.08,
       "volume_utilization_pct": 22.0821,
-      "runtime_ms": 521.83,
+      "runtime_ms": 490.55,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -5329,19 +5288,18 @@
       "description": "Large fragile panels forbidding top stacking",
       "requested_cartons": 465,
       "delivery_gate": {
-        "verdict": "REJECT",
-        "blocked_by": [
-          "DG-011"
-        ],
+        "verdict": "WARN",
+        "blocked_by": [],
         "warnings": [
+          "DG-007",
           "DG-014"
         ],
         "cog": {
-          "cog_x_pct": 33.75,
-          "cog_y_pct": 39.78,
-          "cog_z_pct": 27.52,
-          "long_offset_pct": 16.25,
-          "lat_offset_pct": 10.22,
+          "cog_x_pct": 43.51,
+          "cog_y_pct": 43.95,
+          "cog_z_pct": 27.01,
+          "long_offset_pct": 6.49,
+          "lat_offset_pct": 6.05,
           "total_weight_kg": 3980.0
         }
       },
@@ -5349,7 +5307,7 @@
       "unplaced_count": 0,
       "utilization": 29.99,
       "volume_utilization_pct": 29.9929,
-      "runtime_ms": 478.86,
+      "runtime_ms": 702.08,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -5451,7 +5409,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 48.7635,
+        "reachable_residual_volume": 48.8327,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -5471,7 +5429,7 @@
       "summary": {
         "placedCount": 465,
         "unplacedCount": 0,
-        "utilization": 29.992895637033527,
+        "utilization": 29.992895637033573,
         "rigidCompletion": 100.0,
         "healthStatus": "HEALTHY"
       }
@@ -5501,7 +5459,7 @@
       "unplaced_count": 0,
       "utilization": 23.9,
       "volume_utilization_pct": 23.9026,
-      "runtime_ms": 496.86,
+      "runtime_ms": 436.96,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -5634,19 +5592,18 @@
       "description": "Three distinct SKUs all having allowStackingOnTop=false",
       "requested_cartons": 470,
       "delivery_gate": {
-        "verdict": "REJECT",
-        "blocked_by": [
-          "DG-011"
-        ],
+        "verdict": "WARN",
+        "blocked_by": [],
         "warnings": [
+          "DG-007",
           "DG-014"
         ],
         "cog": {
-          "cog_x_pct": 33.11,
-          "cog_y_pct": 39.3,
-          "cog_z_pct": 30.51,
-          "long_offset_pct": 16.89,
-          "lat_offset_pct": 10.7,
+          "cog_x_pct": 51.26,
+          "cog_y_pct": 40.48,
+          "cog_z_pct": 26.3,
+          "long_offset_pct": 1.26,
+          "lat_offset_pct": 9.52,
           "total_weight_kg": 3900.0
         }
       },
@@ -5654,7 +5611,7 @@
       "unplaced_count": 0,
       "utilization": 25.23,
       "volume_utilization_pct": 25.2255,
-      "runtime_ms": 642.23,
+      "runtime_ms": 819.26,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -5758,7 +5715,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 14,
+              "floor_placed": 21,
               "door_zone_placed": 0,
               "non_door_placed": 300
             },
@@ -5775,7 +5732,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 53.5379,
+        "reachable_residual_volume": 53.8456,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -5795,7 +5752,7 @@
       "summary": {
         "placedCount": 470,
         "unplacedCount": 0,
-        "utilization": 25.22546593752254,
+        "utilization": 25.225465937522557,
         "rigidCompletion": 100.0,
         "healthStatus": "HEALTHY"
       }
@@ -5825,7 +5782,7 @@
       "unplaced_count": 0,
       "utilization": 34.45,
       "volume_utilization_pct": 34.4525,
-      "runtime_ms": 587.98,
+      "runtime_ms": 504.54,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -5945,10 +5902,10 @@
           "DG-014"
         ],
         "cog": {
-          "cog_x_pct": 42.6,
+          "cog_x_pct": 53.95,
           "cog_y_pct": 43.2,
           "cog_z_pct": 32.01,
-          "long_offset_pct": 7.4,
+          "long_offset_pct": 3.95,
           "lat_offset_pct": 6.8,
           "total_weight_kg": 4470.0
         }
@@ -5957,7 +5914,7 @@
       "unplaced_count": 0,
       "utilization": 30.15,
       "volume_utilization_pct": 30.1501,
-      "runtime_ms": 424.41,
+      "runtime_ms": 611.29,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -6040,7 +5997,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 50.7987,
+        "reachable_residual_volume": 50.6147,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -6089,7 +6046,7 @@
       "unplaced_count": 0,
       "utilization": 26.06,
       "volume_utilization_pct": 26.0602,
-      "runtime_ms": 174.77,
+      "runtime_ms": 239.24,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -6203,18 +6160,14 @@
       "description": "All SKUs strictly locked to upright orientation only",
       "requested_cartons": 530,
       "delivery_gate": {
-        "verdict": "REJECT",
-        "blocked_by": [
-          "DG-011"
-        ],
-        "warnings": [
-          "DG-014"
-        ],
+        "verdict": "PASS",
+        "blocked_by": [],
+        "warnings": [],
         "cog": {
-          "cog_x_pct": 22.61,
+          "cog_x_pct": 48.72,
           "cog_y_pct": 50.49,
           "cog_z_pct": 44.98,
-          "long_offset_pct": 27.39,
+          "long_offset_pct": 1.28,
           "lat_offset_pct": 0.49,
           "total_weight_kg": 4500.0
         }
@@ -6223,7 +6176,7 @@
       "unplaced_count": 0,
       "utilization": 39.14,
       "volume_utilization_pct": 39.1375,
-      "runtime_ms": 626.92,
+      "runtime_ms": 873.49,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -6325,7 +6278,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 44.4448,
+        "reachable_residual_volume": 43.8732,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -6356,19 +6309,18 @@
       "description": "Heavy flat stone slabs that can only be placed flat",
       "requested_cartons": 540,
       "delivery_gate": {
-        "verdict": "REJECT",
-        "blocked_by": [
-          "DG-011"
-        ],
+        "verdict": "WARN",
+        "blocked_by": [],
         "warnings": [
+          "DG-010",
           "DG-014"
         ],
         "cog": {
-          "cog_x_pct": 18.98,
-          "cog_y_pct": 43.19,
-          "cog_z_pct": 36.16,
-          "long_offset_pct": 31.02,
-          "lat_offset_pct": 6.81,
+          "cog_x_pct": 44.13,
+          "cog_y_pct": 41.94,
+          "cog_z_pct": 40.59,
+          "long_offset_pct": 5.87,
+          "lat_offset_pct": 8.06,
           "total_weight_kg": 6725.0
         }
       },
@@ -6376,7 +6328,7 @@
       "unplaced_count": 0,
       "utilization": 29.22,
       "volume_utilization_pct": 29.2215,
-      "runtime_ms": 857.48,
+      "runtime_ms": 1578.8,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -6404,7 +6356,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 3,
+              "floor_placed": 9,
               "door_zone_placed": 0,
               "non_door_placed": 60
             },
@@ -6442,7 +6394,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 20,
+              "floor_placed": 12,
               "door_zone_placed": 0,
               "non_door_placed": 140
             },
@@ -6461,7 +6413,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 0,
+              "floor_placed": 9,
               "door_zone_placed": 0,
               "non_door_placed": 250
             },
@@ -6478,7 +6430,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 51.716,
+        "reachable_residual_volume": 50.7081,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -6498,7 +6450,7 @@
       "summary": {
         "placedCount": 540,
         "unplacedCount": 0,
-        "utilization": 29.221462644447605,
+        "utilization": 29.221462644447772,
         "rigidCompletion": 100.0,
         "healthStatus": "HEALTHY"
       }
@@ -6509,20 +6461,18 @@
       "description": "Thin glass sheets (thickness 0.08m) with strict upright constraints",
       "requested_cartons": 520,
       "delivery_gate": {
-        "verdict": "REJECT",
-        "blocked_by": [
-          "DG-011"
-        ],
+        "verdict": "WARN",
+        "blocked_by": [],
         "warnings": [
           "DG-007",
           "DG-014"
         ],
         "cog": {
-          "cog_x_pct": 28.93,
-          "cog_y_pct": 41.36,
-          "cog_z_pct": 32.14,
-          "long_offset_pct": 21.07,
-          "lat_offset_pct": 8.64,
+          "cog_x_pct": 41.28,
+          "cog_y_pct": 42.44,
+          "cog_z_pct": 28.7,
+          "long_offset_pct": 8.72,
+          "lat_offset_pct": 7.56,
           "total_weight_kg": 3700.0
         }
       },
@@ -6530,7 +6480,7 @@
       "unplaced_count": 0,
       "utilization": 25.26,
       "volume_utilization_pct": 25.2569,
-      "runtime_ms": 598.39,
+      "runtime_ms": 676.14,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -6596,9 +6546,9 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 11,
-              "door_zone_placed": 0,
-              "non_door_placed": 220
+              "floor_placed": 44,
+              "door_zone_placed": 110,
+              "non_door_placed": 110
             },
             "constraints_summary": {
               "must_be_on_floor": false,
@@ -6613,7 +6563,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 53.721,
+        "reachable_residual_volume": 54.2079,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -6644,20 +6594,18 @@
       "description": "Cargo items allowing flat orientation but capped at maxFlatLayers=2",
       "requested_cartons": 430,
       "delivery_gate": {
-        "verdict": "REJECT",
-        "blocked_by": [
-          "DG-011"
-        ],
+        "verdict": "WARN",
+        "blocked_by": [],
         "warnings": [
-          "DG-010",
-          "DG-014"
+          "DG-007",
+          "DG-010"
         ],
         "cog": {
-          "cog_x_pct": 19.71,
-          "cog_y_pct": 44.85,
-          "cog_z_pct": 32.96,
-          "long_offset_pct": 30.29,
-          "lat_offset_pct": 5.15,
+          "cog_x_pct": 43.31,
+          "cog_y_pct": 45.11,
+          "cog_z_pct": 34.53,
+          "long_offset_pct": 6.69,
+          "lat_offset_pct": 4.89,
           "total_weight_kg": 3640.0
         }
       },
@@ -6665,7 +6613,7 @@
       "unplaced_count": 0,
       "utilization": 25.15,
       "volume_utilization_pct": 25.1469,
-      "runtime_ms": 682.15,
+      "runtime_ms": 1670.98,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -6748,7 +6696,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 54.9012,
+        "reachable_residual_volume": 54.464,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -6798,7 +6746,7 @@
       "unplaced_count": 0,
       "utilization": 28.41,
       "volume_utilization_pct": 28.4081,
-      "runtime_ms": 355.15,
+      "runtime_ms": 330.07,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -6912,19 +6860,16 @@
       "description": "20GP standard container with zero rotational degrees of freedom",
       "requested_cartons": 280,
       "delivery_gate": {
-        "verdict": "REJECT",
-        "blocked_by": [
-          "DG-011"
-        ],
+        "verdict": "WARN",
+        "blocked_by": [],
         "warnings": [
-          "DG-008",
-          "DG-014"
+          "DG-008"
         ],
         "cog": {
-          "cog_x_pct": 24.52,
+          "cog_x_pct": 45.7,
           "cog_y_pct": 45.95,
           "cog_z_pct": 38.97,
-          "long_offset_pct": 25.48,
+          "long_offset_pct": 4.3,
           "lat_offset_pct": 4.05,
           "total_weight_kg": 2210.0
         }
@@ -6933,7 +6878,7 @@
       "unplaced_count": 0,
       "utilization": 38.45,
       "volume_utilization_pct": 38.4465,
-      "runtime_ms": 237.01,
+      "runtime_ms": 338.86,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -7047,20 +6992,17 @@
       "description": "Multiple SKUs strictly restricted to max 2 vertical layers",
       "requested_cartons": 540,
       "delivery_gate": {
-        "verdict": "REJECT",
-        "blocked_by": [
-          "DG-011"
-        ],
+        "verdict": "WARN",
+        "blocked_by": [],
         "warnings": [
-          "DG-008",
           "DG-014"
         ],
         "cog": {
-          "cog_x_pct": 24.27,
-          "cog_y_pct": 46.51,
-          "cog_z_pct": 34.74,
-          "long_offset_pct": 25.73,
-          "lat_offset_pct": 3.49,
+          "cog_x_pct": 46.84,
+          "cog_y_pct": 42.63,
+          "cog_z_pct": 38.29,
+          "long_offset_pct": 3.16,
+          "lat_offset_pct": 7.37,
           "total_weight_kg": 3900.0
         }
       },
@@ -7068,7 +7010,7 @@
       "unplaced_count": 0,
       "utilization": 30.51,
       "volume_utilization_pct": 30.5135,
-      "runtime_ms": 690.36,
+      "runtime_ms": 1194.69,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -7096,7 +7038,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 15,
+              "floor_placed": 28,
               "door_zone_placed": 0,
               "non_door_placed": 60
             },
@@ -7115,7 +7057,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 20,
+              "floor_placed": 0,
               "door_zone_placed": 0,
               "non_door_placed": 80
             },
@@ -7134,7 +7076,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 20,
+              "floor_placed": 24,
               "door_zone_placed": 0,
               "non_door_placed": 150
             },
@@ -7170,7 +7112,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 49.638,
+        "reachable_residual_volume": 49.9204,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -7190,7 +7132,7 @@
       "summary": {
         "placedCount": 540,
         "unplacedCount": 0,
-        "utilization": 30.51351467702137,
+        "utilization": 30.51351467702138,
         "rigidCompletion": 100.0,
         "healthStatus": "HEALTHY"
       }
@@ -7201,18 +7143,16 @@
       "description": "SKUs capping precisely at 3 layers",
       "requested_cartons": 385,
       "delivery_gate": {
-        "verdict": "REJECT",
-        "blocked_by": [
-          "DG-011"
-        ],
+        "verdict": "WARN",
+        "blocked_by": [],
         "warnings": [
-          "DG-014"
+          "DG-007"
         ],
         "cog": {
-          "cog_x_pct": 15.64,
+          "cog_x_pct": 47.77,
           "cog_y_pct": 45.34,
           "cog_z_pct": 38.21,
-          "long_offset_pct": 34.36,
+          "long_offset_pct": 2.23,
           "lat_offset_pct": 4.66,
           "total_weight_kg": 3390.0
         }
@@ -7221,7 +7161,7 @@
       "unplaced_count": 0,
       "utilization": 23.15,
       "volume_utilization_pct": 23.1528,
-      "runtime_ms": 369.03,
+      "runtime_ms": 512.51,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -7304,7 +7244,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 56.7455,
+        "reachable_residual_volume": 56.2927,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -7340,15 +7280,16 @@
           "DG-011"
         ],
         "warnings": [
+          "DG-007",
           "DG-008",
           "DG-014"
         ],
         "cog": {
-          "cog_x_pct": 20.76,
-          "cog_y_pct": 42.74,
-          "cog_z_pct": 36.05,
-          "long_offset_pct": 29.24,
-          "lat_offset_pct": 7.26,
+          "cog_x_pct": 52.54,
+          "cog_y_pct": 39.49,
+          "cog_z_pct": 32.54,
+          "long_offset_pct": 2.54,
+          "lat_offset_pct": 10.51,
           "total_weight_kg": 3805.0
         }
       },
@@ -7356,7 +7297,7 @@
       "unplaced_count": 0,
       "utilization": 23.36,
       "volume_utilization_pct": 23.3591,
-      "runtime_ms": 1470.35,
+      "runtime_ms": 1802.03,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -7403,7 +7344,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 0,
+              "floor_placed": 11,
               "door_zone_placed": 0,
               "non_door_placed": 50
             },
@@ -7441,7 +7382,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 21,
+              "floor_placed": 0,
               "door_zone_placed": 0,
               "non_door_placed": 160
             },
@@ -7460,7 +7401,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 0,
+              "floor_placed": 8,
               "door_zone_placed": 0,
               "non_door_placed": 250
             },
@@ -7477,7 +7418,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 55.4601,
+        "reachable_residual_volume": 54.91,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -7497,7 +7438,7 @@
       "summary": {
         "placedCount": 558,
         "unplacedCount": 0,
-        "utilization": 23.359095794170113,
+        "utilization": 23.35909579417001,
         "rigidCompletion": 100.0,
         "healthStatus": "HEALTHY"
       }
@@ -7508,19 +7449,19 @@
       "description": "Testing whether layer depth accumulates across intermediate other-SKU layers",
       "requested_cartons": 460,
       "delivery_gate": {
-        "verdict": "REJECT",
-        "blocked_by": [
-          "DG-011"
-        ],
+        "verdict": "WARN",
+        "blocked_by": [],
         "warnings": [
+          "DG-007",
+          "DG-008",
           "DG-014"
         ],
         "cog": {
-          "cog_x_pct": 17.47,
-          "cog_y_pct": 43.05,
-          "cog_z_pct": 36.99,
-          "long_offset_pct": 32.53,
-          "lat_offset_pct": 6.95,
+          "cog_x_pct": 45.3,
+          "cog_y_pct": 41.31,
+          "cog_z_pct": 35.66,
+          "long_offset_pct": 4.7,
+          "lat_offset_pct": 8.69,
           "total_weight_kg": 2480.0
         }
       },
@@ -7528,7 +7469,7 @@
       "unplaced_count": 0,
       "utilization": 19.65,
       "volume_utilization_pct": 19.646,
-      "runtime_ms": 575.51,
+      "runtime_ms": 928.02,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -7556,7 +7497,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 17,
+              "floor_placed": 24,
               "door_zone_placed": 0,
               "non_door_placed": 60
             },
@@ -7575,7 +7516,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 8,
+              "floor_placed": 3,
               "door_zone_placed": 0,
               "non_door_placed": 60
             },
@@ -7594,7 +7535,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 15,
+              "floor_placed": 20,
               "door_zone_placed": 0,
               "non_door_placed": 140
             },
@@ -7613,7 +7554,7 @@
             "missing": 0,
             "completion_pct": 100.0,
             "distribution": {
-              "floor_placed": 10,
+              "floor_placed": 14,
               "door_zone_placed": 0,
               "non_door_placed": 200
             },
@@ -7630,7 +7571,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 58.5441,
+        "reachable_residual_volume": 59.104,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -7650,7 +7591,7 @@
       "summary": {
         "placedCount": 460,
         "unplacedCount": 0,
-        "utilization": 19.646001508973953,
+        "utilization": 19.646001508973992,
         "rigidCompletion": 100.0,
         "healthStatus": "HEALTHY"
       }
@@ -7661,18 +7602,17 @@
       "description": "Sudden height drop from layer-capped columns creating free edges",
       "requested_cartons": 340,
       "delivery_gate": {
-        "verdict": "REJECT",
-        "blocked_by": [
-          "DG-011"
-        ],
+        "verdict": "WARN",
+        "blocked_by": [],
         "warnings": [
+          "DG-007",
           "DG-014"
         ],
         "cog": {
-          "cog_x_pct": 24.73,
+          "cog_x_pct": 41.9,
           "cog_y_pct": 41.52,
           "cog_z_pct": 39.15,
-          "long_offset_pct": 25.27,
+          "long_offset_pct": 8.1,
           "lat_offset_pct": 8.48,
           "total_weight_kg": 2890.0
         }
@@ -7681,7 +7621,7 @@
       "unplaced_count": 0,
       "utilization": 25.62,
       "volume_utilization_pct": 25.6184,
-      "runtime_ms": 284.18,
+      "runtime_ms": 375.23,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -7764,7 +7704,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 53.9011,
+        "reachable_residual_volume": 53.72,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -7813,7 +7753,7 @@
       "unplaced_count": 0,
       "utilization": 26.98,
       "volume_utilization_pct": 26.976,
-      "runtime_ms": 185.39,
+      "runtime_ms": 166.83,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -7946,7 +7886,7 @@
       "unplaced_count": 0,
       "utilization": 57.8,
       "volume_utilization_pct": 57.7985,
-      "runtime_ms": 632.17,
+      "runtime_ms": 589.71,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -8095,7 +8035,7 @@
       "unplaced_count": 0,
       "utilization": 44.4,
       "volume_utilization_pct": 44.4,
-      "runtime_ms": 4300.56,
+      "runtime_ms": 7300.37,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -8244,7 +8184,7 @@
       "unplaced_count": 386,
       "utilization": 86.64,
       "volume_utilization_pct": 86.6362,
-      "runtime_ms": 45634.41,
+      "runtime_ms": 45651.09,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -8393,7 +8333,7 @@
       "unplaced_count": 0,
       "utilization": 42.31,
       "volume_utilization_pct": 42.3091,
-      "runtime_ms": 760.96,
+      "runtime_ms": 777.57,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -8546,7 +8486,7 @@
       "unplaced_count": 155,
       "utilization": 51.11,
       "volume_utilization_pct": 51.1107,
-      "runtime_ms": 14467.07,
+      "runtime_ms": 12577.02,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -8831,16 +8771,14 @@
       "description": "20GP container packed with complementary dimensions",
       "requested_cartons": 440,
       "delivery_gate": {
-        "verdict": "WARN",
+        "verdict": "PASS",
         "blocked_by": [],
-        "warnings": [
-          "DG-014"
-        ],
+        "warnings": [],
         "cog": {
-          "cog_x_pct": 36.67,
+          "cog_x_pct": 47.51,
           "cog_y_pct": 48.09,
           "cog_z_pct": 42.74,
-          "long_offset_pct": 13.33,
+          "long_offset_pct": 2.49,
           "lat_offset_pct": 1.91,
           "total_weight_kg": 3880.0
         }
@@ -8849,7 +8787,7 @@
       "unplaced_count": 0,
       "utilization": 59.54,
       "volume_utilization_pct": 59.5413,
-      "runtime_ms": 544.88,
+      "runtime_ms": 555.11,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -8916,8 +8854,8 @@
             "completion_pct": 100.0,
             "distribution": {
               "floor_placed": 12,
-              "door_zone_placed": 0,
-              "non_door_placed": 180
+              "door_zone_placed": 132,
+              "non_door_placed": 48
             },
             "constraints_summary": {
               "must_be_on_floor": false,
@@ -8932,7 +8870,7 @@
         "hollow_ratio_pct": 0.0,
         "enclosed_cavity_volume": 0.0,
         "enclosed_cavity_count": 0,
-        "reachable_residual_volume": 11.8928,
+        "reachable_residual_volume": 11.6981,
         "dead_space_volume": 0.0,
         "fragmentation_score": 0.0,
         "cog_offset_x_pct": 0.0,
@@ -8983,7 +8921,7 @@
       "unplaced_count": 285,
       "utilization": 48.3,
       "volume_utilization_pct": 48.2988,
-      "runtime_ms": 25103.44,
+      "runtime_ms": 25076.1,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -9214,7 +9152,7 @@
       "unplaced_count": 293,
       "utilization": 49.55,
       "volume_utilization_pct": 49.5515,
-      "runtime_ms": 25076.8,
+      "runtime_ms": 25049.73,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -9443,7 +9381,7 @@
       "unplaced_count": 371,
       "utilization": 39.81,
       "volume_utilization_pct": 39.8083,
-      "runtime_ms": 24994.71,
+      "runtime_ms": 23468.93,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -9672,7 +9610,7 @@
       "unplaced_count": 231,
       "utilization": 48.25,
       "volume_utilization_pct": 48.2529,
-      "runtime_ms": 25101.16,
+      "runtime_ms": 24007.7,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -9902,7 +9840,7 @@
       "unplaced_count": 359,
       "utilization": 37.21,
       "volume_utilization_pct": 37.2104,
-      "runtime_ms": 23206.47,
+      "runtime_ms": 23700.94,
       "collisions": 0,
       "overlap_pair_count": 0,
       "penetration_volume": 0.0,
@@ -10130,7 +10068,7 @@
     "unplaced_count": 680,
     "utilization": 83.33,
     "volume_utilization_pct": 83.3256,
-    "runtime_ms": 47147.0,
+    "runtime_ms": 47020.95,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -10488,7 +10426,7 @@
     "unplaced_count": 10,
     "utilization": 91.46,
     "volume_utilization_pct": 91.4561,
-    "runtime_ms": 497.98,
+    "runtime_ms": 464.05,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -10580,7 +10518,7 @@
     "unplaced_count": 2197,
     "utilization": 89.59,
     "volume_utilization_pct": 89.5936,
-    "runtime_ms": 12834.82,
+    "runtime_ms": 11741.16,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -10729,7 +10667,7 @@
     "unplaced_count": 0,
     "utilization": 69.75,
     "volume_utilization_pct": 69.7518,
-    "runtime_ms": 1593.6,
+    "runtime_ms": 1484.05,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -10897,7 +10835,7 @@
     "unplaced_count": 0,
     "utilization": 70.43,
     "volume_utilization_pct": 70.4281,
-    "runtime_ms": 2654.77,
+    "runtime_ms": 2483.84,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -11122,7 +11060,7 @@
     "unplaced_count": 0,
     "utilization": 69.13,
     "volume_utilization_pct": 69.1278,
-    "runtime_ms": 728.05,
+    "runtime_ms": 697.92,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -11252,7 +11190,7 @@
     "unplaced_count": 144,
     "utilization": 76.84,
     "volume_utilization_pct": 76.8434,
-    "runtime_ms": 12664.42,
+    "runtime_ms": 11196.05,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -11382,7 +11320,7 @@
     "unplaced_count": 0,
     "utilization": 43.61,
     "volume_utilization_pct": 43.6141,
-    "runtime_ms": 1394.13,
+    "runtime_ms": 1254.59,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -11533,7 +11471,7 @@
     "unplaced_count": 0,
     "utilization": 40.09,
     "volume_utilization_pct": 40.0883,
-    "runtime_ms": 663.93,
+    "runtime_ms": 601.26,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -11688,7 +11626,7 @@
     "unplaced_count": 0,
     "utilization": 36.86,
     "volume_utilization_pct": 36.8559,
-    "runtime_ms": 1680.83,
+    "runtime_ms": 1520.43,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -11841,7 +11779,7 @@
     "unplaced_count": 204,
     "utilization": 9.43,
     "volume_utilization_pct": 9.4301,
-    "runtime_ms": 5391.05,
+    "runtime_ms": 4953.24,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -11935,7 +11873,7 @@
     "unplaced_count": 0,
     "utilization": 52.06,
     "volume_utilization_pct": 52.0635,
-    "runtime_ms": 873.29,
+    "runtime_ms": 842.77,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -12106,19 +12044,18 @@
     "description": "Tests extreme aspect ratio items: long planks (2.4m), tubes (1.5m), thin sheets (30mm)",
     "requested_cartons": 570,
     "delivery_gate": {
-      "verdict": "REJECT",
-      "blocked_by": [
-        "DG-011"
-      ],
+      "verdict": "WARN",
+      "blocked_by": [],
       "warnings": [
+        "DG-007",
         "DG-014"
       ],
       "cog": {
-        "cog_x_pct": 24.69,
-        "cog_y_pct": 48.17,
-        "cog_z_pct": 36.67,
-        "long_offset_pct": 25.31,
-        "lat_offset_pct": 1.83,
+        "cog_x_pct": 44.26,
+        "cog_y_pct": 40.58,
+        "cog_z_pct": 45.47,
+        "long_offset_pct": 5.74,
+        "lat_offset_pct": 9.42,
         "total_weight_kg": 4300.0
       }
     },
@@ -12126,7 +12063,7 @@
     "unplaced_count": 0,
     "utilization": 34.91,
     "volume_utilization_pct": 34.9109,
-    "runtime_ms": 1422.68,
+    "runtime_ms": 4311.27,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -12154,7 +12091,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 7,
+            "floor_placed": 0,
             "door_zone_placed": 0,
             "non_door_placed": 150
           },
@@ -12173,7 +12110,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 6,
+            "floor_placed": 8,
             "door_zone_placed": 0,
             "non_door_placed": 100
           },
@@ -12211,7 +12148,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 5,
+            "floor_placed": 20,
             "door_zone_placed": 0,
             "non_door_placed": 200
           },
@@ -12228,7 +12165,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 47.0078,
+      "reachable_residual_volume": 46.2142,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -12248,7 +12185,7 @@
     "summary": {
       "placedCount": 570,
       "unplacedCount": 0,
-      "utilization": 34.91094468144699,
+      "utilization": 34.91094468144663,
       "rigidCompletion": 100.0,
       "healthStatus": "HEALTHY"
     }
@@ -12277,7 +12214,7 @@
     "unplaced_count": 3224,
     "utilization": 73.8,
     "volume_utilization_pct": 73.8025,
-    "runtime_ms": 149097.39,
+    "runtime_ms": 122482.89,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -12369,7 +12306,7 @@
     "unplaced_count": 0,
     "utilization": 51.93,
     "volume_utilization_pct": 51.9336,
-    "runtime_ms": 3277.94,
+    "runtime_ms": 2939.35,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -12577,7 +12514,7 @@
     "unplaced_count": 0,
     "utilization": 40.55,
     "volume_utilization_pct": 40.5493,
-    "runtime_ms": 465.34,
+    "runtime_ms": 433.53,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -12709,7 +12646,7 @@
     "unplaced_count": 223,
     "utilization": 18.02,
     "volume_utilization_pct": 18.0219,
-    "runtime_ms": 5714.29,
+    "runtime_ms": 5078.02,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -12842,18 +12779,16 @@
     "description": "Floor-bound items strictly capped at 2 layers, followed by multi-layer stackable items",
     "requested_cartons": 470,
     "delivery_gate": {
-      "verdict": "REJECT",
-      "blocked_by": [
-        "DG-011"
-      ],
+      "verdict": "WARN",
+      "blocked_by": [],
       "warnings": [
         "DG-014"
       ],
       "cog": {
-        "cog_x_pct": 28.38,
+        "cog_x_pct": 47.21,
         "cog_y_pct": 43.85,
         "cog_z_pct": 34.79,
-        "long_offset_pct": 21.62,
+        "long_offset_pct": 2.79,
         "lat_offset_pct": 6.15,
         "total_weight_kg": 4310.0
       }
@@ -12862,7 +12797,7 @@
     "unplaced_count": 0,
     "utilization": 31.96,
     "volume_utilization_pct": 31.9575,
-    "runtime_ms": 645.0,
+    "runtime_ms": 940.46,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -12945,7 +12880,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 48.8288,
+      "reachable_residual_volume": 48.635,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -12976,18 +12911,17 @@
     "description": "Extremely dense, heavy small metal castings requiring floor placement",
     "requested_cartons": 420,
     "delivery_gate": {
-      "verdict": "REJECT",
-      "blocked_by": [
-        "DG-011"
-      ],
+      "verdict": "WARN",
+      "blocked_by": [],
       "warnings": [
+        "DG-007",
         "DG-014"
       ],
       "cog": {
-        "cog_x_pct": 16.16,
+        "cog_x_pct": 46.21,
         "cog_y_pct": 42.52,
         "cog_z_pct": 37.65,
-        "long_offset_pct": 33.84,
+        "long_offset_pct": 3.79,
         "lat_offset_pct": 7.48,
         "total_weight_kg": 1689.98
       }
@@ -12996,7 +12930,7 @@
     "unplaced_count": 0,
     "utilization": 20.17,
     "volume_utilization_pct": 20.1699,
-    "runtime_ms": 366.26,
+    "runtime_ms": 516.4,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -13110,18 +13044,17 @@
     "description": "Long structural bases (2.2m) requiring floor placement, supporting normal boxes",
     "requested_cartons": 416,
     "delivery_gate": {
-      "verdict": "REJECT",
-      "blocked_by": [
-        "DG-011"
-      ],
+      "verdict": "WARN",
+      "blocked_by": [],
       "warnings": [
+        "DG-007",
         "DG-014"
       ],
       "cog": {
-        "cog_x_pct": 22.33,
+        "cog_x_pct": 42.41,
         "cog_y_pct": 44.78,
         "cog_z_pct": 31.16,
-        "long_offset_pct": 27.67,
+        "long_offset_pct": 7.59,
         "lat_offset_pct": 5.22,
         "total_weight_kg": 3940.0
       }
@@ -13130,7 +13063,7 @@
     "unplaced_count": 0,
     "utilization": 24.41,
     "volume_utilization_pct": 24.4121,
-    "runtime_ms": 373.07,
+    "runtime_ms": 499.6,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -13244,18 +13177,14 @@
     "description": "20GP container loaded with mustBeOnFloor=true single layer machines",
     "requested_cartons": 242,
     "delivery_gate": {
-      "verdict": "REJECT",
-      "blocked_by": [
-        "DG-011"
-      ],
-      "warnings": [
-        "DG-014"
-      ],
+      "verdict": "PASS",
+      "blocked_by": [],
+      "warnings": [],
       "cog": {
-        "cog_x_pct": 28.31,
+        "cog_x_pct": 46.1,
         "cog_y_pct": 45.36,
         "cog_z_pct": 34.03,
-        "long_offset_pct": 21.69,
+        "long_offset_pct": 3.9,
         "lat_offset_pct": 4.64,
         "total_weight_kg": 2400.0
       }
@@ -13264,7 +13193,7 @@
     "unplaced_count": 0,
     "utilization": 36.18,
     "volume_utilization_pct": 36.1796,
-    "runtime_ms": 178.76,
+    "runtime_ms": 241.48,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -13347,7 +13276,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 19.8146,
+      "reachable_residual_volume": 19.7746,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -13396,7 +13325,7 @@
     "unplaced_count": 0,
     "utilization": 28.09,
     "volume_utilization_pct": 28.0938,
-    "runtime_ms": 931.27,
+    "runtime_ms": 846.58,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -13549,7 +13478,7 @@
     "unplaced_count": 203,
     "utilization": 21.8,
     "volume_utilization_pct": 21.8044,
-    "runtime_ms": 7290.66,
+    "runtime_ms": 6586.87,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -13685,15 +13614,14 @@
       "verdict": "WARN",
       "blocked_by": [],
       "warnings": [
-        "DG-010",
         "DG-014"
       ],
       "cog": {
-        "cog_x_pct": 32.69,
-        "cog_y_pct": 41.94,
-        "cog_z_pct": 20.74,
-        "long_offset_pct": 17.31,
-        "lat_offset_pct": 8.06,
+        "cog_x_pct": 43.38,
+        "cog_y_pct": 40.95,
+        "cog_z_pct": 20.67,
+        "long_offset_pct": 6.62,
+        "lat_offset_pct": 9.05,
         "total_weight_kg": 5005.0
       }
     },
@@ -13701,7 +13629,7 @@
     "unplaced_count": 0,
     "utilization": 23.9,
     "volume_utilization_pct": 23.9043,
-    "runtime_ms": 536.26,
+    "runtime_ms": 798.6,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -13767,7 +13695,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 35,
+            "floor_placed": 39,
             "door_zone_placed": 0,
             "non_door_placed": 120
           },
@@ -13786,7 +13714,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 53,
+            "floor_placed": 29,
             "door_zone_placed": 0,
             "non_door_placed": 150
           },
@@ -13803,7 +13731,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 55.1904,
+      "reachable_residual_volume": 55.244,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -13823,7 +13751,7 @@
     "summary": {
       "placedCount": 335,
       "unplacedCount": 0,
-      "utilization": 23.90427233604388,
+      "utilization": 23.904272336043974,
       "rigidCompletion": 100.0,
       "healthStatus": "HEALTHY"
     }
@@ -13841,10 +13769,10 @@
         "DG-014"
       ],
       "cog": {
-        "cog_x_pct": 30.72,
+        "cog_x_pct": 49.55,
         "cog_y_pct": 42.55,
         "cog_z_pct": 22.94,
-        "long_offset_pct": 19.28,
+        "long_offset_pct": 0.45,
         "lat_offset_pct": 7.45,
         "total_weight_kg": 3100.0
       }
@@ -13853,7 +13781,7 @@
     "unplaced_count": 0,
     "utilization": 17.88,
     "volume_utilization_pct": 17.8779,
-    "runtime_ms": 819.78,
+    "runtime_ms": 1335.61,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -13936,7 +13864,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 60.144,
+      "reachable_residual_volume": 59.9132,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -13987,7 +13915,7 @@
     "unplaced_count": 360,
     "utilization": 19.25,
     "volume_utilization_pct": 19.2531,
-    "runtime_ms": 24936.25,
+    "runtime_ms": 25003.73,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -14120,7 +14048,7 @@
     "unplaced_count": 0,
     "utilization": 22.08,
     "volume_utilization_pct": 22.0821,
-    "runtime_ms": 521.83,
+    "runtime_ms": 490.55,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -14253,19 +14181,18 @@
     "description": "Large fragile panels forbidding top stacking",
     "requested_cartons": 465,
     "delivery_gate": {
-      "verdict": "REJECT",
-      "blocked_by": [
-        "DG-011"
-      ],
+      "verdict": "WARN",
+      "blocked_by": [],
       "warnings": [
+        "DG-007",
         "DG-014"
       ],
       "cog": {
-        "cog_x_pct": 33.75,
-        "cog_y_pct": 39.78,
-        "cog_z_pct": 27.52,
-        "long_offset_pct": 16.25,
-        "lat_offset_pct": 10.22,
+        "cog_x_pct": 43.51,
+        "cog_y_pct": 43.95,
+        "cog_z_pct": 27.01,
+        "long_offset_pct": 6.49,
+        "lat_offset_pct": 6.05,
         "total_weight_kg": 3980.0
       }
     },
@@ -14273,7 +14200,7 @@
     "unplaced_count": 0,
     "utilization": 29.99,
     "volume_utilization_pct": 29.9929,
-    "runtime_ms": 478.86,
+    "runtime_ms": 702.08,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -14375,7 +14302,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 48.7635,
+      "reachable_residual_volume": 48.8327,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -14395,7 +14322,7 @@
     "summary": {
       "placedCount": 465,
       "unplacedCount": 0,
-      "utilization": 29.992895637033527,
+      "utilization": 29.992895637033573,
       "rigidCompletion": 100.0,
       "healthStatus": "HEALTHY"
     }
@@ -14425,7 +14352,7 @@
     "unplaced_count": 0,
     "utilization": 23.9,
     "volume_utilization_pct": 23.9026,
-    "runtime_ms": 496.86,
+    "runtime_ms": 436.96,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -14558,19 +14485,18 @@
     "description": "Three distinct SKUs all having allowStackingOnTop=false",
     "requested_cartons": 470,
     "delivery_gate": {
-      "verdict": "REJECT",
-      "blocked_by": [
-        "DG-011"
-      ],
+      "verdict": "WARN",
+      "blocked_by": [],
       "warnings": [
+        "DG-007",
         "DG-014"
       ],
       "cog": {
-        "cog_x_pct": 33.11,
-        "cog_y_pct": 39.3,
-        "cog_z_pct": 30.51,
-        "long_offset_pct": 16.89,
-        "lat_offset_pct": 10.7,
+        "cog_x_pct": 51.26,
+        "cog_y_pct": 40.48,
+        "cog_z_pct": 26.3,
+        "long_offset_pct": 1.26,
+        "lat_offset_pct": 9.52,
         "total_weight_kg": 3900.0
       }
     },
@@ -14578,7 +14504,7 @@
     "unplaced_count": 0,
     "utilization": 25.23,
     "volume_utilization_pct": 25.2255,
-    "runtime_ms": 642.23,
+    "runtime_ms": 819.26,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -14682,7 +14608,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 14,
+            "floor_placed": 21,
             "door_zone_placed": 0,
             "non_door_placed": 300
           },
@@ -14699,7 +14625,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 53.5379,
+      "reachable_residual_volume": 53.8456,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -14719,7 +14645,7 @@
     "summary": {
       "placedCount": 470,
       "unplacedCount": 0,
-      "utilization": 25.22546593752254,
+      "utilization": 25.225465937522557,
       "rigidCompletion": 100.0,
       "healthStatus": "HEALTHY"
     }
@@ -14749,7 +14675,7 @@
     "unplaced_count": 0,
     "utilization": 34.45,
     "volume_utilization_pct": 34.4525,
-    "runtime_ms": 587.98,
+    "runtime_ms": 504.54,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -14869,10 +14795,10 @@
         "DG-014"
       ],
       "cog": {
-        "cog_x_pct": 42.6,
+        "cog_x_pct": 53.95,
         "cog_y_pct": 43.2,
         "cog_z_pct": 32.01,
-        "long_offset_pct": 7.4,
+        "long_offset_pct": 3.95,
         "lat_offset_pct": 6.8,
         "total_weight_kg": 4470.0
       }
@@ -14881,7 +14807,7 @@
     "unplaced_count": 0,
     "utilization": 30.15,
     "volume_utilization_pct": 30.1501,
-    "runtime_ms": 424.41,
+    "runtime_ms": 611.29,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -14964,7 +14890,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 50.7987,
+      "reachable_residual_volume": 50.6147,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -15013,7 +14939,7 @@
     "unplaced_count": 0,
     "utilization": 26.06,
     "volume_utilization_pct": 26.0602,
-    "runtime_ms": 174.77,
+    "runtime_ms": 239.24,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -15127,18 +15053,14 @@
     "description": "All SKUs strictly locked to upright orientation only",
     "requested_cartons": 530,
     "delivery_gate": {
-      "verdict": "REJECT",
-      "blocked_by": [
-        "DG-011"
-      ],
-      "warnings": [
-        "DG-014"
-      ],
+      "verdict": "PASS",
+      "blocked_by": [],
+      "warnings": [],
       "cog": {
-        "cog_x_pct": 22.61,
+        "cog_x_pct": 48.72,
         "cog_y_pct": 50.49,
         "cog_z_pct": 44.98,
-        "long_offset_pct": 27.39,
+        "long_offset_pct": 1.28,
         "lat_offset_pct": 0.49,
         "total_weight_kg": 4500.0
       }
@@ -15147,7 +15069,7 @@
     "unplaced_count": 0,
     "utilization": 39.14,
     "volume_utilization_pct": 39.1375,
-    "runtime_ms": 626.92,
+    "runtime_ms": 873.49,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -15249,7 +15171,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 44.4448,
+      "reachable_residual_volume": 43.8732,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -15280,19 +15202,18 @@
     "description": "Heavy flat stone slabs that can only be placed flat",
     "requested_cartons": 540,
     "delivery_gate": {
-      "verdict": "REJECT",
-      "blocked_by": [
-        "DG-011"
-      ],
+      "verdict": "WARN",
+      "blocked_by": [],
       "warnings": [
+        "DG-010",
         "DG-014"
       ],
       "cog": {
-        "cog_x_pct": 18.98,
-        "cog_y_pct": 43.19,
-        "cog_z_pct": 36.16,
-        "long_offset_pct": 31.02,
-        "lat_offset_pct": 6.81,
+        "cog_x_pct": 44.13,
+        "cog_y_pct": 41.94,
+        "cog_z_pct": 40.59,
+        "long_offset_pct": 5.87,
+        "lat_offset_pct": 8.06,
         "total_weight_kg": 6725.0
       }
     },
@@ -15300,7 +15221,7 @@
     "unplaced_count": 0,
     "utilization": 29.22,
     "volume_utilization_pct": 29.2215,
-    "runtime_ms": 857.48,
+    "runtime_ms": 1578.8,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -15328,7 +15249,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 3,
+            "floor_placed": 9,
             "door_zone_placed": 0,
             "non_door_placed": 60
           },
@@ -15366,7 +15287,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 20,
+            "floor_placed": 12,
             "door_zone_placed": 0,
             "non_door_placed": 140
           },
@@ -15385,7 +15306,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 0,
+            "floor_placed": 9,
             "door_zone_placed": 0,
             "non_door_placed": 250
           },
@@ -15402,7 +15323,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 51.716,
+      "reachable_residual_volume": 50.7081,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -15422,7 +15343,7 @@
     "summary": {
       "placedCount": 540,
       "unplacedCount": 0,
-      "utilization": 29.221462644447605,
+      "utilization": 29.221462644447772,
       "rigidCompletion": 100.0,
       "healthStatus": "HEALTHY"
     }
@@ -15433,20 +15354,18 @@
     "description": "Thin glass sheets (thickness 0.08m) with strict upright constraints",
     "requested_cartons": 520,
     "delivery_gate": {
-      "verdict": "REJECT",
-      "blocked_by": [
-        "DG-011"
-      ],
+      "verdict": "WARN",
+      "blocked_by": [],
       "warnings": [
         "DG-007",
         "DG-014"
       ],
       "cog": {
-        "cog_x_pct": 28.93,
-        "cog_y_pct": 41.36,
-        "cog_z_pct": 32.14,
-        "long_offset_pct": 21.07,
-        "lat_offset_pct": 8.64,
+        "cog_x_pct": 41.28,
+        "cog_y_pct": 42.44,
+        "cog_z_pct": 28.7,
+        "long_offset_pct": 8.72,
+        "lat_offset_pct": 7.56,
         "total_weight_kg": 3700.0
       }
     },
@@ -15454,7 +15373,7 @@
     "unplaced_count": 0,
     "utilization": 25.26,
     "volume_utilization_pct": 25.2569,
-    "runtime_ms": 598.39,
+    "runtime_ms": 676.14,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -15520,9 +15439,9 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 11,
-            "door_zone_placed": 0,
-            "non_door_placed": 220
+            "floor_placed": 44,
+            "door_zone_placed": 110,
+            "non_door_placed": 110
           },
           "constraints_summary": {
             "must_be_on_floor": false,
@@ -15537,7 +15456,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 53.721,
+      "reachable_residual_volume": 54.2079,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -15568,20 +15487,18 @@
     "description": "Cargo items allowing flat orientation but capped at maxFlatLayers=2",
     "requested_cartons": 430,
     "delivery_gate": {
-      "verdict": "REJECT",
-      "blocked_by": [
-        "DG-011"
-      ],
+      "verdict": "WARN",
+      "blocked_by": [],
       "warnings": [
-        "DG-010",
-        "DG-014"
+        "DG-007",
+        "DG-010"
       ],
       "cog": {
-        "cog_x_pct": 19.71,
-        "cog_y_pct": 44.85,
-        "cog_z_pct": 32.96,
-        "long_offset_pct": 30.29,
-        "lat_offset_pct": 5.15,
+        "cog_x_pct": 43.31,
+        "cog_y_pct": 45.11,
+        "cog_z_pct": 34.53,
+        "long_offset_pct": 6.69,
+        "lat_offset_pct": 4.89,
         "total_weight_kg": 3640.0
       }
     },
@@ -15589,7 +15506,7 @@
     "unplaced_count": 0,
     "utilization": 25.15,
     "volume_utilization_pct": 25.1469,
-    "runtime_ms": 682.15,
+    "runtime_ms": 1670.98,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -15672,7 +15589,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 54.9012,
+      "reachable_residual_volume": 54.464,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -15722,7 +15639,7 @@
     "unplaced_count": 0,
     "utilization": 28.41,
     "volume_utilization_pct": 28.4081,
-    "runtime_ms": 355.15,
+    "runtime_ms": 330.07,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -15836,19 +15753,16 @@
     "description": "20GP standard container with zero rotational degrees of freedom",
     "requested_cartons": 280,
     "delivery_gate": {
-      "verdict": "REJECT",
-      "blocked_by": [
-        "DG-011"
-      ],
+      "verdict": "WARN",
+      "blocked_by": [],
       "warnings": [
-        "DG-008",
-        "DG-014"
+        "DG-008"
       ],
       "cog": {
-        "cog_x_pct": 24.52,
+        "cog_x_pct": 45.7,
         "cog_y_pct": 45.95,
         "cog_z_pct": 38.97,
-        "long_offset_pct": 25.48,
+        "long_offset_pct": 4.3,
         "lat_offset_pct": 4.05,
         "total_weight_kg": 2210.0
       }
@@ -15857,7 +15771,7 @@
     "unplaced_count": 0,
     "utilization": 38.45,
     "volume_utilization_pct": 38.4465,
-    "runtime_ms": 237.01,
+    "runtime_ms": 338.86,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -15971,20 +15885,17 @@
     "description": "Multiple SKUs strictly restricted to max 2 vertical layers",
     "requested_cartons": 540,
     "delivery_gate": {
-      "verdict": "REJECT",
-      "blocked_by": [
-        "DG-011"
-      ],
+      "verdict": "WARN",
+      "blocked_by": [],
       "warnings": [
-        "DG-008",
         "DG-014"
       ],
       "cog": {
-        "cog_x_pct": 24.27,
-        "cog_y_pct": 46.51,
-        "cog_z_pct": 34.74,
-        "long_offset_pct": 25.73,
-        "lat_offset_pct": 3.49,
+        "cog_x_pct": 46.84,
+        "cog_y_pct": 42.63,
+        "cog_z_pct": 38.29,
+        "long_offset_pct": 3.16,
+        "lat_offset_pct": 7.37,
         "total_weight_kg": 3900.0
       }
     },
@@ -15992,7 +15903,7 @@
     "unplaced_count": 0,
     "utilization": 30.51,
     "volume_utilization_pct": 30.5135,
-    "runtime_ms": 690.36,
+    "runtime_ms": 1194.69,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -16020,7 +15931,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 15,
+            "floor_placed": 28,
             "door_zone_placed": 0,
             "non_door_placed": 60
           },
@@ -16039,7 +15950,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 20,
+            "floor_placed": 0,
             "door_zone_placed": 0,
             "non_door_placed": 80
           },
@@ -16058,7 +15969,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 20,
+            "floor_placed": 24,
             "door_zone_placed": 0,
             "non_door_placed": 150
           },
@@ -16094,7 +16005,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 49.638,
+      "reachable_residual_volume": 49.9204,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -16114,7 +16025,7 @@
     "summary": {
       "placedCount": 540,
       "unplacedCount": 0,
-      "utilization": 30.51351467702137,
+      "utilization": 30.51351467702138,
       "rigidCompletion": 100.0,
       "healthStatus": "HEALTHY"
     }
@@ -16125,18 +16036,16 @@
     "description": "SKUs capping precisely at 3 layers",
     "requested_cartons": 385,
     "delivery_gate": {
-      "verdict": "REJECT",
-      "blocked_by": [
-        "DG-011"
-      ],
+      "verdict": "WARN",
+      "blocked_by": [],
       "warnings": [
-        "DG-014"
+        "DG-007"
       ],
       "cog": {
-        "cog_x_pct": 15.64,
+        "cog_x_pct": 47.77,
         "cog_y_pct": 45.34,
         "cog_z_pct": 38.21,
-        "long_offset_pct": 34.36,
+        "long_offset_pct": 2.23,
         "lat_offset_pct": 4.66,
         "total_weight_kg": 3390.0
       }
@@ -16145,7 +16054,7 @@
     "unplaced_count": 0,
     "utilization": 23.15,
     "volume_utilization_pct": 23.1528,
-    "runtime_ms": 369.03,
+    "runtime_ms": 512.51,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -16228,7 +16137,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 56.7455,
+      "reachable_residual_volume": 56.2927,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -16264,15 +16173,16 @@
         "DG-011"
       ],
       "warnings": [
+        "DG-007",
         "DG-008",
         "DG-014"
       ],
       "cog": {
-        "cog_x_pct": 20.76,
-        "cog_y_pct": 42.74,
-        "cog_z_pct": 36.05,
-        "long_offset_pct": 29.24,
-        "lat_offset_pct": 7.26,
+        "cog_x_pct": 52.54,
+        "cog_y_pct": 39.49,
+        "cog_z_pct": 32.54,
+        "long_offset_pct": 2.54,
+        "lat_offset_pct": 10.51,
         "total_weight_kg": 3805.0
       }
     },
@@ -16280,7 +16190,7 @@
     "unplaced_count": 0,
     "utilization": 23.36,
     "volume_utilization_pct": 23.3591,
-    "runtime_ms": 1470.35,
+    "runtime_ms": 1802.03,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -16327,7 +16237,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 0,
+            "floor_placed": 11,
             "door_zone_placed": 0,
             "non_door_placed": 50
           },
@@ -16365,7 +16275,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 21,
+            "floor_placed": 0,
             "door_zone_placed": 0,
             "non_door_placed": 160
           },
@@ -16384,7 +16294,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 0,
+            "floor_placed": 8,
             "door_zone_placed": 0,
             "non_door_placed": 250
           },
@@ -16401,7 +16311,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 55.4601,
+      "reachable_residual_volume": 54.91,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -16421,7 +16331,7 @@
     "summary": {
       "placedCount": 558,
       "unplacedCount": 0,
-      "utilization": 23.359095794170113,
+      "utilization": 23.35909579417001,
       "rigidCompletion": 100.0,
       "healthStatus": "HEALTHY"
     }
@@ -16432,19 +16342,19 @@
     "description": "Testing whether layer depth accumulates across intermediate other-SKU layers",
     "requested_cartons": 460,
     "delivery_gate": {
-      "verdict": "REJECT",
-      "blocked_by": [
-        "DG-011"
-      ],
+      "verdict": "WARN",
+      "blocked_by": [],
       "warnings": [
+        "DG-007",
+        "DG-008",
         "DG-014"
       ],
       "cog": {
-        "cog_x_pct": 17.47,
-        "cog_y_pct": 43.05,
-        "cog_z_pct": 36.99,
-        "long_offset_pct": 32.53,
-        "lat_offset_pct": 6.95,
+        "cog_x_pct": 45.3,
+        "cog_y_pct": 41.31,
+        "cog_z_pct": 35.66,
+        "long_offset_pct": 4.7,
+        "lat_offset_pct": 8.69,
         "total_weight_kg": 2480.0
       }
     },
@@ -16452,7 +16362,7 @@
     "unplaced_count": 0,
     "utilization": 19.65,
     "volume_utilization_pct": 19.646,
-    "runtime_ms": 575.51,
+    "runtime_ms": 928.02,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -16480,7 +16390,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 17,
+            "floor_placed": 24,
             "door_zone_placed": 0,
             "non_door_placed": 60
           },
@@ -16499,7 +16409,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 8,
+            "floor_placed": 3,
             "door_zone_placed": 0,
             "non_door_placed": 60
           },
@@ -16518,7 +16428,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 15,
+            "floor_placed": 20,
             "door_zone_placed": 0,
             "non_door_placed": 140
           },
@@ -16537,7 +16447,7 @@
           "missing": 0,
           "completion_pct": 100.0,
           "distribution": {
-            "floor_placed": 10,
+            "floor_placed": 14,
             "door_zone_placed": 0,
             "non_door_placed": 200
           },
@@ -16554,7 +16464,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 58.5441,
+      "reachable_residual_volume": 59.104,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -16574,7 +16484,7 @@
     "summary": {
       "placedCount": 460,
       "unplacedCount": 0,
-      "utilization": 19.646001508973953,
+      "utilization": 19.646001508973992,
       "rigidCompletion": 100.0,
       "healthStatus": "HEALTHY"
     }
@@ -16585,18 +16495,17 @@
     "description": "Sudden height drop from layer-capped columns creating free edges",
     "requested_cartons": 340,
     "delivery_gate": {
-      "verdict": "REJECT",
-      "blocked_by": [
-        "DG-011"
-      ],
+      "verdict": "WARN",
+      "blocked_by": [],
       "warnings": [
+        "DG-007",
         "DG-014"
       ],
       "cog": {
-        "cog_x_pct": 24.73,
+        "cog_x_pct": 41.9,
         "cog_y_pct": 41.52,
         "cog_z_pct": 39.15,
-        "long_offset_pct": 25.27,
+        "long_offset_pct": 8.1,
         "lat_offset_pct": 8.48,
         "total_weight_kg": 2890.0
       }
@@ -16605,7 +16514,7 @@
     "unplaced_count": 0,
     "utilization": 25.62,
     "volume_utilization_pct": 25.6184,
-    "runtime_ms": 284.18,
+    "runtime_ms": 375.23,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -16688,7 +16597,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 53.9011,
+      "reachable_residual_volume": 53.72,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -16737,7 +16646,7 @@
     "unplaced_count": 0,
     "utilization": 26.98,
     "volume_utilization_pct": 26.976,
-    "runtime_ms": 185.39,
+    "runtime_ms": 166.83,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -16870,7 +16779,7 @@
     "unplaced_count": 0,
     "utilization": 57.8,
     "volume_utilization_pct": 57.7985,
-    "runtime_ms": 632.17,
+    "runtime_ms": 589.71,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -17019,7 +16928,7 @@
     "unplaced_count": 0,
     "utilization": 44.4,
     "volume_utilization_pct": 44.4,
-    "runtime_ms": 4300.56,
+    "runtime_ms": 7300.37,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -17168,7 +17077,7 @@
     "unplaced_count": 386,
     "utilization": 86.64,
     "volume_utilization_pct": 86.6362,
-    "runtime_ms": 45634.41,
+    "runtime_ms": 45651.09,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -17317,7 +17226,7 @@
     "unplaced_count": 0,
     "utilization": 42.31,
     "volume_utilization_pct": 42.3091,
-    "runtime_ms": 760.96,
+    "runtime_ms": 777.57,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -17470,7 +17379,7 @@
     "unplaced_count": 155,
     "utilization": 51.11,
     "volume_utilization_pct": 51.1107,
-    "runtime_ms": 14467.07,
+    "runtime_ms": 12577.02,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -17755,16 +17664,14 @@
     "description": "20GP container packed with complementary dimensions",
     "requested_cartons": 440,
     "delivery_gate": {
-      "verdict": "WARN",
+      "verdict": "PASS",
       "blocked_by": [],
-      "warnings": [
-        "DG-014"
-      ],
+      "warnings": [],
       "cog": {
-        "cog_x_pct": 36.67,
+        "cog_x_pct": 47.51,
         "cog_y_pct": 48.09,
         "cog_z_pct": 42.74,
-        "long_offset_pct": 13.33,
+        "long_offset_pct": 2.49,
         "lat_offset_pct": 1.91,
         "total_weight_kg": 3880.0
       }
@@ -17773,7 +17680,7 @@
     "unplaced_count": 0,
     "utilization": 59.54,
     "volume_utilization_pct": 59.5413,
-    "runtime_ms": 544.88,
+    "runtime_ms": 555.11,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -17840,8 +17747,8 @@
           "completion_pct": 100.0,
           "distribution": {
             "floor_placed": 12,
-            "door_zone_placed": 0,
-            "non_door_placed": 180
+            "door_zone_placed": 132,
+            "non_door_placed": 48
           },
           "constraints_summary": {
             "must_be_on_floor": false,
@@ -17856,7 +17763,7 @@
       "hollow_ratio_pct": 0.0,
       "enclosed_cavity_volume": 0.0,
       "enclosed_cavity_count": 0,
-      "reachable_residual_volume": 11.8928,
+      "reachable_residual_volume": 11.6981,
       "dead_space_volume": 0.0,
       "fragmentation_score": 0.0,
       "cog_offset_x_pct": 0.0,
@@ -17907,7 +17814,7 @@
     "unplaced_count": 285,
     "utilization": 48.3,
     "volume_utilization_pct": 48.2988,
-    "runtime_ms": 25103.44,
+    "runtime_ms": 25076.1,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -18138,7 +18045,7 @@
     "unplaced_count": 293,
     "utilization": 49.55,
     "volume_utilization_pct": 49.5515,
-    "runtime_ms": 25076.8,
+    "runtime_ms": 25049.73,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -18367,7 +18274,7 @@
     "unplaced_count": 371,
     "utilization": 39.81,
     "volume_utilization_pct": 39.8083,
-    "runtime_ms": 24994.71,
+    "runtime_ms": 23468.93,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -18596,7 +18503,7 @@
     "unplaced_count": 231,
     "utilization": 48.25,
     "volume_utilization_pct": 48.2529,
-    "runtime_ms": 25101.16,
+    "runtime_ms": 24007.7,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,
@@ -18826,7 +18733,7 @@
     "unplaced_count": 359,
     "utilization": 37.21,
     "volume_utilization_pct": 37.2104,
-    "runtime_ms": 23206.47,
+    "runtime_ms": 23700.94,
     "collisions": 0,
     "overlap_pair_count": 0,
     "penetration_volume": 0.0,

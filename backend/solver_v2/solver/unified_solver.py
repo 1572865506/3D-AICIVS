@@ -371,10 +371,31 @@ class UnifiedSolver:
             {"name": "DOOR_COMPACT",  "door_reserve_ratio": 0.15, "min_sec_vol": 0.35},
         ]
 
+        # 重心平衡（DG-011 根因）：货单未被区域锁定（INNER/REAR/DOOR 偏好或禁后区）时，
+        # 追加"居中起步"试算变体——装不满时把货堆整体居中，而不是压死在柜尾一端。
+        _zone_pinned = False
+        for _t in tensor_cargo_list:
+            if getattr(_t, "zone_preference", None) in (UniversalZone.INNER, UniversalZone.DOOR):
+                _zone_pinned = True
+                break
+        if not _zone_pinned:
+            for _s in cargo_list:
+                if getattr(getattr(_s, "target_zone", None), "value", None) in ("REAR", "DOOR"):
+                    _zone_pinned = True
+                    break
+                if PackingRole.DOOR_SEAL in getattr(_s, "packing_roles", ()):
+                    _zone_pinned = True
+                    break
+                _prof = getattr(_s, "cargo_profile", None)
+                _forbidden = tuple(getattr(getattr(_prof, "zone_policy", None), "forbidden", ()) or ())
+                if ZoneType.REAR in _forbidden:
+                    _zone_pinned = True
+                    break
         total_req_count = sum(s.quantity.required for s in cargo_list)
         best_raw_placements: List[Dict] = []
         best_metrics: Dict = {}
         best_score = -float("inf")
+        trial_candidates: List[Dict[str, Any]] = []
 
         # Select trials based on mode and time budget
         if mode == "FAST":
@@ -446,6 +467,18 @@ class UnifiedSolver:
                 - (30000.0 if has_priority_inversion else 0.0)
             )
 
+            trial_candidates.append({
+                "score": score,
+                "placements": trial_placements,
+                "metrics": {
+                    "val_result": val_result,
+                    "raw_metrics": trial_raw_metrics,
+                    "trial_idx": trial_idx,
+                    "trial_name": trial_cfg["name"],
+                },
+                "balance_penalty": self._balance_penalty(trial_placements),
+            })
+
             if score > best_score or not best_raw_placements:
                 best_score = score
                 best_raw_placements = trial_placements
@@ -458,6 +491,45 @@ class UnifiedSolver:
                 # Early stop if 100% items placed and valid
                 if val_result.is_valid and len(trial_placements) >= total_req_count:
                     break
+
+        # 重心平局裁决：在综合得分 1% 带内选"重心最居中"的解（不引入权重常数，
+        # 避免为平衡牺牲装载率/合规；得分差距超过 1% 时仍以得分优先）。
+        if trial_candidates:
+            _top = max(c["score"] for c in trial_candidates)
+            _band = max(1.0, abs(_top) * 0.01)
+            _eligible = [c for c in trial_candidates if c["score"] >= _top - _band]
+            _chosen = min(_eligible, key=lambda c: c["balance_penalty"])
+            if _chosen["balance_penalty"] < self._balance_penalty(best_raw_placements) - 0.5:
+                best_raw_placements = _chosen["placements"]
+                best_metrics = _chosen["metrics"]
+
+        # 重心平衡：若最优解明显不满柜（未到门端且装载长度 ≤85% 柜长）且货单未被
+        # 区域锁定，则按其真实装载长度补算一次"整体居中"试算（仅 1 次，按实际长度
+        # 精确求偏移，不是拍脑袋比例）。仅在合规且箱数不减 1% 内、重心显著更优时替换。
+        if (not _zone_pinned) and best_raw_placements and time.perf_counter() < global_deadline - 2.0:
+            _xs = [p["x"] for p in best_raw_placements]
+            _xe = [p["x"] + p["dx"] for p in best_raw_placements]
+            _x0, _x1 = min(_xs), max(_xe)
+            _load_len = _x1 - _x0
+            if _x1 <= self.cL - 0.5 and _load_len <= self.cL * 0.85:
+                _offset = max(0.0, round((self.cL - _load_len) / 2.0 - _x0, 4))
+                if _offset >= 0.3:
+                    _cfg = {"name": "CENTER_FIT", "x_start_offset": _offset, "min_sec_vol": 0.35}
+                    _pl2, _raw2 = self._solve_single_trial(tensor_cargo_list, _cfg, deadline=global_deadline)
+                    if _pl2:
+                        _val2 = IndependentGlobalValidator.validate(
+                            container=self.container, placements=_pl2, cargo_list=cargo_list)
+                        _count_ok = len(_pl2) >= int(len(best_raw_placements) * 0.99)
+                        if _val2.is_valid and _count_ok and (
+                            self._balance_penalty(_pl2) + 1.0 < self._balance_penalty(best_raw_placements)
+                        ):
+                            best_raw_placements = _pl2
+                            best_metrics = {
+                                "val_result": _val2,
+                                "raw_metrics": _raw2,
+                                "trial_idx": len(active_trials),
+                                "trial_name": "CENTER_FIT",
+                            }
 
         # 阶段二 LNS（破坏-重建）：仅批处理模式显式启用（options["lns_enabled"]=True），
         # 交互/默认路径零影响。重建复用统一门禁（与主流程同一约束过滤器），
@@ -736,6 +808,27 @@ class UnifiedSolver:
             )
             self._spatial_idx.insert(f"item_{idx}_{p['x']}_{p['y']}_{p['z']}", aabb, p)
 
+    def _balance_penalty(self, placements: List[Dict]) -> float:
+        """重心偏移惩罚（百分比加权：横向权重 2 倍，因横向包络更窄更危险）。
+
+        用于试算择优的平局裁决（得分 1% 带内），不参与主评分，避免为配平牺牲装载率。
+        """
+        if not placements:
+            return 0.0
+        total_w = 0.0
+        mx = 0.0
+        my = 0.0
+        for p in placements:
+            w = max(0.0, float(p.get("weight_kg", 0.0)))
+            total_w += w
+            mx += (p["x"] + p["dx"] / 2.0) * w
+            my += (p["y"] + p["dy"] / 2.0) * w
+        if total_w <= 1e-9:
+            return 0.0
+        long_pct = abs(100.0 * (mx / total_w) / max(1e-9, self.cL) - 50.0)
+        lat_pct = abs(100.0 * (my / total_w) / max(1e-9, self.cW) - 50.0)
+        return round(long_pct + 2.0 * lat_pct, 3)
+
     def _solve_single_trial(self, cargo_list: List[UniversalCargoTensor], trial_cfg: Dict[str, Any], deadline: Optional[float] = None) -> Tuple[List[Dict], Dict]:
         self._sku_tensor_map = {c.sku_id: c for c in cargo_list}
         self._curr_payload_weight = 0.0
@@ -776,7 +869,10 @@ class UnifiedSolver:
 
         placements: List[Dict] = []
         self._spatial_idx = SpatialIndex(cell_size=0.5)
-        current_x = 0.0
+        # 重心平衡（DG-011 根因修复）：居中起步试算变体可从指定纵深偏移开始填充；
+        # 默认 0.0 保持原有"自柜尾推进"行为，未启用变体时零影响。
+        self._x_start_offset = round(float(trial_cfg.get("x_start_offset", 0.0) or 0.0), 4)
+        current_x = self._x_start_offset
         step_idx = 1
         walls_count = 0
         zone_counts = {"INNER": 0, "MIDDLE": 0, "DOOR": 0}
@@ -1507,7 +1603,8 @@ class UnifiedSolver:
                 reverse=True
             )
 
-            anchors: Set[Tuple[float, float, float]] = {(0.0, 0.0, 0.0)}
+            # 锚点起点跟随试算偏移（居中变体不得从柜尾原点回填，否则破坏居中）
+            anchors: Set[Tuple[float, float, float]] = {(round(getattr(self, "_x_start_offset", 0.0), 4), 0.0, 0.0)}
             for p in placements:
                 px1, py1, pz1 = round(p['x'] + p['dx'], 4), round(p['y'] + p['dy'], 4), round(p['z'] + p['dz'], 4)
                 anchors.add((px1, round(p['y'], 4), round(p['z'], 4)))

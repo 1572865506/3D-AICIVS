@@ -141,15 +141,26 @@ class TestDeliveryGate:
         assert rep["verdict"] != "REJECT", rep
 
     def test_severe_cog_offset_blocks(self):
-        """重心严重偏载（纵向 > 20%）→ REJECT（DG-011）。"""
+        """重心严重偏载（纵向 > 20%）且货单自由摆放 → REJECT（DG-011）。"""
         c = _container(l=12.0, w=2.4)
-        # 全部箱子压在柜尾一端 → 纵向偏载极大
         plcs = [_plc(f"p{i}", "A", 0.0, 0.0, 0.0, 1.0, 1.0, 1.0) for i in range(4)]
         sol = _StubSolution(container=c, placements=plcs)
         sol.telemetry.geometry_qa = _clean_qa()
         rep = evaluate_delivery(sol, [_sku(req=4)], c)
         assert rep["cog"]["long_offset_pct"] > 20
         assert rep["verdict"] == "REJECT" and "DG-011" in rep["blocked_by"], rep
+
+    def test_severe_cog_offset_with_zone_pin_warns_not_blocks(self):
+        """含"放最里面"区域强制时，严重偏载降级为提示（DG-011→WARN，不拦截）。"""
+        c = _container(l=12.0, w=2.4)
+        plcs = [_plc(f"p{i}", "A", 0.0, 0.0, 0.0, 1.0, 1.0, 1.0) for i in range(4)]
+        sol = _StubSolution(container=c, placements=plcs)
+        sol.telemetry.geometry_qa = _clean_qa()
+        sku = _sku(req=4)
+        sku.source_requirement_text = "放柜子最里面"
+        rep = evaluate_delivery(sol, [sku], c)
+        assert "DG-011" not in rep["blocked_by"], rep
+        assert "DG-011" in rep["warnings"], rep
 
     def test_mild_cog_offset_warns_not_blocks(self):
         """轻度偏载（10%~20%）→ WARN（DG-014）但不拦截。"""
