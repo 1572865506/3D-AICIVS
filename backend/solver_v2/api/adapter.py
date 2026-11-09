@@ -167,6 +167,7 @@ class InputNormalizer:
             allowed_contexts_for_flat=tuple(contexts_flat),
             allowed_contexts_for_side=tuple(contexts_side),
             max_flat_stack_layers=int(raw_item.get('maxFlatLayers', 1)),
+            flat_only_on_top=bool(raw_item.get('flatOnlyOnTop', False)),
             rules=tuple(explicit_rules),
         )
 
@@ -288,6 +289,7 @@ class InputNormalizer:
         orientation_policy = OrientationPolicy(
             rules=tuple(rules),
             max_flat_stack_layers=int(orientation.get("maxFlatLayers", 1)),
+            flat_only_on_top=bool(orientation.get("flatOnlyOnTop", False)),
             source=source(orientation),
         )
 

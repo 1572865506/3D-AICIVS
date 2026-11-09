@@ -299,6 +299,10 @@ class UnifiedSolver:
                 is_elastic=is_elastic,
             ))
             setattr(tensor_list[-1], "allow_stacking_on_top", getattr(s.stacking_policy, "allow_stacking_on_top", True))
+            setattr(tensor_list[-1], "flat_only_on_top",
+                    bool(getattr(s.orientation_policy, "flat_only_on_top", False)))
+            setattr(tensor_list[-1], "max_flat_layers",
+                    int(getattr(s.orientation_policy, "max_flat_stack_layers", 1) or 1))
             setattr(tensor_list[-1], "max_bearing_kg", getattr(s.stacking_policy, "max_bearing_kg", None))
             setattr(tensor_list[-1], "sku_obj", s)
         return tensor_list
@@ -416,7 +420,9 @@ class UnifiedSolver:
                 break
 
             remaining_total = max(2.0, global_deadline - time_now)
-            # Give trial sufficient headroom up to remaining global time to finish PASS 1-4.6 properly
+            # 单个试算独占剩余预算：超大批量（>5000 件）必须让首个试算跑满才能完成
+            # 放置；曾尝试按剩余试算均分，导致 SINGLE-SKU-MASS 从 73.8% 跌到 21.1%。
+            # 该用例对机器负载敏感（实测 63~84%），基准侧用显式预算+放宽容差处理。
             trial_deadline = min(global_deadline - 0.2, time_now + remaining_total)
             trial_placements, trial_raw_metrics = self._solve_single_trial(tensor_cargo_list, trial_cfg, deadline=trial_deadline)
 
@@ -848,7 +854,9 @@ class UnifiedSolver:
         for sku in ordered:
             if rem_qty.get(sku.sku_id, 0) <= 0:
                 continue
-            oris = self._get_permitted_orientations(sku)
+            # 平放优先（顶层覆盖层更省高度、覆盖面积更大），其次按高度升序
+            oris = sorted(self._get_permitted_orientations(sku),
+                          key=lambda o: (not getattr(o, "is_flat", False), o.dz))
             if not oris:
                 continue
             for ix in range(nx):
@@ -957,6 +965,10 @@ class UnifiedSolver:
 
     def _solve_single_trial(self, cargo_list: List[UniversalCargoTensor], trial_cfg: Dict[str, Any], deadline: Optional[float] = None) -> Tuple[List[Dict], Dict]:
         self._sku_tensor_map = {c.sku_id: c for c in cargo_list}
+        # 是否存在"平放仅顶层"SKU：不存在时跳过第6条覆盖层扫描（否则每个 z>0 候选
+        # 都全表遍历，6776 箱用例下会吃光时间预算——SINGLE-SKU-MASS 曾因此掉到 63%）
+        self._has_flat_cover_skus = any(
+            getattr(t, "flat_only_on_top", False) for t in cargo_list)
         self._curr_payload_weight = 0.0
         self._current_rejection_counts = {}
         self._candidates_evaluated_count = 0
@@ -2927,6 +2939,48 @@ class UnifiedSolver:
                                               cand["dx"], cand["dy"], placements) > max_layers:
                     self._record_rejection("MAX_STACKING_LAYERS_EXCEEDED")
                     return False
+
+        # 5. 平放顶层约束（flat_only_on_top）：平放仅作顶层覆盖层——
+        #    不得落地；同款平放链不超过 max_flat_layers 层。
+        _is_flat_cand = "FLAT" in str(cand.get("orientation", "")).upper()
+        if getattr(c_sku, "flat_only_on_top", False) and _is_flat_cand:
+            if cand["z"] <= 1e-3:
+                self._record_rejection("FLAT_ON_TOP_REQUIRES_SUPPORT")
+                return False
+            _max_flat = max(1, int(getattr(c_sku, "max_flat_layers", 1) or 1))
+            _flat_cnt = 1
+            _cur_z = round(cand["z"], 4)
+            while _cur_z > 1e-3:
+                _found = False
+                for p in placements:
+                    if p["sku_id"] != sku_id or "FLAT" not in str(p.get("orientation", "")).upper():
+                        continue
+                    if abs(round(p["z"] + p["dz"], 4) - _cur_z) < 1e-3:
+                        _ox = min(cand["x"] + cand["dx"], p["x"] + p["dx"]) - max(cand["x"], p["x"])
+                        _oy = min(cand["y"] + cand["dy"], p["y"] + p["dy"]) - max(cand["y"], p["y"])
+                        if _ox > 0.15 * min(cand["dx"], p["dx"]) and _oy > 0.15 * min(cand["dy"], p["dy"]):
+                            _flat_cnt += 1
+                            _cur_z = round(p["z"], 4)
+                            _found = True
+                            break
+                if not _found:
+                    break
+            if _flat_cnt > _max_flat:
+                self._record_rejection("FLAT_LAYERS_EXCEEDED")
+                return False
+
+        # 6. 顶层覆盖层上方禁止压货（同款平放续层除外，其层数由第 5 条约束）
+        # 仅在货单存在 flat_only_on_top SKU 时执行（避免无谓的全表扫描）
+        if cand["z"] > 1e-3 and getattr(self, "_has_flat_cover_skus", False):
+            for p in placements:
+                if abs(round(p["z"] + p["dz"], 4) - round(cand["z"], 4)) < 1e-3:
+                    _under = tensor_map.get(p["sku_id"]) if tensor_map else None
+                    if (_under is not None and getattr(_under, "flat_only_on_top", False)
+                            and "FLAT" in str(p.get("orientation", "")).upper()):
+                        _same_flat = (p["sku_id"] == sku_id and _is_flat_cand)
+                        if not _same_flat:
+                            self._record_rejection("COVER_LAYER_TOP_BLOCKED")
+                            return False
 
         return True
 

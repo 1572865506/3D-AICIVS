@@ -2,22 +2,167 @@
   "case_id": "PRODUCTION-15SKU",
   "case_name": "真实产线混装单 (15种, 40HQ)",
   "description": "来自前端 PRESET_MANIFESTS.production 的真实业务货单：含 4 个封柜门 SKU、2 个最里面 SKU、9 个中间 SKU，覆盖区域锁定/薄件立放/弹性核减。",
-  "container": {"usable": {"L": 12.032, "W": 2.352, "H": 2.698}, "maxPayloadTons": 28.6},
+  "container": {
+    "usable": {
+      "L": 12.032,
+      "W": 2.352,
+      "H": 2.698
+    },
+    "maxPayloadTons": 28.6
+  },
   "cargo": [
-    {"sku": "SKU-01", "name": "WIFI蓝牙 / WIFI线 / WIFI贴", "w": 0.50, "d": 0.50, "h": 0.50, "weight": 5.0, "quantity": 1, "requirement": "放柜子最里面"},
-    {"sku": "SKU-02", "name": "21.5寸 显示器 BG (DA)", "w": 0.553, "d": 0.08, "h": 0.355, "weight": 8.4, "quantity": 500, "requirement": "封柜门"},
-    {"sku": "SKU-03", "name": "34寸显示器 MX340 (DA)", "w": 0.978, "d": 0.188, "h": 0.488, "weight": 4.61, "quantity": 90, "requirement": "封柜门"},
-    {"sku": "SKU-04", "name": "27寸显示器 2886A (DA)", "w": 0.68, "d": 0.122, "h": 0.44, "weight": 6.7, "quantity": 100, "requirement": "封柜门"},
-    {"sku": "SKU-05", "name": "32寸智能显示器 (DA)", "w": 0.833, "d": 0.53, "h": 0.23, "weight": 20.8, "quantity": 100, "requirement": "放中间"},
-    {"sku": "SKU-06", "name": "15.6寸便携显示器 (14/箱)", "w": 0.575, "d": 0.46, "h": 0.465, "weight": 4.0, "quantity": 95, "requirement": "放中间"},
-    {"sku": "SKU-07", "name": "15.6寸 双屏便携屏", "w": 0.431, "d": 0.422, "h": 0.281, "weight": 4.0, "quantity": 125, "requirement": "放中间"},
-    {"sku": "SKU-08", "name": "21.5寸一体机整机 带键盘鼠标", "w": 0.56, "d": 0.145, "h": 0.41, "weight": 12.65, "quantity": 53, "requirement": "放中间"},
-    {"sku": "SKU-09", "name": "19寸一体机整机", "w": 0.495, "d": 0.145, "h": 0.41, "weight": 10.5, "quantity": 24, "requirement": "放中间"},
-    {"sku": "SKU-10", "name": "19寸液晶屏 / 19寸液晶屏玻璃", "w": 0.49, "d": 0.28, "h": 0.35, "weight": 15.5, "quantity": 22, "requirement": "放中间"},
-    {"sku": "SKU-11", "name": "电源线", "w": 0.48, "d": 0.31, "h": 0.34, "weight": 25.5, "quantity": 10, "requirement": "放中间"},
-    {"sku": "SKU-12", "name": "电源线 (小箱)", "w": 0.18, "d": 0.18, "h": 0.34, "weight": 5.5, "quantity": 1, "requirement": "放中间"},
-    {"sku": "SKU-13", "name": "电源", "w": 0.43, "d": 0.41, "h": 0.19, "weight": 15.5, "quantity": 50, "requirement": "放中间"},
-    {"sku": "SKU-14", "name": "19寸 显示器 BG (DA)", "w": 0.488, "d": 0.08, "h": 0.336, "weight": 2.15, "quantity": 674, "requirement": "封柜门; 可以减少点"},
-    {"sku": "SKU-15", "name": "23.8寸摄像头显示器", "w": 0.595, "d": 0.380, "h": 0.150, "weight": 5.0, "quantity": 300, "requirement": "放柜子最里面"}
+    {
+      "sku": "SKU-01",
+      "name": "WIFI蓝牙 / WIFI线 / WIFI贴",
+      "w": 0.5,
+      "d": 0.5,
+      "h": 0.5,
+      "weight": 5.0,
+      "quantity": 1,
+      "requirement": "放柜子最里面"
+    },
+    {
+      "sku": "SKU-02",
+      "name": "21.5寸 显示器 BG (DA)",
+      "w": 0.553,
+      "d": 0.08,
+      "h": 0.355,
+      "weight": 8.4,
+      "quantity": 500,
+      "requirement": "封柜门"
+    },
+    {
+      "sku": "SKU-03",
+      "name": "34寸显示器 MX340 (DA)",
+      "w": 0.978,
+      "d": 0.188,
+      "h": 0.488,
+      "weight": 4.61,
+      "quantity": 90,
+      "requirement": "封柜门"
+    },
+    {
+      "sku": "SKU-04",
+      "name": "27寸显示器 2886A (DA)",
+      "w": 0.68,
+      "d": 0.122,
+      "h": 0.44,
+      "weight": 6.7,
+      "quantity": 100,
+      "requirement": "封柜门"
+    },
+    {
+      "sku": "SKU-05",
+      "name": "32寸智能显示器 (DA)",
+      "w": 0.833,
+      "d": 0.53,
+      "h": 0.23,
+      "weight": 20.8,
+      "quantity": 100,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "SKU-06",
+      "name": "15.6寸便携显示器 (14/箱)",
+      "w": 0.575,
+      "d": 0.46,
+      "h": 0.465,
+      "weight": 4.0,
+      "quantity": 95,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "SKU-07",
+      "name": "15.6寸 双屏便携屏",
+      "w": 0.431,
+      "d": 0.422,
+      "h": 0.281,
+      "weight": 4.0,
+      "quantity": 125,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "SKU-08",
+      "name": "21.5寸一体机整机 带键盘鼠标",
+      "w": 0.56,
+      "d": 0.145,
+      "h": 0.41,
+      "weight": 12.65,
+      "quantity": 53,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "SKU-09",
+      "name": "19寸一体机整机",
+      "w": 0.495,
+      "d": 0.145,
+      "h": 0.41,
+      "weight": 10.5,
+      "quantity": 24,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "SKU-10",
+      "name": "19寸液晶屏 / 19寸液晶屏玻璃",
+      "w": 0.49,
+      "d": 0.28,
+      "h": 0.35,
+      "weight": 15.5,
+      "quantity": 22,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "SKU-11",
+      "name": "电源线",
+      "w": 0.48,
+      "d": 0.31,
+      "h": 0.34,
+      "weight": 25.5,
+      "quantity": 10,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "SKU-12",
+      "name": "电源线 (小箱)",
+      "w": 0.18,
+      "d": 0.18,
+      "h": 0.34,
+      "weight": 5.5,
+      "quantity": 1,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "SKU-13",
+      "name": "电源",
+      "w": 0.43,
+      "d": 0.41,
+      "h": 0.19,
+      "weight": 15.5,
+      "quantity": 50,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "SKU-14",
+      "name": "19寸 显示器 BG (DA)",
+      "w": 0.488,
+      "d": 0.08,
+      "h": 0.336,
+      "weight": 2.15,
+      "quantity": 674,
+      "requirement": "封柜门; 可以减少点",
+      "allowFlat": true,
+      "maxFlatLayers": 2,
+      "flatOnlyOnTop": true
+    },
+    {
+      "sku": "SKU-15",
+      "name": "23.8寸摄像头显示器",
+      "w": 0.595,
+      "d": 0.38,
+      "h": 0.15,
+      "weight": 5.0,
+      "quantity": 300,
+      "requirement": "放柜子最里面"
+    }
   ]
 }

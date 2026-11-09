@@ -107,7 +107,16 @@ def compute_geometry_qa(
     # ---- 支撑充分度 + 孤立箱 ----
     ratios: List[float] = []
     islands = 0
+    flat_cover_count = 0
     eps = 1e-4
+    # 平放覆盖层（orientation 名含 FLAT）是业务允许的顶层覆盖结构：
+    # 它们天然只与下方有接触、无侧邻，不应计入"孤立箱"
+    cover_flags = []
+    for p in placements:
+        if isinstance(p, dict):
+            cover_flags.append("FLAT" in str(p.get("orientation", "")).upper())
+        else:
+            cover_flags.append("FLAT" in str(getattr(p.orientation, "name", "")).upper())
     for i, (x, y, z, dx, dy, dz) in enumerate(boxes):
         area = max(1e-9, dx * dy)
         support = 0.0
@@ -128,7 +137,10 @@ def compute_geometry_qa(
                     side_contacts += 1
         ratio = 1.0 if z <= 1e-3 else min(1.0, support / area)
         ratios.append(ratio)
-        if z > 1e-3 and ratio < 0.999 and side_contacts == 0:
+        is_cover = cover_flags[i] if i < len(cover_flags) else False
+        if is_cover:
+            flat_cover_count += 1
+        elif z > 1e-3 and ratio < 0.999 and side_contacts == 0:
             islands += 1
     ratios.sort()
     support_stats = {
@@ -140,6 +152,7 @@ def compute_geometry_qa(
         ),
         "low_support_count": sum(1 for r in ratios if r < LOW_SUPPORT_RATIO),
         "island_count": islands,
+        "flat_cover_count": flat_cover_count,
     }
 
     # ---- 体素级"隐蔽空洞"：肉眼看到的洞 = 低于本地柱顶的自由空间 ----

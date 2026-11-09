@@ -8551,7 +8551,7 @@
   "source": "tests/benchmark_results.json @ HEAD (04c02e7, 56-case all-pass zero-violation)",
   "note": "棘轮锚点=已接受状态。更新必须随\"基准变化被接受\"的 commit 显式进行（AGENTS.md 5.5），禁止自动覆盖。",
   "gate_synced_at": "2026-11-09",
-  "gate_note": "门禁棘轮锚点 9 例（自 28 下降 68%）：剩余 = DG-011 横向偏载 1 例 + DG-005 履约缺口 8 例（体积可装下但装不满，属算法待提升）。硬规则零触发。"
+  "gate_note": "门禁棘轮锚点 9 例（28→12→9）：DG-011 横向偏载 1 例 + DG-005 履约缺口 8 例。硬规则零触发。本轮新增 flat_only_on_top 策略与几何口径修正（平放覆盖层不计孤立箱）。"
  },
  "14-SKU-1845": {
   "case_id": "14-SKU-1845",

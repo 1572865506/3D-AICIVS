@@ -166,6 +166,8 @@ class OrientationPolicy:
     allowed_contexts_for_flat: Tuple[PlacementContext, ...] = (PlacementContext.TOP_FILL, PlacementContext.GAP_FILL, PlacementContext.DOOR_SEAL)
     allowed_contexts_for_side: Tuple[PlacementContext, ...] = (PlacementContext.GAP_FILL, PlacementContext.DOOR_SEAL)
     max_flat_stack_layers: int = 1
+    # 平放仅允许作为顶层覆盖层（不得落地；其上方亦不得再压其他货物）
+    flat_only_on_top: bool = False
     flat_orientation_penalty: float = 50.0
     side_orientation_penalty: float = 100.0
     rules: Tuple[OrientationRule, ...] = ()
