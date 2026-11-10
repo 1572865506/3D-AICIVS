@@ -382,6 +382,31 @@ python tests/regression_guard.py
   顺序可行性（尚未建模多点卸货）；
 - 阈值属交付政策，业务可调；调整须记录理由，不得用于掩盖算法缺陷。
 
+### 5.7 唯一生产路径（Single Production Path）
+
+**生产链路只有一个求解器：`backend/solver_v2/solver/unified_solver.py::UnifiedSolver`**
+（`backend/server.py` → `UnifiedSolver` → 统一前置门禁 `_check_candidate_validity_with_reason`）。
+
+以下实现**不属于生产路径**，其约束覆盖与生产不一致，禁止在 server/API 请求路径调用：
+
+| 模块 | 类 | 状态 |
+|:---|:---|:---|
+| `solver/baseline_solver.py` | BaselineGreedySolver | 遗留（测试用），无倾覆门禁 |
+| `solver/cpsat_hybrid_solver.py` | CPSATHybridSolver | 实验（未接入 API） |
+| `solver/lns_optimizer.py` | LNSOptimizer | 实验（生产 LNS 已内置于 UnifiedSolver） |
+| `solver/constructive_placer.py` / `gap_filler.py` | ConstructivePlacer / GapFiller | 孤岛 |
+| `solver/elastic_recovery.py` / `swap_optimizer.py` | — | 孤岛 |
+| `solver/compaction.py` | CompactionPass | 孤岛（生产压缩内联在 UnifiedSolver `_compact_placements`） |
+| `search/`（9 模块） | HierarchicalSearchSolver 等 | 实验/冻结 |
+| `placement_engine/guided_beam_search.py` | GuidedBeamSearch | 实验（`solver_v2.solve()` 默认引擎，但 server 不用） |
+| `physics_kernel/`（7 模块） | UnifiedConstraintGate 等 | 仅 guided 引擎使用；生产不引用 |
+
+> 新增求解能力**必须**在 UnifiedSolver + 统一门禁内实现；如需替换生产引擎，
+> 先提交架构评审，不得并行维护第二套约束语义。
+
+新增守卫测试 `tests/test_production_path_guard.py` 钉住：server 只构造 UnifiedSolver、
+不再导入其他求解器、统一门禁被 11 个放置站点共用。
+
 ---
 
 ## 六、当前活跃代码地图（Agent 必读）

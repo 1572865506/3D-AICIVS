@@ -12,6 +12,10 @@ Algorithm:
 3. 1-for-1 Upgrade Swaps: Replace smaller placed boxes with unplaced larger boxes where headroom/space allows.
 4. Accept all non-deteriorating swaps (volume utilization non-decreasing and box count non-decreasing).
 5. Ensure post-swap physical and structural feasibility via collision, support, and stacking checks.
+
+.. note:: 非生产路径：生产链路统一由 UnifiedSolver + 统一前置门禁承载
+   （见 AGENTS.md「唯一生产路径」）。本模块保留供实验/测试，其约束覆盖
+   与生产路径不完全一致，禁止在 server/API 请求路径中调用。
 """
 from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Optional, Any, Union, Set

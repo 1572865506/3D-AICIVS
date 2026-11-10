@@ -5,6 +5,10 @@ Pipeline:
   Stage 1: CP-SAT Macro Strip Allocation (cpsat_engine.py)
   Stage 2: Constructive Micro-Placer (constructive_placer.py)
   Stage 3: Large Neighborhood Search Local Optimization (lns_optimizer.py)
+
+.. note:: 非生产路径：生产链路统一由 UnifiedSolver + 统一前置门禁承载
+   （见 AGENTS.md「唯一生产路径」）。本模块保留供实验/测试，其约束覆盖
+   与生产路径不完全一致，禁止在 server/API 请求路径中调用。
 """
 from __future__ import annotations
 

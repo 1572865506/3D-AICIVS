@@ -1,3 +1,7 @@
+.. note:: 非生产路径：生产链路统一由 UnifiedSolver + 统一前置门禁承载
+   （见 AGENTS.md「唯一生产路径」）。本模块保留供实验/测试，其约束覆盖
+   与生产路径不完全一致，禁止在 server/API 请求路径中调用。
+
 
 """
 Gap Filler Engine for Solver V2.

@@ -12,6 +12,10 @@ Algorithm:
 3. Attempt dense multi-orientation grid packing of unplaced elastic SKUs into available residual spaces.
 4. Verify container boundaries, collision avoidance, bottom support ratio, and stacking constraints for every placement.
 5. Compute elastic recovery volume and elastic utilization improvement (Acceptance standard: delta >= 1.0%).
+
+.. note:: 非生产路径：生产链路统一由 UnifiedSolver + 统一前置门禁承载
+   （见 AGENTS.md「唯一生产路径」）。本模块保留供实验/测试，其约束覆盖
+   与生产路径不完全一致，禁止在 server/API 请求路径中调用。
 """
 from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Optional, Any, Union, Set

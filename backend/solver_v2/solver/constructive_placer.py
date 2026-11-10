@@ -4,6 +4,10 @@ Constructive Micro-Placer for Solver V2 (Phase 2).
 Converts MacroAllocationResult from CP-SAT into exact 3D coordinates (List[Placement]).
 Executes Bottom-Left-Back placement with strict spatial indexing, overlap avoidance,
 support ratio check (>= 70%), and weight bearing checks.
+
+.. note:: 非生产路径：生产链路统一由 UnifiedSolver + 统一前置门禁承载
+   （见 AGENTS.md「唯一生产路径」）。本模块保留供实验/测试，其约束覆盖
+   与生产路径不完全一致，禁止在 server/API 请求路径中调用。
 """
 from __future__ import annotations
 
