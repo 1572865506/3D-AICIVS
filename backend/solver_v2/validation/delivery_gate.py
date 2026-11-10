@@ -113,6 +113,7 @@ def evaluate_delivery(
     geometry_qa: Optional[Dict[str, Any]] = None,
     cavity_diagnostics: Optional[List[Dict[str, Any]]] = None,
     policy: Optional[Dict[str, Any]] = None,
+    sequence_report: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """
     执行交付门禁，返回结构化质检报告。
@@ -277,10 +278,19 @@ def evaluate_delivery(
     add("DG-012", unexplained, rules["DG-012"]["max_unexplained"],
         unexplained <= rules["DG-012"]["max_unexplained"])
 
-    # DG-013 装载顺序
-    seq_ok = bool(getattr(getattr(solution, "loading_plan", None), "sequence_feasible", True))
-    add("DG-013", "feasible" if seq_ok else "infeasible", "feasible", seq_ok,
-        "未建模多点卸货顺序，仅校验单点装载可行性")
+    # DG-013 装载顺序可执行性（由 API 层通过 sequence_report 传入真实拓扑结果；
+    # 未传时退回 loading_plan 标记，避免门禁自身依赖几何重算）
+    _seq = sequence_report or {}
+    if _seq:
+        seq_ok = bool(_seq.get("feasible", True))
+        add("DG-013", "feasible" if seq_ok else f"cycles={len(_seq.get('cycles') or [])}",
+            "feasible", seq_ok,
+            f"装载顺序依赖边 {_seq.get('edge_count')}；"
+            f"旧枚举顺序受阻 {_seq.get('blocked_in_naive_order')} 箱")
+    else:
+        seq_ok = bool(getattr(getattr(solution, "loading_plan", None), "sequence_feasible", True))
+        add("DG-013", "feasible" if seq_ok else "infeasible", "feasible", seq_ok,
+            "未提供装载顺序报告，仅用 plan 标记")
 
     blocked = [c["id"] for c in checks if not c["passed"] and c["severity"] == "BLOCK"]
     warned = [c["id"] for c in checks if not c["passed"] and c["severity"] == "WARN"]

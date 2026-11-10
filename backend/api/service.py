@@ -43,6 +43,12 @@ class LoadingAPIService:
 
     def register_solver_output(self,job_id,solution,container,cargo):
         from backend.solver_v2.loading.planner import LoadingStep, LoadingPlan, LoadingDependencyGraph
+        # 物理可执行装载顺序（拓扑排序）：替换此前"按 placements 枚举下标"的假顺序
+        from backend.solver_v2.loading.sequence_planner import compute_loading_order
+        seq_report = compute_loading_order(solution.placements, container)
+        by_id = {p.placement_id: p for p in solution.placements}
+        ordered = [by_id[pid] for pid in seq_report["order"] if pid in by_id]
+        solution_placements_ordered = ordered if ordered else list(solution.placements)
         steps = [
             LoadingStep(
                 step_index=idx + 1,
@@ -58,11 +64,11 @@ class LoadingAPIService:
                 layer_id="LAYER_0",
                 phase=str(p.context.value if hasattr(p.context, 'value') else p.context)
             )
-            for idx, p in enumerate(solution.placements)
+            for idx, p in enumerate(solution_placements_ordered)
         ]
         plan = LoadingPlan(
             static_feasible=solution.validation_result.is_valid if solution.validation_result is not None else True,
-            sequence_feasible=True,
+            sequence_feasible=bool(seq_report["feasible"]),
             steps=steps,
             graph=LoadingDependencyGraph(nodes={p.placement_id: p for p in solution.placements}, edges=[]),
             groups=[],
@@ -76,10 +82,14 @@ class LoadingAPIService:
         recomposition = (solution.telemetry.wall_plan_search_metrics or {}).get("cargo_recomposition")
         braking = (solution.telemetry.wall_plan_search_metrics or {}).get("braking_stability")
         from backend.solver_v2.validation.delivery_gate import evaluate_delivery
-        delivery_gate = evaluate_delivery(solution, cargo, container)
+        delivery_gate = evaluate_delivery(solution, cargo, container, sequence_report=seq_report)
         result = build_loading_result(
             job_id, container, cargo, solution.placements, plan, repair,
             {"utilization_pct": solution.volume_utilization_pct, "total_weight_kg": solution.total_weight_kg,
+             "loading_order_feasible": bool(seq_report["feasible"]),
+             "loading_order_edges": seq_report["edge_count"],
+             "blocked_in_naive_order": seq_report["blocked_in_naive_order"],
+             "sequence_cycles": len(seq_report["cycles"]),
              "braking_stability": braking,
              "geometry_qa": solution.telemetry.geometry_qa,
              # 归一化空腔清单（box/volume_m3/dims/open/category），供前端叠加渲染
