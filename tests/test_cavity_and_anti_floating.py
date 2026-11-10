@@ -53,7 +53,10 @@ class TestCavityAndAntiFloating(unittest.TestCase):
 
         solution = self.solver.solve(cargo_list, mode="BALANCED", seed=42)
 
-        self.assertGreater(solution.placed_count, 1800)
+        # 期望值随业务约束更新：SKU-14 现"仅允许顶层平放、最多 2 层"，薄板件装入量
+        # 结构性下降（此前可在任意空隙平放堆叠）。当前已接受值 1577 件，此处置回归地板
+        # 1500（约 -5% 余量），真正的质量门槛是下面的利用率 >=85% 与零违规。
+        self.assertGreater(solution.placed_count, 1500)
         self.assertGreaterEqual(solution.volume_utilization_pct, 85.0)
         self.assertTrue(solution.validation_result.is_valid, f"Validation failed: {solution.validation_result.violations}")
 

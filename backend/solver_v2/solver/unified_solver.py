@@ -3426,6 +3426,16 @@ class UnifiedSolver:
         边界检查由 _has_collision 内部承担（同一条件、同一拒绝记录），此处不再重复，
         避免 OUT_OF_CONTAINER 双重计数。
         """
+        # 边界先判：_has_collision 内部也判边界，但会把"出界"归到 COLLISION 计数，
+        # 导致诊断把出界误报为碰撞。此处显式区分，保证拒绝原因可归因。
+        eps = 1e-4
+        if (cand["x"] < -eps or cand["y"] < -eps or cand["z"] < -eps
+                or cand["x"] + cand["dx"] > self.cL + eps
+                or cand["y"] + cand["dy"] > self.cW + eps
+                or cand["z"] + cand["dz"] > self.cH + eps):
+            self._record_rejection("OUT_OF_CONTAINER", rejection_counts)
+            return False
+
         if self._has_collision(cand, placements):
             if rejection_counts is not None and "COLLISION" not in rejection_counts:
                 rejection_counts["COLLISION"] = rejection_counts.get("COLLISION", 0) + 1
