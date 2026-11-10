@@ -905,8 +905,8 @@ class UnifiedSolver:
         rem_qty: Dict[str, int],
         elastic_skus: List[UniversalCargoTensor],
         deadline: Optional[float],
-        step_xy: float = 0.2,
-        max_checks: int = 8000,
+        step_xy: float = 0.1,
+        max_checks: int = 20000,
     ) -> int:
         """弹性件自由空间网格扫描（薄板/小件专用码放通道）。
 
