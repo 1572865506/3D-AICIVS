@@ -149,6 +149,19 @@
     }
 
     /* Center Modern KPI HUD */
+    .plan-health-panel {
+      position: absolute;
+      top: 120px;
+      right: 20px;
+      width: 268px;
+      padding: 12px 14px;
+      z-index: 32;
+    }
+    .ph-row { display: flex; flex-direction: column; gap: 2px; }
+    .ph-row-head { display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; color: #475569; }
+    .ph-track { height: 5px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+    .ph-fill { height: 100%; border-radius: 999px; transition: width .35s ease; }
+
     .kpi-hud-bar {
       display: flex;
       align-items: center;
@@ -2257,6 +2270,10 @@
           <span>🕳️ 空洞可视化</span>
         </button>
 
+        <button class="btn-action-pill secondary" id="btn-toggle-health" onclick="togglePlanHealth()" style="border-color: #7c3aed; color: #6d28d9;" title="方案体检：墙体连续性/层平面度/聚集度/重心高度/门面平整/碎片化">
+          <span>🩺 方案体检</span>
+        </button>
+
         <button class="btn-action-pill secondary" id="btn-toggle-expert" onclick="toggleExpertPanel()" style="border-color: #f59e0b; color: #b45309; font-weight:700;">
           <span>🥇 专家评审打标</span>
         </button>
@@ -2510,6 +2527,23 @@
     </div>
 
     <!-- 2. LEFT CONFIG WORKBENCH DRAWER -->
+    <!-- 方案体检面板（右侧浮动） -->
+    <div class="glass-card plan-health-panel interactive" id="plan-health-panel" style="display: none;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:800; color:#0f172a;">🩺 方案体检</span>
+        <button class="close-btn" onclick="togglePlanHealth()" style="position:static; width:22px; height:22px;">✕</button>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+        <span id="ph-grade" style="font-size:26px; font-weight:900; color:#64748b;">—</span>
+        <div style="display:flex; flex-direction:column;">
+          <span style="font-size:10px; color:#64748b; font-weight:700;">综合评分</span>
+          <span id="ph-score" style="font-size:14px; font-weight:800; color:#0f172a;">—</span>
+        </div>
+      </div>
+      <div id="ph-rows" style="display:flex; flex-direction:column; gap:6px;"></div>
+      <div id="ph-warnings" style="margin-top:8px; font-size:10.5px; color:#b45309; line-height:1.5;"></div>
+    </div>
+
     <aside class="glass-card workbench-drawer left interactive" id="left-drawer" style="display: flex;">
       <div class="drawer-title-bar">
         <div class="drawer-heading">
@@ -4474,10 +4508,10 @@
     // --- LOADING RESULT PERSISTENT CACHE ---
     // 结果契约版本：每次 API metrics 结构变化必须 +1（当前 2 = 含 geometry_qa/cavities/delivery_gate）。
     // 旧版本缓存一律丢弃，防止"旧引擎结果冒充新结果"直接进入交付。
-    const RESULT_SCHEMA_VERSION = 2;
-    const CACHED_LOADING_RESULT_KEY = '3D_AICIVS_CACHED_LOADING_RESULT_V43_GATE';
+    const RESULT_SCHEMA_VERSION = 3;
+    const CACHED_LOADING_RESULT_KEY = '3D_AICIVS_CACHED_LOADING_RESULT_V44_HEALTH';
     // 清理历史契约的缓存键（旧结构结果不得再被读取）
-    try { localStorage.removeItem('3D_AICIVS_CACHED_LOADING_RESULT_V42_FLUSH_BULKHEAD'); } catch (e) {}
+    try { localStorage.removeItem('3D_AICIVS_CACHED_LOADING_RESULT_V42_FLUSH_BULKHEAD'); localStorage.removeItem('3D_AICIVS_CACHED_LOADING_RESULT_V43_GATE'); } catch (e) {}
 
     function saveLoadingResultCache(loadingResult, usableDim, manifest, spec) {
       try {
@@ -6241,6 +6275,76 @@
       }
     }
 
+    // ===== 方案体检面板（plan_quality 评分卡） =====
+    const PLAN_HEALTH_ROWS = [
+      { key: 'wall_continuity_pct', label: '墙体连续性', good: 70, bad: 30, dir: 'high' },
+      { key: 'layer_planarity_pct', label: '层平面度', good: 70, bad: 30, dir: 'high' },
+      { key: 'sku_clustering_pct', label: '同SKU聚集度', good: 70, bad: 30, dir: 'high' },
+      { key: 'cog_height_pct', label: '重心高度', good: 40, bad: 62, dir: 'low' },
+      { key: 'door_flatness_cv_pct', label: '门面平整度', good: 0.5, bad: 6, dir: 'low' },
+      { key: 'fragmentation_pct', label: '碎片化指数', good: 6, bad: 30, dir: 'low' },
+    ];
+
+    function _phColor(ratio) {
+      if (ratio >= 0.75) return '#059669';
+      if (ratio >= 0.45) return '#d97706';
+      return '#dc2626';
+    }
+
+    function renderPlanHealth(loadingResult) {
+      const panel = document.getElementById('plan-health-panel');
+      if (!panel) return;
+      const metrics = (loadingResult && loadingResult.metrics) || {};
+      const qa = metrics.geometry_qa || {};
+      const pq = qa.plan_quality || null;
+      const gradeEl = document.getElementById('ph-grade');
+      const scoreEl = document.getElementById('ph-score');
+      const rowsEl = document.getElementById('ph-rows');
+      const warnEl = document.getElementById('ph-warnings');
+
+      if (!pq || !pq.components) {
+        gradeEl.textContent = '—';
+        scoreEl.textContent = '等待计算结果';
+        rowsEl.innerHTML = '';
+        warnEl.textContent = '';
+        return;
+      }
+      const palette = { A: '#059669', B: '#0ea5e9', C: '#d97706', D: '#dc2626' };
+      gradeEl.textContent = pq.grade;
+      gradeEl.style.color = palette[pq.grade] || '#64748b';
+      scoreEl.textContent = `${pq.score} / 100`;
+
+      rowsEl.innerHTML = PLAN_HEALTH_ROWS.map(function (r) {
+        const raw = Number(pq.components[r.key]);
+        if (!isFinite(raw)) return '';
+        let ratio;
+        if (r.dir === 'high') {
+          ratio = Math.max(0, Math.min(1, (raw - r.bad) / Math.max(1e-6, r.good - r.bad)));
+        } else {
+          ratio = Math.max(0, Math.min(1, (r.bad - raw) / Math.max(1e-6, r.bad - r.good)));
+        }
+        const color = _phColor(ratio);
+        return `<div class="ph-row">
+            <div class="ph-row-head"><span>${r.label}</span><span style="color:${color}">${raw}%</span></div>
+            <div class="ph-track"><div class="ph-fill" style="width:${(ratio * 100).toFixed(0)}%; background:${color};"></div></div>
+          </div>`;
+      }).join('');
+
+      const gate = metrics.delivery_gate || {};
+      const warnNames = (gate.checks || []).filter(c => !c.passed).map(c => `${c.id} ${c.name}`);
+      warnEl.textContent = warnNames.length ? '⚠ 门禁告警：' + warnNames.join('、') : '✅ 门禁无告警';
+    }
+
+    function togglePlanHealth() {
+      const panel = document.getElementById('plan-health-panel');
+      if (!panel) return;
+      const show = panel.style.display === 'none' || !panel.style.display;
+      panel.style.display = show ? 'block' : 'none';
+      const btn = document.getElementById('btn-toggle-health');
+      if (btn) btn.classList.toggle('active', show);
+      if (show && window.lastLoadingResult) renderPlanHealth(window.lastLoadingResult);
+    }
+
     // BLK-007D adapter commit. Layout geometry is authoritative in LoadingResult.scene.objects.
     function applyBackendLoadingResult(loadingResult, usableDim, activeManifest, currentSpec) {
       if (!loadingResult || loadingResult.version !== 'BLK007C') return false;
@@ -6324,6 +6428,7 @@
       // 交付质检可视化：空腔叠加 + 门禁 HUD
       renderCavityOverlay(loadingResult, usableDim);
       updateDeliveryGateKpi(loadingResult);
+      renderPlanHealth(loadingResult);
 
       rebuildOrientationAssist();
 

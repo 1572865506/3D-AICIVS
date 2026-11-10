@@ -3151,6 +3151,38 @@ class UnifiedSolver:
     # 接受准则为棘轮（体积升 + 刚性履行不降）。仅批处理模式显式启用。
     # ===================================================================
 
+    def _quick_quality(self, placements: List[Dict]) -> float:
+        """LNS 用的轻量质量分（O(n)）：体积填充率 - 顶面台阶惩罚。
+
+        完整 geometry_qa 需 O(n²) 支撑统计，不能每轮都跑；此处只用
+        包围盒填充率与 0.2m 网格顶面台阶中位数，作为"观感不退化"的代理。
+        """
+        if not placements:
+            return 0.0
+        cargo = sum(p["dx"] * p["dy"] * p["dz"] for p in placements)
+        max_x = max(p["x"] + p["dx"] for p in placements)
+        max_y = max(p["y"] + p["dy"] for p in placements)
+        max_z = max(p["z"] + p["dz"] for p in placements)
+        bbox = max(1e-9, max_x * max_y * max_z)
+        fill = cargo / bbox
+        grid: Dict[tuple, float] = {}
+        for p in placements:
+            top = p["z"] + p["dz"]
+            for ix in range(int(p["x"] / 0.2), max(int(p["x"] / 0.2) + 1, int(-(-(p["x"] + p["dx"]) // 0.2)))):
+                for iy in range(int(p["y"] / 0.2), max(int(p["y"] / 0.2) + 1, int(-(-(p["y"] + p["dy"]) // 0.2)))):
+                    k = (ix, iy)
+                    if top > grid.get(k, 0.0):
+                        grid[k] = top
+        diffs = []
+        for (ix, iy), h in grid.items():
+            for nb in ((ix + 1, iy), (ix, iy + 1)):
+                oh = grid.get(nb)
+                if oh is not None:
+                    diffs.append(abs(h - oh))
+        diffs.sort()
+        step = diffs[len(diffs) // 2] if diffs else 0.0
+        return round(fill * 100.0 - step * 40.0, 4)
+
     def _lns_improve(
         self,
         placements: List[Dict],
@@ -3257,8 +3289,14 @@ class UnifiedSolver:
                 self._current_rejection_counts = saved_rej
 
             vol, rigid = metrics(cand)
+            quality = self._quick_quality(cand)
+            quality_ok = quality > self._quick_quality(best) + 0.5
+            volume_ok = vol > best_vol + 1e-9
+            equal_volume_better_quality = (
+                vol >= best_vol - max(1e-6, best_vol * 0.001) and quality_ok
+            )
             stats["rounds"] += 1
-            if vol > best_vol + 1e-9 and rigid >= best_rigid:
+            if rigid >= best_rigid and (volume_ok or equal_volume_better_quality):
                 # 接受前全量权威校验（安全网）：破坏可能剥离幸存箱的前向支承
                 # 等门禁不覆盖幸存箱的维度，改进候选必须过完整校验才可接受。
                 if time.perf_counter() <= deadline:

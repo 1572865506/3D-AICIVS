@@ -53,6 +53,11 @@ DEFAULT_POLICY: Dict[str, Any] = {
         "DG-013": {"severity": "WARN", "name": "装载顺序可行性"},
         "DG-014": {"severity": "WARN", "name": "重心偏载提示", "max_cog_long_pct": 10.0,
                    "max_cog_lat_pct": 5.0},
+        "DG-015": {"severity": "WARN", "name": "墙体连续性", "min_wall_continuity_pct": 40.0},
+        "DG-016": {"severity": "WARN", "name": "层平面度", "min_layer_planarity_pct": 40.0},
+        "DG-017": {"severity": "WARN", "name": "同SKU聚集度", "min_sku_clustering_pct": 40.0},
+        "DG-018": {"severity": "WARN", "name": "重心高度", "max_cog_height_pct": 55.0},
+        "DG-019": {"severity": "WARN", "name": "碎片化指数", "max_fragmentation_pct": 25.0},
     },
 }
 
@@ -232,6 +237,21 @@ def evaluate_delivery(
             sup.get("partial_support_ratio_pct", 0.0) <= rules["DG-009"]["max_partial_support_pct"])
         add("DG-010", qa.get("islands", 0), rules["DG-010"]["max_islands"],
             qa.get("islands", 0) <= rules["DG-010"]["max_islands"])
+        pq = (qa.get("plan_quality") or {}).get("components") or {}
+        if pq:
+            add("DG-015", pq.get("wall_continuity_pct"), rules["DG-015"]["min_wall_continuity_pct"],
+                (pq.get("wall_continuity_pct") or 0) >= rules["DG-015"]["min_wall_continuity_pct"])
+            add("DG-016", pq.get("layer_planarity_pct"), rules["DG-016"]["min_layer_planarity_pct"],
+                (pq.get("layer_planarity_pct") or 0) >= rules["DG-016"]["min_layer_planarity_pct"])
+            add("DG-017", pq.get("sku_clustering_pct"), rules["DG-017"]["min_sku_clustering_pct"],
+                (pq.get("sku_clustering_pct") or 0) >= rules["DG-017"]["min_sku_clustering_pct"])
+            add("DG-018", pq.get("cog_height_pct"), rules["DG-018"]["max_cog_height_pct"],
+                (pq.get("cog_height_pct") or 0) <= rules["DG-018"]["max_cog_height_pct"])
+            add("DG-019", pq.get("fragmentation_pct"), rules["DG-019"]["max_fragmentation_pct"],
+                (pq.get("fragmentation_pct") or 0) <= rules["DG-019"]["max_fragmentation_pct"])
+        else:
+            for rid in ("DG-015", "DG-016", "DG-017", "DG-018", "DG-019"):
+                add(rid, None, None, True, "无方案质量评分卡数据，跳过")
     else:
         for rid in ("DG-006", "DG-007", "DG-008", "DG-009", "DG-010"):
             add(rid, None, None, True, "无几何体检数据，跳过")

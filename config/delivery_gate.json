@@ -1,24 +1,98 @@
 {
-  "_doc": "交付门禁策略（Delivery Gate Policy）。阈值属于交付政策，业务方可调整；不属于算法参数。severity=BLOCK 表示不通过则拒绝交付，WARN 表示提示。阈值初版由 8 个代表用例实测标定（2026-11）。",
+  "_doc": "交付门禁策略（Delivery Gate Policy）。阈值属于交付政策，业务方可调整；不属于算法参数。severity=BLOCK 表示不通过则拒绝交付，WARN 表示提示。阈值初版由 8 个代表用例实测标定（2026-11）。（2026-11-10 新增 DG-015~019：方案观感/结构质量，全部 WARN 级，业务可按标准调整阈值。）",
   "rules": {
-    "DG-001": {"severity": "BLOCK", "name": "硬约束违规"},
-    "DG-002": {"severity": "BLOCK", "name": "碰撞/穿插"},
-    "DG-003": {"severity": "BLOCK", "name": "载重超限"},
-    "DG-004": {"severity": "BLOCK", "name": "刚性SKU饥饿"},
+    "DG-001": {
+      "severity": "BLOCK",
+      "name": "硬约束违规"
+    },
+    "DG-002": {
+      "severity": "BLOCK",
+      "name": "碰撞/穿插"
+    },
+    "DG-003": {
+      "severity": "BLOCK",
+      "name": "载重超限"
+    },
+    "DG-004": {
+      "severity": "BLOCK",
+      "name": "刚性SKU饥饿"
+    },
     "DG-005": {
       "severity": "BLOCK",
       "name": "履约率",
       "min_fulfillment": 0.99,
       "trigger_fillable_ratio": 0.95
     },
-    "DG-006": {"severity": "WARN", "name": "隐蔽空洞", "max_hidden_void_pct": 3.0},
-    "DG-007": {"severity": "WARN", "name": "包围盒空洞率(参考)", "max_bbox_void_pct": 60.0},
-    "DG-008": {"severity": "WARN", "name": "顶面硬台阶", "max_steep_step_pct": 15.0},
-    "DG-009": {"severity": "WARN", "name": "半悬空箱", "max_partial_support_pct": 5.0},
-    "DG-010": {"severity": "WARN", "name": "孤立箱", "max_islands": 0},
-    "DG-011": {"severity": "BLOCK", "name": "重心严重偏载", "max_cog_long_pct": 20.0, "max_cog_lat_pct": 10.0},
-    "DG-012": {"severity": "BLOCK", "name": "不可解释空腔", "max_unexplained": 0},
-    "DG-013": {"severity": "WARN", "name": "装载顺序可行性"},
-    "DG-014": {"severity": "WARN", "name": "重心偏载提示", "max_cog_long_pct": 10.0, "max_cog_lat_pct": 5.0}
+    "DG-006": {
+      "severity": "WARN",
+      "name": "隐蔽空洞",
+      "max_hidden_void_pct": 3.0
+    },
+    "DG-007": {
+      "severity": "WARN",
+      "name": "包围盒空洞率(参考)",
+      "max_bbox_void_pct": 60.0
+    },
+    "DG-008": {
+      "severity": "WARN",
+      "name": "顶面硬台阶",
+      "max_steep_step_pct": 15.0
+    },
+    "DG-009": {
+      "severity": "WARN",
+      "name": "半悬空箱",
+      "max_partial_support_pct": 5.0
+    },
+    "DG-010": {
+      "severity": "WARN",
+      "name": "孤立箱",
+      "max_islands": 0
+    },
+    "DG-011": {
+      "severity": "BLOCK",
+      "name": "重心严重偏载",
+      "max_cog_long_pct": 20.0,
+      "max_cog_lat_pct": 10.0
+    },
+    "DG-012": {
+      "severity": "BLOCK",
+      "name": "不可解释空腔",
+      "max_unexplained": 0
+    },
+    "DG-013": {
+      "severity": "WARN",
+      "name": "装载顺序可行性"
+    },
+    "DG-014": {
+      "severity": "WARN",
+      "name": "重心偏载提示",
+      "max_cog_long_pct": 10.0,
+      "max_cog_lat_pct": 5.0
+    },
+    "DG-015": {
+      "severity": "WARN",
+      "name": "墙体连续性",
+      "min_wall_continuity_pct": 40.0
+    },
+    "DG-016": {
+      "severity": "WARN",
+      "name": "层平面度",
+      "min_layer_planarity_pct": 40.0
+    },
+    "DG-017": {
+      "severity": "WARN",
+      "name": "同SKU聚集度",
+      "min_sku_clustering_pct": 40.0
+    },
+    "DG-018": {
+      "severity": "WARN",
+      "name": "重心高度",
+      "max_cog_height_pct": 55.0
+    },
+    "DG-019": {
+      "severity": "WARN",
+      "name": "碎片化指数",
+      "max_fragmentation_pct": 25.0
+    }
   }
 }

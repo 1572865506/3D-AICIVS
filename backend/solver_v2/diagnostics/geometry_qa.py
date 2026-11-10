@@ -260,7 +260,10 @@ def compute_geometry_qa(
     else:
         verdict = "POOR"
 
+    plan_quality = _plan_quality(boxes, placements, container)
+
     return {
+        "plan_quality": plan_quality,
         "bbox_void_ratio_pct": round(bbox_void_ratio * 100.0, 2),
         "cargo_volume_m3": round(cargo_vol, 3),
         "bbox_volume_m3": round(bbox_vol, 3),
@@ -272,3 +275,142 @@ def compute_geometry_qa(
         "penalty_score": round(score_penalty, 2),
         "verdict": verdict,
     }
+
+
+# ===================================================================
+# 方案质量评分卡（Plan Quality Scorecard）
+# 目的：补足"看得见但说不清"的观感/结构问题，给出可解释分项与总分。
+# 所有分量都是纯几何统计，不依赖外部数据；分值越高越好（0~100）。
+# ===================================================================
+
+def _plan_quality(boxes, placements, container) -> Dict[str, Any]:
+    """计算方案质量评分卡（墙体连续性/层平面度/聚集度/重心高度/门面平整/碎片化）。"""
+    n = len(boxes)
+    if n == 0:
+        return {"score": 0.0, "grade": "D", "components": {}}
+
+    # --- 1) 墙体连续性：同尺寸 + 同朝向 的侧向邻接率 ---
+    lateral_contacts = 0
+    lateral_same = 0
+    for i, (x, y, z, dx, dy, dz) in enumerate(boxes):
+        ori_i = _orientation_name(placements[i])
+        for j, (ox, oy, oz, odx, ody, odz) in enumerate(boxes):
+            if i == j:
+                continue
+            same_dims = (abs(dx - odx) < 0.02 and abs(dy - ody) < 0.02 and abs(dz - odz) < 0.02)
+            z_ov = min(z + dz, oz + odz) - max(z, oz)
+            y_touch = (abs(oy - (y + dy)) < 0.02) or (abs(oy + ody - y) < 0.02)
+            x_touch = (abs(ox - (x + dx)) < 0.02) or (abs(ox + odx - x) < 0.02)
+            if z_ov <= 1e-4:
+                continue
+            if y_touch and min(x + dx, ox + odx) - max(x, ox) > 1e-4:
+                lateral_contacts += 1
+                if same_dims and ori_i == _orientation_name(placements[j]):
+                    lateral_same += 1
+            elif x_touch and min(y + dy, oy + ody) - max(y, oy) > 1e-4:
+                lateral_contacts += 1
+                if same_dims and ori_i == _orientation_name(placements[j]):
+                    lateral_same += 1
+    wall_continuity_pct = round(100.0 * lateral_same / max(1, lateral_contacts), 1)
+
+    # --- 2) 层平面度：顶面高度落在"主平面 ±5cm"内的箱体面积占比 ---
+    import collections
+    heights = [z + dz for (_, _, z, _, _, dz) in boxes]
+    buckets = collections.Counter(round(h / 0.05) * 0.05 for h in heights)
+    top_planes = [h for h, _ in buckets.most_common(3)]
+    in_plane_area = 0.0
+    total_area = 0.0
+    for (_, _, z, dx, dy, dz) in boxes:
+        area = dx * dy
+        total_area += area
+        top = z + dz
+        if any(abs(top - h) <= 0.05 for h in top_planes):
+            in_plane_area += area
+    layer_planarity_pct = round(100.0 * in_plane_area / max(1e-9, total_area), 1)
+
+    # --- 3) 同 SKU 聚集度：相邻接触中同 SKU 比例 ---
+    contact_pairs = 0
+    same_sku_pairs = 0
+    skus = [p.get("sku_id") if isinstance(p, dict) else p.sku_id for p in placements]
+    for i, (x, y, z, dx, dy, dz) in enumerate(boxes):
+        for j, (ox, oy, oz, odx, ody, odz) in enumerate(boxes):
+            if i >= j:
+                continue
+            y_ov = min(y + dy, oy + ody) - max(y, oy)
+            z_ov = min(z + dz, oz + odz) - max(z, oz)
+            x_ov = min(x + dx, ox + odx) - max(x, ox)
+            touching = (
+                (abs(ox - (x + dx)) < 0.02 or abs(ox + odx - x) < 0.02) and y_ov > -0.02 and z_ov > -0.02
+            ) or (
+                (abs(oy - (y + dy)) < 0.02 or abs(oy + ody - y) < 0.02) and x_ov > -0.02 and z_ov > -0.02
+            )
+            if touching:
+                contact_pairs += 1
+                if skus[i] == skus[j]:
+                    same_sku_pairs += 1
+    sku_clustering_pct = round(100.0 * same_sku_pairs / max(1, contact_pairs), 1)
+
+    # --- 4) 重心高度（按体积加权，越低越稳）---
+    total_vol = sum(dx * dy * dz for (_, _, _, dx, dy, dz) in boxes) or 1e-9
+    cog_z = sum((z + dz / 2) * dx * dy * dz for (_, _, z, dx, dy, dz) in boxes) / total_vol
+    cog_height_pct = round(100.0 * cog_z / max(1e-9, container.Lz), 1)
+
+    # --- 5) 门面平整度：最外层（门侧 0.3m 内）箱体前沿 x 的变异系数 ---
+    max_x = max(x + dx for (x, _, _, dx, _, _) in boxes)
+    front_xs = [x + dx for (x, _, _, dx, _, _) in boxes if x + dx >= max_x - 0.3]
+    if len(front_xs) >= 2:
+        mean = sum(front_xs) / len(front_xs)
+        var = sum((v - mean) ** 2 for v in front_xs) / len(front_xs)
+        cv = (var ** 0.5) / max(1e-9, mean)
+        door_flatness_cv_pct = round(100.0 * cv, 1)
+    else:
+        door_flatness_cv_pct = 0.0
+
+    # --- 6) 碎片化：每 0.3m 高度层内的 SKU 切换指数（不同 SKU 数 / 箱数）---
+    layer_skus = collections.defaultdict(set)
+    layer_counts = collections.Counter()
+    for i, (_, _, z, _, _, dz) in enumerate(boxes):
+        key = round(z / 0.3)
+        layer_skus[key].add(skus[i])
+        layer_counts[key] += 1
+    frag = sum(len(layer_skus[k]) / max(1, layer_counts[k]) for k in layer_skus) / max(1, len(layer_skus))
+    fragmentation_pct = round(100.0 * frag, 1)
+
+    # --- 综合评分（权重显式、可解释）---
+    def _score_high(v, floor, ceil):
+        return max(0.0, min(100.0, 100.0 * (v - floor) / max(1e-9, ceil - floor)))
+
+    def _score_low(v, good, bad):
+        return max(0.0, min(100.0, 100.0 * (bad - v) / max(1e-9, bad - good)))
+
+    parts = {
+        "wall_continuity": (_score_high(wall_continuity_pct, 20.0, 85.0), 0.25),
+        "layer_planarity": (_score_high(layer_planarity_pct, 30.0, 90.0), 0.25),
+        "sku_clustering": (_score_high(sku_clustering_pct, 20.0, 85.0), 0.15),
+        "cog_height": (_score_low(cog_height_pct, 30.0, 65.0), 0.15),
+        "door_flatness": (_score_low(door_flatness_cv_pct, 0.0, 8.0), 0.10),
+        "fragmentation": (_score_low(fragmentation_pct, 5.0, 40.0), 0.10),
+    }
+    score = round(sum(v * w for v, w in parts.values()), 1)
+    grade = "A" if score >= 80 else "B" if score >= 65 else "C" if score >= 50 else "D"
+
+    return {
+        "score": score,
+        "grade": grade,
+        "components": {
+            "wall_continuity_pct": wall_continuity_pct,
+            "layer_planarity_pct": layer_planarity_pct,
+            "sku_clustering_pct": sku_clustering_pct,
+            "cog_height_pct": cog_height_pct,
+            "door_flatness_cv_pct": door_flatness_cv_pct,
+            "fragmentation_pct": fragmentation_pct,
+        },
+        "component_scores": {k: round(v, 1) for k, (v, _) in parts.items()},
+        "weights": {k: w for k, (_, w) in parts.items()},
+    }
+
+
+def _orientation_name(p) -> str:
+    if isinstance(p, dict):
+        return str(p.get("orientation", ""))
+    return str(getattr(getattr(p, "orientation", None), "name", ""))
