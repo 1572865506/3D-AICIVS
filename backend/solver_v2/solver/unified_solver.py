@@ -316,6 +316,11 @@ class UnifiedSolver:
             _tf = getattr(getattr(s, "cargo_profile", None), "top_fill_policy", None)
             setattr(tensor_list[-1], "topfill_enabled_explicit",
                     None if _tf is None else getattr(_tf, "explicit_enabled", None))
+            # 易碎件：含玻璃但可承压（仅标记）/ 不可承压（由 max_bearing_kg=0 或
+            # allow_stacking_on_top=False 强制）。此处携带标记，供诊断与预检使用。
+            _hp = getattr(getattr(s, "cargo_profile", None), "handling_policy", None)
+            setattr(tensor_list[-1], "fragile", bool(getattr(_hp, "fragile", False)))
+            setattr(tensor_list[-1], "unload_stop", getattr(s, "unload_stop", None))
             setattr(tensor_list[-1], "min_support_ratio",
                     float(getattr(s.stacking_policy, "min_support_ratio", 0.70) or 0.70))
             setattr(tensor_list[-1], "max_pressure_kg_m2",
@@ -400,6 +405,21 @@ class UnifiedSolver:
             self._actual_door_zone_len = float(options["door_zone_length_m"])
         else:
             self._actual_door_zone_len = getattr(self.container, "door_zone_length_m", 0.20) or 0.20
+
+        # 多点卸货：若货单声明了 unloadStop，则按站序分区并对每站限定纵深区段
+        # （终点站→柜尾，第一站→门端），装载顺序与卸货顺序相反。
+        self._stop_regions = {}
+        _stops = [getattr(c, "unload_stop", None) for c in cargo_list]
+        _has_stops = any(v is not None for v in _stops)
+        if _has_stops:
+            from backend.solver_v2.loading.multistop import plan_stop_regions
+            _regions, _stop_errors = plan_stop_regions(cargo_list, self.container)
+            if _stop_errors:
+                raise ValueError("MULTISTOP_UNSATISFIABLE: " + "；".join(_stop_errors[:3]))
+            self._stop_regions = _regions
+            # 先装终点站（站序降序）
+            cargo_list = sorted(cargo_list, key=lambda c: (-(getattr(c, "unload_stop", None) or 0), c.sku_id))
+            tensor_cargo_list = self._convert_cargo_skus_to_tensors(cargo_list)
 
         trials = [
             {"name": "LARGE_FIRST",   "sort": "volume_desc",    "min_sec_vol": 0.35},
@@ -2959,6 +2979,17 @@ class UnifiedSolver:
                 if cand["x"] + cand["dx"] > _door_lock_x + eps:
                     self._record_rejection("ZONE_INNER_IN_DOOR")
                     return False
+
+        # 2.5 多点卸货区段约束：候选必须落在其 SKU 所属卸货站的纵深区段内
+        _regions = getattr(self, "_stop_regions", None)
+        if _regions:
+            _stop = getattr(c_sku, "unload_stop", None)
+            if _stop is not None:
+                _reg = _regions.get(int(_stop))
+                if _reg is not None:
+                    if cand["x"] < _reg.x_start - eps or cand["x"] + cand["dx"] > _reg.x_end + eps:
+                        self._record_rejection("MULTISTOP_REGION_VIOLATION")
+                        return False
 
         # 3. Upper bearing check for underlying boxes in the support chain
         cand_z = cand["z"]

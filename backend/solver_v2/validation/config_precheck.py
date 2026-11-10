@@ -51,6 +51,23 @@ def precheck_manifest(cargo_list: List[Any], container: Any) -> Dict[str, Any]:
     warnings: List[Dict[str, Any]] = []
     per_sku: List[Dict[str, Any]] = []
 
+    # 多点卸货站序一致性：要么全不设，要么全部设置（混用会让未设置者不受区段约束）
+    _stops = [(getattr(c, "sku_id", "?"), getattr(c, "unload_stop", None)) for c in cargo_list]
+    _set = [(sid, st) for sid, st in _stops if st is not None]
+    if _set and len(_set) != len(_stops):
+        missing = [sid for sid, st in _stops if st is None]
+        warnings.append({
+            "code": "UNLOAD_STOP_PARTIAL", "severity": "WARN", "sku": ",".join(missing[:5]),
+            "message": f"{len(missing)} 个 SKU 未设置卸货站序（{missing[:3]}），它们不受多站区段约束",
+            "hint": "多点配送请为所有 SKU 设置 unloadStop（1 = 第一站，需靠门）",
+        })
+    if len({st for _, st in _set}) == 1 and _set:
+        warnings.append({
+            "code": "UNLOAD_STOP_SINGLE", "severity": "WARN", "sku": "",
+            "message": "所有 SKU 卸货站序相同（相当于单站），多站分区不会生效",
+            "hint": "单站配送可忽略；多站请设置不同站序",
+        })
+
     has_stackable_other_base = len(cargo_list) > 1
     for sku in cargo_list:
         sid = getattr(sku, "sku_id", "?")
@@ -103,6 +120,26 @@ def precheck_manifest(cargo_list: List[Any], container: Any) -> Dict[str, Any]:
             })
             entry["codes"].append("NO_TOP_STACK_VS_MAX_LAYERS")
 
+        # 易碎件：未声明承压能力时提示"按可承压处理"
+        _hp = getattr(getattr(sku, "cargo_profile", None), "handling_policy", None)
+        if _hp is not None and getattr(_hp, "fragile", False):
+            _can_bear = True
+            if stack is not None:
+                if not getattr(stack, "allow_stacking_on_top", True):
+                    _can_bear = False
+                _mb = getattr(stack, "max_bearing_kg", None)
+                if _mb is not None and float(_mb) <= 0:
+                    _can_bear = False
+            if _can_bear and getattr(stack, "max_bearing_kg", None) is None:
+                warnings.append({
+                    "code": "FRAGILE_NO_BEARING_DECLARED", "severity": "WARN", "sku": sid,
+                    "message": f"{sid} 标记为易碎（含玻璃）但未声明承压能力，按『可承压』处理",
+                    "hint": "若该件不可承压，请设置 maxBearingKg=0 或 allowStackingOnTop=false；"
+                            "若可承压（如含玻璃但结构可承重），保持现状即可",
+                })
+                entry["codes"].append("FRAGILE_NO_BEARING_DECLARED")
+            elif not _can_bear:
+                entry["codes"].append("FRAGILE_NOT_BEARING_ENFORCED")
         # 必须落地 + 多层：仅允许同款自堆叠
         if (stack is not None and getattr(stack, "must_be_on_floor", False)
                 and (getattr(stack, "max_stack_layers", None) or 0) > 1):

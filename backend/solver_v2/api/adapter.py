@@ -330,10 +330,17 @@ class InputNormalizer:
             allow_top_p = bool(raw_allow_top_p) if raw_allow_top_p is not None else True
             stack_self_p = bool(raw_stack_self_p) if raw_stack_self_p is not None else True
 
+        # 承压/压强：profile 词汇为 compressionPolicy.maxTopLoad/maxPressureKgM2；
+        # 兼容扁平货单/UI 使用的 maxBearingKg/maxPressureKgM2 别名，避免用户
+        # 在 cargoProfile 里写 stackPolicy.maxBearingKg 却不生效（静默忽略）。
+        _bearing_alias = stack.get("maxBearingKg")
+        _pressure_alias = stack.get("maxPressureKgM2")
         stack_policy = StackingPolicy(
             max_stack_layers=max_layers_p,
-            max_bearing_kg=compression_policy.max_top_load_kg,
-            max_pressure_kg_m2=compression_policy.max_pressure_kg_m2,
+            max_bearing_kg=(compression_policy.max_top_load_kg if compression_policy.max_top_load_kg is not None
+                            else (float(_bearing_alias) if _bearing_alias is not None else None)),
+            max_pressure_kg_m2=(compression_policy.max_pressure_kg_m2 if compression_policy.max_pressure_kg_m2 is not None
+                                else (float(_pressure_alias) if _pressure_alias is not None else None)),
             min_support_ratio=stability_policy.min_support_ratio,
             max_unsupported_span_m=stability_policy.max_unsupported_span_m,
             allow_stacking_on_top=allow_top_p,
@@ -390,6 +397,17 @@ class InputNormalizer:
             ),
             source_audit=tuple(source_audit),
         )
+
+
+def _parse_unload_stop(raw):
+    """解析卸货站序（兼容字符串数字/空值）。"""
+    if raw is None or raw == "":
+        return None
+    try:
+        val = int(raw)
+    except (TypeError, ValueError):
+        return None
+    return val if val >= 1 else None
 
 
 class InputAdapter:
@@ -554,6 +572,7 @@ class InputAdapter:
                 target_zone=zone,
                 color_hex=color_hex,
                 source_requirement_text=req_text,
+                unload_stop=_parse_unload_stop(item.get("unloadStop", src.get("unloadStop"))),
                 cargo_profile=profile,
             )
             cargo_skus.append(cargo)
@@ -756,6 +775,7 @@ class OutputAdapter:
                     "name": s.name,
                     "color": s.color_hex if s.color_hex is not None else 0x3b82f6,
                     "requirement": s.source_requirement_text or "放中间",
+                    "unloadStop": getattr(s, "unload_stop", None),
                 }
 
         # Build placedBoxes for Three.js visualizer
@@ -791,6 +811,7 @@ class OutputAdapter:
                 "h": round(p.orientation.dz, 4),
                 "d": round(p.orientation.dy, 4),
                 "stepIndex": getattr(p, "step_index", 0),
+                "unloadStop": meta.get("unloadStop"),
                 "context": p.context.value if hasattr(p.context, "value") else str(p.context),
                 # Also include canonical coords for V2-aware visualizers
                 "canonical": {

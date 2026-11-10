@@ -414,6 +414,8 @@ class CargoSKU:
     target_zone: Optional[ZoneType] = None
     color_hex: Optional[int] = None
     source_requirement_text: str = ""
+    # 多点卸货站序（1 = 第一站，需靠门；None = 不参与多站分区）
+    unload_stop: Optional[int] = None
     cargo_profile: Optional[CargoProfile] = None
 
     def __post_init__(self):
