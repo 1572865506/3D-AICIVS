@@ -2458,24 +2458,8 @@ class UnifiedSolver:
         _check_stacking_limit（PASS4 锚点预筛，与门禁共享同一实现以消除
         5cm 列对齐旧语义的互不包含分歧——审计表A不一致项·轮5）。
         """
-        depth = 1
-        cur_z = round(z, 4)
-        while cur_z > 1e-3:
-            found_lower = False
-            for p in placements:
-                if p["sku_id"] != sku_id:
-                    continue
-                if abs(round(p["z"] + p["dz"], 4) - cur_z) < 1e-3:
-                    ox = min(x + dx, p["x"] + p["dx"]) - max(x, p["x"])
-                    oy = min(y + dy, p["y"] + p["dy"]) - max(y, p["y"])
-                    if ox > 0.15 * min(dx, p["dx"]) and oy > 0.15 * min(dy, p["dy"]):
-                        depth += 1
-                        cur_z = round(p["z"], 4)
-                        found_lower = True
-                        break
-            if not found_lower:
-                break
-        return depth
+        from backend.solver_v2.validation.constraint_kernel import same_sku_chain_depth
+        return same_sku_chain_depth(sku_id, x, y, z, dx, dy, placements)
 
     def _check_stacking_limit(self, c: UniversalCargoTensor, ax: float, ay: float, az: float, placements: List[Dict]) -> bool:
         """PASS4 锚点预筛：与权威门禁共享同一链深实现（含候选自身 ≤ max_stack_layers）。
@@ -2773,12 +2757,10 @@ class UnifiedSolver:
         else:
             check_placements = placements
 
-        for other in check_placements:
-            if abs(other["x"] - target_x) <= 0.03:
-                y_ov = min(cand["y"] + cand["dy"], other["y"] + other["dy"]) - max(cand["y"], other["y"])
-                z_ov = min(cand["z"] + cand["dz"], other["z"] + other["dz"]) - max(cand["z"], other["z"])
-                if y_ov >= min_y_ov - eps and z_ov >= min_z_ov - eps:
-                    return True
+        # 判定委托共享内核（单一规则源）；此处仅负责空间索引过滤以保性能
+        from backend.solver_v2.validation.constraint_kernel import tipping_safe
+        if tipping_safe(cand, check_placements, self.cL, eps):
+            return True
 
         self._record_rejection("TIPPING_RISK")
         return False

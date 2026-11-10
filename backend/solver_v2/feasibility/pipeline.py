@@ -240,4 +240,50 @@ class HardValidationPipeline:
                 self.rejection_counts["ENCLOSED_CAVITY_EXCEEDED"] += 1
                 return False, f"ENCLOSED_CAVITY_EXCEEDED: Cavity volume {new_cavity_volume:.4f}m3 exceeds allowed {self.max_allowed_cavity_volume:.4f}m3"
 
+        # 13. 倾覆 / 层数 / 表面压强（审计补齐：此前本过滤器缺这三项，
+        #     导致 BaselineGreedySolver 产出 UNSTABLE_PLACEMENT。统一走约束内核。）
+        from backend.solver_v2.validation.constraint_kernel import (
+            tipping_verdict, same_sku_chain_depth, pressure_violation,
+        )
+        cand_dict = {
+            "sku_id": sku.sku_id, "x": x, "y": y, "z": z,
+            "dx": dx, "dy": dy, "dz": dz, "weight_kg": candidate.weight_kg,
+            "placement_id": "candidate",
+        }
+        existing = [
+            {
+                "sku_id": p.sku_id, "x": p.position.x, "y": p.position.y, "z": p.position.z,
+                "dx": p.orientation.dx, "dy": p.orientation.dy, "dz": p.orientation.dz,
+                "weight_kg": p.weight_kg, "placement_id": p.placement_id,
+                "_bearing_load": getattr(p, "_bearing_load", 0.0),
+                "_pressure_load": getattr(p, "_pressure_load", 0.0),
+            }
+            for p in world_state.placements
+        ]
+        verdict = tipping_verdict(cand_dict, existing, world_state.container.Lx if world_state.container else 1e9)
+        if not verdict.safe:
+            self.rejection_counts["UNSTABLE_PLACEMENT"] += 1
+            return False, f"TIPPING_RISK: SF={verdict.safety_factor:.2f} < 1.5 ({verdict.reason})"
+
+        max_layers = getattr(getattr(sku, "stacking_policy", None), "max_stack_layers", None)
+        if max_layers:
+            depth = same_sku_chain_depth(sku.sku_id, x, y, z, dx, dy, existing)
+            if depth > max_layers:
+                self.rejection_counts["MAX_STACKING_LAYERS_EXCEEDED"] += 1
+                return False, f"MAX_STACKING_LAYERS_EXCEEDED: chain depth {depth} > {max_layers}"
+
+        limits = {}
+        catalog = getattr(world_state, "_cargo_catalog", None) or {}
+        for sid, p in (catalog.items() if isinstance(catalog, dict) else []):
+            mv = getattr(getattr(p, "stacking_policy", None), "max_pressure_kg_m2", None)
+            if mv:
+                limits[sid] = mv
+        if limits:
+            viol = pressure_violation(existing, cand_dict, limits)
+            if viol is not None:
+                under_id, measured, limit = viol
+                self.rejection_counts["PRESSURE_LIMIT_EXCEEDED"] += 1
+                return False, (f"PRESSURE_LIMIT_EXCEEDED: {measured:.1f} > {limit:.1f} kg/m2 "
+                               f"on {under_id}")
+
         return True, None
