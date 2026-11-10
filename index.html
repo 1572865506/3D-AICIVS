@@ -3099,6 +3099,31 @@
             </select>
           </div>
 
+          <!-- 平放顶层策略 + 多点卸货站序 -->
+          <div style="display:grid; grid-template-columns: 1.2fr 0.8fr 0.8fr; gap:10px; margin-bottom:10px;">
+            <div class="form-field">
+              <label class="form-label">
+                <span>平放范围</span>
+                <span class="form-hint">仅顶层=覆盖层，不落地</span>
+              </label>
+              <select id="sku-edit-flat-scope" class="custom-select">
+                <option value="anywhere">任意位置平放</option>
+                <option value="top_only">仅顶层平放 (覆盖层)</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label class="form-label">平放层数</label>
+              <input type="number" id="sku-edit-flat-layers" class="custom-input" min="1" max="10" step="1" placeholder="留空默认1" style="font-family:'JetBrains Mono';">
+            </div>
+            <div class="form-field">
+              <label class="form-label">
+                <span>卸货站序</span>
+                <span class="form-hint">1=第一站(靠门)</span>
+              </label>
+              <input type="number" id="sku-edit-unload-stop" class="custom-input" min="1" max="20" step="1" placeholder="留空=单站" style="font-family:'JetBrains Mono';">
+            </div>
+          </div>
+
           <!-- 落地要求与堆叠层数 (智能互锁联动) -->
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
             <div class="form-field">
@@ -7213,6 +7238,9 @@
 
       document.getElementById('sku-edit-req').value = item.requirement || '放中间';
       document.getElementById('sku-edit-ori').value = item.allowedOrientation || (item.allowFlat ? 'allow_flat' : 'upright');
+      document.getElementById('sku-edit-flat-scope').value = item.flatOnlyOnTop ? 'top_only' : 'anywhere';
+      document.getElementById('sku-edit-flat-layers').value = item.maxFlatLayers || '';
+      document.getElementById('sku-edit-unload-stop').value = item.unloadStop || '';
       document.getElementById('sku-edit-max-layers').value = item.maxStackLayers || '';
       document.getElementById('sku-edit-max-bearing').value = item.maxBearingKg || '';
       document.getElementById('sku-edit-max-pressure').value = item.maxPressureKgM2 || '';
@@ -7266,6 +7294,9 @@
     window.applySKUPreset = function(type) {
       if (type === 'carton') {
         document.getElementById('sku-edit-ori').value = 'upright';
+        if (document.getElementById('sku-edit-flat-scope')) document.getElementById('sku-edit-flat-scope').value = 'anywhere';
+        if (document.getElementById('sku-edit-flat-layers')) document.getElementById('sku-edit-flat-layers').value = '';
+        if (document.getElementById('sku-edit-unload-stop')) document.getElementById('sku-edit-unload-stop').value = '';
         document.getElementById('sku-edit-floor-only').value = 'false';
         document.getElementById('sku-edit-max-layers').value = '4';
         document.getElementById('sku-edit-top-perm').value = 'ALLOW_ALL';
@@ -7276,6 +7307,9 @@
         showToast('已应用【标准普通纸箱】预设模板', 'info');
       } else if (type === 'heavy_base') {
         document.getElementById('sku-edit-ori').value = 'upright';
+        if (document.getElementById('sku-edit-flat-scope')) document.getElementById('sku-edit-flat-scope').value = 'anywhere';
+        if (document.getElementById('sku-edit-flat-layers')) document.getElementById('sku-edit-flat-layers').value = '';
+        if (document.getElementById('sku-edit-unload-stop')) document.getElementById('sku-edit-unload-stop').value = '';
         document.getElementById('sku-edit-floor-only').value = 'true';
         document.getElementById('sku-edit-max-layers').value = '1';
         document.getElementById('sku-edit-top-perm').value = 'SELF_ONLY';
@@ -7286,6 +7320,9 @@
         showToast('已应用【重托地基设备】预设模板 (必须置底，禁止杂货压顶)', 'info');
       } else if (type === 'fragile') {
         document.getElementById('sku-edit-ori').value = 'upright';
+        if (document.getElementById('sku-edit-flat-scope')) document.getElementById('sku-edit-flat-scope').value = 'anywhere';
+        if (document.getElementById('sku-edit-flat-layers')) document.getElementById('sku-edit-flat-layers').value = '';
+        if (document.getElementById('sku-edit-unload-stop')) document.getElementById('sku-edit-unload-stop').value = '';
         document.getElementById('sku-edit-floor-only').value = 'false';
         document.getElementById('sku-edit-max-layers').value = '1';
         document.getElementById('sku-edit-top-perm').value = 'FORBIDDEN';
@@ -7311,6 +7348,12 @@
       item.allowedOrientation = document.getElementById('sku-edit-ori').value;
       item.allowFlat = (item.allowedOrientation === 'allow_flat' || item.allowedOrientation === 'any' || item.allowedOrientation === 'flat_only');
       item.allowUpright = (item.allowedOrientation !== 'flat_only');
+      const flatScopeEl = document.getElementById('sku-edit-flat-scope');
+      item.flatOnlyOnTop = flatScopeEl ? (flatScopeEl.value === 'top_only') : false;
+      const flatLayersVal = parseInt((document.getElementById('sku-edit-flat-layers') || {}).value, 10);
+      item.maxFlatLayers = (!isNaN(flatLayersVal) && flatLayersVal > 0) ? Math.min(flatLayersVal, 10) : null;
+      const stopVal = parseInt((document.getElementById('sku-edit-unload-stop') || {}).value, 10);
+      item.unloadStop = (!isNaN(stopVal) && stopVal >= 1) ? stopVal : null;
 
       const maxLay = parseInt(document.getElementById('sku-edit-max-layers').value, 10);
       item.maxStackLayers = (!isNaN(maxLay) && maxLay > 0) ? maxLay : null;
