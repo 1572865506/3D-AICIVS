@@ -1,15 +1,17 @@
 """
 Solver V2 Package Root
 Clean-room implementation of 3D-AICIVS Container Loading Engine.
+
+唯一生产入口：UnifiedSolver（含统一前置门禁与交付质检），见 AGENTS.md 5.7。
+实验性引擎（guided beam search / CP-SAT hybrid / hierarchical search /
+physics_kernel）已归档至 backend/solver_v2/_archive/，不再对外暴露。
 """
 from typing import List, Optional, Any, Dict
 from backend.solver_v2.domain.models import ContainerSpec, CargoSKU
 from backend.solver_v2.solver.baseline_solver import SolverSolution
-from backend.solver_v2.solver.cpsat_hybrid_solver import CPSATHybridSolver
 from backend.solver_v2.solver.unified_solver import UnifiedSolver
-from backend.solver_v2.placement_engine import GuidedBeamSearch, SearchConfig
 
-__version__ = "2.0.0-dev"
+__version__ = "2.1.0"
 
 
 def solve(
@@ -19,25 +21,16 @@ def solve(
     **kwargs,
 ) -> SolverSolution:
     """
-    Main entry point for Solver V2.
-    支持新一代深度引导搜索引擎 (engine='guided') 与传统启发式引擎。
+    统一求解入口。
+
+    仅保留单一生产引擎（UnifiedSolver）。历史 `engine='guided'|'cpsat'` 参数
+    不再生效——如需实验引擎请直接引用 backend/solver_v2/_archive/ 下的模块，
+    但禁止在 server/API 请求路径使用（AGENTS.md 5.7）。
     """
     merged_options = dict(options or {})
     merged_options.update(kwargs)
-
-    engine = merged_options.get("engine", "guided")
-    if engine in ("guided", "transformer", "beam_search"):
-        searcher = GuidedBeamSearch(container)
-        return searcher.solve(cargo_list, options=merged_options)
-
-    solver = CPSATHybridSolver(container)
+    solver = UnifiedSolver(container)
     return solver.solve(cargo_list, options=merged_options)
 
 
-__all__ = [
-    "solve",
-    "GuidedBeamSearch",
-    "SearchConfig",
-    "CPSATHybridSolver",
-    "UnifiedSolver",
-]
+__all__ = ["solve", "UnifiedSolver", "SolverSolution"]

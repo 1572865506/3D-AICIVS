@@ -30,3 +30,14 @@ data/golden_solutions/
 data/annotations/*.jsonl
 !data/annotations/.gitkeep
 
+
+# 运行产物（benchmark/诊断脚本输出，权威基线在 tests/benchmark_results.json）
+artifacts/
+.pytest_cache/
+
+# Python 虚拟环境
+.venv/
+venv/
+
+# UI 验证截图（本地证据，不入库）
+gui-test-screenshots/

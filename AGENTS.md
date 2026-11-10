@@ -397,9 +397,14 @@ python tests/regression_guard.py
 | `solver/constructive_placer.py` / `gap_filler.py` | ConstructivePlacer / GapFiller | 孤岛 |
 | `solver/elastic_recovery.py` / `swap_optimizer.py` | — | 孤岛 |
 | `solver/compaction.py` | CompactionPass | 孤岛（生产压缩内联在 UnifiedSolver `_compact_placements`） |
-| `search/`（9 模块） | HierarchicalSearchSolver 等 | 实验/冻结 |
-| `placement_engine/guided_beam_search.py` | GuidedBeamSearch | 实验（`solver_v2.solve()` 默认引擎，但 server 不用） |
-| `physics_kernel/`（7 模块） | UnifiedConstraintGate 等 | 仅 guided 引擎使用；生产不引用 |
+| `search/`（9 模块） | HierarchicalSearchSolver 等 | **已归档** → `_archive/search/` |
+| `placement_engine/guided_beam_search.py` | GuidedBeamSearch | **已归档** → `_archive/placement_engine/` |
+| `physics_kernel/`（7 模块） | UnifiedConstraintGate 等 | **已归档** → `_archive/physics_kernel/` |
+| `cpsat_hybrid_solver.py` / `cpsat_engine.py` | CPSATHybridSolver | **已归档** |
+
+> 归档说明见 `backend/solver_v2/_archive/README.md`；`solver_v2.solve()` 现仅保留
+> UnifiedSolver 单一入口（`engine=` 实验参数已移除）。归档模块的测试移至
+> `tests/_archive/`，由 `tests/conftest.py` 排除收集。
 
 > 新增求解能力**必须**在 UnifiedSolver + 统一门禁内实现；如需替换生产引擎，
 > 先提交架构评审，不得并行维护第二套约束语义。

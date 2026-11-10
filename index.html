@@ -124,6 +124,8 @@
     }
 
     .brand-text h1 {
+      white-space: nowrap;
+      font-size: 15px;
       font-size: 13.5px;
       font-weight: 800;
       color: var(--slate-900);
@@ -151,6 +153,9 @@
       display: flex;
       align-items: center;
       gap: 1px;
+      max-width: min(92vw, 1080px);
+      overflow-x: auto;
+      scrollbar-width: none;
       background: rgba(255, 255, 255, 0.82);
       backdrop-filter: blur(24px);
       padding: 3px 6px;
@@ -160,7 +165,8 @@
     }
 
     .kpi-item {
-      padding: 4px 12px;
+      padding: 4px 10px;
+      flex: 0 0 auto;
       display: flex;
       flex-direction: column;
       gap: 0;
@@ -170,7 +176,11 @@
       border-right: none;
     }
 
+    .kpi-val {
+      white-space: nowrap;
+    }
     .kpi-label {
+      white-space: nowrap;
       font-size: 9px;
       font-weight: 800;
       color: var(--slate-400);
@@ -882,7 +892,7 @@
     /* 3. WORKBENCH DRAWER */
     .workbench-drawer {
       position: absolute;
-      top: 74px;
+      top: 120px;
       bottom: 20px;
       width: 400px;
       padding: 16px;
@@ -2170,19 +2180,11 @@
         <div class="kpi-hud-bar interactive">
           <div class="kpi-item">
             <span class="kpi-label">内腔利用率</span>
-            <span class="kpi-val" id="kpi-util">93.4<span class="kpi-unit">%</span></span>
-          </div>
-          <div class="kpi-item">
-            <span class="kpi-label">装载 / 标称容积</span>
-            <span class="kpi-val" id="kpi-vol">71.4<span class="kpi-unit">/ 76.4m³</span></span>
+            <span class="kpi-val" id="kpi-util">—</span>
           </div>
           <div class="kpi-item">
             <span class="kpi-label">装载件数</span>
-            <span class="kpi-val" id="kpi-count">112<span class="kpi-unit">箱</span></span>
-          </div>
-          <div class="kpi-item">
-            <span class="kpi-label">货物总重</span>
-            <span class="kpi-val" id="kpi-weight">21.8<span class="kpi-unit">T</span></span>
+            <span class="kpi-val" id="kpi-count">—</span>
           </div>
           <div class="kpi-item" id="kpi-gate-item" title="交付门禁：REJECT 表示存在必须拦截的交付缺陷">
             <span class="kpi-label">交付质检</span>
@@ -4319,7 +4321,7 @@
       window.activePackingResult = null;
       window.activeLoadingResult = null;
       window.activeLoadingJobId = null;
-      ['kpi-util', 'kpi-vol', 'kpi-count', 'kpi-weight'].forEach(id => {
+      ['kpi-util', 'kpi-count'].forEach(id => {
         const element = document.getElementById(id);
         if (element) element.innerHTML = '—';
       });
@@ -6097,9 +6099,7 @@
 
       // 5. Update KPI Cards
       document.getElementById('kpi-util').innerHTML = `${solution.utilization}<span class="kpi-unit">%</span>`;
-      document.getElementById('kpi-vol').innerHTML = `${solution.usedVol}<span class="kpi-unit">/ ${currentSpec.nominalVol}m³</span>`;
       document.getElementById('kpi-count').innerHTML = `${solution.totalCount}<span class="kpi-unit">箱</span>`;
-      document.getElementById('kpi-weight').innerHTML = `${solution.totalWeightTons}<span class="kpi-unit">T</span>`;
 
       if (solution.cog) {
         const latEl = document.getElementById('kpi-cog-lat');
@@ -6306,9 +6306,7 @@
       const utilization = Number(metrics.utilization_pct || 0);
       const totalWeightKg = Number(metrics.total_weight_kg || loadingResult.cargo.reduce((sum, item) => sum + Number(item.weight_kg || 0), 0));
       document.getElementById('kpi-util').innerHTML = `${utilization.toFixed(2)}<span class="kpi-unit">%</span>`;
-      document.getElementById('kpi-vol').innerHTML = `—<span class="kpi-unit">后端结果</span>`;
       document.getElementById('kpi-count').innerHTML = `${loadingResult.cargo.length}<span class="kpi-unit">箱</span>`;
-      document.getElementById('kpi-weight').innerHTML = `${(totalWeightKg / 1000).toFixed(2)}<span class="kpi-unit">T</span>`;
 
       const skuStats = {};
       activeManifest.forEach(item => {

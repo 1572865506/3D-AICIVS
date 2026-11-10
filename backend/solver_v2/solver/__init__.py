@@ -1,5 +1,9 @@
 """
 Solver V2 Solver Package.
+
+生产路径：UnifiedSolver + 统一前置门禁（见 AGENTS.md 5.7「唯一生产路径」）。
+已归档到 backend/solver_v2/_archive/ 的模块（gap_filler / elastic_recovery /
+swap_optimizer / lns_optimizer / constructive_placer / cpsat_* ）不再导出。
 """
 from backend.solver_v2.solver.scorer import CandidateScorer
 from backend.solver_v2.solver.baseline_solver import (
@@ -17,14 +21,6 @@ from backend.solver_v2.solver.compaction import (
     CompactionPass,
     CompactionResult,
 )
-from backend.solver_v2.solver.swap_optimizer import (
-    SwapOptimizer,
-    SwapResult,
-)
-from backend.solver_v2.solver.elastic_recovery import (
-    ElasticRecoveryScanner,
-    ElasticRecoveryResult,
-)
 
 __all__ = [
     "CandidateScorer",
@@ -37,9 +33,4 @@ __all__ = [
     "SubColumnConfig",
     "CompactionPass",
     "CompactionResult",
-    "SwapOptimizer",
-    "SwapResult",
-    "ElasticRecoveryScanner",
-    "ElasticRecoveryResult",
 ]
-

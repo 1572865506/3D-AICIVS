@@ -21,7 +21,6 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'backend'))
 
 from industrial_packer import IndustrialSmartContainerPacker
 from solver_v2.api.adapter import InputAdapter, OutputAdapter
-from solver_v2.search.config import SearchConfig, SearchProfile
 from backend.api.service import DEFAULT_LOADING_API
 from backend.api.error_response import classify_api_exception
 
@@ -321,19 +320,6 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                     version_num = int(payload.get('version', 1))
                     solution_id = f"sol_{int(time.time()*1000)}_{os.urandom(4).hex()}"
 
-                    profile_map = {
-                        'FAST': SearchProfile.FAST,
-                        'BALANCED': SearchProfile.BALANCED,
-                        'MAX_COMPACT': SearchProfile.OPTIMIZE,
-                        'OPTIMIZE': SearchProfile.OPTIMIZE,
-                        'ROBUST': SearchProfile.BALANCED,
-                    }
-                    search_profile = profile_map.get(mode_str, SearchProfile.BALANCED)
-                    search_cfg = SearchConfig.for_profile(
-                        profile=search_profile,
-                        time_budget_sec=time_budget,
-                        seed=seed,
-                    )
                     from backend.solver_v2.solver.unified_solver import UnifiedSolver
                     solver = UnifiedSolver(container_spec)
                     solution = solver.solve(cargo_skus, mode=mode_str, seed=seed, time_budget=time_budget)
