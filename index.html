@@ -162,6 +162,23 @@
     .ph-track { height: 5px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
     .ph-fill { height: 100%; border-radius: 999px; transition: width .35s ease; }
 
+    /* 多方案切换：推荐方案高亮，备选标注取舍 */
+    .ph-plan-btn {
+      display: block; width: 100%; text-align: left; cursor: pointer;
+      border: 1.5px solid #e2e8f0; background: #ffffff; border-radius: 8px;
+      padding: 6px 8px; margin-bottom: 5px; font-family: inherit;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    .ph-plan-btn:hover { border-color: #a78bfa; }
+    .ph-plan-btn.active { border-color: #7c3aed; box-shadow: 0 0 0 2px rgba(124,58,237,.14); background:#faf5ff; }
+    .ph-plan-btn.recommended { border-left: 4px solid #059669; }
+    .ph-plan-head { display:flex; justify-content:space-between; align-items:center; font-size:10.5px; font-weight:800; color:#0f172a; }
+    .ph-plan-sub { margin-top:2px; font-size:9.5px; color:#64748b; line-height:1.4; }
+    .ph-plan-tags { display:flex; flex-wrap:wrap; gap:3px; margin-top:3px; }
+    .ph-plan-tag { font-size:9px; font-weight:700; padding:1px 5px; border-radius:999px; background:#f1f5f9; color:#475569; }
+    .ph-plan-tag.ok { background:#ecfdf5; color:#047857; }
+    .ph-plan-tag.warn { background:#fef2f2; color:#b91c1c; }
+
     .kpi-hud-bar {
       display: flex;
       align-items: center;
@@ -473,6 +490,160 @@
     }
     .slice-range-input::-webkit-slider-thumb:hover {
       transform: scale(1.2);
+    }
+
+    /* Packing demo HUD: independent from solver progress and slicing timeline. */
+    .animation-hud {
+      position: absolute;
+      left: 50%;
+      bottom: 64px;
+      transform: translateX(-50%);
+      width: 620px;
+      max-width: calc(100vw - 32px);
+      padding: 10px 14px 11px;
+      border-radius: 15px;
+      z-index: 32;
+      pointer-events: auto;
+      display: none;
+      color: #e2e8f0;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(96, 165, 250, 0.28);
+      box-shadow: 0 18px 44px -12px rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(18px);
+    }
+    .animation-hud.active { display: block; }
+    body.packing-animation-active .slicing-timeline-dock { display: none; }
+    .animation-hud-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 7px;
+    }
+    .animation-hud-title {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #f8fafc;
+      white-space: nowrap;
+    }
+    .animation-live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.16);
+    }
+    .animation-hud-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      color: #7dd3fc;
+      background: rgba(14, 165, 233, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.26);
+      border-radius: 6px;
+      padding: 2px 7px;
+    }
+    .animation-hud-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #cbd5e1;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .animation-hud-meta span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .animation-progress-track {
+      height: 7px;
+      width: 100%;
+      border-radius: 99px;
+      background: rgba(148, 163, 184, 0.20);
+      overflow: hidden;
+      margin-bottom: 9px;
+    }
+    .animation-progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #0ea5e9, #22d3ee 55%, #34d399);
+      box-shadow: 0 0 14px rgba(34, 211, 238, 0.45);
+      transition: width 0.08s linear;
+    }
+    .animation-hud-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .anim-ctrl-btn, .anim-speed-btn {
+      border: 1px solid rgba(148, 163, 184, 0.26);
+      background: rgba(30, 41, 59, 0.84);
+      color: #dbeafe;
+      border-radius: 7px;
+      padding: 5px 9px;
+      font-size: 10.5px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .anim-ctrl-btn:hover, .anim-speed-btn:hover {
+      background: rgba(51, 65, 85, 0.95);
+      border-color: rgba(125, 211, 252, 0.45);
+    }
+    .anim-ctrl-btn.primary {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      border-color: transparent;
+      color: white;
+    }
+    .anim-speed-group {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 9px;
+    }
+    .anim-speed-btn {
+      border: none;
+      background: transparent;
+      padding: 3px 7px;
+    }
+    .anim-speed-btn.active {
+      background: rgba(14, 165, 233, 0.24);
+      color: #7dd3fc;
+    }
+    .animation-hud .anim-follow-off {
+      color: #94a3b8;
+      border-color: rgba(148, 163, 184, 0.18);
+    }
+    @media (max-width: 720px) {
+      .animation-hud {
+        bottom: 96px;
+        padding: 9px 10px;
+      }
+      .animation-hud-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .animation-hud-meta {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .animation-hud-controls {
+        gap: 4px;
+      }
+      .anim-ctrl-btn, .anim-speed-btn {
+        padding: 4px 7px;
+      }
     }
 
     /* Edge-Aligned Transparent SKU Anchor Dock with generous gap from center operation island */
@@ -798,6 +969,11 @@
       background: #ffffff;
       border-color: var(--slate-200);
       color: var(--slate-900);
+    }
+    .btn-island-action:disabled {
+      opacity: 0.62;
+      cursor: not-allowed;
+      pointer-events: none;
     }
     .btn-island-action.primary {
       background: var(--primary);
@@ -1545,6 +1721,7 @@
     .req-rear { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
     .req-mid  { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
     .req-door { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .req-any  { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
 
     .sku-param-badge {
       font-size: 9px;
@@ -2163,6 +2340,7 @@
   <script src="/frontend/src/orientationRendering.js"></script>
   <script src="/frontend/src/manifestWorkflow.js"></script>
   <script src="/frontend/src/backendSwitch.js"></script>
+  <script src="/frontend/src/packingAnimation.js"></script>
   <script src="/frontend/src/visualizationCore.js"></script>
   <script src="/frontend/src/crossSectionSlicer.js"></script>
   <script src="/frontend/src/expertAnnotation.js"></script>
@@ -2533,6 +2711,8 @@
         <span style="font-size:12px; font-weight:800; color:#0f172a;">🩺 方案体检</span>
         <button class="close-btn" onclick="togglePlanHealth()" style="position:static; width:22px; height:22px;">✕</button>
       </div>
+      <div id="ph-plans" style="display:none; margin-bottom:8px;"></div>
+      <div id="ph-learning" style="display:none; margin-bottom:8px; padding:5px 7px; border-radius:7px; background:#f5f3ff; border:1px dashed #c4b5fd; font-size:10px; color:#5b21b6; line-height:1.45;"></div>
       <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
         <span id="ph-grade" style="font-size:26px; font-weight:900; color:#64748b;">—</span>
         <div style="display:flex; flex-direction:column;">
@@ -2541,6 +2721,7 @@
         </div>
       </div>
       <div id="ph-rows" style="display:flex; flex-direction:column; gap:6px;"></div>
+      <div id="ph-cavities" style="display:none; margin-top:8px; padding-top:7px; border-top:1px dashed #e2e8f0; font-size:10px; color:#475569; line-height:1.55;"></div>
       <div id="ph-warnings" style="margin-top:8px; font-size:10.5px; color:#b45309; line-height:1.5;"></div>
     </div>
 
@@ -2644,6 +2825,37 @@
               <div class="chip-grid-2">
                 <button class="btn-chip active" id="btn-cog-bal-on" onclick="setCoGBalancingMode(true)">开启配平 (按重分区)</button>
                 <button class="btn-chip" id="btn-cog-bal-off" onclick="setCoGBalancingMode(false)">关闭 (纯空间推进)</button>
+              </div>
+            </div>
+
+            <!-- 开门倾覆安全：门端按"低前脸、高后墙"排布 -->
+            <div class="param-row" style="margin-top: 2px; padding: 6px 8px; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px;">
+              <div class="param-meta" style="margin-bottom: 4px;">
+                <span style="font-size: 11px; font-weight: 700; color: #1e293b; display:flex; align-items:center; gap:4px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2.2"><path d="M12 3v18M5 8l7-5 7 5M5 16l7 5 7-5"/></svg>
+                  <span>开门倾覆安全 (门端降台阶)</span>
+                </span>
+                <span class="param-val" id="val-door-open" style="font-size: 10.5px; font-weight: 800; color: #ea580c;">已开启</span>
+              </div>
+              <div class="chip-grid-2">
+                <button class="btn-chip active" id="btn-door-open-on" onclick="setDoorOpenStability(true)">开启 (门面不超高)</button>
+                <button class="btn-chip" id="btn-door-open-off" onclick="setDoorOpenStability(false)">关闭 (允许齐顶)</button>
+              </div>
+            </div>
+
+            <!-- 多方案对比：同一货单额外计算不同约束档位的备选，统一评分后对比 -->
+            <div class="param-row" style="margin-top: 2px; padding: 6px 8px; background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 8px;">
+              <div class="param-meta" style="margin-bottom: 4px;">
+                <span style="font-size: 11px; font-weight: 700; color: #1e293b; display:flex; align-items:center; gap:4px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="8.5" y="14" width="7" height="7" rx="1"/></svg>
+                  <span>多方案对比 (统一评分)</span>
+                </span>
+                <span class="param-val" id="val-alternatives" style="font-size: 10.5px; font-weight: 800; color: #7c3aed;">2 方案</span>
+              </div>
+              <div class="chip-grid-2" style="grid-template-columns: repeat(3, 1fr);">
+                <button class="btn-chip" id="btn-alt-off" onclick="setAlternativesCount(0)">单方案</button>
+                <button class="btn-chip active" id="btn-alt-one" onclick="setAlternativesCount(1)">2 方案</button>
+                <button class="btn-chip" id="btn-alt-two" onclick="setAlternativesCount(2)">3 方案</button>
               </div>
             </div>
 
@@ -2757,8 +2969,27 @@
             <button class="btn-chip" id="btn-cutaway-off" onclick="setSmartCutaway(false)">关闭 (全实体)</button>
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>前景外壳透视度</span><span class="param-val" id="val-foregroundOpacity">1%</span></div>
-            <input type="range" class="range-input" min="0" max="1" step="0.01" value="0.01" oninput="updateForegroundOpacity(this.value)">
+            <div class="param-meta"><span>前景外壳透视度</span><span class="param-val" id="val-foregroundOpacity">6%</span></div>
+            <input type="range" class="range-input" min="0" max="1" step="0.01" value="0.06" oninput="updateForegroundOpacity(this.value)">
+          </div>
+        </div>
+
+        <!-- 1.5 Carton Look & Camera Projection -->
+        <div class="section-card">
+          <div class="section-label"><span>纸箱真实感与相机投影</span></div>
+          <div class="param-row">
+            <div class="param-meta"><span>纸箱配色模式</span><span class="param-val" id="val-packagePalette">真实牛皮纸</span></div>
+          </div>
+          <div class="chip-grid-2">
+            <button class="btn-chip active" id="btn-palette-kraft" onclick="setPackagePalette('kraft')">真实牛皮纸</button>
+            <button class="btn-chip" id="btn-palette-color" onclick="setPackagePalette('color')">彩色识别</button>
+          </div>
+          <div class="param-row" style="margin-top:10px;">
+            <div class="param-meta"><span>相机投影</span><span class="param-val" id="val-cameraMode">正交工程</span></div>
+          </div>
+          <div class="chip-grid-2">
+            <button class="btn-chip active" id="btn-proj-ortho" onclick="setCameraProjection('ortho')">正交工程</button>
+            <button class="btn-chip" id="btn-proj-perspective" onclick="setCameraProjection('perspective')">透视展示</button>
           </div>
         </div>
 
@@ -2777,16 +3008,16 @@
             </div>
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>金属度 (Metalness)</span><span class="param-val" id="val-frameMetal">0.50</span></div>
-            <input type="range" class="range-input" min="0" max="1" step="0.02" value="0.50" oninput="updateParam('frameMetal', this.value)">
+            <div class="param-meta"><span>金属度 (Metalness)</span><span class="param-val" id="val-frameMetal">0.88</span></div>
+            <input type="range" class="range-input" min="0" max="1" step="0.02" value="0.88" oninput="updateParam('frameMetal', this.value)">
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>粗糙度 (Roughness)</span><span class="param-val" id="val-frameRough">0.68</span></div>
-            <input type="range" class="range-input" min="0" max="1" step="0.02" value="0.68" oninput="updateParam('frameRough', this.value)">
+            <div class="param-meta"><span>粗糙度 (Roughness)</span><span class="param-val" id="val-frameRough">0.58</span></div>
+            <input type="range" class="range-input" min="0" max="1" step="0.02" value="0.58" oninput="updateParam('frameRough', this.value)">
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>钢板凹凸法线 (Bump Normal)</span><span class="param-val" id="val-bump">0.94</span></div>
-            <input type="range" class="range-input" min="0" max="2" step="0.05" value="0.94" oninput="updateParam('bump', this.value)">
+            <div class="param-meta"><span>钢板凹凸法线 (Bump Normal)</span><span class="param-val" id="val-bump">0.60</span></div>
+            <input type="range" class="range-input" min="0" max="2" step="0.05" value="0.60" oninput="updateParam('bump', this.value)">
           </div>
         </div>
 
@@ -2808,48 +3039,62 @@
         <div class="section-card">
           <div class="section-label"><span>影棚高级光照与阴影调优</span></div>
           <div class="param-row">
-            <div class="param-meta"><span>光源方位角 (Azimuth)</span><span class="param-val" id="val-sunAzimuth">45°</span></div>
-            <input type="range" class="range-input" id="rng-sunAzimuth" min="0" max="360" step="1" value="45" oninput="updateParam('sunAzimuth', this.value)">
+            <div class="param-meta"><span>光源方位角 (Azimuth)</span><span class="param-val" id="val-sunAzimuth">30°</span></div>
+            <input type="range" class="range-input" id="rng-sunAzimuth" min="0" max="360" step="1" value="30" oninput="updateParam('sunAzimuth', this.value)">
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>光源高度角 (Elevation)</span><span class="param-val" id="val-sunElevation">58°</span></div>
-            <input type="range" class="range-input" id="rng-sunElevation" min="5" max="88" step="1" value="58" oninput="updateParam('sunElevation', this.value)">
+            <div class="param-meta"><span>光源高度角 (Elevation)</span><span class="param-val" id="val-sunElevation">48°</span></div>
+            <input type="range" class="range-input" id="rng-sunElevation" min="5" max="88" step="1" value="48" oninput="updateParam('sunElevation', this.value)">
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>主光强度 (Sun Intensity)</span><span class="param-val" id="val-sunIntensity">1.80</span></div>
-            <input type="range" class="range-input" id="rng-sunIntensity" min="0.1" max="6.0" step="0.1" value="1.8" oninput="updateParam('sunIntensity', this.value)">
+            <div class="param-meta"><span>主光强度 (Sun Intensity)</span><span class="param-val" id="val-sunIntensity">2.50</span></div>
+            <input type="range" class="range-input" id="rng-sunIntensity" min="0.1" max="6.0" step="0.1" value="2.5" oninput="updateParam('sunIntensity', this.value)">
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>环境光漫射 (Ambient)</span><span class="param-val" id="val-ambIntensity">0.60</span></div>
-            <input type="range" class="range-input" id="rng-ambIntensity" min="0" max="1.5" step="0.05" value="0.6" oninput="updateParam('ambIntensity', this.value)">
+            <div class="param-meta"><span>环境光漫射 (Ambient)</span><span class="param-val" id="val-ambIntensity">0.30</span></div>
+            <input type="range" class="range-input" id="rng-ambIntensity" min="0" max="1.5" step="0.05" value="0.30" oninput="updateParam('ambIntensity', this.value)">
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>全景穹顶光 (Hemi Light)</span><span class="param-val" id="val-hemiIntensity">0.75</span></div>
-            <input type="range" class="range-input" id="rng-hemiIntensity" min="0" max="2.0" step="0.05" value="0.75" oninput="updateParam('hemiIntensity', this.value)">
+            <div class="param-meta"><span>全景穹顶光 (Hemi Light)</span><span class="param-val" id="val-hemiIntensity">0.45</span></div>
+            <input type="range" class="range-input" id="rng-hemiIntensity" min="0" max="2.0" step="0.05" value="0.45" oninput="updateParam('hemiIntensity', this.value)">
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>柔性补光 1 (Fill 1)</span><span class="param-val" id="val-fill1Intensity">0.55</span></div>
-            <input type="range" class="range-input" id="rng-fill1Intensity" min="0" max="2.0" step="0.05" value="0.55" oninput="updateParam('fill1Intensity', this.value)">
+            <div class="param-meta"><span>柔性补光 1 (Fill 1)</span><span class="param-val" id="val-fill1Intensity">0.35</span></div>
+            <input type="range" class="range-input" id="rng-fill1Intensity" min="0" max="2.0" step="0.05" value="0.35" oninput="updateParam('fill1Intensity', this.value)">
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>柔性补光 2 (Fill 2)</span><span class="param-val" id="val-fill2Intensity">1.05</span></div>
-            <input type="range" class="range-input" id="rng-fill2Intensity" min="0" max="2.0" step="0.05" value="1.05" oninput="updateParam('fill2Intensity', this.value)">
+            <div class="param-meta"><span>柔性补光 2 (Fill 2)</span><span class="param-val" id="val-fill2Intensity">0.00</span></div>
+            <input type="range" class="range-input" id="rng-fill2Intensity" min="0" max="2.0" step="0.05" value="0.00" oninput="updateParam('fill2Intensity', this.value)">
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>曝光度 (ACES Tone Exposure)</span><span class="param-val" id="val-exposure">0.86</span></div>
-            <input type="range" class="range-input" id="rng-exposure" min="0.3" max="2.0" step="0.02" value="0.86" oninput="updateParam('exposure', this.value)">
+            <div class="param-meta"><span>曝光度 (ACES Tone Exposure)</span><span class="param-val" id="val-exposure">0.85</span></div>
+            <input type="range" class="range-input" id="rng-exposure" min="0.3" max="2.0" step="0.02" value="0.85" oninput="updateParam('exposure', this.value)">
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>阴影柔化度 (Shadow Blur)</span><span class="param-val" id="val-shadowRadius">0.50</span></div>
-            <input type="range" class="range-input" id="rng-shadowRadius" min="0.5" max="8.0" step="0.2" value="0.5" oninput="updateParam('shadowRadius', this.value)">
+            <div class="param-meta"><span>接触阴影柔化度 (Contact Blur)</span><span class="param-val" id="val-shadowRadius">1.50</span></div>
+            <input type="range" class="range-input" id="rng-shadowRadius" min="0.5" max="8.0" step="0.2" value="1.5" oninput="updateParam('shadowRadius', this.value)">
           </div>
           <div class="param-row">
             <div class="param-meta"><span>投射阴影浓度 (Cast Shadow)</span><span class="param-val" id="val-groundShadowOpacity">0.00</span></div>
-            <input type="range" class="range-input" id="rng-groundShadowOpacity" min="0.0" max="0.8" step="0.02" value="0" oninput="updateParam('groundShadowOpacity', this.value)">
+            <input type="range" class="range-input" id="rng-groundShadowOpacity" min="0.0" max="0.8" step="0.02" value="0.00" oninput="updateParam('groundShadowOpacity', this.value)">
           </div>
           <div class="param-row">
-            <div class="param-meta"><span>底部遮蔽阴影 (Contact Shadow)</span><span class="param-val" id="val-contactShadowOpacity">0.60</span></div>
-            <input type="range" class="range-input" id="rng-contactShadowOpacity" min="0.0" max="1.0" step="0.05" value="0.6" oninput="updateParam('contactShadowOpacity', this.value)">
+            <div class="param-meta"><span>底部遮蔽阴影 (Contact Shadow)</span><span class="param-val" id="val-contactShadowOpacity">0.45</span></div>
+            <input type="range" class="range-input" id="rng-contactShadowOpacity" min="0.0" max="1.0" step="0.05" value="0.45" oninput="updateParam('contactShadowOpacity', this.value)">
+          </div>
+          <div class="param-row">
+            <div class="param-meta"><span>货箱向柜体/柜底投影</span><span class="param-val" id="val-cargoCastShadow">关闭（柜内更干净）</span></div>
+          </div>
+          <div class="chip-grid-2">
+            <button class="btn-chip active" id="btn-cargo-cast-off" onclick="setCargoCastShadow(false)">关闭投影</button>
+            <button class="btn-chip" id="btn-cargo-cast-on" onclick="setCargoCastShadow(true)">开启投影</button>
+          </div>
+          <div class="param-row" style="margin-top:10px;">
+            <div class="param-meta"><span>货箱间实时阴影</span><span class="param-val" id="val-cargoReceiveShadow">关闭（更干净）</span></div>
+          </div>
+          <div class="chip-grid-2">
+            <button class="btn-chip active" id="btn-cargo-shadow-off" onclick="setCargoReceiveShadow(false)">关闭（更干净）</button>
+            <button class="btn-chip" id="btn-cargo-shadow-on" onclick="setCargoReceiveShadow(true)">开启（更强层次）</button>
           </div>
         </div>
 
@@ -2888,6 +3133,35 @@
             <input type="range" class="slice-range-input" id="slice-depth-slider" min="0" max="100" step="0.2" value="0" oninput="onSlicingTimelineChange(this.value)">
           </div>
           <span class="slice-end-label right" id="slice-deep-label" title="柜尾最深处 (X=0)">0.00m (最深内壁)</span>
+        </div>
+      </div>
+
+      <!-- Packing demo HUD (independent from solver progress) -->
+      <div class="glass-card animation-hud interactive" id="animation-hud" aria-live="polite">
+        <div class="animation-hud-head">
+          <div class="animation-hud-title">
+            <span class="animation-live-dot"></span>
+            <span>装柜演示</span>
+            <span class="animation-hud-badge" id="anim-progress-text">0%</span>
+          </div>
+          <div class="animation-hud-meta">
+            <span id="anim-batch-text">等待开始</span>
+            <span id="anim-count-text">0 / 0 箱</span>
+          </div>
+        </div>
+        <div class="animation-progress-track">
+          <div class="animation-progress-fill" id="anim-progress-fill"></div>
+        </div>
+        <div class="animation-hud-controls">
+          <button class="anim-ctrl-btn primary" id="btn-anim-pause" onclick="togglePackingAnimationPause()">暂停</button>
+          <button class="anim-ctrl-btn" id="btn-anim-stop" onclick="stopPackingAnimation()">停止</button>
+          <button class="anim-ctrl-btn" id="btn-anim-skip" onclick="skipPackingAnimation()">跳过</button>
+          <div class="anim-speed-group" role="group" aria-label="演示速度">
+            <button class="anim-speed-btn active" data-speed="1" onclick="setPackingAnimationSpeed(1)">1x</button>
+            <button class="anim-speed-btn" data-speed="2" onclick="setPackingAnimationSpeed(2)">2x</button>
+            <button class="anim-speed-btn" data-speed="4" onclick="setPackingAnimationSpeed(4)">4x</button>
+          </div>
+          <button class="anim-ctrl-btn" id="btn-anim-follow" onclick="togglePackingAnimationFollow()">镜头跟随: 开</button>
         </div>
       </div>
 
@@ -2949,8 +3223,8 @@
 
         <div class="opacity-pill-ctrl">
           <span class="opacity-label">外壳透视:</span>
-          <input type="range" class="range-input-mini" min="0" max="1" step="0.01" value="0.01" oninput="updateForegroundOpacity(this.value)">
-          <span class="opacity-label" id="val-quick-trans" style="font-family:'JetBrains Mono'; color:var(--primary);">1%</span>
+          <input type="range" class="range-input-mini" min="0" max="1" step="0.01" value="0.06" oninput="updateForegroundOpacity(this.value)">
+          <span class="opacity-label" id="val-quick-trans" style="font-family:'JetBrains Mono'; color:var(--primary);">6%</span>
         </div>
       </div>
 
@@ -3249,6 +3523,7 @@
               <div class="form-field">
                 <label class="form-label" style="font-size:10px;">货柜纵向摆放区间</label>
                 <select id="sku-edit-req" class="custom-select">
+                  <option value="随意放置">随意放置 (Any Zone - 不限制纵向区间，算法自由排布)</option>
                   <option value="放中间">放中间 (Middle Section - 常规紧凑排布)</option>
                   <option value="放柜子最里面">放柜子最里面 (Deep Inside / Rear - 优先置底靠前)</option>
                   <option value="封柜门">封柜门 (Front / Door End - 门端稳固件)</option>
@@ -3330,7 +3605,8 @@
         <div class="form-field">
           <label class="form-label">1. 货柜纵向摆放区间要求</label>
           <select id="sku-add-req" class="custom-select">
-            <option value="放中间" selected>放中间 (Middle Section - 紧密排布于货柜中段)</option>
+            <option value="随意放置" selected>随意放置 (Any Zone - 不限制纵向区间，算法自由排布)</option>
+            <option value="放中间">放中间 (Middle Section - 紧密排布于货柜中段)</option>
             <option value="放柜子最里面">放柜子最里面 (Deep Inside / Rear - 优先置于箱体深处)</option>
             <option value="封柜门">封柜门 (Front / Door End - 作为门端封箱与防倾挡板)</option>
           </select>
@@ -4344,6 +4620,12 @@
     let currentGap = 0.0;
     let currentStrategy = 'cluster';
     let isCoGBalanceEnabled = true;
+    let isDoorOpenStabilityEnabled = true;
+    // 多方案对比：0=单方案；1=主方案+1备选；2=主方案+2备选。
+    // 备选用不同约束档位（装载率优先/仅封门件归位）完整重算，统一评分后对比。
+    let alternativesCount = 1;
+    let activePlanIndex = 0;
+    let planCompareJobId = null;
     let calculationStatus = window.ManifestWorkflow.CalculationStatus.EMPTY;
     let manifestRevision = 0;
     let calculatedRevision = -1;
@@ -4374,12 +4656,28 @@
     }
 
     function clearPackingResultAndScene() {
+      if (packingAnimationState) cancelPackingAnimation({ restore: false });
+      disposeSkuMaterialRegistry();
+      orientationMaterialCache.clear();
+      hoveredBox = null;
       if (cargoGroup) cargoGroup.clear();
+      if (cavityGroup) {
+        disposeObject3D(cavityGroup);
+        if (containerGroup) containerGroup.remove(cavityGroup);
+        cavityGroup = null;
+      }
+      if (cogIndicatorGroup) {
+        disposeObject3D(cogIndicatorGroup);
+        if (containerGroup) containerGroup.remove(cogIndicatorGroup);
+        cogIndicatorGroup = null;
+      }
       boxMeshes = [];
+      window.boxMeshes = boxMeshes;
       activePackingResult = null;
       window.activePackingResult = null;
       window.activeLoadingResult = null;
       window.activeLoadingJobId = null;
+      invalidateShadowMap();
       ['kpi-util', 'kpi-count'].forEach(id => {
         const element = document.getElementById(id);
         if (element) element.innerHTML = '—';
@@ -4421,7 +4719,7 @@
       const summary = manifest.map(m => `${m.sku}_${m.quantity}_${m.w}x${m.d}x${m.h}_${m.weight}_${m.requirement||''}`).join('|');
       const wSummary = Object.entries(weights || {}).map(([k, v]) => `${k}:${v}`).join(',');
       let hash = 0;
-      const str = `${specCode}_${strategy}_${gap}_${isCoGBalanceEnabled}_${wSummary}_${summary}`;
+      const str = `${specCode}_${strategy}_${gap}_${isCoGBalanceEnabled}_${isDoorOpenStabilityEnabled}_${wSummary}_${summary}`;
       for (let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i);
         hash = ((hash << 5) - hash) + char;
@@ -4506,12 +4804,12 @@
     }
 
     // --- LOADING RESULT PERSISTENT CACHE ---
-    // 结果契约版本：每次 API metrics 结构变化必须 +1（当前 2 = 含 geometry_qa/cavities/delivery_gate）。
+    // 结果契约版本：每次 API metrics 结构变化必须 +1（当前 5 = 含多方案评分/对比元数据）。
     // 旧版本缓存一律丢弃，防止"旧引擎结果冒充新结果"直接进入交付。
-    const RESULT_SCHEMA_VERSION = 3;
-    const CACHED_LOADING_RESULT_KEY = '3D_AICIVS_CACHED_LOADING_RESULT_V44_HEALTH';
+    const RESULT_SCHEMA_VERSION = 5;
+    const CACHED_LOADING_RESULT_KEY = '3D_AICIVS_CACHED_LOADING_RESULT_V46_PLANS';
     // 清理历史契约的缓存键（旧结构结果不得再被读取）
-    try { localStorage.removeItem('3D_AICIVS_CACHED_LOADING_RESULT_V42_FLUSH_BULKHEAD'); localStorage.removeItem('3D_AICIVS_CACHED_LOADING_RESULT_V43_GATE'); } catch (e) {}
+    try { localStorage.removeItem('3D_AICIVS_CACHED_LOADING_RESULT_V42_FLUSH_BULKHEAD'); localStorage.removeItem('3D_AICIVS_CACHED_LOADING_RESULT_V43_GATE'); localStorage.removeItem('3D_AICIVS_CACHED_LOADING_RESULT_V44_HEALTH'); localStorage.removeItem('3D_AICIVS_CACHED_LOADING_RESULT_V45_CAVITY'); } catch (e) {}
 
     function saveLoadingResultCache(loadingResult, usableDim, manifest, spec) {
       try {
@@ -4743,6 +5041,7 @@
     }
 
     function getReqClass(req) {
+      if (/随意|任意位置|不限位置|无要求|自由摆放/i.test(req)) return 'req-any';
       if (/最里面|里面|rear/i.test(req)) return 'req-rear';
       if (/封柜门|门|door/i.test(req)) return 'req-door';
       return 'req-mid';
@@ -4822,15 +5121,39 @@
 
     // --- 5. THREE.JS SCENE SETUP & OPTIMIZED PBR PIPELINE ---
     let scene, camera, renderer, controls;
+    let orthoCamera, perspectiveCamera;
+    let cameraMode = 'ortho';
+    let cameraTransitionToken = 0;
     let containerGroup, cargoGroup, cavityGroup, doorLeftGroup, doorRightGroup;
     let cavityOverlayEnabled = true;
     let foregroundCutawayMat, solidBackMat, frameSolidMat, steelFloorMat;
     let sunLight, ambientLight, hemiLight, fillLight1, fillLight2, groundMesh, contactShadowPlane, steelNormalMap;
+    let studioBackdropTexture = null;
+    let studioBackdropMesh = null;
+    let studioEnvRenderTarget = null;
+    let currentCameraPreset = 'iso';
+    let cardboardNormalMap = null;
+    let cardboardAOMap = null;
+    let containerFloorTexture = null;
+    let gridHelper = null;
     let boxMeshes = [];
     let raycaster, mouse;
     let hoveredBox = null;
     let isDoorOpen = false;
     let isPackingAnimating = false;
+    let packingAnimationState = null;
+    let animationSessionCounter = 0;
+    let animationGhostGroup = null;
+    let animationGhostGeometry = null;
+    let animationGhostMaterial = null;
+    let animationCameraSnapshot = null;
+    let animationUiSnapshot = null;
+    let animationHudHideTimer = null;
+    window.__packingAnimationActive = false;
+    let shadowInvalidations = 0;
+
+    // 纸箱配色：kraft = 真实牛皮纸 + SKU 强调色；color = 整箱 SKU 色（识别模式）
+    let packagePaletteMode = 'kraft';
 
     // Performance state flags (dirty checking to eliminate per-frame overhead)
     let isCameraDirty = true;
@@ -4893,34 +5216,190 @@
     let dynamicSkeletons = [];
 
     const renderConfig = {
-      foregroundOpacity: 0.01,
-      glassColor: '#b8d7f4',
+      // kraft: 中性瓦楞纸 + SKU 色标；color: 整箱 SKU 色识别模式
+      packagePalette: 'kraft',
+      cameraMode: 'ortho',
+      foregroundOpacity: 0.06,
+      glassColor: '#cfe3f7',
       frameColor: '#2f383d',
-      frameMetal: 0.5,
-      frameRough: 0.68,
-      bump: 0.94,
+      frameMetal: 0.88,
+      frameRough: 0.58,
+      bump: 0.60,
       backColor: '#43474c',
-      exposure: 0.86,
-      sunIntensity: 1.8,
-      ambIntensity: 0.6,
-      shadowRadius: 0.5,
+      exposure: 0.85,
+      sunIntensity: 2.5,
+      ambIntensity: 0.30,
+      // 货箱默认既不投影到柜体/柜底，也不接收箱间实时阴影，避免柜内暗带过多。
+      cargoCastShadow: false,
+      cargoReceiveShadow: false,
+      // 现在仅驱动接触阴影柔和度；主光固定 PCFSoft，不再误用无效 radius
+      shadowRadius: 1.5,
       groundColor: '#ffffff',
       showShadow: true,
       smartCutaway: true,
-      sunAzimuth: 45,
-      sunElevation: 58,
+      sunAzimuth: 30,
+      sunElevation: 48,
       sunDistance: 45,
       groundShadowOpacity: 0,
-      contactShadowOpacity: 0.6,
-      fill2Intensity: 1.05,
-      fill1Intensity: 0.55,
-      hemiIntensity: 0.75
+      contactShadowOpacity: 0.45,
+      fill2Intensity: 0,
+      fill1Intensity: 0.35,
+      hemiIntensity: 0.45
     };
+    window.renderConfig = renderConfig;
+    packagePaletteMode = renderConfig.packagePalette;
+    cameraMode = renderConfig.cameraMode;
 
     const CS = 0.16;
     const POST_W = 0.09;
     const RAIL_H = 0.09;
     const RAIL_D = 0.11;
+
+    // --- Render quality helpers: deterministic textures, palette & lifecycle ---
+    const RENDER_TEXTURE_SEED = 0x9E3779B9;
+    function hashString(text) {
+      let h = 2166136261 >>> 0;
+      const s = String(text || '');
+      for (let i = 0; i < s.length; i++) {
+        h ^= s.charCodeAt(i);
+        h = Math.imul(h, 16777619) >>> 0;
+      }
+      return h >>> 0;
+    }
+
+    function makeSeededRandom(seed) {
+      let t = seed >>> 0;
+      return function seededRandom() {
+        t = (t + 0x6D2B79F5) >>> 0;
+        let r = t;
+        r = Math.imul(r ^ (r >>> 15), r | 1);
+        r ^= r + Math.imul(r ^ (r >>> 7), r | 61);
+        return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function getMaxTextureAnisotropy() {
+      try {
+        return Math.min(8, renderer && renderer.capabilities
+          ? renderer.capabilities.getMaxAnisotropy() : 1);
+      } catch (e) {
+        return 1;
+      }
+    }
+
+    function configureCargoAlbedoTexture(tex) {
+      if (!tex) return tex;
+      tex.encoding = THREE.sRGBEncoding;
+      tex.anisotropy = getMaxTextureAnisotropy();
+      tex.generateMipmaps = true;
+      tex.minFilter = THREE.LinearMipmapLinearFilter;
+      tex.magFilter = THREE.LinearFilter;
+      tex.needsUpdate = true;
+      return tex;
+    }
+
+    function disposeTextureSet(texs) {
+      if (!texs) return;
+      Object.values(texs).forEach(tex => {
+        if (tex && tex.dispose) tex.dispose();
+      });
+    }
+
+    function disposeMaterialList(materials) {
+      if (!materials) return;
+      (Array.isArray(materials) ? materials : [materials]).forEach(mat => {
+        if (mat && mat.dispose) mat.dispose();
+      });
+    }
+
+    function disposeObject3D(root) {
+      if (!root || !root.traverse) return;
+      const materials = new Set();
+      const geometries = new Set();
+      root.traverse(obj => {
+        // Cargo materials/geometries have their own registry and shared geometry;
+        // container teardown must not dispose them.
+        let ancestor = obj;
+        while (ancestor) {
+          if (ancestor === cargoGroup) return;
+          ancestor = ancestor.parent;
+        }
+        // Outline lines share global geometry/material resources.
+        if (obj.name === 'highlightOutlineStroke') return;
+        if (obj.parent && obj.parent.name === 'highlightOutlineStroke') return;
+        if (obj.geometry && !(obj.geometry.userData && obj.geometry.userData.shared)) {
+          geometries.add(obj.geometry);
+        }
+        if (obj.material) {
+          (Array.isArray(obj.material) ? obj.material : [obj.material]).forEach(m => {
+            if (m) materials.add(m);
+          });
+        }
+      });
+      materials.forEach(m => { if (m.dispose) m.dispose(); });
+      geometries.forEach(g => { if (g.dispose) g.dispose(); });
+    }
+
+    function invalidateShadowMap() {
+      shadowInvalidations += 1;
+      if (renderer && renderer.shadowMap) renderer.shadowMap.needsUpdate = true;
+    }
+
+    function setShadowCasterState(obj, enabled) {
+      if (!obj || !obj.isMesh) return;
+      const next = Boolean(enabled);
+      if (obj.userData.shadowCastState === next) return;
+      obj.userData.shadowCastState = next;
+      obj.castShadow = next;
+      invalidateShadowMap();
+    }
+
+    function setShadowReceiverState(obj, enabled) {
+      if (!obj || !obj.isMesh) return;
+      const next = Boolean(enabled);
+      if (obj.userData.shadowReceiveState === next) return;
+      obj.userData.shadowReceiveState = next;
+      obj.receiveShadow = next;
+    }
+
+    function createStudioBackdropTexture() {
+      if (studioBackdropTexture) return studioBackdropTexture;
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, 0, 512);
+      grad.addColorStop(0, '#fbfcfe');
+      grad.addColorStop(0.55, '#eef3f8');
+      grad.addColorStop(1, '#dde5ee');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 512, 512);
+      const vignette = ctx.createRadialGradient(256, 220, 40, 256, 220, 360);
+      vignette.addColorStop(0, 'rgba(255,255,255,0.18)');
+      vignette.addColorStop(1, 'rgba(120,140,165,0.18)');
+      ctx.fillStyle = vignette;
+      ctx.fillRect(0, 0, 512, 512);
+      studioBackdropTexture = new THREE.CanvasTexture(canvas);
+      studioBackdropTexture.encoding = THREE.sRGBEncoding;
+      return studioBackdropTexture;
+    }
+
+    function ensureStudioBackdrop() {
+      if (studioBackdropMesh) return studioBackdropMesh;
+      const geo = new THREE.SphereGeometry(120, 32, 16);
+      const mat = new THREE.MeshBasicMaterial({
+        map: createStudioBackdropTexture(),
+        side: THREE.BackSide,
+        depthWrite: false,
+        fog: false
+      });
+      studioBackdropMesh = new THREE.Mesh(geo, mat);
+      studioBackdropMesh.name = 'STUDIO_BACKDROP';
+      studioBackdropMesh.renderOrder = -1000;
+      studioBackdropMesh.visible = false;
+      scene.add(studioBackdropMesh);
+      return studioBackdropMesh;
+    }
 
     function clearOrientationAssist() {
       if (!orientationAssistLine) return;
@@ -5005,6 +5484,10 @@
     }
 
     window.togglePackageOrientationMode = function() {
+      if (isPackingAnimating) {
+        showToast('演示装柜中暂不切换朝向辅助', 'info', '装柜演示');
+        return;
+      }
       packageOrientationDisplayMode = packageOrientationDisplayMode === window.BLK007F78.DisplayMode.PHYSICAL
         ? window.BLK007F78.DisplayMode.ASSIST : window.BLK007F78.DisplayMode.PHYSICAL;
       const text = document.getElementById('txt-orientation-mode');
@@ -5072,13 +5555,19 @@
       const ctx = canvas.getContext('2d');
       const imgData = ctx.createImageData(256, 256);
       const data = imgData.data;
+      const rand = makeSeededRandom(RENDER_TEXTURE_SEED ^ 0x51ED270B);
 
-      for (let i = 0; i < data.length; i += 4) {
-        const noise = (Math.random() - 0.5) * 8;
-        data[i]     = 128 + noise;
-        data[i + 1] = 128 + noise;
-        data[i + 2] = 255;
-        data[i + 3] = 255;
+      for (let y = 0; y < 256; y++) {
+        for (let x = 0; x < 256; x++) {
+          const i = (y * 256 + x) * 4;
+          // 细密轧制方向纹理：横向拉丝 + 少量颗粒，避免随机砂纸感
+          const brushed = Math.sin(y * 0.62 + Math.sin(x * 0.03) * 1.4) * 2.2;
+          const grain = (rand() - 0.5) * 2.4;
+          data[i]     = 128 + grain;
+          data[i + 1] = 128 + brushed + grain * 0.5;
+          data[i + 2] = 255;
+          data[i + 3] = 255;
+        }
       }
       ctx.putImageData(imgData, 0, 0);
       const tex = new THREE.CanvasTexture(canvas);
@@ -5088,32 +5577,168 @@
       return tex;
     }
 
+    // Shared cardboard detail maps: fine fiber + soft edge bevel + edge AO.
+    // One texture pair is reused by every carton material, so draw calls do not grow.
+    function getCardboardDetailMaps() {
+      if (cardboardNormalMap && cardboardAOMap) {
+        return { normalMap: cardboardNormalMap, aoMap: cardboardAOMap };
+      }
+      const normalCanvas = document.createElement('canvas');
+      normalCanvas.width = 512;
+      normalCanvas.height = 512;
+      const nCtx = normalCanvas.getContext('2d');
+      const nImg = nCtx.createImageData(512, 512);
+      const nData = nImg.data;
+      const rand = makeSeededRandom(RENDER_TEXTURE_SEED ^ 0x27D4EB2F);
+      const bevel = 9;
+
+      for (let y = 0; y < 512; y++) {
+        for (let x = 0; x < 512; x++) {
+          const i = (y * 512 + x) * 4;
+          let nx = (rand() - 0.5) * 0.10;
+          let ny = (rand() - 0.5) * 0.10;
+          // Rounded-edge normal: borders tilt inward so box edges catch a fine highlight.
+          if (x < bevel) nx -= (1 - x / bevel) * 0.52;
+          if (x >= 512 - bevel) nx += (1 - (511 - x) / bevel) * 0.52;
+          if (y < bevel) ny -= (1 - y / bevel) * 0.52;
+          if (y >= 512 - bevel) ny += (1 - (511 - y) / bevel) * 0.52;
+          // Sparse corrugation fibers
+          const fiber = Math.sin(x * 0.10 + y * 0.018) * 0.025;
+          nx += fiber;
+          const len = Math.sqrt(nx * nx + ny * ny + 1.0);
+          nData[i]     = Math.round((nx / len * 0.5 + 0.5) * 255);
+          nData[i + 1] = Math.round((ny / len * 0.5 + 0.5) * 255);
+          nData[i + 2] = Math.round((1.0 / len * 0.5 + 0.5) * 255);
+          nData[i + 3] = 255;
+        }
+      }
+      nCtx.putImageData(nImg, 0, 0);
+      cardboardNormalMap = new THREE.CanvasTexture(normalCanvas);
+      cardboardNormalMap.wrapS = THREE.ClampToEdgeWrapping;
+      cardboardNormalMap.wrapT = THREE.ClampToEdgeWrapping;
+
+      const aoCanvas = document.createElement('canvas');
+      aoCanvas.width = 256;
+      aoCanvas.height = 256;
+      const aCtx = aoCanvas.getContext('2d');
+      const aImg = aCtx.createImageData(256, 256);
+      const aData = aImg.data;
+      for (let y = 0; y < 256; y++) {
+        for (let x = 0; x < 256; x++) {
+          const i = (y * 256 + x) * 4;
+          const ex = Math.min(x, 255 - x) / 255;
+          const ey = Math.min(y, 255 - y) / 255;
+          const edge = Math.min(ex, ey);
+          const ao = 0.58 + 0.42 * Math.min(1.0, edge / 0.075);
+          const v = Math.round(ao * 255);
+          aData[i] = v;
+          aData[i + 1] = v;
+          aData[i + 2] = v;
+          aData[i + 3] = 255;
+        }
+      }
+      aCtx.putImageData(aImg, 0, 0);
+      cardboardAOMap = new THREE.CanvasTexture(aoCanvas);
+      cardboardAOMap.wrapS = THREE.ClampToEdgeWrapping;
+      cardboardAOMap.wrapT = THREE.ClampToEdgeWrapping;
+      return { normalMap: cardboardNormalMap, aoMap: cardboardAOMap };
+    }
+
+    function createContainerFloorTexture() {
+      if (containerFloorTexture) return containerFloorTexture;
+      const canvas = document.createElement('canvas');
+      canvas.width = 1024;
+      canvas.height = 256;
+      const ctx = canvas.getContext('2d');
+      const rand = makeSeededRandom(RENDER_TEXTURE_SEED ^ 0xC2B2AE35);
+      // 多层胶合板：暖木底 + 细木纹 + 板缝/钢横梁压痕
+      ctx.fillStyle = '#8a6544';
+      ctx.fillRect(0, 0, 1024, 256);
+      for (let i = 0; i < 220; i++) {
+        const y = rand() * 256;
+        ctx.strokeStyle = `rgba(${50 + rand() * 40}, ${30 + rand() * 25}, ${16 + rand() * 18}, ${0.08 + rand() * 0.16})`;
+        ctx.lineWidth = 0.6 + rand() * 1.4;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        for (let x = 0; x <= 1024; x += 64) {
+          ctx.lineTo(x, y + Math.sin(x * 0.018 + i) * 2.2);
+        }
+        ctx.stroke();
+      }
+      for (let x = 0; x < 1024; x += 128) {
+        ctx.fillStyle = 'rgba(28, 28, 24, 0.22)';
+        ctx.fillRect(x, 0, 5, 256);
+        ctx.fillStyle = 'rgba(255, 235, 200, 0.08)';
+        ctx.fillRect(x + 5, 0, 2, 256);
+      }
+      ctx.fillStyle = 'rgba(30, 35, 38, 0.18)';
+      for (let y = 38; y < 256; y += 72) ctx.fillRect(0, y, 1024, 4);
+      containerFloorTexture = new THREE.CanvasTexture(canvas);
+      containerFloorTexture.encoding = THREE.sRGBEncoding;
+      containerFloorTexture.wrapS = THREE.RepeatWrapping;
+      containerFloorTexture.wrapT = THREE.ClampToEdgeWrapping;
+      containerFloorTexture.repeat.set(2, 1);
+      containerFloorTexture.anisotropy = getMaxTextureAnisotropy();
+      return containerFloorTexture;
+    }
+
     // --- HIGH-FIDELITY MULTI-FACE CARGO TEXTURE GENERATOR ---
     // One immutable texture set per SKU/color. Orientation is expressed by
     // shared geometry UV variants, never by mutating these texture objects.
     const textureCanvasCache = new window.BLK007F78.PackageTextureRegistry();
 
-    function getOrCreateFaceTextures(baseColorHex, labelText, skuCode) {
-      const cacheId = `${baseColorHex}_${skuCode}`;
+    function getOrCreateFaceTextures(baseColorHex, labelText, skuCode, paletteMode) {
+      const mode = paletteMode || packagePaletteMode || 'kraft';
+      const cacheId = `${mode}_${baseColorHex}_${skuCode}`;
       if (textureCanvasCache.has(cacheId)) {
         return textureCanvasCache.get(cacheId);
       }
+
+      const accentHex = '#' + new THREE.Color(baseColorHex).getHexString();
+      const isKraft = mode === 'kraft';
+      const detailRand = makeSeededRandom(RENDER_TEXTURE_SEED ^ hashString(`${mode}:${skuCode}`));
+      const tapeBase = new THREE.Color(isKraft ? '#e8d2a8' : '#eed6a8');
+      const tapeAccent = new THREE.Color(baseColorHex);
+      const tapeHex = '#' + tapeBase.lerp(tapeAccent, isKraft ? 0.68 : 0.0).getHexString();
 
       function createBaseCardboardCanvas() {
         const c = document.createElement('canvas');
         c.width = 512;
         c.height = 512;
         const ctx = c.getContext('2d');
-        ctx.fillStyle = '#' + new THREE.Color(baseColorHex).getHexString();
+        // 真实模式用中性瓦楞纸底；彩色模式保留整箱 SKU 色。
+        ctx.fillStyle = isKraft ? '#c8a97e' : accentHex;
         ctx.fillRect(0, 0, 512, 512);
 
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.035)';
-        for (let i = 0; i < 2400; i++) {
-          ctx.fillRect(Math.random() * 512, Math.random() * 512, 1.5, 1.5);
+        if (isKraft) {
+          // 细瓦楞/纤维方向纹理，避免纯色塑料面
+          ctx.strokeStyle = 'rgba(92, 63, 38, 0.10)';
+          ctx.lineWidth = 1;
+          for (let y = 8; y < 512; y += 11) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(512, y + Math.sin(y * 0.04) * 1.2);
+            ctx.stroke();
+          }
+          // SKU 强调色作为可见的印刷边条/胶带识别，而不是整箱塑料染色。
+          // 约 3.5cm 的实际宽度，远看也能区分 SKU。
+          ctx.fillStyle = accentHex;
+          ctx.globalAlpha = 0.92;
+          ctx.fillRect(0, 0, 512, 38);
+          ctx.globalAlpha = 1.0;
+          ctx.fillStyle = 'rgba(255,255,255,0.20)';
+          ctx.fillRect(0, 38, 512, 2);
+          ctx.fillStyle = 'rgba(0,0,0,0.12)';
+          ctx.fillRect(0, 40, 512, 1);
         }
 
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.20)';
-        ctx.lineWidth = 6;
+        ctx.fillStyle = isKraft ? 'rgba(58, 38, 22, 0.055)' : 'rgba(0, 0, 0, 0.035)';
+        for (let i = 0; i < 2200; i++) {
+          ctx.fillRect(detailRand() * 512, detailRand() * 512, 1.2 + detailRand() * 1.4, 1.2);
+        }
+
+        ctx.strokeStyle = isKraft ? 'rgba(66, 45, 28, 0.28)' : 'rgba(0, 0, 0, 0.20)';
+        ctx.lineWidth = 5;
         ctx.strokeRect(3, 3, 506, 506);
         return { c, ctx };
       }
@@ -5137,20 +5762,23 @@
       fbCtx.fillRect(36, 275, 165, 145);
       fbCtx.shadowBlur = 0;
 
-      fbCtx.fillStyle = '#1e293b';
+      fbCtx.fillStyle = isKraft ? accentHex : '#1e293b';
       fbCtx.fillRect(36, 275, 165, 20);
       fbCtx.fillStyle = '#ffffff';
       fbCtx.font = 'bold 9.5px monospace';
       fbCtx.fillText('EXPRESS CARGO', 48, 289);
 
       fbCtx.fillStyle = '#0f172a';
-      for (let bx = 48; bx < 188; bx += Math.random() * 6 + 4) {
-        fbCtx.fillRect(bx, 303, Math.random() > 0.4 ? 2.5 : 1.5, 46);
+      // Deterministic Code128-style bars: stable across reloads for visual A/B.
+      const barcodeRand = makeSeededRandom(RENDER_TEXTURE_SEED ^ hashString(`barcode:${skuCode}`));
+      for (let bx = 48; bx < 188; bx += barcodeRand() * 6 + 4) {
+        fbCtx.fillRect(bx, 303, barcodeRand() > 0.4 ? 2.5 : 1.5, 46);
       }
 
-      fbCtx.font = 'bold 11px sans-serif';
+      const label = String(labelText || 'CARGO');
+      fbCtx.font = `bold ${label.length > 14 ? 9 : 11}px sans-serif`;
       fbCtx.fillStyle = '#1e293b';
-      fbCtx.fillText(labelText || 'CARGO', 48, 385);
+      fbCtx.fillText(label, 48, 385, 142);
 
       function drawUpwardArrow(ctx, cx, cy, arrowW, arrowH) {
         ctx.save();
@@ -5196,13 +5824,15 @@
       sCtx.lineTo(512, 12);
       sCtx.stroke();
 
-      sCtx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+      sCtx.fillStyle = isKraft ? accentHex : 'rgba(0, 0, 0, 0.15)';
+      sCtx.globalAlpha = isKraft ? 0.90 : 1.0;
       sCtx.fillRect(196, 236, 120, 40);
-      sCtx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+      sCtx.globalAlpha = 1.0;
+      sCtx.strokeStyle = isKraft ? 'rgba(255,255,255,0.70)' : 'rgba(0, 0, 0, 0.3)';
       sCtx.lineWidth = 2;
       sCtx.strokeRect(196, 236, 120, 40);
 
-      sCtx.fillStyle = 'rgba(15, 23, 42, 0.65)';
+      sCtx.fillStyle = isKraft ? '#ffffff' : 'rgba(15, 23, 42, 0.65)';
       sCtx.font = 'bold 12px monospace';
       sCtx.textAlign = 'center';
       sCtx.fillText(`[ ${skuCode} ]`, 256, 316);
@@ -5219,11 +5849,13 @@
       tCtx.lineTo(512, 256);
       tCtx.stroke();
 
-      tCtx.fillStyle = 'rgba(238, 214, 168, 0.94)';
-      tCtx.fillRect(0, 232, 512, 48);
-      tCtx.strokeStyle = 'rgba(165, 125, 70, 0.5)';
+      tCtx.fillStyle = isKraft ? tapeHex : 'rgba(238, 214, 168, 0.94)';
+      tCtx.globalAlpha = isKraft ? 0.94 : 1.0;
+      tCtx.fillRect(0, 224, 512, 64);
+      tCtx.globalAlpha = 1.0;
+      tCtx.strokeStyle = isKraft ? 'rgba(94, 66, 38, 0.42)' : 'rgba(165, 125, 70, 0.5)';
       tCtx.lineWidth = 2;
-      tCtx.strokeRect(0, 232, 512, 48);
+      tCtx.strokeRect(0, 224, 512, 64);
 
       // 4. BOTTOM FACE (-Y): Clean base with recycle / certificate stamp
       const bottomFace = createBaseCardboardCanvas();
@@ -5249,15 +5881,163 @@
       bCtx.textAlign = 'left';
 
       const textures = {
-        frontBackTex: new THREE.CanvasTexture(frontBack.c),
-        sideTex:      new THREE.CanvasTexture(sideFace.c),
-        topTex:       new THREE.CanvasTexture(topFace.c),
-        bottomTex:    new THREE.CanvasTexture(bottomFace.c)
+        frontBackTex: configureCargoAlbedoTexture(new THREE.CanvasTexture(frontBack.c)),
+        sideTex:      configureCargoAlbedoTexture(new THREE.CanvasTexture(sideFace.c)),
+        topTex:       configureCargoAlbedoTexture(new THREE.CanvasTexture(topFace.c)),
+        bottomTex:    configureCargoAlbedoTexture(new THREE.CanvasTexture(bottomFace.c))
       };
 
       textureCanvasCache.set(cacheId, textures);
       return textures;
     }
+
+    function createCargoMaterial(map, ghost = false) {
+      const detail = getCardboardDetailMaps();
+      const material = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        map,
+        roughness: ghost ? 0.90 : 0.84,
+        metalness: 0.0,
+        envMapIntensity: 0.10,
+        normalMap: detail.normalMap,
+        normalScale: new THREE.Vector2(0.30, 0.30),
+        aoMap: detail.aoMap,
+        aoMapIntensity: 0.55
+      });
+      if (ghost) {
+        material.transparent = true;
+        material.opacity = 0.10;
+        material.depthWrite = false;
+      }
+      return material;
+    }
+
+    function buildCargoMaterialSet(texs) {
+      const faceMaps = [texs.sideTex, texs.sideTex, texs.topTex, texs.bottomTex, texs.frontBackTex, texs.frontBackTex];
+      return {
+        solidMats: faceMaps.map(map => createCargoMaterial(map, false)),
+        ghostMats: faceMaps.map(map => createCargoMaterial(map, true))
+      };
+    }
+
+    function disposeSkuMaterialRegistry() {
+      skuMaterialRegistry.forEach(set => {
+        disposeMaterialList(set.solidMats);
+        disposeMaterialList(set.ghostMats);
+      });
+      skuMaterialRegistry.clear();
+    }
+
+    function pruneInactivePaletteTextures(activeMode) {
+      const keepPrefix = `${activeMode}_`;
+      Array.from(textureCanvasCache.keys()).forEach(key => {
+        if (!key.startsWith(keepPrefix)) {
+          disposeTextureSet(textureCanvasCache.get(key));
+          textureCanvasCache.delete(key);
+        }
+      });
+    }
+
+    function pruneTextureCacheToActiveManifest(activeMode) {
+      const keep = new Set((activeManifest || []).map(skuItem =>
+        `${activeMode}_${skuItem.color}_${skuItem.sku}`));
+      Array.from(textureCanvasCache.keys()).forEach(key => {
+        if (!keep.has(key)) {
+          disposeTextureSet(textureCanvasCache.get(key));
+          textureCanvasCache.delete(key);
+        }
+      });
+    }
+
+    function applyPackagePalette(mode) {
+      const nextMode = mode === 'color' ? 'color' : 'kraft';
+      const changed = nextMode !== packagePaletteMode;
+      packagePaletteMode = nextMode;
+      renderConfig.packagePalette = nextMode;
+      if (!changed || !activeManifest.length) {
+        updatePackagePaletteUI();
+        return;
+      }
+
+      const oldSets = [];
+      activeManifest.forEach(skuItem => {
+        const oldSet = skuMaterialRegistry.get(skuItem.sku);
+        if (oldSet) oldSets.push(oldSet);
+      });
+
+      skuMaterialRegistry.clear();
+      orientationMaterialCache.clear();
+      activeManifest.forEach(skuItem => {
+        const texs = getOrCreateFaceTextures(
+          skuItem.color, skuItem.name, skuItem.sku, nextMode);
+        skuMaterialRegistry.set(skuItem.sku, buildCargoMaterialSet(texs));
+      });
+      boxMeshes.forEach(box => {
+        const nextSet = skuMaterialRegistry.get(box.userData.sku);
+        if (nextSet) box.userData.skuMaterials = nextSet;
+        // Invalidate XRAY/CLIP cached material references; they belonged to the old palette.
+        if (box.userData._ghostMaterial) {
+          disposeMaterialList(box.userData._ghostMaterial);
+          delete box.userData._ghostMaterial;
+        }
+        delete box.userData._origMaterial;
+      });
+      updateBoxVisibilityAndMaterials();
+      oldSets.forEach(set => {
+        disposeMaterialList(set.solidMats);
+        disposeMaterialList(set.ghostMats);
+      });
+      pruneInactivePaletteTextures(nextMode);
+      updatePackagePaletteUI();
+      invalidateShadowMap();
+    }
+
+    function updatePackagePaletteUI() {
+      const kraftBtn = document.getElementById('btn-palette-kraft');
+      const colorBtn = document.getElementById('btn-palette-color');
+      if (kraftBtn) kraftBtn.classList.toggle('active', packagePaletteMode === 'kraft');
+      if (colorBtn) colorBtn.classList.toggle('active', packagePaletteMode === 'color');
+      const label = document.getElementById('val-packagePalette');
+      if (label) label.textContent = packagePaletteMode === 'kraft' ? '真实牛皮纸' : '彩色识别';
+    }
+
+    function updateCargoReceiveShadowUI() {
+      const offBtn = document.getElementById('btn-cargo-shadow-off');
+      const onBtn = document.getElementById('btn-cargo-shadow-on');
+      const enabled = Boolean(renderConfig.cargoReceiveShadow);
+      if (offBtn) offBtn.classList.toggle('active', !enabled);
+      if (onBtn) onBtn.classList.toggle('active', enabled);
+      const label = document.getElementById('val-cargoReceiveShadow');
+      if (label) label.textContent = enabled ? '开启（更强层次）' : '关闭（更干净）';
+    }
+
+    function updateCargoCastShadowUI() {
+      const offBtn = document.getElementById('btn-cargo-cast-off');
+      const onBtn = document.getElementById('btn-cargo-cast-on');
+      const enabled = Boolean(renderConfig.cargoCastShadow);
+      if (offBtn) offBtn.classList.toggle('active', !enabled);
+      if (onBtn) onBtn.classList.toggle('active', enabled);
+      const label = document.getElementById('val-cargoCastShadow');
+      if (label) label.textContent = enabled ? '开启（柜底有投影）' : '关闭（柜内更干净）';
+    }
+
+    window.setCargoReceiveShadow = function(enabled) {
+      renderConfig.cargoReceiveShadow = Boolean(enabled);
+      if (boxMeshes.length) updateBoxVisibilityAndMaterials();
+      updateCargoReceiveShadowUI();
+      invalidateShadowMap();
+    };
+
+    window.setCargoCastShadow = function(enabled) {
+      renderConfig.cargoCastShadow = Boolean(enabled);
+      if (boxMeshes.length) updateBoxVisibilityAndMaterials();
+      updateCargoCastShadowUI();
+      invalidateShadowMap();
+    };
+
+    window.setPackagePalette = function(mode) {
+      applyPackagePalette(mode);
+    };
 
     function createSmoothCorrugatedGeometry(width, height, numWaves, waveDepth = 0.030) {
       const segW = numWaves * 12;
@@ -5303,12 +6083,9 @@
       window.currentSpec = currentSpec;
       scene.background = new THREE.Color(renderConfig.groundColor);
 
-      const envTexture = createHighEndStudioEnv();
-      scene.environment = envTexture;
-
       const aspect = width / height;
       const frustumSize = currentSpec.cameraDist;
-      camera = new THREE.OrthographicCamera(
+      orthoCamera = new THREE.OrthographicCamera(
         -frustumSize * aspect / 2,
         frustumSize * aspect / 2,
         frustumSize / 2,
@@ -5316,9 +6093,15 @@
         0.1,
         1000
       );
-      camera.position.set(-20, 19.8, 20);
-      camera.lookAt(0, currentSpec.extH / 2, 0);
+      orthoCamera.position.set(-20, 19.8, 20);
+      orthoCamera.lookAt(0, currentSpec.extH / 2, 0);
+      perspectiveCamera = new THREE.PerspectiveCamera(38, aspect, 0.1, 200);
+      perspectiveCamera.position.set(-20, 19.8, 20);
+      perspectiveCamera.lookAt(0, currentSpec.extH / 2, 0);
+      camera = orthoCamera;
       window.camera = camera;
+      window.orthoCamera = orthoCamera;
+      window.perspectiveCamera = perspectiveCamera;
 
       renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: true });
       renderer.setSize(width, height);
@@ -5327,10 +6110,29 @@
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      // Static scene shadows are refreshed only through invalidateShadowMap().
+      renderer.shadowMap.autoUpdate = false;
+      renderer.shadowMap.needsUpdate = true;
       renderer.outputEncoding = THREE.sRGBEncoding;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = renderConfig.exposure;
       container.appendChild(renderer.domElement);
+
+      // PMREM requires an initialized renderer. It turns the LDR studio canvas
+      // into a roughness-prefiltered environment for believable metal response.
+      const envTexture = createHighEndStudioEnv();
+      envTexture.encoding = THREE.sRGBEncoding;
+      try {
+        const pmrem = new THREE.PMREMGenerator(renderer);
+        pmrem.compileEquirectangularShader();
+        studioEnvRenderTarget = pmrem.fromEquirectangular(envTexture);
+        scene.environment = studioEnvRenderTarget.texture;
+        envTexture.dispose();
+        pmrem.dispose();
+      } catch (envErr) {
+        console.warn('[3D-AICIVS] PMREM 环境初始化失败，回退 Canvas 环境:', envErr);
+        scene.environment = envTexture;
+      }
 
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
@@ -5338,6 +6140,11 @@
       controls.rotateSpeed = 0.85;
       controls.panSpeed = 0.85;
       controls.zoomSpeed = 1.0;
+      controls.minZoom = 0.45;
+      controls.maxZoom = 4.0;
+      controls.minPolarAngle = 0.03;
+      controls.maxPolarAngle = Math.PI / 2 - 0.015;
+      controls.screenSpacePanning = true;
       controls.target.set(0, currentSpec.extH / 2, 0);
       controls.update();
 
@@ -5422,21 +6229,29 @@
       });
 
       setupDrawerScrollAccordion();
+      applyViewMode();
+      updatePackagePaletteUI();
+      updateCargoReceiveShadowUI();
+      updateCargoCastShadowUI();
+      updateCameraProjectionUI();
+      if (cameraMode === 'perspective') {
+        window.setCameraProjection('perspective', 'iso');
+      }
 
       animate();
     }
 
     function setupLighting() {
-      // 1. Ambient & Hemispheric Diffuse Light (提供柔和基底漫反射，消除死黑阴影)
-      ambientLight = new THREE.AmbientLight(0xffffff, renderConfig.ambIntensity);
+      // 1. Low ambient / hemisphere base keeps shadowed faces readable without flattening the scene.
+      ambientLight = new THREE.AmbientLight(0xfff8ef, renderConfig.ambIntensity);
       scene.add(ambientLight);
 
-      hemiLight = new THREE.HemisphereLight(0xffffff, 0xf1f5f9, renderConfig.hemiIntensity || 0.85);
+      hemiLight = new THREE.HemisphereLight(0xf8fbff, 0x8b6b4a, renderConfig.hemiIntensity || 0.35);
       hemiLight.position.set(0, 50, 0);
       scene.add(hemiLight);
 
-      // 2. Main Studio Key Light (柔和主光源，大半径软阴影)
-      sunLight = new THREE.DirectionalLight(0xffffff, renderConfig.sunIntensity);
+      // 2. Warm key light with a tighter shadow frustum.
+      sunLight = new THREE.DirectionalLight(0xfff1dd, renderConfig.sunIntensity);
       sunLight.target.position.set(0, 1.4, 0);
       scene.add(sunLight.target);
 
@@ -5445,25 +6260,38 @@
       sunLight.shadow.mapSize.width = 2048;
       sunLight.shadow.mapSize.height = 2048;
       sunLight.shadow.camera.near = 1;
-      sunLight.shadow.camera.far = 140;
-      const d = 16;
+      sunLight.shadow.camera.far = 80;
+      sunLight.shadow.bias = -0.0001;
+      sunLight.shadow.normalBias = 0.02;
+      fitShadowCamera();
+      scene.add(sunLight);
+
+      // 3. Cool fill front-left, low intensity; keep visible form without washing out.
+      fillLight1 = new THREE.DirectionalLight(0xdfe9ff, renderConfig.fill1Intensity || 0.30);
+      fillLight1.position.set(-25, 20, -20);
+      scene.add(fillLight1);
+
+      // 4. Cool rim/fill from the opposite side, slightly stronger than fill1.
+      fillLight2 = new THREE.DirectionalLight(0xcfe4ff, renderConfig.fill2Intensity || 0.45);
+      fillLight2.position.set(20, 25, 20);
+      scene.add(fillLight2);
+      invalidateShadowMap();
+    }
+
+    function fitShadowCamera() {
+      if (!sunLight || !currentSpec) return;
+      const L = Math.max(1, currentSpec.extL || 12);
+      const W = Math.max(1, currentSpec.extW || 2.4);
+      const H = Math.max(1, currentSpec.extH || 2.8);
+      // Cover the container footprint plus a soft margin (previous fixed ±16m was wasteful).
+      const d = Math.max(7.5, Math.max(L, W, H) * 0.75 + 2.0);
       sunLight.shadow.camera.left = -d;
       sunLight.shadow.camera.right = d;
       sunLight.shadow.camera.top = d;
       sunLight.shadow.camera.bottom = -d;
-      sunLight.shadow.bias = -0.0002;
-      sunLight.shadow.radius = renderConfig.shadowRadius;
-      scene.add(sunLight);
-
-      // 3. Studio Fill Light 1 (前侧补光，提亮暗部细节)
-      fillLight1 = new THREE.DirectionalLight(0xf8fafc, renderConfig.fill1Intensity || 0.75);
-      fillLight1.position.set(-25, 20, -20);
-      scene.add(fillLight1);
-
-      // 4. Studio Fill Light 2 (侧上方微光，增强箱体边缘轮廓质感)
-      fillLight2 = new THREE.DirectionalLight(0xe0f2fe, renderConfig.fill2Intensity || 0.5);
-      fillLight2.position.set(20, 25, 20);
-      scene.add(fillLight2);
+      sunLight.shadow.camera.far = Math.max(80, d * 4.0);
+      sunLight.shadow.camera.updateProjectionMatrix();
+      invalidateShadowMap();
     }
 
     function updateSunLightPosition() {
@@ -5492,11 +6320,12 @@
       scene.add(groundMesh);
 
       // 2. High-Clarity Industrial Grid Lines (高清晰度工程参考网格)
-      const grid = new THREE.GridHelper(100, 50, 0x64748b, 0x94a3b8);
-      grid.position.y = 0.005;
-      grid.material.opacity = 0.85;
-      grid.material.transparent = true;
-      scene.add(grid);
+      gridHelper = new THREE.GridHelper(100, 50, 0x64748b, 0x94a3b8);
+      gridHelper.position.y = 0.005;
+      gridHelper.material.opacity = 0.85;
+      gridHelper.material.transparent = true;
+      gridHelper.material.depthWrite = false;
+      scene.add(gridHelper);
 
       // 3. High-Fidelity Soft Ambient Contact Shadow (高品质底部环境遮蔽接触阴影)
       updateContactShadowTexture();
@@ -5517,8 +6346,8 @@
       shadowCanvas.width = 512;
       shadowCanvas.height = 256;
       const sCtx = shadowCanvas.getContext('2d');
-      const blurRadius = (renderConfig.shadowRadius || 3.5) * 45;
-      const sGrad = sCtx.createRadialGradient(256, 128, 20, 256, 128, Math.max(80, blurRadius));
+      const blurRadius = (renderConfig.shadowRadius || 2.5) * 35;
+      const sGrad = sCtx.createRadialGradient(256, 128, 18, 256, 128, Math.max(28, blurRadius));
       sGrad.addColorStop(0, 'rgba(15, 23, 42, 0.55)');
       sGrad.addColorStop(0.4, 'rgba(15, 23, 42, 0.22)');
       sGrad.addColorStop(1, 'rgba(15, 23, 42, 0.0)');
@@ -5541,7 +6370,12 @@
     // --- ZERO-COLLISION & ZERO-GAP PRECISION CONTAINER MODEL REBUILD ---
     function rebuildContainerModel() {
       if (containerGroup) {
+        disposeObject3D(containerGroup);
         scene.remove(containerGroup);
+      }
+      if (steelNormalMap) {
+        steelNormalMap.dispose();
+        steelNormalMap = null;
       }
       dynamicWalls = [];
       dynamicDoorComponents = [];
@@ -5580,39 +6414,42 @@
         roughness: renderConfig.frameRough,
         normalMap: steelNormalMap,
         normalScale: new THREE.Vector2(renderConfig.bump, renderConfig.bump),
+        envMapIntensity: 0.5,
         side: THREE.DoubleSide
       });
 
       foregroundCutawayMat = new THREE.MeshBasicMaterial({
         color: new THREE.Color(renderConfig.glassColor),
         transparent: true,
-        opacity: renderConfig.foregroundOpacity * 0.45,
+        opacity: renderConfig.foregroundOpacity * 0.65,
         depthWrite: false,
         side: THREE.DoubleSide
       });
 
       solidBackMat = new THREE.MeshStandardMaterial({
         color: new THREE.Color(renderConfig.backColor),
-        roughness: 0.45,
-        metalness: 0.5,
+        roughness: 0.56,
+        metalness: 0.18,
         normalMap: steelNormalMap,
-        normalScale: new THREE.Vector2(0.1, 0.1),
+        normalScale: new THREE.Vector2(0.10, 0.10),
+        envMapIntensity: 0.42,
         side: THREE.DoubleSide
       });
 
       steelFloorMat = new THREE.MeshStandardMaterial({
-        color: 0x2b343b,
-        metalness: 0.52,
-        roughness: 0.42,
-        normalMap: steelNormalMap,
-        normalScale: new THREE.Vector2(0.04, 0.04),
+        color: 0xffffff,
+        map: createContainerFloorTexture(),
+        metalness: 0.06,
+        roughness: 0.82,
+        envMapIntensity: 0.24,
         side: THREE.DoubleSide
       });
 
       const hardwareMat = new THREE.MeshStandardMaterial({
         color: 0x363b40,
-        metalness: 0.65,
-        roughness: 0.35,
+        metalness: 0.90,
+        roughness: 0.28,
+        envMapIntensity: 0.9,
         side: THREE.DoubleSide
       });
 
@@ -5969,6 +6806,8 @@
         addHeavyDoorRod(doorRightGroup, rz, doorH, hardwareMat);
       }
       containerGroup.add(doorRightGroup);
+      fitShadowCamera();
+      invalidateShadowMap();
     }
 
     function addHeavyDoorRod(parentGroup, zPos, height, hardwareMat) {
@@ -6055,31 +6894,14 @@
       boxMeshes = [];
 
       // 2. Pre-build Shared Materials per SKU
-      skuMaterialRegistry.clear();
+      disposeSkuMaterialRegistry();
       orientationMaterialCache.clear();
       activeManifest.forEach(skuItem => {
-        const texs = getOrCreateFaceTextures(skuItem.color, skuItem.name, skuItem.sku);
-
-        const solidMats = [
-          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.sideTex,      roughness: 0.48, metalness: 0.05 }),
-          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.sideTex,      roughness: 0.48, metalness: 0.05 }),
-          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.topTex,       roughness: 0.50, metalness: 0.05 }),
-          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.bottomTex,    roughness: 0.52, metalness: 0.05 }),
-          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.frontBackTex, roughness: 0.46, metalness: 0.05 }),
-          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.frontBackTex, roughness: 0.46, metalness: 0.05 })
-        ];
-
-        const ghostMats = [
-          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.sideTex,      transparent: true, opacity: 0.10, depthWrite: false }),
-          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.sideTex,      transparent: true, opacity: 0.10, depthWrite: false }),
-          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.topTex,       transparent: true, opacity: 0.10, depthWrite: false }),
-          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.bottomTex,    transparent: true, opacity: 0.10, depthWrite: false }),
-          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.frontBackTex, transparent: true, opacity: 0.10, depthWrite: false }),
-          new THREE.MeshStandardMaterial({ color: skuItem.color, map: texs.frontBackTex, transparent: true, opacity: 0.10, depthWrite: false })
-        ];
-
-        skuMaterialRegistry.set(skuItem.sku, { solidMats, ghostMats });
+        const texs = getOrCreateFaceTextures(
+          skuItem.color, skuItem.name, skuItem.sku, packagePaletteMode);
+        skuMaterialRegistry.set(skuItem.sku, buildCargoMaterialSet(texs));
       });
+      pruneTextureCacheToActiveManifest(packagePaletteMode);
 
       // 3. Batch Create Cargo Meshes using Centralized Coordinate Conversion
       const placedList = solution.placedBoxes || [];
@@ -6119,8 +6941,10 @@
         const posZ = coords.posZ;
 
         boxMesh.position.set(posX, posY, posZ);
-        boxMesh.castShadow = true;
-        boxMesh.receiveShadow = false;
+        boxMesh.castShadow = Boolean(renderConfig.cargoCastShadow);
+        boxMesh.receiveShadow = Boolean(renderConfig.cargoReceiveShadow);
+        boxMesh.userData.shadowCastState = Boolean(renderConfig.cargoCastShadow);
+        boxMesh.userData.shadowReceiveState = Boolean(renderConfig.cargoReceiveShadow);
 
         boxMesh.userData = {
           sku: item.sku,
@@ -6150,6 +6974,7 @@
       });
       window.boxMeshes = boxMeshes;
       window.lastLoadingResult = solution;
+      invalidateShadowMap();
 
       rebuildOrientationAssist();
 
@@ -6181,20 +7006,32 @@
     // 坐标映射与货箱一致：three.x = L/2 - cx，three.y = -H/2 + cz，three.z = -W/2 + cy
     function renderCavityOverlay(loadingResult, usableDim) {
       if (!containerGroup) return;
-      if (cavityGroup) { containerGroup.remove(cavityGroup); cavityGroup = null; }
+      if (cavityGroup) {
+        disposeObject3D(cavityGroup);
+        containerGroup.remove(cavityGroup);
+        cavityGroup = null;
+      }
       cavityGroup = new THREE.Group();
       cavityGroup.name = 'CAVITY_OVERLAY';
       containerGroup.add(cavityGroup);
 
       const metrics = (loadingResult && loadingResult.metrics) || {};
       const cavs = Array.isArray(metrics.cavities) ? metrics.cavities : [];
+      const catTotals = {};
       cavs.forEach(function (c) {
         if (!c || !c.box || c.box.length !== 6) return;
         const x0 = c.box[0], y0 = c.box[1], z0 = c.box[2];
         const x1 = c.box[3], y1 = c.box[4], z1 = c.box[5];
         const sx = Math.max(0.01, x1 - x0), sy = Math.max(0.01, y1 - y0), sz = Math.max(0.01, z1 - z0);
         const isOpen = !!c.open;
-        const color = isOpen ? 0xf59e0b : 0xef4444;
+        const cat = String(c.category || '');
+        // 按成因着色（业务可解释）：灰=物理不可填、橙=策略未利用、紫=业务约束排除
+        const color = cat === 'PHYSICALLY_UNAVAILABLE' ? 0x94a3b8
+          : cat === 'STRATEGY_ABANDONED' ? 0xf59e0b
+          : cat === 'CONSTRAINT_EXCLUDED' ? 0x8b5cf6
+          : (isOpen ? 0xf59e0b : 0xef4444);
+        catTotals[cat || (isOpen ? 'OPEN' : 'ENCLOSED')] =
+          (catTotals[cat || (isOpen ? 'OPEN' : 'ENCLOSED')] || 0) + (Number(c.volume_m3) || 0);
         const geo = new THREE.BoxGeometry(sx, sz, sy);
         const mat = new THREE.MeshBasicMaterial({
           color: color, transparent: true, opacity: isOpen ? 0.10 : 0.20,
@@ -6231,13 +7068,18 @@
       window.cavityGroup = cavityGroup;
       window.cavityOverlayStats = {
         count: cavityGroup.children.length,
-        volume_m3: cavs.reduce(function (s, c) { return s + (Number(c.volume_m3) || 0); }, 0)
+        volume_m3: cavs.reduce(function (s, c) { return s + (Number(c.volume_m3) || 0); }, 0),
+        by_category: catTotals
       };
       const btn = document.getElementById('btn-toggle-cavity');
       if (btn) btn.classList.toggle('active', !!cavityOverlayEnabled);
     }
 
     function toggleCavityOverlay() {
+      if (isPackingAnimating) {
+        showToast('演示装柜中暂不显示空腔叠加', 'info', '装柜演示');
+        return;
+      }
       cavityOverlayEnabled = !cavityOverlayEnabled;
       if (cavityGroup) cavityGroup.visible = cavityOverlayEnabled;
       const btn = document.getElementById('btn-toggle-cavity');
@@ -6246,7 +7088,8 @@
       if (typeof showToast === 'function') {
         showToast(
           (cavityOverlayEnabled ? '已叠加显示 ' : '已隐藏 ') + stats.count + ' 个空腔，合计 ' +
-          Number(stats.volume_m3).toFixed(2) + ' m³（红色=封闭空洞，橙色=顶部开口）',
+          Number(stats.volume_m3).toFixed(2) + ' m³' +
+          '（灰=物理不可填 / 橙=策略未利用 / 紫=业务约束排除）',
           'info', '空洞可视化'
         );
       }
@@ -6302,6 +7145,67 @@
       const rowsEl = document.getElementById('ph-rows');
       const warnEl = document.getElementById('ph-warnings');
 
+      // 多方案对比：推荐方案 + 备选，点击切换 3D 视图
+      const plans = Array.isArray(metrics.plans) ? metrics.plans : [];
+      const plansEl = document.getElementById('ph-plans');
+      if (plansEl) {
+        if (plans.length > 1) {
+          plansEl.style.display = 'block';
+          plansEl.innerHTML =
+            '<div style="font-size:10px;font-weight:800;color:#6d28d9;margin-bottom:4px;">🔀 方案对比（点击切换 3D 视图）</div>' +
+            plans.map(function (plan, idx) {
+              const tags = [];
+              tags.push('<span class="ph-plan-tag">' + Number(plan.utilization || 0).toFixed(1) + '%</span>');
+              tags.push('<span class="ph-plan-tag">' + (plan.placedCount || 0) + ' 箱</span>');
+              if (plan.doorMinSf != null) {
+                tags.push('<span class="ph-plan-tag ' + (Number(plan.doorMinSf) >= 1.5 ? 'ok' : 'warn') +
+                  '">门面SF ' + Number(plan.doorMinSf).toFixed(2) + '</span>');
+              }
+              if (plan.score != null) {
+                tags.push('<span class="ph-plan-tag">统一评分 ' + Number(plan.score).toFixed(1) + '</span>');
+              }
+              const letter = idx === 0 ? 'A' : (idx === 1 ? 'B' : (idx === 2 ? 'C' : String(idx + 1)));
+              const trade = (plan.tradeoffs || []).slice(0, 2).join('；');
+              return '<button class="ph-plan-btn ' + (plan.recommended ? 'recommended ' : '') +
+                (idx === activePlanIndex ? 'active' : '') + '" onclick="switchPlan(' + idx + ')">' +
+                '<div class="ph-plan-head"><span>' + (plan.recommended ? '✅ ' : '') + letter + ' · ' +
+                (plan.label || plan.key) + '</span><span>' + (plan.grade || '') + '</span></div>' +
+                '<div class="ph-plan-tags">' + tags.join('') + '</div>' +
+                (trade ? '<div class="ph-plan-sub">相对推荐：' + trade + '</div>' : '') +
+                '</button>';
+            }).join('');
+          if (panel.style.display === 'none' || !panel.style.display) {
+            panel.style.display = 'block';
+          }
+        } else {
+          plansEl.style.display = 'none';
+          plansEl.innerHTML = '';
+        }
+      }
+
+      // 自学习建议（影子模式）：只展示，不自动应用
+      const learn = metrics.learning_suggestion || null;
+      const learnEl = document.getElementById('ph-learning');
+      if (learnEl) {
+        if (learn && learn.source === 'learned') {
+          learnEl.style.display = 'block';
+          learnEl.style.background = '#f5f3ff';
+          learnEl.style.borderColor = '#c4b5fd';
+          learnEl.style.color = '#5b21b6';
+          learnEl.innerHTML = '🧠 自学习建议：<b>' + (learn.policy || '—') + '</b>（置信 ' +
+            ((Number(learn.confidence) || 0) * 100).toFixed(0) + '%，仅建议，不自动应用）';
+        } else if (learn && learn.note) {
+          learnEl.style.display = 'block';
+          learnEl.style.background = '#f8fafc';
+          learnEl.style.borderColor = '#e2e8f0';
+          learnEl.style.color = '#64748b';
+          learnEl.innerHTML = '🧠 自学习：' + learn.note;
+        } else {
+          learnEl.style.display = 'none';
+          learnEl.innerHTML = '';
+        }
+      }
+
       if (!pq || !pq.components) {
         gradeEl.textContent = '—';
         scoreEl.textContent = '等待计算结果';
@@ -6333,6 +7237,43 @@
       const gate = metrics.delivery_gate || {};
       const warnNames = (gate.checks || []).filter(c => !c.passed).map(c => `${c.id} ${c.name}`);
       warnEl.textContent = warnNames.length ? '⚠ 门禁告警：' + warnNames.join('、') : '✅ 门禁无告警';
+
+      // 空腔诊断：把"看得见的洞"按成因翻译成业务可读结论
+      const cavInfo = qa.cavities || {};
+      const catVol = cavInfo.category_volume_m3 || {};
+      const cavEl = document.getElementById('ph-cavities');
+      if (cavEl) {
+        const total = Number(cavInfo.total_volume_m3 || 0);
+        let cavHtml = '';
+        if (total > 0.01) {
+          const phys = Math.max(0, Number(catVol.PHYSICALLY_UNAVAILABLE || 0) - Number(cavInfo.aggregated_volume_m3 || 0));
+          const strat = Number(catVol.STRATEGY_ABANDONED || 0);
+          const cons = Number(catVol.CONSTRAINT_EXCLUDED || 0);
+          const agg = Number(cavInfo.aggregated_volume_m3 || 0);
+          const shown = (metrics.cavities || []).length;
+          const shownNote = shown < (cavInfo.count || 0) ? '（叠加层显示前 ' + shown + ' 处）' : '';
+          cavHtml =
+            '<div style="font-weight:800;color:#0f172a;margin-bottom:3px;">🕳️ 空腔诊断 ' +
+            total.toFixed(2) + ' m³ · ' + (cavInfo.count || 0) + ' 处' + shownNote + '</div>' +
+            '<div>⬜ 物理不可填：<b>' + phys.toFixed(2) + ' m³</b>（任何朝向都放不进）</div>' +
+            '<div>🟧 策略未利用：<b>' + strat.toFixed(2) + ' m³</b></div>' +
+            (cons > 0 ? '<div>🟪 业务约束排除：<b>' + cons.toFixed(2) + ' m³</b></div>' : '') +
+            (agg > 0.01 ? '<div style="color:#94a3b8;">微碎片聚合：' + agg.toFixed(2) + ' m³</div>' : '');
+        }
+        const tr = qa.transport || {};
+        if (Number(tr.unstable_boxes || 0) > 0) {
+          cavHtml += '<div style="margin-top:3px;color:#b91c1c;">🟥 运输侧向失稳：<b>' +
+            tr.unstable_boxes + ' 箱</b>（' + Number(tr.unstable_volume_m3 || 0).toFixed(2) +
+            ' m³ 高瘦且无侧向接触）</div>';
+        }
+        if (cavHtml) {
+          cavEl.style.display = 'block';
+          cavEl.innerHTML = cavHtml;
+        } else {
+          cavEl.style.display = 'none';
+          cavEl.innerHTML = '';
+        }
+      }
     }
 
     function togglePlanHealth() {
@@ -6345,32 +7286,79 @@
       if (show && window.lastLoadingResult) renderPlanHealth(window.lastLoadingResult);
     }
 
+    // 切换对比方案：备选的完整 LoadingResult 由后端按需构建（首次约 1-3s）
+    window.switchPlan = async function(index) {
+      if (packingAnimationState) cancelPackingAnimation({ restore: false });
+      const plans = (window.lastLoadingResult && window.lastLoadingResult.metrics &&
+        window.lastLoadingResult.metrics.plans) || [];
+      const plan = plans[index];
+      const jobId = planCompareJobId;
+      if (!jobId || !plan) return;
+      if (window.__planSwitchBusy) return;
+      window.__planSwitchBusy = true;
+      const btns = document.querySelectorAll('.ph-plan-btn');
+      btns.forEach(b => { b.style.opacity = '0.6'; b.style.pointerEvents = 'none'; });
+      showToast('正在切换方案：' + (plan.label || plan.key), 'success', '方案对比');
+      try {
+        const result = await window.BLK007D.getPlan(jobId, index);
+        activePlanIndex = index;
+        const usableDim = { length: currentSpec.intL, height: currentSpec.intH, width: currentSpec.intW };
+        applyBackendLoadingResult(result, usableDim, activeManifest, currentSpec);
+        saveLoadingResultCache(result, usableDim, activeManifest, currentSpec);
+        isCameraDirty = true;
+        isRaycastDirty = true;
+        updateAdaptiveCutaway();
+        updateBoxVisibilityAndMaterials();
+        showToast('已切换到：' + (plan.label || ('方案 ' + (index + 1))), 'success', '方案对比');
+      } catch (e) {
+        console.error('[3D-AICIVS] 方案切换失败:', e);
+        showToast('方案切换失败：' + (e && e.message ? e.message : e), 'warning', '方案对比');
+      } finally {
+        window.__planSwitchBusy = false;
+        btns.forEach(b => { b.style.opacity = ''; b.style.pointerEvents = ''; });
+      }
+    };
+
     // BLK-007D adapter commit. Layout geometry is authoritative in LoadingResult.scene.objects.
     function applyBackendLoadingResult(loadingResult, usableDim, activeManifest, currentSpec) {
       if (!loadingResult || loadingResult.version !== 'BLK007C') return false;
+      if (packingAnimationState) cancelPackingAnimation({ restore: false });
+      // 多方案：主记录 id 绑定对比组；备选记录（__plan_N）沿用同一 job 的对比组。
+      const _plans = (loadingResult.metrics && loadingResult.metrics.plans) || [];
+      if (_plans.length > 1) {
+        const _id = loadingResult.id || '';
+        const _group = (loadingResult.metrics && loadingResult.metrics.plan_group_id) || '';
+        if (_group) planCompareJobId = _group;
+        else if (_id.indexOf('__plan_') < 0) planCompareJobId = _id;
+        if (_id.indexOf('__plan_') < 0) {
+          const _rec = _plans.findIndex(p => p && p.recommended);
+          activePlanIndex = _rec >= 0 ? _rec : 0;
+        }
+      } else {
+        planCompareJobId = null;
+        activePlanIndex = 0;
+      }
       if (cargoGroup && containerGroup) containerGroup.remove(cargoGroup);
       cargoGroup = new THREE.Group();
       if (containerGroup) containerGroup.add(cargoGroup);
       boxMeshes = [];
 
       const cargoById = new Map(loadingResult.cargo.map(item => [item.id, item]));
-      skuMaterialRegistry.clear();
+      disposeSkuMaterialRegistry();
       orientationMaterialCache.clear();
       activeManifest.forEach(skuItem => {
-        const texs = getOrCreateFaceTextures(skuItem.color, skuItem.name, skuItem.sku);
-        const solidMats = [texs.sideTex, texs.sideTex, texs.topTex, texs.bottomTex, texs.frontBackTex, texs.frontBackTex]
-          .map(map => new THREE.MeshStandardMaterial({ color: skuItem.color, map, roughness: 0.48, metalness: 0.05 }));
-        const ghostMats = [texs.sideTex, texs.sideTex, texs.topTex, texs.bottomTex, texs.frontBackTex, texs.frontBackTex]
-          .map(map => new THREE.MeshStandardMaterial({ color: skuItem.color, map, transparent: true, opacity: 0.10, depthWrite: false }));
-        skuMaterialRegistry.set(skuItem.sku, { solidMats, ghostMats });
+        const texs = getOrCreateFaceTextures(
+          skuItem.color, skuItem.name, skuItem.sku, packagePaletteMode);
+        skuMaterialRegistry.set(skuItem.sku, buildCargoMaterialSet(texs));
       });
+      pruneTextureCacheToActiveManifest(packagePaletteMode);
 
       window.BLK007D.sceneObjects(loadingResult).forEach(object => {
         const cargo = cargoById.get(object.uuid);
         if (!cargo) throw new Error(`Scene object has no cargo record: ${object.uuid}`);
         const skuItem = activeManifest.find(item => item.sku === object.metadata.sku);
         const registry = skuMaterialRegistry.get(object.metadata.sku);
-        const fallbackMats = Array.from({ length: 6 }, () => new THREE.MeshStandardMaterial({ color: object.material.color, transparent: object.material.opacity < 1, opacity: object.material.opacity }));
+        const fallbackMats = Array.from({ length: 6 }, () => createCargoMaterial(null, false));
         // Occupied dimensions already encode the solver AABB. Do not rotate
         // that AABB again: use a unit geometry whose face material indices and
         // UVs express the package's physical orientation instead.
@@ -6393,7 +7381,11 @@
           -usableDim.width / 2 + object.position[1]
         );
         mesh.rotation.set(object.rotation[0], object.rotation[2], object.rotation[1]);
-        mesh.castShadow = true;
+        const initialGhost = Number(object.material && object.material.opacity) < 0.999;
+        mesh.castShadow = !initialGhost && Boolean(renderConfig.cargoCastShadow);
+        mesh.receiveShadow = !initialGhost && Boolean(renderConfig.cargoReceiveShadow);
+        mesh.userData.shadowCastState = mesh.castShadow;
+        mesh.userData.shadowReceiveState = mesh.receiveShadow;
         const rawX = object.position[0] - object.scale[0] / 2;
         mesh.userData = {
           objectId: object.uuid,
@@ -6424,6 +7416,7 @@
       });
       window.boxMeshes = boxMeshes;
       window.lastLoadingResult = loadingResult;
+      invalidateShadowMap();
 
       // 交付质检可视化：空腔叠加 + 门禁 HUD
       renderCavityOverlay(loadingResult, usableDim);
@@ -6502,6 +7495,7 @@
 
     // --- 6. SWITCH CONTAINER TYPE ---
     window.switchContainerType = function(typeCode) {
+      if (packingAnimationState) cancelPackingAnimation({ restore: false });
       if (!CONTAINER_SPECS[typeCode]) return;
       currentContainerType = typeCode;
       currentSpec = CONTAINER_SPECS[typeCode];
@@ -6659,6 +7653,7 @@
     }
 
     window.runSmartPackingAlgorithm = async function(forceRecompute = true) {
+      if (packingAnimationState) cancelPackingAnimation({ restore: true });
       const manifestValidation = window.ManifestWorkflow.validateManifest(activeManifest);
       if (activeManifest.length === 0) {
         showToast('货单为空，请先导入、新增或加载示例货单。', 'warning', '无法开始算柜');
@@ -6739,8 +7734,10 @@
         loadingResult = await window.BLK007D.calculate({
           solverVersion: 'v2',
           mode: currentStrategy === 'mec' ? 'MAX_COMPACT' : 'BALANCED',
-          timeBudgetSec: 20,
+          timeBudgetSec: 30,
           randomSeed: 42,
+          doorOpenStability: !!isDoorOpenStabilityEnabled,
+          alternatives: alternativesCount,
           container: {
             code: currentSpec.code,
             usable: currentSpec.usable || { L: currentSpec.intL, W: currentSpec.intW, H: currentSpec.intH },
@@ -6906,6 +7903,10 @@
     let showCoGIndicator = true;
 
     window.toggleCoGDisplay = function(show) {
+      if (isPackingAnimating) {
+        showToast('演示装柜中暂不显示重心标', 'info', '装柜演示');
+        return;
+      }
       showCoGIndicator = show;
       document.getElementById('btn-cog-on')?.classList.toggle('active', show);
       document.getElementById('btn-cog-off')?.classList.toggle('active', !show);
@@ -6916,6 +7917,7 @@
 
     function updateCoGIndicatorMesh(cogData, usableDim) {
       if (cogIndicatorGroup) {
+        disposeObject3D(cogIndicatorGroup);
         containerGroup.remove(cogIndicatorGroup);
         cogIndicatorGroup = null;
       }
@@ -7224,6 +8226,36 @@
 
       saveAppState();
       markManifestDirty('COG_CHANGED');
+    };
+
+    // --- 开门倾覆安全：门面不再享受柜门支承，按整列 SF=2·dx/H≥1.5 限高 ---
+    window.setDoorOpenStability = function(enabled) {
+      isDoorOpenStabilityEnabled = !!enabled;
+      const valEl = document.getElementById('val-door-open');
+      if (valEl) {
+        valEl.textContent = isDoorOpenStabilityEnabled ? '已开启' : '关闭';
+        valEl.style.color = isDoorOpenStabilityEnabled ? '#ea580c' : '#64748b';
+      }
+      const btnOn = document.getElementById('btn-door-open-on');
+      const btnOff = document.getElementById('btn-door-open-off');
+      if (btnOn) btnOn.classList.toggle('active', isDoorOpenStabilityEnabled);
+      if (btnOff) btnOff.classList.toggle('active', !isDoorOpenStabilityEnabled);
+      saveAppState();
+      markManifestDirty('DOOR_OPEN_CHANGED');
+    };
+
+    // --- 多方案对比：0/1/2 个备选（备选按不同约束档位完整重算）---
+    window.setAlternativesCount = function(count) {
+      alternativesCount = Math.max(0, Math.min(2, Number(count) || 0));
+      const valEl = document.getElementById('val-alternatives');
+      if (valEl) valEl.textContent = alternativesCount === 0
+        ? '单方案' : (alternativesCount + 1) + ' 方案';
+      const map = { 0: 'btn-alt-off', 1: 'btn-alt-one', 2: 'btn-alt-two' };
+      Object.keys(map).forEach(n => {
+        const btn = document.getElementById(map[n]);
+        if (btn) btn.classList.toggle('active', Number(n) === alternativesCount);
+      });
+      saveAppState();
     };
 
     // --- SKU CRUD Operations ---
@@ -7710,11 +8742,13 @@
     }
 
     function highlightSKUInScene(skuCode) {
+      if (isPackingAnimating) return;
       hoveredSKU = skuCode;
       updateBoxVisibilityAndMaterials();
     }
 
     function restoreSKUDisplay() {
+      if (isPackingAnimating) return;
       hoveredSKU = null;
       updateBoxVisibilityAndMaterials();
     }
@@ -7818,20 +8852,28 @@
       }
 
       const tex = new THREE.CanvasTexture(canvas);
+      tex.encoding = THREE.sRGBEncoding;
       tex.generateMipmaps = true;
       tex.minFilter = THREE.LinearMipmapLinearFilter;
       tex.magFilter = THREE.LinearFilter;
-      tex.anisotropy = 16;
+      tex.anisotropy = Math.min(16, getMaxTextureAnisotropy());
       return tex;
     }
 
     window.onSlicingTimelineChange = function(valPercent) {
+      if (isPackingAnimating) {
+        const slider = document.getElementById('slice-depth-slider');
+        if (slider) slider.value = String(currentSliceCutPercent);
+        showToast('演示装柜中暂不应用切片，停止后可继续', 'info', '装柜演示');
+        return;
+      }
       currentSliceCutPercent = parseFloat(valPercent) || 0;
       updateSlicingVisuals();
       updateBoxVisibilityAndMaterials();
     };
 
     window.resetSlicingTimeline = function() {
+      if (isPackingAnimating) return;
       currentSliceCutPercent = 0;
       const slider = document.getElementById('slice-depth-slider');
       if (slider) slider.value = 0;
@@ -7876,6 +8918,9 @@
     }
 
     function updateBoxVisibilityAndMaterials() {
+      // The packing demo owns box visibility/outlines while it is playing.
+      // Filter/slice/hover changes must not re-show boxes mid-flight.
+      if (isPackingAnimating) return;
       if (!boxMeshes || boxMeshes.length === 0) return;
 
       const hasHover = hoveredSKU !== null;
@@ -7886,23 +8931,6 @@
       const cutDepthFromDoor = (currentSliceCutPercent / 100) * L;
       const X_cut = Math.max(0, L - cutDepthFromDoor);
       const isSlicingActive = (currentSliceCutPercent > 0.01);
-
-      activeManifest.forEach(skuItem => {
-        const skuMats = skuMaterialRegistry.get(skuItem.sku);
-        if (!skuMats) return;
-
-        let isHighlighted = false;
-        if (hasHover) {
-          isHighlighted = (skuItem.sku === hoveredSKU);
-        } else if (hasFilter) {
-          isHighlighted = selectedSKUs.has(skuItem.sku);
-        }
-
-        const emissiveHex = isHighlighted ? 0x1e3a8a : 0x000000;
-        skuMats.solidMats.forEach(m => {
-          if (m.emissive) m.emissive.setHex(emissiveHex);
-        });
-      });
 
       boxMeshes.forEach(box => {
         const sku = box.userData.sku;
@@ -7951,6 +8979,16 @@
         } else {
           setMeshOutlineState(box, false, false);
         }
+        // Transparent/ghost cargo must not cast solid shadows. Only visible solid
+        // boxes participate in the shadow pass.
+        setShadowCasterState(
+          box,
+          isVisible && isSolid && Boolean(renderConfig.cargoCastShadow)
+        );
+        setShadowReceiverState(
+          box,
+          isVisible && isSolid && Boolean(renderConfig.cargoReceiveShadow)
+        );
       });
 
       if (packageOrientationDisplayMode === window.BLK007F78.DisplayMode.ASSIST) rebuildOrientationAssist();
@@ -7959,6 +8997,7 @@
 
     // --- 10. REVERSE LINKAGE: DOUBLE-CLICK / MODIFIER-CLICK 3D VIEWPORT SELECTION ---
     function handleBoxSelection(event) {
+      if (isPackingAnimating) return;
       raycaster.setFromCamera(mouse, camera);
       const activeBoxes = boxMeshes.filter(b => b.visible);
       const intersects = raycaster.intersectObjects(activeBoxes);
@@ -8386,7 +9425,7 @@
       }
 
       if (foregroundCutawayMat) {
-        foregroundCutawayMat.opacity = numVal * 0.45;
+        foregroundCutawayMat.opacity = numVal * 0.65;
         foregroundCutawayMat.visible = numVal > 0.005;
       }
     };
@@ -8436,11 +9475,13 @@
         renderer.toneMappingExposure = numVal;
       }
       if (key === 'shadowRadius') {
-        if (sunLight) {
-          sunLight.shadow.radius = numVal;
-          if (sunLight.shadow.map) sunLight.shadow.map.dispose();
-        }
+        // Main sun shadow stays PCFSoft; this slider now only controls the
+        // fake contact-shadow softness. Disposing the shadow map on every
+        // slider tick caused stutter without visually changing PCFSoft radius.
         updateContactShadowTexture();
+        if (contactShadowPlane && contactShadowPlane.material) {
+          contactShadowPlane.material.needsUpdate = true;
+        }
       }
       if (key === 'groundShadowOpacity' && groundMesh && groundMesh.material) {
         groundMesh.material.opacity = numVal;
@@ -8462,28 +9503,133 @@
       });
     };
 
+    window.invalidateShadowMap = invalidateShadowMap;
+    window.getRenderDiagnostics = function() {
+      const info = renderer && renderer.info ? renderer.info : null;
+      return {
+        palette: packagePaletteMode,
+        cameraMode: cameraMode,
+        cameraType: camera && camera.type,
+        boxes: boxMeshes.length,
+        shadowInvalidations: shadowInvalidations,
+        shadowAutoUpdate: renderer ? renderer.shadowMap.autoUpdate : null,
+        render: info ? {
+          calls: info.render.calls,
+          triangles: info.render.triangles,
+          geometries: info.memory.geometries,
+          textures: info.memory.textures,
+          programs: info.programs ? info.programs.length : null
+        } : null,
+        textureCache: textureCanvasCache.diagnostics(),
+        geometryCache: orientationGeometryCache.diagnostics(),
+        materialCache: orientationMaterialCache.diagnostics()
+      };
+    };
+
     // --- 12. FLOATING BOTTOM ISLAND ACTIONS ---
+    function getCameraTarget() {
+      return new THREE.Vector3(0, currentSpec.extH / 2, 0);
+    }
+
+    function getPerspectiveDistance(type) {
+      const L = Math.max(1, currentSpec.extL || 12);
+      const W = Math.max(1, currentSpec.extW || 2.4);
+      const H = Math.max(1, currentSpec.extH || 2.8);
+      const radius = 0.5 * Math.sqrt(L * L + W * W + H * H);
+      const fov = (perspectiveCamera.fov * Math.PI) / 180;
+      const aspect = Math.max(0.35, perspectiveCamera.aspect || 1);
+      let distance = radius / Math.max(0.12, Math.sin(fov / 2)) * 0.82;
+      if (aspect < 1) distance /= Math.max(0.55, aspect * 0.9);
+      if (type === 'top') distance *= 1.02;
+      return Math.max(7, distance);
+    }
+
+    function getPerspectivePresetPosition(type, targetLook) {
+      const dirs = {
+        iso: new THREE.Vector3(-1, 0.95, 1),
+        front: new THREE.Vector3(-1, 0.06, 0),
+        side: new THREE.Vector3(0, 0.06, 1),
+        top: new THREE.Vector3(0, 1, 0.001)
+      };
+      const dir = (dirs[type] || dirs.iso).clone().normalize();
+      return targetLook.clone().addScaledVector(dir, getPerspectiveDistance(type));
+    }
+
+    function applyViewMode() {
+      const isPerspective = cameraMode === 'perspective';
+      if (scene) scene.background = new THREE.Color(renderConfig.groundColor);
+      if (gridHelper && gridHelper.material) {
+        gridHelper.material.opacity = isPerspective ? 0.55 : 0.85;
+      }
+      if (isPerspective && scene) {
+        ensureStudioBackdrop().visible = true;
+      } else if (studioBackdropMesh) {
+        studioBackdropMesh.visible = false;
+      }
+    }
+
+    function updateCameraProjectionUI() {
+      const orthoBtn = document.getElementById('btn-proj-ortho');
+      const perspBtn = document.getElementById('btn-proj-perspective');
+      if (orthoBtn) orthoBtn.classList.toggle('active', cameraMode === 'ortho');
+      if (perspBtn) perspBtn.classList.toggle('active', cameraMode === 'perspective');
+      const label = document.getElementById('val-cameraMode');
+      if (label) label.textContent = cameraMode === 'perspective' ? '透视展示' : '正交工程';
+    }
+
+    window.setCameraProjection = function(mode, preset) {
+      if (isPackingAnimating) {
+        showToast('演示装柜中镜头自动跟随；可先在演示 HUD 关闭跟随', 'info', '装柜演示');
+        return;
+      }
+      const nextMode = mode === 'perspective' ? 'perspective' : 'ortho';
+      cameraMode = nextMode;
+      renderConfig.cameraMode = nextMode;
+      camera = nextMode === 'perspective' ? perspectiveCamera : orthoCamera;
+      if (nextMode === 'perspective') {
+        perspectiveCamera.aspect = window.innerWidth / Math.max(1, window.innerHeight);
+        perspectiveCamera.updateProjectionMatrix();
+      }
+      window.camera = camera;
+      if (controls) controls.object = camera;
+      applyViewMode();
+      updateCameraProjectionUI();
+      window.switchCamera(preset || currentCameraPreset || 'iso');
+    };
+
     window.switchCamera = function(type) {
+      if (isPackingAnimating) {
+        showToast('演示装柜中镜头自动跟随；可先在演示 HUD 关闭跟随', 'info', '装柜演示');
+        return;
+      }
+      currentCameraPreset = type || 'iso';
       document.querySelectorAll('.bottom-island .seg-btn').forEach(b => b.classList.remove('active'));
-      const activeBtn = document.getElementById('btn-cam-' + type);
+      const activeBtn = document.getElementById('btn-cam-' + currentCameraPreset);
       if (activeBtn) activeBtn.classList.add('active');
 
-      const targetPos = new THREE.Vector3();
-      const targetLook = new THREE.Vector3(0, currentSpec.extH / 2, 0);
-
-      switch(type) {
-        case 'iso': targetPos.set(-20, 19.8, 20); break;
-        case 'front': targetPos.set(-30, currentSpec.extH / 2, 0); break;
-        case 'side': targetPos.set(0, currentSpec.extH / 2, 30); break;
-        case 'top': targetPos.set(0, 35, 0.01); break;
+      const targetLook = getCameraTarget();
+      let targetPos;
+      if (cameraMode === 'perspective') {
+        targetPos = getPerspectivePresetPosition(currentCameraPreset, targetLook);
+      } else {
+        targetPos = new THREE.Vector3();
+        switch (currentCameraPreset) {
+          case 'iso': targetPos.set(-20, 19.8, 20); break;
+          case 'front': targetPos.set(-30, currentSpec.extH / 2, 0); break;
+          case 'side': targetPos.set(0, currentSpec.extH / 2, 30); break;
+          case 'top': targetPos.set(0, 35, 0.01); break;
+          default: targetPos.set(-20, 19.8, 20); break;
+        }
       }
 
       const startPos = camera.position.clone();
       const startLook = controls.target.clone();
       const duration = 600;
       const startTime = performance.now();
+      const token = ++cameraTransitionToken;
 
       function update(time) {
+        if (token !== cameraTransitionToken) return;
         const elapsed = time - startTime;
         const p = Math.min(elapsed / duration, 1);
         const ease = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
@@ -8499,6 +9645,10 @@
     };
 
     window.toggleDoorAction = function() {
+      if (isPackingAnimating) {
+        showToast('演示装柜中由动画自动控制箱门', 'info', '装柜演示');
+        return;
+      }
       isDoorOpen = !isDoorOpen;
       document.getElementById('txt-door').textContent = isDoorOpen ? '关闭箱门' : '打开箱门';
       document.getElementById('btn-door-toggle').classList.toggle('primary', isDoorOpen);
@@ -8518,66 +9668,720 @@
         doorLeftGroup.rotation.y = startL + (targetAngleL - startL) * ease;
         doorRightGroup.rotation.y = startR + (targetAngleR - startR) * ease;
         isCameraDirty = true;
+        invalidateShadowMap();
 
         if (p < 1) requestAnimationFrame(update);
       }
       requestAnimationFrame(update);
     };
 
+    // --- 12.5 PACKING DEMO PLAYER (fast batched timeline, cancellable) ---
+    function animationClamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function animationCanonicalToScene(point, spec) {
+      return new THREE.Vector3(
+        spec.intL / 2 - Number(point[0] || 0),
+        -spec.intH / 2 + Number(point[2] || 0),
+        -spec.intW / 2 + Number(point[1] || 0)
+      );
+    }
+
+    function animationHudElements() {
+      return {
+        hud: document.getElementById('animation-hud'),
+        fill: document.getElementById('anim-progress-fill'),
+        progress: document.getElementById('anim-progress-text'),
+        batch: document.getElementById('anim-batch-text'),
+        count: document.getElementById('anim-count-text'),
+        pause: document.getElementById('btn-anim-pause'),
+        follow: document.getElementById('btn-anim-follow'),
+        main: document.getElementById('btn-anim-load'),
+        mainText: document.getElementById('anim-text'),
+      };
+    }
+
+    function setAnimationHudVisible(visible) {
+      const els = animationHudElements();
+      if (animationHudHideTimer) {
+        clearTimeout(animationHudHideTimer);
+        animationHudHideTimer = null;
+      }
+      if (els.hud) els.hud.classList.toggle('active', Boolean(visible));
+      document.body.classList.toggle('packing-animation-active', Boolean(visible));
+    }
+
+    function setAnimationButtonState(mode) {
+      const els = animationHudElements();
+      if (!els.main) return;
+      const active = mode !== 'idle';
+      els.main.disabled = active;
+      els.main.setAttribute('aria-busy', active ? 'true' : 'false');
+      if (els.mainText) {
+        els.mainText.textContent = mode === 'paused'
+          ? '已暂停'
+          : (mode === 'playing' ? '装载演示中...' : '演示装柜');
+      }
+      if (els.pause) els.pause.textContent = mode === 'paused' ? '继续' : '暂停';
+    }
+
+    function updateAnimationSpeedUI(speed) {
+      document.querySelectorAll('.anim-speed-btn').forEach(btn => {
+        btn.classList.toggle('active', Number(btn.dataset.speed) === Number(speed));
+      });
+    }
+
+    function updateAnimationFollowUI(follow) {
+      const btn = document.getElementById('btn-anim-follow');
+      if (!btn) return;
+      btn.textContent = follow ? '镜头跟随: 开' : '镜头跟随: 关';
+      btn.classList.toggle('anim-follow-off', !follow);
+    }
+
+    function ensureAnimationGhostGroup() {
+      if (animationGhostGroup) return animationGhostGroup;
+      animationGhostGeometry = new THREE.EdgesGeometry(new THREE.BoxGeometry(1, 1, 1));
+      animationGhostMaterial = new THREE.LineBasicMaterial({
+        color: 0xfbbf24,
+        transparent: true,
+        opacity: 0.55,
+        depthWrite: false,
+        // Normal depth test: a target outline must not shine through cargo.
+        // The previous depthTest:false made wireframes look like boxes piercing
+        // already-placed cartons.
+        depthTest: true,
+      });
+      animationGhostGroup = new THREE.Group();
+      animationGhostGroup.name = 'PACKING_ANIMATION_TARGETS';
+      animationGhostGroup.renderOrder = 6;
+      scene.add(animationGhostGroup);
+      return animationGhostGroup;
+    }
+
+    function updateAnimationGhosts(wave) {
+      if (!wave || !wave.items.length) {
+        hideAnimationGhosts();
+        return;
+      }
+      const group = ensureAnimationGhostGroup();
+      group.visible = true;
+      wave.items.forEach((item, index) => {
+        let line = group.children[index];
+        if (!line) {
+          line = new THREE.LineSegments(animationGhostGeometry, animationGhostMaterial);
+          line.renderOrder = 6;
+          group.add(line);
+        }
+        line.visible = true;
+        line.position.copy(item.sceneTo);
+        line.scale.copy(item.mesh.scale).multiplyScalar(1.006);
+      });
+      for (let i = wave.items.length; i < group.children.length; i++) {
+        group.children[i].visible = false;
+      }
+    }
+
+    function hideAnimationGhosts() {
+      if (animationGhostGroup) animationGhostGroup.visible = false;
+    }
+
+    function setAnimationWaveOutline(state, previousIndex, nextIndex) {
+      if (!state) return;
+      if (previousIndex >= 0 && state.plan.waves[previousIndex]) {
+        state.plan.waves[previousIndex].items.forEach(item => {
+          setMeshOutlineState(item.mesh, false, false);
+        });
+      }
+      if (nextIndex >= 0 && state.plan.waves[nextIndex]) {
+        state.plan.waves[nextIndex].items.forEach(item => {
+          setMeshOutlineState(item.mesh, true, false);
+        });
+      }
+    }
+
+    function animationWaveLabel(state, wave) {
+      if (!wave || !wave.items.length) return '准备开门/镜头';
+      const first = wave.items[0];
+      const step = state.stepsByNumber ? state.stepsByNumber.get(first.step) : null;
+      if (step && step.group && step.group.reason) {
+        return `批次 ${wave.index + 1}/${state.plan.waves.length} · ${step.group.type || '组合'} · ${step.group.reason}`;
+      }
+      const meta = first.mesh.userData || {};
+      const wall = meta.wall || '装载区';
+      const layer = meta.layer ? ` · ${meta.layer}` : '';
+      return `批次 ${wave.index + 1}/${state.plan.waves.length} · ${wall}${layer}`;
+    }
+
+    function updateAnimationHud(state, elapsed) {
+      const els = animationHudElements();
+      const total = Math.max(1e-6, state.plan.totalDuration);
+      const pct = animationClamp(elapsed / total * 100, 0, 100);
+      if (els.fill) els.fill.style.width = `${pct.toFixed(1)}%`;
+      if (els.progress) els.progress.textContent = `${Math.round(pct)}%`;
+      if (els.count) els.count.textContent = `${state.startedCount} / ${state.plan.items.length} 箱`;
+      if (els.batch) els.batch.textContent = animationWaveLabel(state, state.currentWave);
+    }
+
+    function captureAnimationUiSnapshot() {
+      const tooltip = document.getElementById('box-tooltip');
+      return {
+        camera: {
+          position: camera.position.clone(),
+          target: controls.target.clone(),
+          enabled: controls.enabled,
+        },
+        doorOpen: isDoorOpen,
+        cavityVisible: cavityGroup ? cavityGroup.visible : null,
+        cogVisible: cogIndicatorGroup ? cogIndicatorGroup.visible : null,
+        assistVisible: orientationAssistLine ? orientationAssistLine.visible : null,
+        slicePercent: currentSliceCutPercent,
+        selectedSKUs: Array.from(selectedSKUs || []),
+        hoveredSKU: hoveredSKU,
+        unselectedDisplayMode: unselectedDisplayMode,
+        tooltipDisplay: tooltip ? tooltip.style.display : '',
+        leftDrawerDisplay: document.getElementById('left-drawer')
+          ? document.getElementById('left-drawer').style.display : '',
+        planPanelDisplay: document.getElementById('plan-health-panel')
+          ? document.getElementById('plan-health-panel').style.display : '',
+        studioDrawerDisplay: document.getElementById('studio-drawer')
+          ? document.getElementById('studio-drawer').style.display : '',
+      };
+    }
+
+    function restoreAnimationUiSnapshot(state) {
+      const snap = state && state.uiSnapshot;
+      if (!snap) return;
+      if (selectedSKUs) {
+        selectedSKUs.clear();
+        snap.selectedSKUs.forEach(sku => selectedSKUs.add(sku));
+      }
+      hoveredSKU = snap.hoveredSKU;
+      if (typeof unselectedDisplayMode !== 'undefined') {
+        unselectedDisplayMode = snap.unselectedDisplayMode;
+      }
+      if (cavityGroup && snap.cavityVisible !== null) cavityGroup.visible = snap.cavityVisible;
+      if (cogIndicatorGroup && snap.cogVisible !== null) cogIndicatorGroup.visible = snap.cogVisible;
+      if (orientationAssistLine && snap.assistVisible !== null) {
+        orientationAssistLine.visible = snap.assistVisible;
+      }
+      if (currentSliceCutPercent !== snap.slicePercent) {
+        currentSliceCutPercent = snap.slicePercent;
+        const slider = document.getElementById('slice-depth-slider');
+        if (slider) slider.value = String(currentSliceCutPercent);
+        updateSlicingVisuals();
+      }
+      const tooltip = document.getElementById('box-tooltip');
+      if (tooltip) tooltip.style.display = 'none';
+      const leftDrawer = document.getElementById('left-drawer');
+      if (leftDrawer && snap.leftDrawerDisplay !== undefined) {
+        leftDrawer.style.display = snap.leftDrawerDisplay;
+      }
+      const planPanel = document.getElementById('plan-health-panel');
+      if (planPanel && snap.planPanelDisplay !== undefined) {
+        planPanel.style.display = snap.planPanelDisplay;
+      }
+      const studioDrawer = document.getElementById('studio-drawer');
+      if (studioDrawer && snap.studioDrawerDisplay !== undefined) {
+        studioDrawer.style.display = snap.studioDrawerDisplay;
+      }
+      hoveredBox = null;
+    }
+
+    function prepareAnimationCamera(state) {
+      if (!state || !state.follow || !state.plan.waves.length) return;
+      const snap = state.uiSnapshot.camera;
+      state.cameraOffset = snap.position.clone().sub(snap.target);
+      const first = state.plan.waves[0];
+      const half = Math.max(1, state.spec.extL / 2 - 0.8);
+      const desired = animationClamp(first.centerSceneX, -half, half);
+      controls.target.copy(snap.target);
+      controls.target.x = desired;
+      camera.position.copy(controls.target).add(state.cameraOffset);
+      controls.enabled = false;
+      controls.update();
+    }
+
+    function followAnimationCamera(state, dt) {
+      if (!state || !state.follow || !state.currentWave || !controls) return;
+      const half = Math.max(1, state.spec.extL / 2 - 0.8);
+      const desired = animationClamp(state.currentWave.centerSceneX, -half, half);
+      const factor = 1 - Math.exp(-Math.max(0.001, dt) * 6);
+      const delta = (desired - controls.target.x) * factor;
+      controls.target.x += delta;
+      camera.position.x += delta;
+      controls.update();
+    }
+
+    function restoreAnimationCamera(state, immediate) {
+      const snap = state && state.uiSnapshot && state.uiSnapshot.camera;
+      if (!snap) return;
+      if (immediate) {
+        camera.position.copy(snap.position);
+        controls.target.copy(snap.target);
+        controls.enabled = snap.enabled;
+        controls.update();
+        return;
+      }
+      const token = ++cameraTransitionToken;
+      const startPos = camera.position.clone();
+      const startTarget = controls.target.clone();
+      const duration = 480;
+      const startTime = performance.now();
+      controls.enabled = false;
+      function step(ts) {
+        if (token !== cameraTransitionToken) return;
+        const p = Math.min(1, (ts - startTime) / duration);
+        const ease = 1 - Math.pow(1 - p, 3);
+        camera.position.lerpVectors(startPos, snap.position, ease);
+        controls.target.lerpVectors(startTarget, snap.target, ease);
+        controls.update();
+        if (p < 1) requestAnimationFrame(step);
+        else controls.enabled = snap.enabled;
+      }
+      requestAnimationFrame(step);
+    }
+
+    function resetAnimationItems(state) {
+      boxMeshes.forEach(mesh => setMeshOutlineState(mesh, false, false));
+      state.items.forEach(item => {
+        item.mesh.visible = false;
+        item.mesh.position.copy(item.sceneFrom);
+      });
+      state.nextItemIndex = 0;
+      state.startedCount = 0;
+      state.activeItems = [];
+      state.currentWaveIndex = -1;
+      state.currentWave = null;
+    }
+
+    function applyAnimationTime(state, time, dt) {
+      while (state.nextItemIndex < state.items.length &&
+             state.items[state.nextItemIndex].start <= time) {
+        const item = state.items[state.nextItemIndex];
+        item.mesh.visible = true;
+        item.mesh.position.copy(item.sceneFrom);
+        item.active = true;
+        state.activeItems.push(item);
+        state.nextItemIndex += 1;
+        state.startedCount = state.nextItemIndex;
+      }
+
+      for (let i = state.activeItems.length - 1; i >= 0; i--) {
+        const item = state.activeItems[i];
+        const raw = animationClamp((time - item.start) / Math.max(1e-6, item.duration), 0, 1);
+        const eased = window.PackingAnimation.easeOutCubic(raw);
+        item.mesh.position.lerpVectors(item.sceneFrom, item.sceneTo, eased);
+        if (raw >= 1) {
+          item.mesh.position.copy(item.sceneTo);
+          item.active = false;
+          state.activeItems.splice(i, 1);
+        }
+      }
+
+      while (state.currentWaveIndex + 1 < state.plan.waves.length &&
+             time >= state.plan.waves[state.currentWaveIndex + 1].start) {
+        const previous = state.currentWaveIndex;
+        state.currentWaveIndex += 1;
+        state.currentWave = state.plan.waves[state.currentWaveIndex];
+        setAnimationWaveOutline(state, previous, state.currentWaveIndex);
+        updateAnimationGhosts(state.currentWave);
+      }
+
+      updateAnimationHud(state, time);
+      followAnimationCamera(state, dt);
+
+      if (renderConfig.cargoCastShadow) {
+        const now = performance.now();
+        if (!state.lastShadowUpdate || now - state.lastShadowUpdate > 120) {
+          state.lastShadowUpdate = now;
+          invalidateShadowMap();
+        }
+      }
+    }
+
+    function packingAnimationLoop(timestamp) {
+      const state = packingAnimationState;
+      if (!state || !state.active || state.paused) {
+        if (state) state.rafId = null;
+        return;
+      }
+      if (!state.lastTimestamp) state.lastTimestamp = timestamp;
+      const dt = Math.min(0.06, Math.max(0, (timestamp - state.lastTimestamp) / 1000));
+      state.lastTimestamp = timestamp;
+      state.elapsed += dt * state.speed;
+      applyAnimationTime(state, state.elapsed, dt);
+
+      if (state.elapsed >= state.plan.totalDuration) {
+        finishPackingAnimation('completed');
+      } else {
+        state.rafId = requestAnimationFrame(packingAnimationLoop);
+      }
+    }
+
+    function finishPackingAnimation(reason) {
+      const state = packingAnimationState;
+      if (!state) return;
+      if (state.rafId) {
+        cancelAnimationFrame(state.rafId);
+        state.rafId = null;
+      }
+      state.items.forEach(item => {
+        item.mesh.visible = true;
+        item.mesh.position.copy(item.sceneTo);
+      });
+      setAnimationWaveOutline(state, state.currentWaveIndex, -1);
+      hideAnimationGhosts();
+
+      const oldIndex = state.currentWaveIndex;
+      state.currentWaveIndex = state.plan.waves.length - 1;
+      state.currentWave = state.plan.waves[state.currentWaveIndex] || null;
+      state.startedCount = state.items.length;
+      state.elapsed = state.plan.totalDuration;
+      state.speed = 1;
+      updateAnimationHud(state, state.plan.totalDuration);
+      setAnimationButtonState('idle');
+      setAnimationSpeedUI(1);
+
+      isPackingAnimating = false;
+      window.__packingAnimationActive = false;
+      state.active = false;
+      state.paused = false;
+
+      restoreAnimationUiSnapshot(state);
+      if (state.uiSnapshot && state.uiSnapshot.doorOpen !== isDoorOpen) {
+        toggleDoorAction();
+      }
+      restoreAnimationCamera(state, false);
+      updateBoxVisibilityAndMaterials();
+      try {
+        if (window.crossSectionSlicer && window.crossSectionSlicer.apply) {
+          window.crossSectionSlicer.apply();
+        }
+      } catch (e) { /* Slicer is an optional overlay; never block demo finish. */ }
+      isRaycastDirty = true;
+      if (renderConfig.cargoCastShadow) invalidateShadowMap();
+
+      const progressText = document.getElementById('anim-progress-text');
+      const batchText = document.getElementById('anim-batch-text');
+      if (progressText) progressText.textContent = '100%';
+      if (batchText) batchText.textContent = reason === 'stopped' ? '演示已停止' : '演示完成';
+      const fill = document.getElementById('anim-progress-fill');
+      if (fill) fill.style.width = '100%';
+      animationHudHideTimer = setTimeout(() => {
+        setAnimationHudVisible(false);
+        animationHudHideTimer = null;
+      }, 1400);
+    }
+
+    function cancelPackingAnimation(options) {
+      const state = packingAnimationState;
+      if (!state || !state.active) {
+        packingAnimationState = null;
+        setAnimationHudVisible(false);
+        return;
+      }
+      const restore = Boolean(options && options.restore);
+      if (state.rafId) cancelAnimationFrame(state.rafId);
+      state.rafId = null;
+      state.active = false;
+      state.paused = false;
+      if (state.plan) {
+        setAnimationWaveOutline(state, state.currentWaveIndex, -1);
+      }
+      hideAnimationGhosts();
+      setAnimationHudVisible(false);
+      setAnimationButtonState('idle');
+      isPackingAnimating = false;
+      window.__packingAnimationActive = false;
+      if (state.uiSnapshot) {
+        if (restore) {
+          restoreAnimationUiSnapshot(state);
+          state.items.forEach(item => {
+            item.mesh.visible = true;
+            item.mesh.position.copy(item.sceneTo);
+          });
+          restoreAnimationCamera(state, true);
+          updateBoxVisibilityAndMaterials();
+          try {
+            if (window.crossSectionSlicer && window.crossSectionSlicer.apply) {
+              window.crossSectionSlicer.apply();
+            }
+          } catch (e) { /* optional slicer overlay */ }
+          if (state.uiSnapshot.doorOpen !== isDoorOpen) toggleDoorAction();
+        } else {
+          restoreAnimationUiSnapshot(state);
+          restoreAnimationCamera(state, true);
+          if (state.uiSnapshot.doorOpen !== isDoorOpen) toggleDoorAction();
+        }
+      }
+      packingAnimationState = null;
+    }
+
     window.startPackingAnimation = function() {
-      if (isPackingAnimating) return;
+      if (isPackingAnimating) {
+        if (packingAnimationState && packingAnimationState.paused) {
+          resumePackingAnimation();
+        }
+        return;
+      }
       const loadingResult = window.activeLoadingResult;
       if (!loadingResult) {
         showToast('当前没有装载推演方案，无法播放装载动画', 'warning');
         return;
       }
-      isPackingAnimating = true;
+      if (!window.PackingAnimation) {
+        showToast('装柜动画模块未加载', 'warning');
+        return;
+      }
 
-      const animBtn = document.getElementById('btn-anim-load');
-      const animText = document.getElementById('anim-text');
-      animBtn.style.opacity = '0.7';
-      animText.textContent = '装载演示中...';
-
+      let sourceFrames = [];
+      try {
+        sourceFrames = window.BLK007D.animationFrames(loadingResult);
+      } catch (err) {
+        showToast(`动画数据不可用：${err && err.message ? err.message : err}`, 'warning');
+        return;
+      }
       const meshById = new Map(boxMeshes.map(mesh => [mesh.userData.objectId, mesh]));
-      const frames = window.BLK007D.animationFrames(loadingResult);
-      boxMeshes.forEach(mesh => { mesh.visible = false; });
+      const safeFrames = [];
+      (Array.isArray(sourceFrames) ? sourceFrames : []).forEach(frame => {
+        if (!frame || typeof frame !== 'object') return;
+        const movements = (Array.isArray(frame.movements) ? frame.movements : [])
+          .filter(m => m && typeof m.object === 'string' && meshById.has(m.object));
+        if (movements.length) {
+          safeFrames.push(Object.assign({}, frame, {
+            movements,
+            objects: movements.map(m => m.object),
+          }));
+          return;
+        }
+        const objects = (Array.isArray(frame.objects) ? frame.objects : [])
+          .filter(id => meshById.has(id));
+        if (objects.length) {
+          safeFrames.push(Object.assign({}, frame, { movements: [], objects }));
+        }
+      });
 
-      const canonicalToScene = point => new THREE.Vector3(
-        currentSpec.intL / 2 - point[0],
-        -currentSpec.intH / 2 + point[2],
-        -currentSpec.intW / 2 + point[1]
-      );
-      const playFrame = index => {
-        if (index >= frames.length) {
-          isPackingAnimating = false; animBtn.style.opacity = '1'; animText.textContent = '演示装柜';
-          isRaycastDirty = true; updateBoxVisibilityAndMaterials(); return;
-        }
-        const frame = frames[index];
-        const step = loadingResult.sequence.steps.find(item => item.step === frame.step);
-        if (step && step.action === 'PLACE_GROUP' && step.group) {
-          showToast(`${step.group.type} GROUP · ${step.group.reason}`, 'info', '防倾倒组合');
-        }
-        const movements = frame.movements.length ? frame.movements : frame.objects.map(id => ({ object: id, from: frame.from, to: frame.to }));
-        const durationMs = Math.max(1, Number(frame.duration) * 1000);
-        const startTime = performance.now();
-        movements.forEach(movement => {
-          const mesh = meshById.get(movement.object);
-          if (mesh) { mesh.visible = true; mesh.position.copy(canonicalToScene(movement.from)); }
-        });
-        const animateFrame = time => {
-          const p = Math.min((time - startTime) / durationMs, 1);
-          const ease = 1 - Math.pow(1 - p, 3);
-          movements.forEach(movement => {
-            const mesh = meshById.get(movement.object);
-            if (mesh) mesh.position.lerpVectors(canonicalToScene(movement.from), canonicalToScene(movement.to), ease);
-          });
-          if (p < 1) requestAnimationFrame(animateFrame);
-          else playFrame(index + 1);
-        };
-        requestAnimationFrame(animateFrame);
+      const plan = window.PackingAnimation.buildPackingAnimationPlan(
+        safeFrames, { leadIn: 0.8 });
+      if (!plan.items.length) {
+        showToast('当前方案没有可播放的货箱动画', 'warning');
+        return;
+      }
+
+      const spec = {
+        intL: currentSpec.intL,
+        intH: currentSpec.intH,
+        intW: currentSpec.intW,
+        extL: currentSpec.extL,
+        extH: currentSpec.extH,
       };
-      playFrame(0);
+      plan.items.forEach(item => {
+        item.mesh = meshById.get(item.object);
+        item.sceneFrom = animationCanonicalToScene(item.from, spec);
+        item.sceneTo = animationCanonicalToScene(item.to, spec);
+        // Backend starts at Lx + dx/2 (outside the closed container). Clamp the
+        // visual start just inside the door opening so boxes don't appear to
+        // float through the front shell while the door animates.
+        const doorInsideX = -spec.intL / 2 + item.mesh.scale.x / 2 + 0.02;
+        item.sceneFrom.x = Math.max(item.sceneFrom.x, doorInsideX);
+        item.active = false;
+      });
+      plan.waves.forEach(wave => {
+        const sum = wave.items.reduce((value, item) => value + item.sceneTo.x, 0);
+        wave.centerSceneX = sum / Math.max(1, wave.items.length);
+      });
+
+      const reducedMotion = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const uiSnapshot = captureAnimationUiSnapshot();
+      const state = {
+        session: ++animationSessionCounter,
+        active: true,
+        paused: false,
+        speed: 1,
+        follow: true,
+        elapsed: 0,
+        plan,
+        items: plan.items,
+        waves: plan.waves,
+        stepsByNumber: new Map(((loadingResult.sequence && loadingResult.sequence.steps) || []).map(step => [step.step, step])),
+        spec,
+        uiSnapshot,
+        cameraOffset: null,
+        nextItemIndex: 0,
+        startedCount: 0,
+        activeItems: [],
+        currentWaveIndex: -1,
+        currentWave: null,
+        rafId: null,
+        lastTimestamp: 0,
+        lastShadowUpdate: 0,
+      };
+
+      if (reducedMotion) {
+        state.items.forEach(item => {
+          item.mesh.visible = true;
+          item.mesh.position.copy(item.sceneTo);
+        });
+        isPackingAnimating = false;
+        window.__packingAnimationActive = false;
+        packingAnimationState = null;
+        updateBoxVisibilityAndMaterials();
+        showToast('已按系统“减少动效”设置直接显示最终结果', 'info', '装柜演示');
+        return;
+      }
+
+      // Door must be opened before the active flag is set, otherwise the
+      // door action guard would reject it.
+      if (!isDoorOpen) toggleDoorAction();
+
+      packingAnimationState = state;
+      isPackingAnimating = true;
+      window.__packingAnimationActive = true;
+      setAnimationButtonState('playing');
+      setAnimationHudVisible(true);
+      if (window.innerWidth <= 720) {
+        const leftDrawer = document.getElementById('left-drawer');
+        const planPanel = document.getElementById('plan-health-panel');
+        const studioDrawer = document.getElementById('studio-drawer');
+        if (leftDrawer) leftDrawer.style.display = 'none';
+        if (planPanel) planPanel.style.display = 'none';
+        if (studioDrawer) studioDrawer.style.display = 'none';
+      }
+      updateAnimationSpeedUI(1);
+      updateAnimationFollowUI(true);
+      if (cavityGroup) cavityGroup.visible = false;
+      if (cogIndicatorGroup) cogIndicatorGroup.visible = false;
+      if (orientationAssistLine) orientationAssistLine.visible = false;
+      resetAnimationItems(state);
+      prepareAnimationCamera(state);
+      updateAnimationHud(state, 0);
+      if (window.innerWidth > 720) {
+        showToast(`装柜演示开始 · 约 ${Math.round(plan.totalDuration)} 秒`, 'info', '演示装柜');
+      }
+      state.lastTimestamp = 0;
+      state.rafId = requestAnimationFrame(packingAnimationLoop);
     };
+
+    function pausePackingAnimation() {
+      const state = packingAnimationState;
+      if (!state || !state.active || state.paused) return;
+      state.paused = true;
+      if (state.rafId) cancelAnimationFrame(state.rafId);
+      state.rafId = null;
+      setAnimationButtonState('paused');
+      updateAnimationHud(state, state.elapsed);
+    }
+
+    function resumePackingAnimation() {
+      const state = packingAnimationState;
+      if (!state || !state.active || !state.paused) return;
+      state.paused = false;
+      state.lastTimestamp = 0;
+      setAnimationButtonState('playing');
+      state.rafId = requestAnimationFrame(packingAnimationLoop);
+    }
+
+    window.pausePackingAnimation = pausePackingAnimation;
+    window.resumePackingAnimation = resumePackingAnimation;
+    window.togglePackingAnimationPause = function() {
+      const state = packingAnimationState;
+      if (!state || !state.active) return;
+      if (state.paused) resumePackingAnimation();
+      else pausePackingAnimation();
+    };
+
+    window.stopPackingAnimation = function() {
+      if (!packingAnimationState) return;
+      finishPackingAnimation('stopped');
+    };
+
+    window.skipPackingAnimation = function() {
+      if (!packingAnimationState) return;
+      finishPackingAnimation('completed');
+    };
+
+    window.setPackingAnimationSpeed = function(speed) {
+      const value = Number(speed);
+      if (!packingAnimationState || ![1, 2, 4].includes(value)) return;
+      packingAnimationState.speed = value;
+      updateAnimationSpeedUI(value);
+    };
+
+    window.togglePackingAnimationFollow = function() {
+      const state = packingAnimationState;
+      if (!state || !state.active) return;
+      state.follow = !state.follow;
+      if (state.follow) {
+        const half = Math.max(1, state.spec.extL / 2 - 0.8);
+        const desired = animationClamp(
+          state.currentWave ? state.currentWave.centerSceneX : state.plan.waves[0].centerSceneX,
+          -half, half);
+        state.cameraOffset = camera.position.clone().sub(controls.target);
+        controls.target.x = desired;
+        camera.position.copy(controls.target).add(state.cameraOffset);
+        controls.enabled = false;
+        controls.update();
+      } else {
+        restoreAnimationCamera(state, true);
+        controls.enabled = state.uiSnapshot.camera.enabled;
+      }
+      updateAnimationFollowUI(state.follow);
+    };
+
+    window.cancelPackingAnimation = cancelPackingAnimation;
+
+    window.getPackingAnimationState = function() {
+      const state = packingAnimationState;
+      if (!state) return { active: false, paused: false, progress: 0, speed: 1, follow: true, placed: 0, total: 0 };
+      return {
+        active: Boolean(state.active),
+        paused: Boolean(state.paused),
+        progress: state.plan.totalDuration > 0
+          ? animationClamp(state.elapsed / state.plan.totalDuration, 0, 1) : 0,
+        speed: state.speed,
+        follow: state.follow,
+        currentWave: state.currentWaveIndex + 1,
+        waveCount: state.plan.waves.length,
+        batch: state.currentWave ? animationWaveLabel(state, state.currentWave) : '',
+        placed: state.startedCount,
+        total: state.plan.items.length,
+        elapsed: state.elapsed,
+        duration: state.plan.totalDuration,
+      };
+    };
+
+    window.__packingAnimationDebug = {
+      seek(progress) {
+        const state = packingAnimationState;
+        if (!state) return false;
+        const p = animationClamp(Number(progress) || 0, 0, 1);
+        state.elapsed = p * state.plan.totalDuration;
+        state.nextItemIndex = 0;
+        state.startedCount = 0;
+        state.activeItems = [];
+        state.currentWaveIndex = -1;
+        state.currentWave = null;
+        boxMeshes.forEach(mesh => setMeshOutlineState(mesh, false, false));
+        state.items.forEach(item => {
+          item.mesh.visible = false;
+          item.mesh.position.copy(item.sceneFrom);
+          item.active = false;
+        });
+        hideAnimationGhosts();
+        applyAnimationTime(state, state.elapsed, 0);
+        return true;
+      },
+      state: () => window.getPackingAnimationState(),
+      activeObjects: () => packingAnimationState
+        ? packingAnimationState.activeItems.map(item => item.mesh)
+        : [],
+    };
+
+    function setAnimationSpeedUI(speed) {
+      updateAnimationSpeedUI(speed);
+    }
 
     // --- 13. THROTTLED TOPOLOGICAL CUTAWAY & EVENT-DRIVEN RAYCAST HOVER ---
     const _camDir = new THREE.Vector3();
@@ -8591,16 +10395,19 @@
         dynamicWalls.forEach(wall => {
           if (wall.material !== wall.userData.defaultMat) wall.material = wall.userData.defaultMat;
           wall.visible = true;
+          setShadowCasterState(wall, true);
         });
         dynamicDoorComponents.forEach(comp => {
           if (comp.isMesh) {
             if (comp.material !== comp.userData.defaultMat) comp.material = comp.userData.defaultMat;
             comp.visible = true;
+            setShadowCasterState(comp, true);
           }
         });
         dynamicSkeletons.forEach(skelMesh => {
           if (skelMesh.material !== frameSolidMat) skelMesh.material = frameSolidMat;
           skelMesh.visible = true;
+          setShadowCasterState(skelMesh, true);
         });
         return;
       }
@@ -8619,10 +10426,12 @@
         if (isCutaway) {
           if (wall.material !== foregroundCutawayMat) wall.material = foregroundCutawayMat;
           wall.visible = renderConfig.foregroundOpacity > 0.005;
+          setShadowCasterState(wall, false);
         } else {
           const defaultMat = wall.userData.defaultMat || solidBackMat;
           if (wall.material !== defaultMat) wall.material = defaultMat;
           wall.visible = true;
+          setShadowCasterState(wall, true);
         }
       });
 
@@ -8635,10 +10444,12 @@
           if (isDoorCutaway) {
             if (comp.material !== foregroundCutawayMat) comp.material = foregroundCutawayMat;
             comp.visible = renderConfig.foregroundOpacity > 0.005;
+            setShadowCasterState(comp, false);
           } else {
             const defMat = comp.userData.defaultMat || frameSolidMat;
             if (comp.material !== defMat) comp.material = defMat;
             comp.visible = true;
+            setShadowCasterState(comp, true);
           }
         }
       });
@@ -8658,9 +10469,11 @@
         if (allAdjacentCutaway) {
           if (skelMesh.material !== foregroundCutawayMat) skelMesh.material = foregroundCutawayMat;
           skelMesh.visible = renderConfig.foregroundOpacity > 0.005;
+          setShadowCasterState(skelMesh, false);
         } else {
           if (skelMesh.material !== frameSolidMat) skelMesh.material = frameSolidMat;
           skelMesh.visible = true;
+          setShadowCasterState(skelMesh, true);
         }
       });
     }
@@ -8712,9 +10525,11 @@
       }
 
       if (ttReqTag) {
-        const req = skuData.requirement || '放中间';
+        const req = skuData.requirement || '随意放置';
         ttReqTag.textContent = req;
-        if (req.includes('最里面')) {
+        if (/随意|任意位置|不限位置|无要求|自由摆放/i.test(req)) {
+          ttReqTag.className = 'req-tag req-any';
+        } else if (req.includes('最里面')) {
           ttReqTag.className = 'req-tag req-deep';
         } else if (req.includes('封柜门')) {
           ttReqTag.className = 'req-tag req-door';
@@ -8777,6 +10592,11 @@
     }
 
     function checkRaycast() {
+      if (isPackingAnimating) {
+        const tooltip = document.getElementById('box-tooltip');
+        if (tooltip) tooltip.style.display = 'none';
+        return;
+      }
       if (!isRaycastDirty || isOrbiting) return;
       isRaycastDirty = false;
 
@@ -8787,20 +10607,14 @@
       if (intersects.length > 0) {
         const hit = intersects[0].object;
         if (hoveredBox !== hit) {
-          if (hoveredBox && hoveredBox.userData.skuMaterials) {
+          if (hoveredBox) {
             const isSel = selectedSKUs.has(hoveredBox.userData.sku) || hoveredSKU === hoveredBox.userData.sku;
-            hoveredBox.userData.skuMaterials.solidMats.forEach(m => {
-              if (m.emissive) m.emissive.setHex(isSel ? 0x1e3a8a : 0x000000);
-            });
             setMeshOutlineState(hoveredBox, isSel, false);
           }
           hoveredBox = hit;
-          if (hoveredBox && hoveredBox.userData.skuMaterials) {
-            hoveredBox.userData.skuMaterials.solidMats.forEach(m => {
-              if (m.emissive) m.emissive.setHex(0x38bdf8);
-            });
-            setMeshOutlineState(hoveredBox, true, true);
-          }
+          // Highlight only the hovered box via outline; never mutate the shared
+          // SKU material emissive (which used to light up every box of that SKU).
+          setMeshOutlineState(hoveredBox, true, true);
 
           const d = hit.userData;
           const matchedItem = activeManifest.find(m => m.sku === d.sku);
@@ -8808,13 +10622,8 @@
         }
       } else {
         if (hoveredBox) {
-          if (hoveredBox.userData.skuMaterials) {
-            const isSel = selectedSKUs.has(hoveredBox.userData.sku) || hoveredSKU === hoveredBox.userData.sku;
-            hoveredBox.userData.skuMaterials.solidMats.forEach(m => {
-              if (m.emissive) m.emissive.setHex(isSel ? 0x1e3a8a : 0x000000);
-            });
-            setMeshOutlineState(hoveredBox, isSel, false);
-          }
+          const isSel = selectedSKUs.has(hoveredBox.userData.sku) || hoveredSKU === hoveredBox.userData.sku;
+          setMeshOutlineState(hoveredBox, isSel, false);
           hoveredBox = null;
           if (!hoveredSKU) {
             hideSKUInfoHUD();
@@ -8824,14 +10633,29 @@
     }
 
     function onWindowResize() {
-      const aspect = window.innerWidth / window.innerHeight;
+      const aspect = window.innerWidth / Math.max(1, window.innerHeight);
       const frustumSize = currentSpec.cameraDist;
-      camera.left = -frustumSize * aspect / 2;
-      camera.right = frustumSize * aspect / 2;
-      camera.top = frustumSize / 2;
-      camera.bottom = -frustumSize / 2;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      if (orthoCamera) {
+        orthoCamera.left = -frustumSize * aspect / 2;
+        orthoCamera.right = frustumSize * aspect / 2;
+        orthoCamera.top = frustumSize / 2;
+        orthoCamera.bottom = -frustumSize / 2;
+        orthoCamera.updateProjectionMatrix();
+      }
+      if (perspectiveCamera) {
+        perspectiveCamera.aspect = aspect;
+        perspectiveCamera.updateProjectionMatrix();
+      }
+      if (renderer) {
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+      if (cameraMode === 'perspective' && camera && controls && currentSpec) {
+        const targetLook = getCameraTarget();
+        camera.position.copy(getPerspectivePresetPosition(currentCameraPreset, targetLook));
+        controls.target.copy(targetLook);
+        controls.update();
+      }
       isCameraDirty = true;
       isRaycastDirty = true;
     }
@@ -8841,6 +10665,9 @@
 
     function enforceViewportBoundaries() {
       if (!controls || !camera || !currentSpec) return;
+      if (isPackingAnimating && packingAnimationState && packingAnimationState.follow) {
+        return;
+      }
       DEFAULT_CONTAINER_CENTER.y = currentSpec.extH / 2;
 
       const targetPos = controls.target;

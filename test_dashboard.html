@@ -786,6 +786,53 @@
                 </table>
             </div>
         </section>
+
+        <!-- 虚拟货单验收（产品默认口径：门区安全 + 策略档） -->
+        <section class="card">
+            <div class="card-header">
+                <div class="card-title">📦 虚拟货单验收（产品默认口径）</div>
+                <div style="font-size: 11px; color: var(--text-muted);">
+                    运行 <code>python scripts/run_acceptance.py</code> 生成报告
+                </div>
+            </div>
+            <div id="acceptanceSummary" style="display:flex; gap:16px; flex-wrap:wrap; padding:10px 18px; font-size:12px; color:var(--text-muted);">
+                暂无验收报告
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Case ID</th>
+                            <th>场景</th>
+                            <th>策略</th>
+                            <th>利用率</th>
+                            <th>刚性%</th>
+                            <th>门面 SF</th>
+                            <th>统一评分</th>
+                            <th>门禁</th>
+                            <th>耗时</th>
+                            <th>结论</th>
+                        </tr>
+                    </thead>
+                    <tbody id="acceptanceTableBody">
+                        <tr><td colspan="10" style="text-align:center; color:var(--text-muted); padding:20px;">暂无数据</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 自学习状态（影子模式） -->
+        <section class="card">
+            <div class="card-header">
+                <div class="card-title">🧠 自学习状态（影子模式，只建议不自动应用）</div>
+                <div style="font-size: 11px; color: var(--text-muted);">
+                    训练：<code>python scripts/train_policy_selector.py</code>
+                </div>
+            </div>
+            <div id="learningSummary" style="display:flex; gap:20px; flex-wrap:wrap; padding:10px 18px; font-size:12px; color:var(--text-muted);">
+                暂无模型
+            </div>
+        </section>
     </main>
 
     <!-- 单用例深度诊断弹窗 (Modal) -->
@@ -882,6 +929,8 @@
             fetchCasesCount();
             fetchStatus();
             loadExistingReport();
+            loadAcceptanceReport();
+            loadLearningStatus();
         });
 
         // 获取可用用例总数
@@ -904,6 +953,73 @@
                     renderCompletedReport(data);
                 }
             } catch (e) {}
+        }
+
+        // 虚拟货单验收报告（产品默认口径）
+        async function loadAcceptanceReport() {
+            try {
+                const res = await fetch('/api/v1/harness/acceptance');
+                const data = await res.json();
+                const summaryEl = document.getElementById('acceptanceSummary');
+                const tbody = document.getElementById('acceptanceTableBody');
+                if (!data || !Array.isArray(data.cases) || data.cases.length === 0) return;
+                const s = data.summary || {};
+                summaryEl.innerHTML =
+                    `<span>用例 <b>${s.case_count || data.cases.length}</b></span>` +
+                    `<span style="color:#059669;">PASS <b>${s.pass || 0}</b></span>` +
+                    `<span style="color:#d97706;">WARN <b>${s.warn || 0}</b></span>` +
+                    `<span style="color:#7c3aed;">KNOWN <b>${s.known || 0}</b></span>` +
+                    `<span style="color:#dc2626;">FAIL <b>${s.fail || 0}</b></span>` +
+                    `<span>PlanScore 中位 <b>${s.median_score ?? '—'}</b></span>`;
+                tbody.innerHTML = data.cases.map(c => {
+                    const statusColor = c.status === 'PASS' ? '#059669'
+                        : (c.status === 'WARN' ? '#d97706' : (c.status === 'KNOWN' ? '#7c3aed' : '#dc2626'));
+                    const statusTxt = c.status === 'KNOWN' ? 'KNOWN（已知问题）' : c.status;
+                    const issueText = (c.known_issue && typeof c.known_issue === 'object')
+                        ? (c.known_issue.note || c.known_issue.id || '')
+                        : (c.known_issue || '');
+                    return `<tr title="${issueText}">
+                        <td>${c.case_id}</td><td>${c.scenario || '—'}</td><td>${c.policy || '—'}</td>
+                        <td>${c.utilization_pct ?? '—'}%</td>
+                        <td>${c.rigid_ratio != null ? (c.rigid_ratio * 100).toFixed(1) : '—'}</td>
+                        <td>${c.door_min_sf ?? '—'}</td>
+                        <td>${c.score ?? '—'} (${c.grade || '—'})</td>
+                        <td>${(c.gate && c.gate.verdict) || '—'}</td>
+                        <td>${c.runtime_s ?? '—'}s</td>
+                        <td style="color:${statusColor}; font-weight:700;">${statusTxt}</td>
+                    </tr>`;
+                }).join('');
+            } catch (e) {
+                console.error('acceptance report load failed', e);
+            }
+        }
+
+        // 自学习状态（影子模式）
+        async function loadLearningStatus() {
+            try {
+                const res = await fetch('/api/v1/learning/status');
+                const data = await res.json();
+                const el = document.getElementById('learningSummary');
+                const m = (data && data.model && data.model.metrics) || {};
+                const ds = (data && data.dataset) || {};
+                if (!m || Object.keys(m).length === 0) {
+                    el.innerHTML = '<span>暂无模型；先运行 <code>scripts/build_learning_dataset.py</code> 与 <code>scripts/train_policy_selector.py</code></span>';
+                    return;
+                }
+                const labels = m.label_counts || {};
+                const labelTxt = Object.keys(labels).map(k => `${k}:${labels[k]}`).join(' / ') || '—';
+                const color = m.enabled ? '#059669' : '#d97706';
+                el.innerHTML =
+                    `<span>状态 <b style="color:${color}">${m.enabled ? '已启用（建议）' : '未启用（回退手工策略）'}</b></span>` +
+                    `<span>样本 <b>${m.samples ?? '—'}</b></span>` +
+                    `<span>留一准确率 <b>${m.loo_accuracy != null ? (m.loo_accuracy * 100).toFixed(1) + '%' : '—'}</b></span>` +
+                    `<span>多数类基线 <b>${m.majority_baseline != null ? (m.majority_baseline * 100).toFixed(1) + '%' : '—'}</b></span>` +
+                    `<span>标签分布 <b>${labelTxt}</b></span>` +
+                    `<span>数据记录 <b>${ds.records ?? '—'}</b></span>` +
+                    `<span>训练时间 <b>${m.trained_at || '—'}</b></span>`;
+            } catch (e) {
+                console.error('learning status load failed', e);
+            }
         }
 
         // 启动测试

@@ -3,10 +3,17 @@ const assert = require('node:assert/strict');
 const orientation = require('../src/orientationRendering.js');
 
 class MockUvAttribute {
-  constructor(count) { this.values = Array.from({ length: count }, (_, i) => [i % 2, Math.floor(i / 2) % 2]); this.needsUpdate = false; }
+  constructor(count) {
+    this.values = Array.from({ length: count }, (_, i) => [i % 2, Math.floor(i / 2) % 2]);
+    this.array = new Float32Array(count * 2);
+    this.needsUpdate = false;
+  }
   getX(i) { return this.values[i][0]; }
   getY(i) { return this.values[i][1]; }
   setXY(i, u, v) { this.values[i] = [u, v]; }
+}
+class MockBufferAttribute {
+  constructor(array, itemSize) { this.array = array; this.itemSize = itemSize; }
 }
 class MockBoxGeometry {
   constructor() {
@@ -16,8 +23,9 @@ class MockBoxGeometry {
     this.attributes = { uv: new MockUvAttribute(24) };
     this.userData = {};
   }
+  setAttribute(name, value) { this.attributes[name] = value; }
 }
-const THREE = { BoxGeometry: MockBoxGeometry };
+const THREE = { BoxGeometry: MockBoxGeometry, BufferAttribute: MockBufferAttribute };
 
 test('VISORI-001 upright normal retains physical product faces', () => {
   const mapping = orientation.getFaceMapping('UPRIGHT_NORMAL');
@@ -78,6 +86,9 @@ test('VISORI-008 face mapping changes UV/material data only', () => {
   assert.equal(geometry.userData.orientation, 'FLAT_XZ');
   assert.equal(geometry.groups.length, 6);
   assert.equal(geometry.attributes.uv.needsUpdate, true);
+  assert.ok(geometry.attributes.uv2, 'AO maps require a uv2 attribute');
+  assert.equal(geometry.attributes.uv2.itemSize, 2);
+  assert.equal(geometry.userData.shared, true);
   assert.ok(geometry.groups.every(group => group.start >= 0 && group.count === 6));
 });
 

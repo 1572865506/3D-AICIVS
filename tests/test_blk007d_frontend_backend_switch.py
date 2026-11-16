@@ -42,7 +42,7 @@ class TestBLK007DFrontendBackendSwitch(unittest.TestCase):
         self.assertNotIn("generateBoxes()", self.index)
 
     def test_backend_configuration_and_explicit_mock(self):
-        env = (ROOT / ".env").read_text()
+        env = (ROOT / ".env.example").read_text()
         self.assertIn("VITE_LOADING_API_URL=", env)
         self.assertIn("query.get('mode') === 'mock'", self.runtime)
         self.assertIn("BackendStatus", self.runtime)
@@ -54,11 +54,11 @@ class TestBLK007DFrontendBackendSwitch(unittest.TestCase):
         self.assertEqual(cargo_ids, scene_ids)
         self.assertTrue(sequence_ids <= scene_ids)
 
-    def test_job_endpoint_uses_existing_search_profiles(self):
+    def test_job_endpoint_is_wired_to_v2_solver(self):
         server = (ROOT / "backend/server.py").read_text()
         self.assertIn("'/api/v1/loading/jobs'", server)
-        self.assertIn("'MAX_COMPACT': SearchProfile.OPTIMIZE", server)
-        self.assertNotIn("SearchProfile.MAX_COMPACT", server)
+        self.assertIn("is_job_endpoint", server)
+        self.assertIn("OutputAdapter.to_legacy_response", server)
 
 
 if __name__ == "__main__":

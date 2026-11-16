@@ -106,8 +106,16 @@
       });
     });
     if (uv) uv.needsUpdate = true;
+    // AO maps use uv2 in three.js. The cardboard AO is edge-symmetric, so the
+    // same (rotated) UV layout is sufficient and keeps geometry/material shared.
+    if (uv && THREE.BufferAttribute && uv.array) {
+      geometry.setAttribute('uv2', new THREE.BufferAttribute(uv.array.slice(), 2));
+    }
     geometry.userData.orientation = mapping.orientation;
     geometry.userData.faceMapping = mapping.faces;
+    // Shared by every cargo box via OrientationGeometryCache; lifecycle cleanup
+    // must not dispose it when an individual cargo group is torn down.
+    geometry.userData.shared = true;
     return geometry;
   }
 

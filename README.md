@@ -170,9 +170,18 @@ pip install -r requirements.txt
 
 ### 2. 启动服务
 ```bash
-# 启动核心后端服务 (默认监听 8080 端口，同时托管 REST API 与静态前端)
+# 默认只绑定 127.0.0.1:8080（本机安全默认，静态资源仅开放前端白名单）
 python backend/server.py 8080
+
+# 需要局域网访问时显式开启（建议同时配置 AICIVS_API_TOKEN）
+python backend/server.py 8080 0.0.0.0
+# 或 AICIVS_ALLOW_LAN=1 python backend/server.py 8080
 ```
+
+可选环境变量：
+- `AICIVS_API_TOKEN`：设置后所有 `/api/` 请求需 `Authorization: Bearer <token>`（health 除外）；
+- `AICIVS_CORS_ORIGINS`：逗号分隔的额外允许来源；
+- `AICIVS_MAX_TIME_BUDGET_S` / `AICIVS_MAX_ALTERNATIVES` / `AICIVS_MAX_CONCURRENT_SOLVES`：请求预算、备选数量与并发上限。
 
 ### 3. 访问应用
 打开现代浏览器（Chrome / Edge / Safari / Firefox）访问：
@@ -206,6 +215,15 @@ python tests/regression_guard.py
 
 # L4 平台级 100 用例自动化压测与归因
 python scripts/test_harness/runner.py --tier 1
+
+# 虚拟货单模拟验收（产品默认口径：门区安全 + 策略档）
+python scripts/run_acceptance.py
+# 验收基线冻结（仅在接受新的虚拟集状态时运行）
+python scripts/freeze_acceptance_baseline.py
+
+# 自学习数据采集 + 训练（影子模式，只建议不自动应用）
+python scripts/build_learning_dataset.py --time-budget 15
+python scripts/train_policy_selector.py
 ```
 
 ---
@@ -220,6 +238,10 @@ python scripts/test_harness/runner.py --tier 1
 | `/api/v1/loading/jobs` | `POST` | 提交装载任务，执行 Cleanroom Solver V2 计算并返回权威装载方案 |
 | `/api/v1/loading/{job_id}` | `GET` | 获取指定任务的完整 3D 场景对象树、货垛序列与 KPI 指标 |
 | `/api/v1/loading/{job_id}/layout` | `GET` | 获取集装箱空间布局与坐标系统 |
+| `/api/v1/loading/{job_id}/plans` | `GET` | 列出同一货单的候选方案评分与推荐标记 |
+| `/api/v1/loading/{job_id}/plans/{idx}` | `GET` | 按需构建并返回指定备选方案的完整 LoadingResult |
+| `/api/v1/learning/status` | `GET` | 查询自学习模型状态（样本、留一准确率、标签分布） |
+| `/api/v1/harness/acceptance` | `GET` | 获取虚拟货单验收报告（PASS/WARN/KNOWN/FAIL） |
 | `/api/v1/annotations` | `GET` | 查询专家历史评审与打标记录（支持方案 ID 与评级过滤） |
 | `/api/v1/annotations` | `POST` | 提交专家打标评审记录（评级、违规标记、改进建议与签名） |
 | `/api/v1/harness/status` | `GET` | 查询测试 Harness 当前运行状态与最近执行摘要 |
@@ -232,6 +254,13 @@ python scripts/test_harness/runner.py --tier 1
 ## 💡 使用指南与交互提示 (User Guide)
 
 1. **调整货单与业务约束**：
+   - 货柜纵向摆放区间新增 **“随意放置”**（不限制区间，算法自由排布；新建 SKU 默认此项）；仍可选“放中间 / 放柜子最里面 / 封柜门”；
+   - 低装载时“封柜门”货物不会跳过中间空档直接贴到门区预留线：其他货物已放完后，封门货从当前前沿连续摆放；仍有非门货或货量足够到门区时保持原门区策略；
+   - 门端安全按**实际最前货面列**检查（不再只看固定 0.25m 带）；封门件在门面 SF≥1.5 约束下容量不足时直接返回 422，并提示减少封门件/增加门区/调整朝向；
+   - 无刚性封门件的货单默认启用**低稳定纸箱前向支撑墙**：立放 SF<1.5 的纸箱前排会临时挂起，由同图案前方的稳定薄箱墙提供真实几何支撑后再提交；支撑不足时整墙回滚并拉黑该图案，不会把未验证箱交付。显式 `deferredTippingAudit=false` 可关闭；
+   - 有刚性封门件的货单（如 15-SKU 薄板封门）默认**不启用**该支撑墙，保持门区容量/台阶安全路径；显式 `deferredTippingAudit=true` 可做 A/B（会改变门区布局，需人工复核）；
+   - **3D 渲染质量**：渲染调优控制台新增“真实牛皮纸 / 彩色识别”纸箱配色和“正交工程 / 透视展示”相机投影；默认牛皮纸 + 正交，保留 SKU 色边条/胶带识别；纸箱启用 sRGB、共享纸纤维法线/AO，透明壳体不投射实心阴影，静态阴影按场景变更刷新；**货箱默认既不向柜体/柜底投影，也不接收箱间阴影**，柜内保持干净；需要更强层次时可在控制台分别开启“货箱投影”或“货箱间阴影”；
+   - **演示装柜**：不再按“一箱 2 秒”播放，前端按箱数自适应到约 22 秒（1600 箱级），批次错峰连续推进；自动开门、镜头跟随当前墙/批次、当前批次描边与落点轮廓；支持暂停/继续、1x/2x/4x、停止、跳过；动画期间隔离 hover/切片/剖切，切换方案或重新算柜会自动取消旧动画；
    - 在左侧抽屉中可直接修改各 SKU 的长宽高尺寸、装载件数、允许摆放朝向、落地限制（`必须落地`）、抗压极限（`最大承重`）、顶层限制（`不可被压`）以及最大堆叠层数；
 2. **一键计算与方案渲染**：
    - 点击主工具栏的 **“开始计算”**，系统将实时驱动求解器完成装载排布，并在 3D 视口呈现高精度装箱几何排布与空间利用率；

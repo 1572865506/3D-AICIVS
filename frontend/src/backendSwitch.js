@@ -80,6 +80,14 @@
       const fetchInit = Object.assign({ cache: 'no-store' }, init || {}, { signal: controller.signal });
       delete fetchInit.signal; // ensure single signal attached
       fetchInit.signal = controller.signal;
+      // 部署层如配置了 API token，可通过 window.__AICIVS_API_TOKEN__ 注入；
+      // 默认不注入，保持本机同源无认证。
+      const apiToken = root.__AICIVS_API_TOKEN__;
+      if (apiToken) {
+        fetchInit.headers = Object.assign({}, fetchInit.headers || {}, {
+          Authorization: `Bearer ${apiToken}`
+        });
+      }
       try { response = await root.fetch(`${configuredBase()}${path}`, fetchInit); }
       catch (error) {
         if (userSignal && userSignal.aborted) {
@@ -121,6 +129,14 @@
 
   async function getResult(jobId, options = {}) {
     return validateLoadingResult(await requestJson(`/loading/${encodeURIComponent(jobId)}`, { signal: options.signal }, LOADING_JOB_TIMEOUT_MS));
+  }
+
+  // 多方案对比：按序号取同一 job 的备选方案完整 LoadingResult。
+  // 推荐方案（index 指向 recommended 项）由后端直接复用主记录，切换无重算成本。
+  async function getPlan(jobId, index, options = {}) {
+    return validateLoadingResult(await requestJson(
+      `/loading/${encodeURIComponent(jobId)}/plans/${encodeURIComponent(index)}`,
+      { signal: options.signal }, LOADING_JOB_TIMEOUT_MS));
   }
 
   async function getHighlight(jobId, type, id) {
@@ -189,6 +205,6 @@
   }
 
   return { CalculationMode, BackendStatus, ErrorType, BackendError, getMode, configuredBase,
-    validateLoadingResult, requestJson, checkHealth, createJob, getResult, getHighlight,
+    validateLoadingResult, requestJson, checkHealth, createJob, getResult, getPlan, getHighlight,
     loadMock, calculate, sceneObjects, animationFrames, cargoDetail, cargoExportRows };
 });

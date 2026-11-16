@@ -96,6 +96,10 @@
    * Applies the cross-section slicing logic across all box meshes in scene.
    */
   function applySlicing() {
+    // The packing demo owns cargo visibility/material while it is playing.
+    if (typeof window !== 'undefined' && window.__packingAnimationActive) {
+      return;
+    }
     const boxMeshes = getAllBoxMeshes();
     const { L, W, H } = getContainerDimensions();
     const halfL = L / 2;
@@ -161,9 +165,13 @@
         }
       }
 
-      // Cache original material once
+      // Cache original material/shadow state once
       if (!uData._origMaterial) {
         uData._origMaterial = box.material;
+      }
+      if (uData._origCastShadow === undefined) {
+        uData._origCastShadow = Boolean(box.castShadow);
+        uData._origReceiveShadow = Boolean(box.receiveShadow);
       }
 
       if (!isCutActive) {
@@ -172,14 +180,22 @@
         if (uData._origMaterial) {
           box.material = uData._origMaterial;
         }
+        box.castShadow = uData._origCastShadow;
+        box.receiveShadow = uData._origReceiveShadow;
+        uData.shadowCastState = box.castShadow;
+        uData.shadowReceiveState = box.receiveShadow;
       } else if (state.mode === 'CLIP') {
         // Complete physical section cut
         box.visible = !isOutsideSection;
         if (box.visible && uData._origMaterial) {
           box.material = uData._origMaterial;
         }
+        box.castShadow = box.visible && uData._origCastShadow;
+        box.receiveShadow = box.visible && uData._origReceiveShadow;
+        uData.shadowCastState = box.castShadow;
+        uData.shadowReceiveState = box.receiveShadow;
       } else if (state.mode === 'XRAY') {
-        // Ghost X-Ray mode
+        // Ghost X-Ray mode: ghost cargo must not cast/receive solid shadows.
         box.visible = true;
         if (isOutsideSection) {
           if (!uData._ghostMaterial) {
@@ -200,19 +216,33 @@
             }
           }
           if (uData._ghostMaterial) box.material = uData._ghostMaterial;
+          box.castShadow = false;
+          box.receiveShadow = false;
         } else {
           if (uData._origMaterial) box.material = uData._origMaterial;
+          box.castShadow = uData._origCastShadow;
+          box.receiveShadow = uData._origReceiveShadow;
         }
+        uData.shadowCastState = box.castShadow;
+        uData.shadowReceiveState = box.receiveShadow;
       } else if (state.mode === 'CAVITY') {
         // Cavity perspective
         box.visible = !isOutsideSection;
         if (box.visible && uData._origMaterial) {
           box.material = uData._origMaterial;
         }
+        box.castShadow = box.visible && uData._origCastShadow;
+        box.receiveShadow = box.visible && uData._origReceiveShadow;
+        uData.shadowCastState = box.castShadow;
+        uData.shadowReceiveState = box.receiveShadow;
       }
     });
 
     updateCuttingPlaneHelper(L, W, H, limitX, limitY, limitZ, isCutActive);
+
+    if (typeof window !== 'undefined' && window.invalidateShadowMap) {
+      window.invalidateShadowMap();
+    }
 
     // Trigger immediate render
     if (root.renderer && root.scene && root.camera) {
