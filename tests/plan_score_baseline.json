@@ -1,0 +1,1314 @@
+{
+  "schema": 1,
+  "generated_at": "2026-11-15",
+  "source": "tests/benchmark_results.json (算法默认选项；产品安全默认在 server/UI 层)",
+  "note": "PlanScore 参照基准，供自测试/棘轮/自我学习使用；重跑基准后需重新生成本文件。",
+  "case_count": 56,
+  "stats": {
+    "median": 69.0,
+    "min": 0.0,
+    "max": 91.5,
+    "grades": {
+      "A": 3,
+      "B": 36,
+      "C": 8,
+      "D": 0,
+      "F": 9
+    }
+  },
+  "policy_counts": {
+    "SAFETY_FIRST": 13,
+    "VOLUME_FIRST": 14,
+    "BALANCED": 29
+  },
+  "cases": {
+    "14-SKU-1845": {
+      "score": 57.5,
+      "grade": "C",
+      "hard_fail": false,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 36.5,
+        "T2": 71.8,
+        "T3": 71.9,
+        "T4": 87.9
+      },
+      "metrics": {
+        "utilization_pct": 85.71,
+        "rigid_ratio": 0.9966,
+        "door_min_sf": 0.064,
+        "transport_unstable_volume_m3": 3.852,
+        "plan_quality_score": 54.0,
+        "islands": 3,
+        "hidden_void_pct": 0.21
+      }
+    },
+    "SINGLE-LARGE-BOX": {
+      "score": 91.5,
+      "grade": "A",
+      "hard_fail": false,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 67.0,
+        "T2": 90.7,
+        "T3": 97.2,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 91.46,
+        "rigid_ratio": 0.8571,
+        "door_min_sf": 0.871,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 91.9,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "ALL-ELASTIC-SKUS": {
+      "score": 78.4,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 61.7,
+        "T2": 76.0,
+        "T3": 84.6,
+        "T4": 98.9
+      },
+      "metrics": {
+        "utilization_pct": 89.59,
+        "rigid_ratio": 1.0,
+        "door_min_sf": 0.583,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 57.7,
+        "islands": 0,
+        "hidden_void_pct": 0.53
+      }
+    },
+    "DOOR-DENSE-SKUS": {
+      "score": 72.0,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 59.5,
+        "T2": 100.0,
+        "T3": 50.9,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 69.75,
+        "rigid_ratio": 1.0,
+        "door_min_sf": 0.786,
+        "transport_unstable_volume_m3": 1.021,
+        "plan_quality_score": 62.4,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "MIXED-HETEROGENEOUS": {
+      "score": 63.5,
+      "grade": "C",
+      "hard_fail": false,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 42.3,
+        "T2": 100.0,
+        "T3": 48.0,
+        "T4": 98.6
+      },
+      "metrics": {
+        "utilization_pct": 70.43,
+        "rigid_ratio": 1.0,
+        "door_min_sf": 0.088,
+        "transport_unstable_volume_m3": 0.336,
+        "plan_quality_score": 51.3,
+        "islands": 0,
+        "hidden_void_pct": 0.31
+      }
+    },
+    "20GP-STANDARD": {
+      "score": 75.6,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 64.9,
+        "T2": 100.0,
+        "T3": 57.1,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 69.13,
+        "rigid_ratio": 1.0,
+        "door_min_sf": 1.078,
+        "transport_unstable_volume_m3": 0.03,
+        "plan_quality_score": 67.0,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "45HQ-EXTENDED": {
+      "score": 74.2,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 52.6,
+        "T2": 88.3,
+        "T3": 65.2,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 76.84,
+        "rigid_ratio": 0.82,
+        "door_min_sf": 0.327,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 57.0,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "STACK-BEARING-CONSTRAINTS": {
+      "score": 69.2,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 54.5,
+        "T2": 100.0,
+        "T3": 35.4,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 43.61,
+        "rigid_ratio": 1.0,
+        "door_min_sf": 0.444,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 81.1,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "ORIENTATION-TOPSTACK-CONSTRAINTS": {
+      "score": 54.0,
+      "grade": "C",
+      "hard_fail": false,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 28.6,
+        "T2": 100.0,
+        "T3": 30.7,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 40.09,
+        "rigid_ratio": 1.0,
+        "door_min_sf": 0.065,
+        "transport_unstable_volume_m3": 0.694,
+        "plan_quality_score": 67.8,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "TALL-SLENDER-TIPPING": {
+      "score": 61.7,
+      "grade": "C",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 31.6,
+        "T2": 100.0,
+        "T3": 29.5,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 36.86,
+        "rigid_ratio": 1.0,
+        "door_min_sf": 0.333,
+        "transport_unstable_volume_m3": 1.429,
+        "plan_quality_score": 64.3,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "OVERWEIGHT-PAYLOAD": {
+      "score": 0.0,
+      "grade": "F",
+      "hard_fail": true,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "tiers": {
+        "T0": 0.0,
+        "T1": 89.0,
+        "T2": 55.8,
+        "T3": 55.0,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 9.43,
+        "rigid_ratio": 0.32,
+        "door_min_sf": 3.333,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 100.0,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "MULTI-ZONE-CONSTRAINTS": {
+      "score": 68.0,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 57.4,
+        "T2": 100.0,
+        "T3": 36.0,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 52.06,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.638,
+        "plan_quality_score": 61.8,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "EXTREME-ASPECT-RATIO": {
+      "score": 69.0,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 70.3,
+        "T2": 100.0,
+        "T3": 21.4,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 34.91,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 41.0,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "SINGLE-SKU-MASS": {
+      "score": 85.9,
+      "grade": "A",
+      "hard_fail": false,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 55.0,
+        "T2": 91.6,
+        "T3": 88.4,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 94.89,
+        "rigid_ratio": 0.8712,
+        "door_min_sf": 0.25,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 66.9,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "ALL-CONSTRAINTS-COMBINED": {
+      "score": 60.9,
+      "grade": "C",
+      "hard_fail": false,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 43.7,
+        "T2": 100.0,
+        "T3": 31.3,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 51.93,
+        "rigid_ratio": 1.0,
+        "door_min_sf": 0.065,
+        "transport_unstable_volume_m3": 1.282,
+        "plan_quality_score": 69.4,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "STRICT-SINGLE-LAYER-FLOOR": {
+      "score": 68.4,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 63.7,
+        "T2": 100.0,
+        "T3": 42.0,
+        "T4": 99.8
+      },
+      "metrics": {
+        "utilization_pct": 40.55,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 78.9,
+        "islands": 0,
+        "hidden_void_pct": 0.21
+      }
+    },
+    "FLOOR-SPACE-COMPETITION": {
+      "score": 0.0,
+      "grade": "F",
+      "hard_fail": true,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "tiers": {
+        "T0": 0.0,
+        "T1": 95.9,
+        "T2": 45.1,
+        "T3": 46.3,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 18.02,
+        "rigid_ratio": 0.6933,
+        "door_min_sf": 3.2,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 91.2,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "TWO-LAYER-FLOOR-CEILING": {
+      "score": 76.4,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 83.4,
+        "T2": 100.0,
+        "T3": 35.1,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 31.96,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 80.3,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "DENSE-HEAVY-FLOOR-PAD": {
+      "score": 74.6,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 78.1,
+        "T2": 100.0,
+        "T3": 33.7,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 20.17,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 76.4,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "LONG-BEAM-FLOOR": {
+      "score": 74.3,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 77.6,
+        "T2": 100.0,
+        "T3": 33.1,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 24.41,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 74.5,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "20GP-SINGLE-LAYER": {
+      "score": 72.8,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 89.4,
+        "T2": 100.0,
+        "T3": 43.2,
+        "T4": 99.6
+      },
+      "metrics": {
+        "utilization_pct": 36.18,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 82.4,
+        "islands": 0,
+        "hidden_void_pct": 0.01
+      }
+    },
+    "THREE-TIER-BEARING-CHAIN": {
+      "score": 71.9,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 63.4,
+        "T2": 100.0,
+        "T3": 36.9,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 28.09,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 85.5,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "LOW-BEARING-FRAGILE-MID": {
+      "score": 75.8,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 83.1,
+        "T2": 99.4,
+        "T3": 34.2,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 23.77,
+        "rigid_ratio": 0.9906,
+        "door_min_sf": 3.0,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 77.6,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "HETEROGENEOUS-BEARING-LIMITS": {
+      "score": 72.5,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 71.8,
+        "T2": 100.0,
+        "T3": 31.8,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 23.9,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 70.8,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "ZERO-BEARING-ELASTIC-REFILL": {
+      "score": 68.1,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 78.2,
+        "T2": 100.0,
+        "T3": 36.5,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 17.88,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 84.2,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "EXTREME-PAYLOAD-BEARING": {
+      "score": 0.0,
+      "grade": "F",
+      "hard_fail": true,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 0.0,
+        "T1": 80.0,
+        "T2": 55.9,
+        "T3": 48.6,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 19.25,
+        "rigid_ratio": 0.8605,
+        "door_min_sf": 2.667,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 97.7,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "ASYMMETRIC-BEARING-STRIPS": {
+      "score": 75.7,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 80.0,
+        "T2": 100.0,
+        "T3": 35.6,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 22.08,
+        "rigid_ratio": 1.0,
+        "door_min_sf": 3.0,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 81.7,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "BROAD-NO-TOP-STACK-PANELS": {
+      "score": 68.0,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 82.0,
+        "T2": 100.0,
+        "T3": 34.9,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 29.99,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 79.8,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "CHECKERBOARD-NOTOP-ISOLATION": {
+      "score": 66.6,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 41.1,
+        "T2": 100.0,
+        "T3": 37.9,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 23.9,
+        "rigid_ratio": 1.0,
+        "door_min_sf": 0.154,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 88.2,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "MULTI-SKU-NO-TOP-STACK": {
+      "score": 66.1,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 69.9,
+        "T2": 100.0,
+        "T3": 34.6,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 25.23,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 79.0,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "NOTOP-LARGE-WITH-ELASTIC-BURST": {
+      "score": 60.3,
+      "grade": "C",
+      "hard_fail": false,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 37.1,
+        "T2": 100.0,
+        "T3": 32.8,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 34.45,
+        "rigid_ratio": 1.0,
+        "door_min_sf": 0.357,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 73.6,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "FLOOR-AND-NOTOP-COMBINED": {
+      "score": 66.7,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 80.8,
+        "T2": 100.0,
+        "T3": 32.3,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 30.15,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 72.3,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "20GP-NOTOP-SPACE": {
+      "score": 69.7,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 87.8,
+        "T2": 100.0,
+        "T3": 36.6,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 26.06,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 84.7,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "STRICT-UPRIGHT-MONOLITHIC": {
+      "score": 80.8,
+      "grade": "A",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 100.0,
+        "T2": 100.0,
+        "T3": 36.1,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 39.14,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 62.0,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "FLAT-ONLY-SLABS": {
+      "score": 71.7,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 74.7,
+        "T2": 100.0,
+        "T3": 28.5,
+        "T4": 96.5
+      },
+      "metrics": {
+        "utilization_pct": 29.22,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.277,
+        "plan_quality_score": 61.4,
+        "islands": 1,
+        "hidden_void_pct": 0.08
+      }
+    },
+    "ULTRA-THIN-UPRIGHT-SCREENS": {
+      "score": 67.5,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 47.6,
+        "T2": 100.0,
+        "T3": 35.3,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 25.26,
+        "rigid_ratio": 1.0,
+        "door_min_sf": 0.8,
+        "transport_unstable_volume_m3": 0.638,
+        "plan_quality_score": 80.9,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "MAX-FLAT-LAYERS-CONSTRAINT": {
+      "score": 74.2,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 81.2,
+        "T2": 100.0,
+        "T3": 31.4,
+        "T4": 96.3
+      },
+      "metrics": {
+        "utilization_pct": 25.15,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 69.8,
+        "islands": 1,
+        "hidden_void_pct": 0.02
+      }
+    },
+    "ORIENTATION-HEIGHT-CUTOFF": {
+      "score": 64.8,
+      "grade": "C",
+      "hard_fail": false,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 60.0,
+        "T2": 100.0,
+        "T3": 35.1,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 28.41,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 80.3,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "20GP-LOCKED-ORIENTATION": {
+      "score": 76.9,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 90.8,
+        "T2": 100.0,
+        "T3": 30.7,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 38.45,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 67.7,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "STRICT-TWO-STACK-LAYERS": {
+      "score": 73.9,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 78.5,
+        "T2": 100.0,
+        "T3": 31.7,
+        "T4": 98.6
+      },
+      "metrics": {
+        "utilization_pct": 30.51,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 70.6,
+        "islands": 0,
+        "hidden_void_pct": 0.1
+      }
+    },
+    "STRICT-THREE-STACK-LAYERS": {
+      "score": 76.6,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 89.4,
+        "T2": 100.0,
+        "T3": 31.0,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 23.15,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 68.5,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "STEPPED-STACK-LAYERS-CASCADE": {
+      "score": 0.0,
+      "grade": "F",
+      "hard_fail": true,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 0.0,
+        "T1": 66.0,
+        "T2": 100.0,
+        "T3": 31.9,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 23.36,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 71.1,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "INTERLEAVED-STACK-LAYERS": {
+      "score": 72.4,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 73.2,
+        "T2": 100.0,
+        "T3": 30.2,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 19.65,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 66.4,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "STEPPED-HEIGHT-TIPPING-SAFETY": {
+      "score": 65.7,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 74.1,
+        "T2": 100.0,
+        "T3": 32.4,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 25.62,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 72.7,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "20GP-STACK-LAYERS": {
+      "score": 69.6,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 43.1,
+        "T2": 100.0,
+        "T3": 46.1,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 26.98,
+        "rigid_ratio": 1.0,
+        "door_min_sf": 0.417,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 90.6,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "RIGID-DOMINANT-95PCT": {
+      "score": 71.3,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 60.0,
+        "T2": 100.0,
+        "T3": 39.1,
+        "T4": 96.8
+      },
+      "metrics": {
+        "utilization_pct": 57.8,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 70.7,
+        "islands": 1,
+        "hidden_void_pct": 0.04
+      }
+    },
+    "ELASTIC-DOMINANT-90PCT": {
+      "score": 74.7,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 74.1,
+        "T2": 100.0,
+        "T3": 37.3,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 44.4,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 65.4,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "RIGID-OVERLOAD-150PCT": {
+      "score": 67.6,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 55.0,
+        "T2": 48.8,
+        "T3": 80.6,
+        "T4": 100.0
+      },
+      "metrics": {
+        "utilization_pct": 86.64,
+        "rigid_ratio": 0.7513,
+        "door_min_sf": 0.25,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 58.9,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "DOOR-ZONE-SPECIALIZED": {
+      "score": 69.8,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 59.8,
+        "T2": 100.0,
+        "T3": 39.6,
+        "T4": 99.8
+      },
+      "metrics": {
+        "utilization_pct": 42.31,
+        "rigid_ratio": 1.0,
+        "door_min_sf": null,
+        "transport_unstable_volume_m3": 0.34,
+        "plan_quality_score": 71.9,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "TWELVE-SKU-COMPLEX-MOSAIC": {
+      "score": 54.5,
+      "grade": "C",
+      "hard_fail": false,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 31.1,
+        "T2": 99.5,
+        "T3": 29.1,
+        "T4": 98.3
+      },
+      "metrics": {
+        "utilization_pct": 52.58,
+        "rigid_ratio": 0.9926,
+        "door_min_sf": 0.082,
+        "transport_unstable_volume_m3": 0.5,
+        "plan_quality_score": 63.2,
+        "islands": 0,
+        "hidden_void_pct": 0.52
+      }
+    },
+    "20GP-NEAR-LIMIT": {
+      "score": 69.1,
+      "grade": "B",
+      "hard_fail": false,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "tiers": {
+        "T0": 100.0,
+        "T1": 54.7,
+        "T2": 100.0,
+        "T3": 35.4,
+        "T4": 99.1
+      },
+      "metrics": {
+        "utilization_pct": 59.54,
+        "rigid_ratio": 1.0,
+        "door_min_sf": 0.283,
+        "transport_unstable_volume_m3": 0.0,
+        "plan_quality_score": 59.9,
+        "islands": 0,
+        "hidden_void_pct": 0.0
+      }
+    },
+    "RANDOM-STRESS-CASE-01": {
+      "score": 0.0,
+      "grade": "F",
+      "hard_fail": true,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "tiers": {
+        "T0": 0.0,
+        "T1": 36.7,
+        "T2": 58.8,
+        "T3": 30.9,
+        "T4": 95.6
+      },
+      "metrics": {
+        "utilization_pct": 48.3,
+        "rigid_ratio": 0.9047,
+        "door_min_sf": 0.333,
+        "transport_unstable_volume_m3": 0.144,
+        "plan_quality_score": 68.2,
+        "islands": 0,
+        "hidden_void_pct": 0.48
+      }
+    },
+    "RANDOM-STRESS-CASE-02": {
+      "score": 0.0,
+      "grade": "F",
+      "hard_fail": true,
+      "policy": "BALANCED",
+      "scenario": "HETEROGENEOUS",
+      "tiers": {
+        "T0": 0.0,
+        "T1": 75.6,
+        "T2": 52.1,
+        "T3": 30.0,
+        "T4": 90.0
+      },
+      "metrics": {
+        "utilization_pct": 49.55,
+        "rigid_ratio": 0.8018,
+        "door_min_sf": 2.0,
+        "transport_unstable_volume_m3": 1.166,
+        "plan_quality_score": 65.6,
+        "islands": 2,
+        "hidden_void_pct": 0.39
+      }
+    },
+    "RANDOM-STRESS-CASE-03": {
+      "score": 0.0,
+      "grade": "F",
+      "hard_fail": true,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "tiers": {
+        "T0": 0.0,
+        "T1": 43.3,
+        "T2": 45.4,
+        "T3": 33.8,
+        "T4": 95.7
+      },
+      "metrics": {
+        "utilization_pct": 39.81,
+        "rigid_ratio": 0.6988,
+        "door_min_sf": 0.083,
+        "transport_unstable_volume_m3": 0.497,
+        "plan_quality_score": 76.6,
+        "islands": 1,
+        "hidden_void_pct": 0.2
+      }
+    },
+    "RANDOM-STRESS-CASE-04": {
+      "score": 0.0,
+      "grade": "F",
+      "hard_fail": true,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "tiers": {
+        "T0": 0.0,
+        "T1": 46.7,
+        "T2": 62.5,
+        "T3": 31.2,
+        "T4": 94.6
+      },
+      "metrics": {
+        "utilization_pct": 48.25,
+        "rigid_ratio": 0.9618,
+        "door_min_sf": 0.5,
+        "transport_unstable_volume_m3": 0.504,
+        "plan_quality_score": 69.1,
+        "islands": 1,
+        "hidden_void_pct": 0.26
+      }
+    },
+    "RANDOM-STRESS-CASE-05": {
+      "score": 0.0,
+      "grade": "F",
+      "hard_fail": true,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "tiers": {
+        "T0": 0.0,
+        "T1": 32.7,
+        "T2": 49.8,
+        "T3": 31.6,
+        "T4": 96.8
+      },
+      "metrics": {
+        "utilization_pct": 37.21,
+        "rigid_ratio": 0.7665,
+        "door_min_sf": 0.167,
+        "transport_unstable_volume_m3": 1.104,
+        "plan_quality_score": 70.4,
+        "islands": 0,
+        "hidden_void_pct": 0.13
+      }
+    }
+  }
+}

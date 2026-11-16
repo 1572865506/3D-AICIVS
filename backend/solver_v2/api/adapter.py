@@ -70,8 +70,14 @@ class InputNormalizer:
         zone: Optional[ZoneType] = None
         roles: List[PackingRole] = []
 
+        # 0. 用户无特别要求：不限纵向区间（“随意放置”），不参与区域硬约束
+        if re.search(r'随意|任意位置|不限位置|不限制位置|无要求|自由摆放|anywhere|any zone|free placement',
+                     req, re.IGNORECASE):
+            roles.append(PackingRole.MAIN_WALL)
+            zone = ZoneType.ANY
+
         # 1. Rear / Inner wall detection
-        if re.search(r'最里面|最内|后部|rear|deep|inner', req, re.IGNORECASE):
+        elif re.search(r'最里面|最内|后部|rear|deep|inner', req, re.IGNORECASE):
             roles.append(PackingRole.FOUNDATION)
             zone = ZoneType.REAR
 

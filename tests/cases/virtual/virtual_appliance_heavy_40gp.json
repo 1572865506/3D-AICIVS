@@ -1,0 +1,58 @@
+{
+  "case_id": "VIRTUAL-APPLIANCE-HEAVY-40GP",
+  "case_name": "虚拟-家电重货（重底座落地）",
+  "description": "40GP：重型底座必须落地 + 标准纸箱，验证承重/压强/重心",
+  "meta": {
+    "synthetic": true,
+    "archetype": "appliance",
+    "seed": 201,
+    "container": "40GP",
+    "target_volume_ratio": 0.55,
+    "time_budget_s": 45,
+    "floor_limited": false,
+    "known_issue": null,
+    "expected_reject": [],
+    "expected_error": []
+  },
+  "container": {
+    "usable": {
+      "L": 12.032,
+      "W": 2.352,
+      "H": 2.393
+    },
+    "maxPayloadTons": 26.5
+  },
+  "cargo": [
+    {
+      "sku": "V01-HEAVY_BASE",
+      "name": "重型底座/底盘",
+      "w": 0.727,
+      "d": 0.598,
+      "h": 0.201,
+      "weight": 44.14,
+      "quantity": 39,
+      "requirement": "重货,必须落地",
+      "mustBeOnFloor": true
+    },
+    {
+      "sku": "V02-STANDARD_BOX",
+      "name": "标准纸箱",
+      "w": 0.588,
+      "d": 0.439,
+      "h": 0.344,
+      "weight": 15.54,
+      "quantity": 236,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V03-CUBE_BOX",
+      "name": "立方箱体",
+      "w": 0.44,
+      "d": 0.523,
+      "h": 0.472,
+      "weight": 9.4,
+      "quantity": 118,
+      "requirement": "放中间"
+    }
+  ]
+}

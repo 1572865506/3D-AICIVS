@@ -1,0 +1,74 @@
+{
+  "case_id": "VIRTUAL-MULTISTOP-40HQ",
+  "case_name": "虚拟-多点卸货（3 站）",
+  "description": "40HQ：第 1 站封门件靠门、2/3 站依次向内，验证站序与装载顺序",
+  "meta": {
+    "synthetic": true,
+    "archetype": "multistop",
+    "seed": 501,
+    "container": "40HQ",
+    "target_volume_ratio": 0.7,
+    "time_budget_s": 60,
+    "floor_limited": false,
+    "known_issue": null,
+    "expected_reject": [],
+    "expected_error": [
+      "DOOR_SEAL_CAPACITY_UNSATISFIABLE"
+    ]
+  },
+  "container": {
+    "usable": {
+      "L": 12.032,
+      "W": 2.352,
+      "H": 2.698
+    },
+    "maxPayloadTons": 26.5
+  },
+  "cargo": [
+    {
+      "sku": "V01-DOOR_SEAL_PANEL",
+      "name": "封门面板",
+      "w": 0.61,
+      "d": 0.098,
+      "h": 0.336,
+      "weight": 7.03,
+      "quantity": 413,
+      "requirement": "封柜门",
+      "allowDoorZone": true,
+      "unloadStop": 1
+    },
+    {
+      "sku": "V02-STANDARD_BOX",
+      "name": "标准纸箱",
+      "w": 0.484,
+      "d": 0.373,
+      "h": 0.394,
+      "weight": 11.52,
+      "quantity": 310,
+      "requirement": "放中间",
+      "unloadStop": 2
+    },
+    {
+      "sku": "V03-CUBE_BOX",
+      "name": "立方箱体",
+      "w": 0.539,
+      "d": 0.442,
+      "h": 0.425,
+      "weight": 8.2,
+      "quantity": 206,
+      "requirement": "放中间",
+      "unloadStop": 3
+    },
+    {
+      "sku": "V04-ELASTIC_FILLER",
+      "name": "弹性填充件",
+      "w": 0.351,
+      "d": 0.182,
+      "h": 0.168,
+      "weight": 3.03,
+      "quantity": 206,
+      "requirement": "顶部填平,按需调节",
+      "isElastic": true
+    }
+  ]
+}

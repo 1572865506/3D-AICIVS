@@ -19,15 +19,31 @@
 被谁调用：backend/api/service.py（构建 loading plan / sequence）、
 tests/test_sequence_installability.py。
 """
+from collections import defaultdict
+import heapq
+import math
 from typing import Any, Dict, List, Sequence, Tuple
+
+# y/z 分桶尺寸（米）：只在可能重叠的截面桶内做 x 检查，避免 O(n²) 全对扫描
+_YZ_CELL_M = 0.5
 
 
 def _overlap(a0: float, a1: float, b0: float, b1: float) -> float:
     return min(a1, b1) - max(a0, b0)
 
 
+def _cell_range(lo: float, hi: float) -> range:
+    start = int(math.floor(lo / _YZ_CELL_M))
+    end = int(math.floor(max(lo, hi - 1e-9) / _YZ_CELL_M))
+    return range(start, end + 1)
+
+
 def build_dependency_graph(placements: Sequence[Any]) -> Tuple[List[set], int]:
-    """返回 (邻接表, 依赖边数)。边 i->j 表示 i 必须先于 j 装入。"""
+    """返回 (邻接表, 依赖边数)。边 i->j 表示 i 必须先于 j 装入。
+
+    先用 y/z 网格分桶，再在桶内检查 x 前后关系；典型装箱场景复杂度从 O(n²)
+    降到接近 O(n·k)，同时保持与全对扫描完全相同的边集。
+    """
     boxes = []
     for p in placements:
         if isinstance(p, dict):
@@ -37,11 +53,25 @@ def build_dependency_graph(placements: Sequence[Any]) -> Tuple[List[set], int]:
                           p.orientation.dx, p.orientation.dy, p.orientation.dz))
     n = len(boxes)
     adj = [set() for _ in range(n)]
+
+    buckets: Dict[Tuple[int, int], List[int]] = defaultdict(list)
+    for idx, (_, by, bz, _, bdy, bdz) in enumerate(boxes):
+        for iy in _cell_range(by, by + bdy):
+            for iz in _cell_range(bz, bz + bdz):
+                buckets[(iy, iz)].append(idx)
+
     edge_count = 0
-    for i, (bx, by, bz, bdx, bdy, bdz) in enumerate(boxes):
-        for j, (ax, ay, az, adx, ady, adz) in enumerate(boxes):
+    for j, (bx, by, bz, bdx, bdy, bdz) in enumerate(boxes):
+        if bdx <= 0:
+            continue
+        candidates = set()
+        for iy in _cell_range(by, by + bdy):
+            for iz in _cell_range(bz, bz + bdz):
+                candidates.update(buckets.get((iy, iz), ()))
+        for i in candidates:
             if i == j:
                 continue
+            ax, ay, az, adx, ady, adz = boxes[i]
             # A 位于 B 的入口侧（完全或部分在前）
             if ax < bx + bdx - 1e-3:
                 continue
@@ -49,8 +79,9 @@ def build_dependency_graph(placements: Sequence[Any]) -> Tuple[List[set], int]:
                 continue
             if _overlap(bz, bz + bdz, az, az + adz) <= 1e-4:
                 continue
-            adj[i].add(j)
-            edge_count += 1
+            if i not in adj[j]:
+                adj[j].add(i)
+                edge_count += 1
     return adj, edge_count
 
 
@@ -84,21 +115,19 @@ def compute_loading_order(
             return (round(p["x"], 3), round(p["z"], 3), round(p["y"], 3), ids[i])
         return (round(p.position.x, 3), round(p.position.z, 3), round(p.position.y, 3), ids[i])
 
-    ready = sorted([i for i in range(n) if indeg[i] == 0], key=_key)
+    ready = [(_key(i), i) for i in range(n) if indeg[i] == 0]
+    heapq.heapify(ready)
     order: List[int] = []
     while ready:
-        u = ready.pop(0)
+        _, u = heapq.heappop(ready)
         order.append(u)
-        inserted = False
         for v in sorted(adj[u], key=_key):
             indeg[v] -= 1
             if indeg[v] == 0:
-                ready.append(v)
-                inserted = True
-        if inserted:
-            ready.sort(key=_key)
+                heapq.heappush(ready, (_key(v), v))
 
-    cycles = [ids[i] for i in range(n) if i not in set(order)]
+    order_set = set(order)
+    cycles = [ids[i] for i in range(n) if i not in order_set]
 
     # 旧（枚举）顺序下的受阻箱数：某箱的前向邻居（必须先于它装入的更深箱）
     # 反而排在它之后 → 该箱装入后通道被封

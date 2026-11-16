@@ -14,7 +14,7 @@
 被谁调用：backend/server.py（提交任务时预检，ERROR 直接 422）、
 scripts/diagnose_case.py（诊断输出）。
 """
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from backend.solver_v2.domain.models import PackingRole, ZoneType
 
@@ -41,12 +41,16 @@ def _legal_modes(sku: Any) -> set:
     return modes
 
 
-def precheck_manifest(cargo_list: List[Any], container: Any) -> Dict[str, Any]:
+def precheck_manifest(cargo_list: List[Any], container: Any,
+                      options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """
     返回 {ok: bool, errors: [...], warnings: [...], per_sku: [...]}。
 
     每条 issue: {code, severity, sku, message, hint}
+    options 可传 solve options（door_step_depth 等），用于门区容量预检；
+    不传时按产品安全默认 0.25m 台阶估算。
     """
+    options = options or {}
     errors: List[Dict[str, Any]] = []
     warnings: List[Dict[str, Any]] = []
     per_sku: List[Dict[str, Any]] = []
@@ -67,6 +71,59 @@ def precheck_manifest(cargo_list: List[Any], container: Any) -> Dict[str, Any]:
             "message": "所有 SKU 卸货站序相同（相当于单站），多站分区不会生效",
             "hint": "单站配送可忽略；多站请设置不同站序",
         })
+    # 多站分区容量预检：区段深度/体积明显不可行时提前 422，避免静默饥饿
+    _regions = {}
+    if _set:
+        from backend.solver_v2.loading.multistop import plan_stop_regions
+        _regions, _region_errors = plan_stop_regions(cargo_list, container)
+        for message in _region_errors:
+            errors.append({
+                "code": "MULTISTOP_UNSATISFIABLE", "severity": "ERROR", "sku": "",
+                "message": message,
+                "hint": "减少该站货量、增加卸货站数或更换更大柜型",
+            })
+
+    # 门区安全容量预检：门面 SF≥1.5 时封门件需要的纵深是否超过可用门区
+    from backend.solver_v2.door.face_safety import (
+        door_seal_capacity, is_door_seal_sku)
+    _rigid_door = [c for c in cargo_list if is_door_seal_sku(c)]
+    _step = float(options.get("door_step_depth", 0.25) or 0.0)
+    if _rigid_door and _step > 0:
+        # 区段是硬边界（不容忍）；非多站门区可按体积扩展，估算器偏保守留 15% 余量
+        _tolerance = 1.0
+        if _regions:
+            _door_stop = min(_regions)
+            _available = max(0.0, _regions[_door_stop].x_end - _regions[_door_stop].x_start)
+        else:
+            # 非多站：门区可按封门件体积扩展；用体积估算可用纵深
+            _door_vol = sum(
+                float(getattr(c.box, "x", 0.0)) * float(getattr(c.box, "y", 0.0))
+                * float(getattr(c.box, "z", 0.0))
+                * int(getattr(getattr(c, "quantity", None), "required", 0) or 0)
+                for c in _rigid_door if getattr(c, "box", None) is not None
+            )
+            _cross = max(1e-9, float(getattr(container, "Ly", 0.0))
+                         * float(getattr(container, "Lz", 0.0)))
+            _available = max(
+                float(getattr(container, "door_zone_length_m", 1.2) or 1.2),
+                _door_vol / (_cross * 0.75),
+            )
+            _tolerance = 1.2
+        _cap = door_seal_capacity(_rigid_door, container, _available, min_sf=1.5)
+        if (not _cap["feasible"]
+                and (_cap.get("required_depth_m") or 0) > _available * _tolerance + 1e-6):
+            _issue = {
+                "code": "DOOR_SEAL_CAPACITY_UNSATISFIABLE", "sku": "",
+                "message": _cap.get("reason") or "封门件门区容量不足",
+                "hint": "减少封门件数量、增加门区纵深、允许更薄朝向，或关闭门端台阶安全策略",
+            }
+            if len(_rigid_door) == 1:
+                _issue["severity"] = "ERROR"
+                errors.append(_issue)
+            else:
+                # 多封门 SKU 的容量估算偏保守，先告警不误拒
+                _issue["severity"] = "WARN"
+                warnings.append(_issue)
 
     has_stackable_other_base = len(cargo_list) > 1
     for sku in cargo_list:

@@ -80,6 +80,7 @@ class SolverTelemetry:
     cavity_diagnostics: List[Dict[str, Any]] = field(default_factory=list)
     geometry_qa: Optional[Dict[str, Any]] = None  # 几何观感体检（包围盒空洞率/台阶度/支撑分布/空腔清单）
     lns_metrics: Optional[Dict[str, Any]] = None  # 阶段二 LNS 遥测（仅 options["lns_enabled"] 时非空）
+    tipping_audit: Optional[Dict[str, Any]] = None  # 延迟跨墙审计统计（仅开启 deferred_tipping_audit 时有意义）
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -107,6 +108,7 @@ class SolverTelemetry:
             "cavity_diagnostics": self.cavity_diagnostics,
             "geometry_qa": self.geometry_qa,
             "lns_metrics": self.lns_metrics,
+            "tipping_audit": self.tipping_audit,
         }
 
 

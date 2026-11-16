@@ -1,0 +1,79 @@
+{
+  "case_id": "VIRTUAL-3C-MIX-40HQ",
+  "case_name": "虚拟-3C 显示器混装（薄板封门+大箱）",
+  "description": "40HQ：电视/显示器/封门薄板/弹性填充，验证门区安全与墙缝",
+  "meta": {
+    "synthetic": true,
+    "archetype": "3c",
+    "seed": 101,
+    "container": "40HQ",
+    "target_volume_ratio": 0.65,
+    "time_budget_s": 45,
+    "floor_limited": false,
+    "known_issue": null,
+    "expected_reject": [],
+    "expected_error": []
+  },
+  "container": {
+    "usable": {
+      "L": 12.032,
+      "W": 2.352,
+      "H": 2.698
+    },
+    "maxPayloadTons": 26.5
+  },
+  "cargo": [
+    {
+      "sku": "V01-TV_LARGE",
+      "name": "大尺寸电视",
+      "w": 1.432,
+      "d": 0.152,
+      "h": 0.991,
+      "weight": 21.24,
+      "quantity": 92,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V02-TV_MEDIUM",
+      "name": "中尺寸电视",
+      "w": 0.94,
+      "d": 0.147,
+      "h": 0.543,
+      "weight": 8.11,
+      "quantity": 221,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V03-DISPLAY_SMALL",
+      "name": "小显示器",
+      "w": 0.493,
+      "d": 0.088,
+      "h": 0.332,
+      "weight": 8.86,
+      "quantity": 332,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V04-DOOR_SEAL_PANEL",
+      "name": "封门面板",
+      "w": 0.468,
+      "d": 0.072,
+      "h": 0.313,
+      "weight": 6.85,
+      "quantity": 479,
+      "requirement": "封柜门",
+      "allowDoorZone": true
+    },
+    {
+      "sku": "V05-ELASTIC_FILLER",
+      "name": "弹性填充件",
+      "w": 0.273,
+      "d": 0.221,
+      "h": 0.149,
+      "weight": 2.91,
+      "quantity": 369,
+      "requirement": "顶部填平,按需调节",
+      "isElastic": true
+    }
+  ]
+}

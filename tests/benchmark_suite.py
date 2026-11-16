@@ -565,6 +565,7 @@ def execute_benchmark_case(
 
     # 交付门禁（独立质检）：每个用例都给出一行 verdict，供基准报告与 CI 守护消费
     from backend.solver_v2.validation.delivery_gate import evaluate_delivery
+    _gate = None
     try:
         _gate = evaluate_delivery(sol, v2_cargos, container)
         delivery_gate = {
@@ -577,12 +578,45 @@ def execute_benchmark_case(
         delivery_gate = {"verdict": "ERROR", "blocked_by": [], "warnings": [],
                          "error": str(_gate_err)}
 
+    # 统一评分（PlanScore）：基准报告、门禁、方案选择、后续自学习共用同一目标口径。
+    # 复用 solve 已算出的 geometry_qa 与上面的 gate，避免重复计算。
+    plan_score = {}
+    try:
+        from backend.solver_v2.evaluation import detect_scenario, evaluate_plan
+        _scenario = detect_scenario(v2_cargos, container)
+        _eval = evaluate_plan(
+            sol, v2_cargos, container, scenario=_scenario,
+            qa=getattr(sol.telemetry, "geometry_qa", None), gate=_gate,
+        )
+        _m = _eval["metrics"]
+        plan_score = {
+            "score": _eval["score"],
+            "grade": _eval["grade"],
+            "hard_fail": _eval["hard_fail"],
+            "policy": _eval["policy"],
+            "scenario": _scenario["scenario"],
+            "tiers": {k: v["score"] for k, v in _eval["tiers"].items()},
+            "metrics": {
+                "utilization_pct": _m["utilization_pct"],
+                "rigid_ratio": _m["rigid_ratio"],
+                "door_min_sf": _m["door_min_sf"],
+                "transport_unstable_volume_m3": _m["transport_unstable_volume_m3"],
+                "plan_quality_score": _m["plan_quality_score"],
+                "islands": _m["islands"],
+                "hidden_void_pct": _m["hidden_void_pct"],
+            },
+            "deductions": _eval["deductions"][:5],
+        }
+    except Exception as _score_err:  # 评分异常不得让基准中断，但必须显式记录
+        plan_score = {"score": None, "error": str(_score_err)}
+
     return {
         "case_id": case_id,
         "case_name": case_name,
         "description": description,
         "requested_cartons": requested_cartons,
         "delivery_gate": delivery_gate,
+        "plan_score": plan_score,
         "placed_count": placed_count,
         "unplaced_count": unplaced_count,
         "utilization": round(utilization_pct, 2),
@@ -752,6 +786,7 @@ def run_benchmark_suite() -> Dict[str, Any]:
             print(f"         ⚠️ 审计告警: {', '.join(h_issues)}")
 
         results[res["case_id"]] = res
+        _ps = res.get("plan_score") or {}
         summary_list.append({
             "case_id": res["case_id"],
             "case_name": res["case_name"],
@@ -769,6 +804,11 @@ def run_benchmark_suite() -> Dict[str, Any]:
             "delivery_gate": gate.get("verdict"),
             "gate_blocked_by": gate.get("blocked_by", []),
             "gate_warnings": gate.get("warnings", []),
+            "plan_score": _ps.get("score"),
+            "plan_grade": _ps.get("grade"),
+            "plan_hard_fail": _ps.get("hard_fail"),
+            "plan_policy": _ps.get("policy"),
+            "plan_scenario": _ps.get("scenario"),
         })
 
     gate_counts = {"PASS": 0, "WARN": 0, "REJECT": 0, "ERROR": 0}
@@ -777,6 +817,25 @@ def run_benchmark_suite() -> Dict[str, Any]:
         if v in gate_counts:
             gate_counts[v] += 1
 
+    # 统一评分分布：让"方案好坏"不再只看利用率一个数
+    _scores = sorted(
+        float(s["plan_score"]) for s in summary_list
+        if isinstance(s.get("plan_score"), (int, float))
+    )
+    score_stats = {}
+    if _scores:
+        mid = len(_scores) // 2
+        median = _scores[mid] if len(_scores) % 2 else (_scores[mid - 1] + _scores[mid]) / 2.0
+        score_stats = {
+            "count": len(_scores),
+            "median": round(median, 1),
+            "p10": round(_scores[max(0, int(len(_scores) * 0.1) - 1)], 1),
+            "min": round(_scores[0], 1),
+            "max": round(_scores[-1], 1),
+        }
+        for g in ("A", "B", "C", "D", "F"):
+            score_stats[g] = sum(1 for s in summary_list if s.get("plan_grade") == g)
+
     full_output = {
         "suite_name": "3D-AICIVS Standard Benchmark Suite",
         "version": "1.0",
@@ -784,6 +843,7 @@ def run_benchmark_suite() -> Dict[str, Any]:
         "passed_cases": len([s for s in summary_list if s["status"] == "PASS"]),
         "all_zero_collisions": all_zero_collisions,
         "delivery_gate_counts": gate_counts,
+        "plan_score_stats": score_stats,
         "summary": summary_list,
         "results": results,
         **results
@@ -805,6 +865,10 @@ def run_benchmark_suite() -> Dict[str, Any]:
     print(f"测试结果已写入: {OUTPUT_RESULTS_PATH}")
     print(f"总用例: {len(cases)} | 全合规PASS: {full_output['passed_cases']} | 无碰撞: {all_zero_collisions}")
     print(f"交付门禁: PASS {gate_counts['PASS']} | WARN {gate_counts['WARN']} | REJECT {gate_counts['REJECT']} | ERROR {gate_counts['ERROR']}")
+    if score_stats:
+        print(f"统一评分: 中位 {score_stats['median']} | P10 {score_stats['p10']} | "
+              f"A {score_stats['A']} / B {score_stats['B']} / C {score_stats['C']} / "
+              f"D {score_stats['D']} / F {score_stats['F']}")
     print("=" * 110)
 
     return full_output

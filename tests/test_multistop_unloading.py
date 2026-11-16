@@ -73,6 +73,17 @@ class TestMultistopPlanning:
         r = precheck_manifest(cargo, InputAdapter.parse_container(CONTAINER))
         assert any(w["code"] == "UNLOAD_STOP_SINGLE" for w in r["warnings"])
 
+    def test_precheck_multistop_capacity_error(self):
+        """某站货量明显超过区段容量时，预检必须报错而不是让求解器静默饥饿。"""
+        cargo = InputAdapter.parse_cargo_list([
+            {"sku": "S1-HUGE", "name": "一站巨量", "w": 0.8, "d": 0.6, "h": 0.5,
+             "weight": 10, "quantity": 1000, "unloadStop": 1},
+            {"sku": "S2-BOX", "name": "二站", "w": 0.8, "d": 0.6, "h": 0.5,
+             "weight": 10, "quantity": 5, "unloadStop": 2},
+        ])
+        r = precheck_manifest(cargo, InputAdapter.parse_container(CONTAINER))
+        assert any(e["code"] == "MULTISTOP_UNSATISFIABLE" for e in r["errors"]), r
+
     def test_no_stop_means_no_regions(self):
         """未设置站序时行为完全不变（零影响）。"""
         cargo = InputAdapter.parse_cargo_list([
@@ -80,6 +91,36 @@ class TestMultistopPlanning:
         ])
         regions, errors = plan_stop_regions(cargo, InputAdapter.parse_container(CONTAINER))
         assert regions == {} and not errors
+
+    def test_three_stops_with_door_seal_no_starvation(self):
+        """3 站 + 第 1 站封门薄板：全部装完、区段合规、封门件不被饿死。"""
+        container = InputAdapter.parse_container(
+            {"usable": {"L": 8.0, "W": 2.4, "H": 2.6}, "maxPayloadTons": 28.6})
+        cargo = InputAdapter.parse_cargo_list([
+            {"sku": "S1-DOOR", "name": "一站封门板", "w": 0.55, "d": 0.08, "h": 0.35,
+             "weight": 3, "quantity": 30, "requirement": "封柜门",
+             "allowDoorZone": True, "unloadStop": 1},
+            {"sku": "S2-BOX", "name": "二站货", "w": 0.5, "d": 0.5, "h": 0.5,
+             "weight": 8, "quantity": 20, "unloadStop": 2},
+            {"sku": "S3-BOX", "name": "三站货", "w": 0.5, "d": 0.5, "h": 0.5,
+             "weight": 8, "quantity": 20, "unloadStop": 3},
+        ])
+        solver = UnifiedSolver(container)
+        sol = solver.solve(cargo, time_budget=8, options={
+            "door_seal_confine": True, "door_step_depth": 0.25})
+        assert sol.placed_count == 70
+        assert not sol.validation_result.violations
+
+        regions = getattr(solver, "_stop_regions", {})
+        assert regions[3].x_start == pytest.approx(0.0, abs=1e-6)
+        assert regions[3].x_end <= regions[2].x_start + 1e-6
+        assert regions[2].x_end <= regions[1].x_start + 1e-6
+        assert regions[1].x_end == pytest.approx(8.0 - 0.04, abs=1e-4)
+
+        for p in sol.placements:
+            stop = {"S1-DOOR": 1, "S2-BOX": 2, "S3-BOX": 3}[p.sku_id]
+            assert p.position.x >= regions[stop].x_start - 1e-4
+            assert p.position.x + p.orientation.dx <= regions[stop].x_end + 1e-4
 
 
 if __name__ == "__main__":

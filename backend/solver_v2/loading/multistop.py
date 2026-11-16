@@ -17,6 +17,23 @@ backend/solver_v2/validation/config_precheck.py（配置一致性检查）。
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
+from backend.solver_v2.domain.models import PackingRole, ZoneType
+
+
+def _is_door_seal(c: Any) -> bool:
+    return (
+        PackingRole.DOOR_SEAL in tuple(getattr(c, "packing_roles", ()) or ())
+        or getattr(c, "target_zone", None) == ZoneType.DOOR
+    )
+
+
+def _stop_value(c: Any) -> Optional[int]:
+    raw = getattr(c, "unload_stop", None)
+    try:
+        return int(raw) if raw is not None else None
+    except (TypeError, ValueError):
+        return None
+
 
 @dataclass(frozen=True)
 class StopRegion:
@@ -64,30 +81,55 @@ def plan_stop_regions(
         return {}, errors
 
     total_len = float(container.Lx)
-    usable_len = total_len - door_reserve_m
-    total_vol = sum(v["volume"] for v in stops.values()) or 1e-9
-    if usable_len <= 0:
-        return {}, ["柜体可用纵深不足，无法做多点卸货分区"]
-
-    # 站序降序：最大站序（终点站）在最深处
+    has_door_seal = any(_is_door_seal(c) for c in cargo_list)
     ordered = sorted(stops.keys(), reverse=True)
+    # 门端区段边界：
+    # - 有封门件且有货：站 1 延伸到门端（cL-0.04），封门件落在门区内；
+    # - 有封门件但站 1 不是封门件：站 1 止于非门货锁定线（cL-door_reserve）；
+    # - 无封门件：没有门区锁定，直接到 cL-0.04。
+    door_stop_seals = any(
+        _is_door_seal(c)
+        for c in cargo_list
+        if _stop_value(c) is not None and _stop_value(c) == min(stops)
+    )
+    if not has_door_seal:
+        door_boundary = round(total_len - 0.04, 4)
+    elif door_stop_seals:
+        door_boundary = round(total_len - 0.04, 4)
+    else:
+        door_boundary = round(total_len - max(0.2, door_reserve_m), 4)
+
+    total_vol = sum(v["volume"] for v in stops.values()) or 1e-9
+    if door_boundary <= min_depth_m * len(ordered):
+        return {}, ["柜体可用纵深不足以容纳所有卸货站（含最小段长）"]
+
+    # 站序降序：最大站序（终点站）在最深处；x=0 → door_boundary 连续分配
     regions: Dict[int, StopRegion] = {}
     cursor = 0.0
-    remaining_len = usable_len
+    remaining_len = door_boundary
     remaining_vol = total_vol
     for idx, stop in enumerate(ordered):
         vol = stops[stop]["volume"]
+        stops_left = len(ordered) - idx
         if idx == len(ordered) - 1:
-            depth = remaining_len  # 最后一站吃掉剩余纵深（含余量）
+            depth = remaining_len
         else:
-            depth = usable_len * (vol / remaining_vol)
+            # 用"剩余纵深 / 剩余体积"逐站分配（旧实现误用常量 usable_len，
+            # 会让最后一站只剩最小段长再被 gap 收缩）
+            depth = remaining_len * (vol / max(1e-9, remaining_vol))
             depth = max(min_depth_m, depth)
-            depth = min(depth, remaining_len - min_depth_m * (len(ordered) - idx - 1))
-        x0 = round(cursor * (1 + gap_ratio), 4)
+            depth = min(depth, remaining_len - min_depth_m * (stops_left - 1))
+        depth = max(0.0, depth)
+        x0 = round(cursor, 4)
         x1 = round(cursor + depth, 4)
-        if depth < min_depth_m - 1e-6 or x1 <= x0:
+        if depth < min_depth_m - 1e-6:
             errors.append(f"站 {stop} 分区深度不足（{depth:.2f}m < 最小 {min_depth_m}m），"
                           f"请检查货量或增加柜型")
+        # 容量粗检：区段体积 × 0.75 典型装载效率；超过 115% 视为明显不可行
+        _cap = depth * float(getattr(container, "Ly", 0.0)) * float(getattr(container, "Lz", 0.0)) * 0.75
+        if _cap > 0 and vol > _cap * 1.15:
+            errors.append(f"站 {stop} 货量 {vol:.2f}m³ 超过区段容量 {_cap:.2f}m³，"
+                          f"请增加站数/减少货量/换大柜")
         regions[stop] = StopRegion(stop=stop, x_start=x0, x_end=x1,
                                    volume_m3=round(vol, 3), sku_ids=tuple(stops[stop]["skus"]))
         cursor = x1
@@ -97,11 +139,7 @@ def plan_stop_regions(
 
 
 def stop_of(sku: Any) -> Optional[int]:
-    raw = getattr(sku, "unload_stop", None)
-    try:
-        return int(raw) if raw is not None else None
-    except (TypeError, ValueError):
-        return None
+    return _stop_value(sku)
 
 
 def loading_order_by_stop(cargo_list: List[Any]) -> List[str]:

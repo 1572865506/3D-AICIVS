@@ -35,6 +35,17 @@ class TestElasticFillPolicy:
         assert UnifiedSolver._elastic_fill_allowed(s, 0.0) is False
 
 
+class TestDefaultBudget:
+    """超大批量的默认预算必须落在收敛拐点（SINGLE-SKU-MASS 实测 120s）。"""
+
+    def test_budget_tiers(self):
+        assert UnifiedSolver._default_time_budget(10000) == 120.0
+        assert UnifiedSolver._default_time_budget(5000) == 120.0
+        assert UnifiedSolver._default_time_budget(4999) == 45.0
+        assert UnifiedSolver._default_time_budget(2145) == 45.0
+        assert UnifiedSolver._default_time_budget(500) == 25.0
+
+
 class TestProductionManifest:
     """15-SKU 真实产线单：算法与门禁契合度基线。"""
 
@@ -47,7 +58,9 @@ class TestProductionManifest:
         case = json.load(open(path, encoding="utf-8"))
         container = InputAdapter.parse_container(case["container"])
         cargo = InputAdapter.parse_cargo_list(case["cargo"])
-        sol = UnifiedSolver(container).solve(cargo)
+        # 产品交付默认（与 server 一致）：刚性封门件门区限定 + 0.25m 门端台阶
+        sol = UnifiedSolver(container).solve(
+            cargo, options={"door_seal_confine": True, "door_step_depth": 0.25})
         gate = evaluate_delivery(sol, cargo, container)
         return case, container, cargo, sol, gate
 
@@ -82,6 +95,22 @@ class TestProductionManifest:
         """利用率底线（当前已达成 85%+，防回退）。"""
         _, _, _, sol, _ = result
         assert sol.volume_utilization_pct >= 84.0, sol.volume_utilization_pct
+
+    def test_elastic_sweep_reaches_voxel_bound(self, result):
+        """扫描精度不得回退：旧档 0.1m/2 万次检查只装 174 箱（预算在 x≈5m 耗尽）。
+        当前默认启用"封门件门区限定 + 门端台阶"安全策略后，SKU-14 仍应 ≥180 箱；
+        旧扫描档位在同等安全约束下只能装 174 箱以下。"""
+        _, _, _, sol, _ = result
+        placed = sum(1 for p in sol.placements if p.sku_id == "SKU-14")
+        assert placed >= 180, f"SKU-14 仅装 {placed} 箱（旧扫描档位水平）"
+
+    def test_gap_fill_support_strictness(self, result):
+        """填充件必须落在基本平整的支撑面上（门槛 0.99）：
+        曾用主门禁 0.70 时多出 14 个孤立箱、几何观感降为 POOR。"""
+        _, _, _, sol, _ = result
+        qa = sol.telemetry.geometry_qa
+        assert qa["support"]["island_count"] <= 6, qa["support"]["island_count"]
+        assert qa["verdict"] in ("GOOD", "FAIR"), qa["verdict"]
 
 
 if __name__ == "__main__":

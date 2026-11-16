@@ -1,0 +1,209 @@
+{
+  "schema": 1,
+  "generated_at": "2026-11-15",
+  "source": "tests/harness_reports/acceptance_report.json",
+  "note": "虚拟货单验收冻结基线；数量/目标体积比不得再为通过而调整。",
+  "case_count": 19,
+  "summary": {
+    "case_count": 19,
+    "pass": 14,
+    "warn": 1,
+    "known": 1,
+    "expected_reject": 3,
+    "fail": 0,
+    "median_score": 76.8,
+    "policy_counts": {
+      "BALANCED": 8,
+      "SAFETY_FIRST": 6,
+      "VOLUME_FIRST": 5
+    }
+  },
+  "cases": {
+    "VIRTUAL-20GP-DENSE": {
+      "status": "PASS",
+      "score": 76.9,
+      "utilization_pct": 69.14,
+      "rigid_ratio": 0.9946,
+      "door_min_sf": null,
+      "policy": "BALANCED",
+      "known_issue": null
+    },
+    "VIRTUAL-3C-MIX-40HQ": {
+      "status": "PASS",
+      "score": 87.4,
+      "utilization_pct": 64.93,
+      "rigid_ratio": 1.0,
+      "door_min_sf": 2.99,
+      "policy": "SAFETY_FIRST",
+      "known_issue": null
+    },
+    "VIRTUAL-3C-THIN-DOOR-40HQ": {
+      "status": "PASS",
+      "score": 87.4,
+      "utilization_pct": 79.97,
+      "rigid_ratio": 1.0,
+      "door_min_sf": 2.346,
+      "policy": "SAFETY_FIRST",
+      "known_issue": null
+    },
+    "VIRTUAL-45HQ-LONG": {
+      "status": "PASS",
+      "score": 83.6,
+      "utilization_pct": 69.9,
+      "rigid_ratio": 1.0,
+      "door_min_sf": null,
+      "policy": "BALANCED",
+      "known_issue": null
+    },
+    "VIRTUAL-APPLIANCE-HEAVY-40GP": {
+      "status": "PASS",
+      "score": 71.5,
+      "utilization_pct": 54.65,
+      "rigid_ratio": 0.9949,
+      "door_min_sf": null,
+      "policy": "VOLUME_FIRST",
+      "known_issue": null
+    },
+    "VIRTUAL-AUTO-LONG-40HQ": {
+      "status": "KNOWN",
+      "score": 0.0,
+      "utilization_pct": 50.44,
+      "rigid_ratio": 0.9945,
+      "door_min_sf": null,
+      "policy": "BALANCED",
+      "known_issue": {
+        "id": "AUTO-LONG-001",
+        "owner": "solver",
+        "review_by": "2026-12-15",
+        "note": "长条箱+重底座：刚性件约 95% 未装完（长件摆放与支撑受限，待修）"
+      }
+    },
+    "VIRTUAL-ECOMMERCE-MIX-40HQ": {
+      "status": "PASS",
+      "score": 78.8,
+      "utilization_pct": 70.07,
+      "rigid_ratio": 1.0,
+      "door_min_sf": null,
+      "policy": "BALANCED",
+      "known_issue": null
+    },
+    "VIRTUAL-ECOMMERCE-MULTISTOP-40HQ": {
+      "status": "PASS",
+      "score": 77.6,
+      "utilization_pct": 69.01,
+      "rigid_ratio": 0.9932,
+      "door_min_sf": null,
+      "policy": "BALANCED",
+      "known_issue": null
+    },
+    "VIRTUAL-FRAGILE-40HQ": {
+      "status": "WARN",
+      "score": 69.8,
+      "utilization_pct": 70.0,
+      "rigid_ratio": 1.0,
+      "door_min_sf": 0.699,
+      "policy": "SAFETY_FIRST",
+      "known_issue": null
+    },
+    "VIRTUAL-LIMITED-STACK-40HQ": {
+      "status": "PASS",
+      "score": 71.5,
+      "utilization_pct": 34.69,
+      "rigid_ratio": 0.9928,
+      "door_min_sf": null,
+      "policy": "BALANCED",
+      "known_issue": null
+    },
+    "VIRTUAL-MULTISTOP-40HQ": {
+      "status": "EXPECTED_REJECT",
+      "score": null,
+      "utilization_pct": null,
+      "rigid_ratio": null,
+      "door_min_sf": null,
+      "policy": "SAFETY_FIRST",
+      "known_issue": null
+    },
+    "VIRTUAL-MULTISTOP-4STOP-40HQ": {
+      "status": "EXPECTED_REJECT",
+      "score": null,
+      "utilization_pct": null,
+      "rigid_ratio": null,
+      "door_min_sf": null,
+      "policy": "SAFETY_FIRST",
+      "known_issue": {
+        "id": "DOOR-STEP-CAPACITY-001",
+        "owner": "solver",
+        "review_by": "2026-12-15",
+        "note": "封门薄板在门端台阶下有效容量不足：171 件仅 44 件可放，需门面政策/容量预检"
+      }
+    },
+    "VIRTUAL-NODOOR-40GP": {
+      "status": "PASS",
+      "score": 85.8,
+      "utilization_pct": 70.07,
+      "rigid_ratio": 1.0,
+      "door_min_sf": null,
+      "policy": "BALANCED",
+      "known_issue": null
+    },
+    "VIRTUAL-NODOOR-HIGHFILL-40HQ": {
+      "status": "PASS",
+      "score": 84.7,
+      "utilization_pct": 74.95,
+      "rigid_ratio": 1.0,
+      "door_min_sf": null,
+      "policy": "BALANCED",
+      "known_issue": null
+    },
+    "VIRTUAL-OVERWEIGHT-40HQ": {
+      "status": "PASS",
+      "score": 66.1,
+      "utilization_pct": 21.74,
+      "rigid_ratio": 1.0,
+      "door_min_sf": null,
+      "policy": "VOLUME_FIRST",
+      "known_issue": null
+    },
+    "VIRTUAL-PALLET-MIXED-40HQ": {
+      "status": "PASS",
+      "score": 67.8,
+      "utilization_pct": 50.22,
+      "rigid_ratio": 0.9975,
+      "door_min_sf": null,
+      "policy": "VOLUME_FIRST",
+      "known_issue": null
+    },
+    "VIRTUAL-PALLET-SINGLE-40HQ": {
+      "status": "PASS",
+      "score": 76.8,
+      "utilization_pct": 23.46,
+      "rigid_ratio": 1.0,
+      "door_min_sf": null,
+      "policy": "VOLUME_FIRST",
+      "known_issue": null
+    },
+    "VIRTUAL-THIN-DOOR-HIGHFILL-40HQ": {
+      "status": "EXPECTED_REJECT",
+      "score": null,
+      "utilization_pct": null,
+      "rigid_ratio": null,
+      "door_min_sf": null,
+      "policy": "SAFETY_FIRST",
+      "known_issue": {
+        "id": "DOOR-STEP-BAND-001",
+        "owner": "solver",
+        "review_by": "2026-12-15",
+        "note": "高填充时门面薄板 SF<1.5：0.25m 门端台阶覆盖不到 0.56m 厚封门墙，待门面政策决策"
+      }
+    },
+    "VIRTUAL-UPRIGHT-40HQ": {
+      "status": "PASS",
+      "score": 72.9,
+      "utilization_pct": 65.02,
+      "rigid_ratio": 1.0,
+      "door_min_sf": null,
+      "policy": "VOLUME_FIRST",
+      "known_issue": null
+    }
+  }
+}

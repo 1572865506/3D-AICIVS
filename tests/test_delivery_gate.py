@@ -20,7 +20,8 @@ if PROJECT_ROOT not in (__import__("sys").path):
 import pytest
 
 from backend.solver_v2.api.adapter import InputAdapter
-from backend.solver_v2.domain.models import BoxDim, CargoSKU, Placement, Point3D, Orientation3D, PlacementContext
+from backend.solver_v2.domain.models import (
+    BoxDim, CargoSKU, Placement, Point3D, Orientation3D, PlacementContext, QuantityPlan)
 from backend.solver_v2.validation.delivery_gate import evaluate_delivery, load_policy
 
 
@@ -99,6 +100,21 @@ class TestDeliveryGate:
         assert rep["verdict"] == "PASS", rep
         assert rep["cog"]["long_offset_pct"] < 10
 
+    def test_door_open_tipping_warns(self):
+        """门面整列开门 SF<1.5 → DG-020 告警（WARN，不阻断交付）。"""
+        c = _container()
+        sol = _StubSolution(container=c, placements=[
+            _plc("p1", "A", 2.0, 0.2, 0.0), _plc("p2", "A", 3.0, 0.2, 0.0),
+            _plc("p3", "A", 2.0, 1.2, 0.0), _plc("p4", "A", 3.0, 1.2, 0.0),
+        ])
+        sol.telemetry.geometry_qa = _clean_qa(door_open={
+            "column_count": 4, "unsafe_columns": 4,
+            "min_sf": 0.064, "at_risk_volume_m3": 0.55,
+        })
+        rep = evaluate_delivery(sol, [_sku(req=4)], c)
+        assert "DG-020" in rep["warnings"], rep
+        assert rep["verdict"] != "REJECT"
+
     def test_violation_blocks_delivery(self):
         """硬约束违规 → REJECT（DG-001）。"""
         c = _container()
@@ -139,6 +155,30 @@ class TestDeliveryGate:
         rep = evaluate_delivery(sol, [_sku(req=40)], c)
         assert "DG-005" not in rep["blocked_by"], rep
         assert rep["verdict"] != "REJECT", rep
+
+    def test_elastic_shortage_does_not_block_rigid_fulfillment(self):
+        """弹性件是“可以减少”：刚性 100% 时，弹性未填满不得触发 DG-005。"""
+        c = _container()
+        rigid = _sku("A", req=1)
+        elastic = CargoSKU(
+            sku_id="B", name="B", box=BoxDim(0.5, 0.5, 0.5), weight_kg=2.0,
+            quantity=QuantityPlan(required=10, is_elastic=True),
+        )
+        sol = _StubSolution(container=c, placements=[_plc("p1", "A", 2.5, 0.7, 0.0)])
+        sol.telemetry.geometry_qa = _clean_qa()
+        rep = evaluate_delivery(sol, [rigid, elastic], c)
+        checks = {ch["id"]: ch for ch in rep["checks"]}
+        assert checks["DG-005"]["passed"] is True, checks["DG-005"]
+        assert "DG-005" not in rep["blocked_by"], rep
+
+    def test_rigid_shortfall_still_blocks(self):
+        """刚性缺口仍必须触发 DG-005（不能因为只看弹性而放过刚性欠装）。"""
+        c = _container()
+        rigid = _sku("A", req=2)
+        sol = _StubSolution(container=c, placements=[_plc("p1", "A", 2.5, 0.7, 0.0)])
+        sol.telemetry.geometry_qa = _clean_qa()
+        rep = evaluate_delivery(sol, [rigid], c)
+        assert "DG-005" in rep["blocked_by"], rep
 
     def test_severe_cog_offset_blocks(self):
         """重心严重偏载（纵向 > 20%）且货单自由摆放 → REJECT（DG-011）。"""

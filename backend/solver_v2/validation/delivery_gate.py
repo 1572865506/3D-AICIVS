@@ -58,6 +58,9 @@ DEFAULT_POLICY: Dict[str, Any] = {
         "DG-017": {"severity": "WARN", "name": "同SKU聚集度", "min_sku_clustering_pct": 40.0},
         "DG-018": {"severity": "WARN", "name": "重心高度", "max_cog_height_pct": 55.0},
         "DG-019": {"severity": "WARN", "name": "碎片化指数", "max_fragmentation_pct": 25.0},
+        "DG-020": {"severity": "WARN", "name": "开门倾覆风险", "min_door_open_sf": 1.5},
+        "DG-021": {"severity": "WARN", "name": "运输侧向失稳",
+                   "max_unstable_volume_m3": 0.5},
     },
 }
 
@@ -182,10 +185,21 @@ def evaluate_delivery(
     starved: List[str] = []
     required_total = 0
     placed_total = len(placements)
+    rigid_required_total = 0
+    rigid_placed_total = 0
+    elastic_required_total = 0
+    elastic_placed_total = 0
     for c in cargo_list:
         req = getattr(getattr(c, "quantity", None), "required", 0) or 0
         is_elastic = bool(getattr(getattr(c, "quantity", None), "is_elastic", False))
         required_total += req
+        placed = min(req, placed_by_sku.get(c.sku_id, 0))
+        if is_elastic:
+            elastic_required_total += req
+            elastic_placed_total += placed
+        else:
+            rigid_required_total += req
+            rigid_placed_total += placed
         if not is_elastic and req > 0 and placed_by_sku.get(c.sku_id, 0) == 0:
             starved.append(c.sku_id)
     add("DG-004", len(starved), 0, not starved, f"饥饿: {starved[:5]}" if starved else "")
@@ -213,12 +227,25 @@ def evaluate_delivery(
     _payload_cap = getattr(cont, "max_payload_kg", None)
     _payload_limited = bool(_payload_cap) and _req_weight > float(_payload_cap)
     if fillable_ratio <= cfg5.get("trigger_fillable_ratio", 0.95) and required_total > 0 and not _payload_limited:
-        fulfillment = placed_total / max(1, required_total)
+        if rigid_required_total > 0:
+            # 履约硬门槛只看刚性件：弹性件语义是“可以减少”，不应因弹性未填满而判不可交付
+            fulfillment = rigid_placed_total / max(1, rigid_required_total)
+            _detail = (
+                f"请求体积占柜容 {fillable_ratio*100:.0f}%（可装下，强制刚性履约）；"
+                f"刚性 {rigid_placed_total}/{rigid_required_total}，"
+                f"弹性 {elastic_placed_total}/{elastic_required_total}"
+            )
+        else:
+            # 全弹性货单：没有刚性履约义务，不设硬门槛
+            fulfillment = placed_total / max(1, required_total)
+            _detail = f"全弹性货单，不设履约硬门槛；已放 {placed_total}/{required_total}"
         add("DG-005", round(100.0 * fulfillment, 2), round(100.0 * cfg5["min_fulfillment"], 2),
-            fulfillment >= cfg5["min_fulfillment"],
-            f"请求体积占柜容 {fillable_ratio*100:.0f}%（可装下，强制履约）")
+            (fulfillment >= cfg5["min_fulfillment"]) if rigid_required_total > 0 else True,
+            _detail)
     else:
-        add("DG-005", round(100.0 * placed_total / max(1, required_total), 2), None, True,
+        add("DG-005", round(100.0 * rigid_placed_total / max(1, rigid_required_total), 2)
+            if rigid_required_total > 0 else round(100.0 * placed_total / max(1, required_total), 2),
+            None, True,
             f"请求体积占柜容 {fillable_ratio*100:.0f}%，请求总重 {_req_weight:.0f}kg"
             + (f" > 柜限 {_payload_cap:.0f}kg（载重受限，不设硬门槛）" if _payload_limited else "（超载，履约率不设硬门槛）"))
 
@@ -252,6 +279,23 @@ def evaluate_delivery(
         else:
             for rid in ("DG-015", "DG-016", "DG-017", "DG-018", "DG-019"):
                 add(rid, None, None, True, "无方案质量评分卡数据，跳过")
+
+        # DG-020 开门倾覆：门面整列失去柜门支承后的抗前倾安全系数
+        _door_open = qa.get("door_open") or {}
+        if _door_open.get("min_sf") is not None:
+            add("DG-020", _door_open.get("min_sf"), rules["DG-020"]["min_door_open_sf"],
+                (_door_open.get("min_sf") or 0) >= rules["DG-020"]["min_door_open_sf"],
+                f"门面 {_door_open.get('unsafe_columns', 0)} 列 SF<1.5，"
+                f"风险体积 {_door_open.get('at_risk_volume_m3', 0)} m³")
+
+        # DG-021 运输侧向失稳：高瘦箱无同层侧向接触且不贴壁
+        _transport = qa.get("transport") or {}
+        if _transport.get("slender_boxes"):
+            add("DG-021", _transport.get("unstable_volume_m3"),
+                rules["DG-021"]["max_unstable_volume_m3"],
+                (_transport.get("unstable_volume_m3") or 0)
+                <= rules["DG-021"]["max_unstable_volume_m3"],
+                f"{_transport.get('unstable_boxes', 0)} 箱高瘦且无侧向接触")
     else:
         for rid in ("DG-006", "DG-007", "DG-008", "DG-009", "DG-010"):
             add(rid, None, None, True, "无几何体检数据，跳过")

@@ -1,0 +1,59 @@
+{
+  "case_id": "VIRTUAL-LIMITED-STACK-40HQ",
+  "case_name": "虚拟-限层堆叠（最多 2 层）",
+  "description": "40HQ：限层箱 + 零承压板 + 标准箱，验证层数约束与顶面利用",
+  "meta": {
+    "synthetic": true,
+    "archetype": "limited",
+    "seed": 702,
+    "container": "40HQ",
+    "target_volume_ratio": 0.35,
+    "time_budget_s": 30,
+    "floor_limited": false,
+    "known_issue": null,
+    "expected_reject": [],
+    "expected_error": []
+  },
+  "container": {
+    "usable": {
+      "L": 12.032,
+      "W": 2.352,
+      "H": 2.698
+    },
+    "maxPayloadTons": 26.5
+  },
+  "cargo": [
+    {
+      "sku": "V01-LIMITED_STACK_BOX",
+      "name": "限层堆叠箱",
+      "w": 0.653,
+      "d": 0.469,
+      "h": 0.32,
+      "weight": 23.61,
+      "quantity": 158,
+      "requirement": "放中间",
+      "max_stack_layers": 2
+    },
+    {
+      "sku": "V02-ZERO_BEARING_SLAB",
+      "name": "零承重板件",
+      "w": 0.85,
+      "d": 0.648,
+      "h": 0.165,
+      "weight": 17.68,
+      "quantity": 39,
+      "requirement": "放中间",
+      "allowStackingOnTop": false
+    },
+    {
+      "sku": "V03-STANDARD_BOX",
+      "name": "标准纸箱",
+      "w": 0.604,
+      "d": 0.48,
+      "h": 0.334,
+      "weight": 8.78,
+      "quantity": 79,
+      "requirement": "放中间"
+    }
+  ]
+}

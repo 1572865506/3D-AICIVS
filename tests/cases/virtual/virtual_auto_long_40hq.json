@@ -1,0 +1,63 @@
+{
+  "case_id": "VIRTUAL-AUTO-LONG-40HQ",
+  "case_name": "虚拟-汽配长条箱（长宽比大）",
+  "description": "40HQ：长条形管箱 + 重底座 + 标准箱，验证长件摆放与支撑",
+  "meta": {
+    "synthetic": true,
+    "archetype": "auto",
+    "seed": 202,
+    "container": "40HQ",
+    "target_volume_ratio": 0.6,
+    "time_budget_s": 45,
+    "floor_limited": false,
+    "known_issue": {
+      "id": "AUTO-LONG-001",
+      "owner": "solver",
+      "review_by": "2026-12-15",
+      "note": "长条箱+重底座：刚性件约 95% 未装完（长件摆放与支撑受限，待修）"
+    },
+    "expected_reject": [],
+    "expected_error": []
+  },
+  "container": {
+    "usable": {
+      "L": 12.032,
+      "W": 2.352,
+      "H": 2.698
+    },
+    "maxPayloadTons": 26.5
+  },
+  "cargo": [
+    {
+      "sku": "V01-LONG_BAR",
+      "name": "长条形管箱",
+      "w": 1.611,
+      "d": 0.247,
+      "h": 0.211,
+      "weight": 7.58,
+      "quantity": 192,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V02-HEAVY_BASE",
+      "name": "重型底座/底盘",
+      "w": 0.971,
+      "d": 0.791,
+      "h": 0.328,
+      "weight": 72.54,
+      "quantity": 29,
+      "requirement": "重货,必须落地",
+      "mustBeOnFloor": true
+    },
+    {
+      "sku": "V03-STANDARD_BOX",
+      "name": "标准纸箱",
+      "w": 0.409,
+      "d": 0.406,
+      "h": 0.29,
+      "weight": 12.94,
+      "quantity": 329,
+      "requirement": "放中间"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "case_id": "VIRTUAL-PALLET-MIXED-40HQ",
+  "case_name": "虚拟-托盘混装（落地+纸箱）",
+  "description": "40HQ：托盘仅落地 + 标准纸箱/立方箱混装，验证地板竞争",
+  "meta": {
+    "synthetic": true,
+    "archetype": "pallet",
+    "seed": 903,
+    "container": "40HQ",
+    "target_volume_ratio": 0.6,
+    "time_budget_s": 45,
+    "floor_limited": false,
+    "known_issue": null,
+    "expected_reject": [],
+    "expected_error": []
+  },
+  "container": {
+    "usable": {
+      "L": 12.032,
+      "W": 2.352,
+      "H": 2.698
+    },
+    "maxPayloadTons": 26.5
+  },
+  "cargo": [
+    {
+      "sku": "V01-PALLET_UNIT",
+      "name": "托盘化大件",
+      "w": 1.008,
+      "d": 1.061,
+      "h": 0.716,
+      "weight": 62.91,
+      "quantity": 21,
+      "requirement": "重货,必须落地",
+      "mustBeOnFloor": true
+    },
+    {
+      "sku": "V02-STANDARD_BOX",
+      "name": "标准纸箱",
+      "w": 0.448,
+      "d": 0.38,
+      "h": 0.266,
+      "weight": 10.49,
+      "quantity": 256,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V03-CUBE_BOX",
+      "name": "立方箱体",
+      "w": 0.4,
+      "d": 0.528,
+      "h": 0.423,
+      "weight": 8.9,
+      "quantity": 128,
+      "requirement": "放中间"
+    }
+  ]
+}

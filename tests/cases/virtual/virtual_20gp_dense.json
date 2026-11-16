@@ -1,0 +1,57 @@
+{
+  "case_id": "VIRTUAL-20GP-DENSE",
+  "case_name": "虚拟-20GP 高密度小件",
+  "description": "20GP：标准箱+小配件+微箱，验证小柜高密度装载",
+  "meta": {
+    "synthetic": true,
+    "archetype": "20gp",
+    "seed": 601,
+    "container": "20GP",
+    "target_volume_ratio": 0.7,
+    "time_budget_s": 45,
+    "floor_limited": false,
+    "known_issue": null,
+    "expected_reject": [],
+    "expected_error": []
+  },
+  "container": {
+    "usable": {
+      "L": 5.898,
+      "W": 2.352,
+      "H": 2.393
+    },
+    "maxPayloadTons": 21.8
+  },
+  "cargo": [
+    {
+      "sku": "V01-STANDARD_BOX",
+      "name": "标准纸箱",
+      "w": 0.448,
+      "d": 0.413,
+      "h": 0.397,
+      "weight": 9.09,
+      "quantity": 198,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V02-SMALL_ACCESSORY",
+      "name": "小配件箱",
+      "w": 0.359,
+      "d": 0.225,
+      "h": 0.233,
+      "weight": 4.4,
+      "quantity": 397,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V03-MICRO_CUBE",
+      "name": "微型方块",
+      "w": 0.136,
+      "d": 0.167,
+      "h": 0.159,
+      "weight": 1.28,
+      "quantity": 331,
+      "requirement": "放中间"
+    }
+  ]
+}

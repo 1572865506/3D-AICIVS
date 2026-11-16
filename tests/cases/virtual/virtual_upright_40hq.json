@@ -1,0 +1,48 @@
+{
+  "case_id": "VIRTUAL-UPRIGHT-40HQ",
+  "case_name": "虚拟-仅立放屏幕（朝向锁定）",
+  "description": "40HQ：屏幕仅允许立放 + 标准箱，验证朝向约束与混装",
+  "meta": {
+    "synthetic": true,
+    "archetype": "upright",
+    "seed": 701,
+    "container": "40HQ",
+    "target_volume_ratio": 0.65,
+    "time_budget_s": 45,
+    "floor_limited": false,
+    "known_issue": null,
+    "expected_reject": [],
+    "expected_error": []
+  },
+  "container": {
+    "usable": {
+      "L": 12.032,
+      "W": 2.352,
+      "H": 2.698
+    },
+    "maxPayloadTons": 26.5
+  },
+  "cargo": [
+    {
+      "sku": "V01-UPRIGHT_ONLY_SCREEN",
+      "name": "竖放专用屏",
+      "w": 0.799,
+      "d": 0.075,
+      "h": 0.383,
+      "weight": 5.75,
+      "quantity": 676,
+      "requirement": "放中间",
+      "allowedOrientation": "upright"
+    },
+    {
+      "sku": "V02-STANDARD_BOX",
+      "name": "标准纸箱",
+      "w": 0.46,
+      "d": 0.407,
+      "h": 0.449,
+      "weight": 13.39,
+      "quantity": 406,
+      "requirement": "放中间"
+    }
+  ]
+}

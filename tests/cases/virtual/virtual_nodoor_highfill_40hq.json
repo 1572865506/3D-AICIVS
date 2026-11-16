@@ -1,0 +1,67 @@
+{
+  "case_id": "VIRTUAL-NODOOR-HIGHFILL-40HQ",
+  "case_name": "虚拟-无门高密度（多 SKU）",
+  "description": "40HQ：无封门件的高密度多 SKU 货单，验证无门区语义下的装载率",
+  "meta": {
+    "synthetic": true,
+    "archetype": "nodoor",
+    "seed": 905,
+    "container": "40HQ",
+    "target_volume_ratio": 0.75,
+    "time_budget_s": 45,
+    "floor_limited": false,
+    "deferred_tipping_audit": true,
+    "expected_reject": [],
+    "expected_error": []
+  },
+  "container": {
+    "usable": {
+      "L": 12.032,
+      "W": 2.352,
+      "H": 2.698
+    },
+    "maxPayloadTons": 26.5
+  },
+  "cargo": [
+    {
+      "sku": "V01-STANDARD_BOX",
+      "name": "标准纸箱",
+      "w": 0.571,
+      "d": 0.369,
+      "h": 0.358,
+      "weight": 14.19,
+      "quantity": 405,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V02-CUBE_BOX",
+      "name": "立方箱体",
+      "w": 0.377,
+      "d": 0.378,
+      "h": 0.536,
+      "weight": 8.4,
+      "quantity": 202,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V03-SMALL_ACCESSORY",
+      "name": "小配件箱",
+      "w": 0.383,
+      "d": 0.202,
+      "h": 0.239,
+      "weight": 3.5,
+      "quantity": 506,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V04-MICRO_CUBE",
+      "name": "微型方块",
+      "w": 0.186,
+      "d": 0.165,
+      "h": 0.152,
+      "weight": 1.91,
+      "quantity": 405,
+      "requirement": "放中间"
+    }
+  ]
+}

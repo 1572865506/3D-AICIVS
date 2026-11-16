@@ -28,6 +28,24 @@ if PROJECT_ROOT not in sys.path:
 from tests.benchmark_suite import run_benchmark_suite
 
 BASELINE_FILE = os.path.join(PROJECT_ROOT, "tests", "baseline_report.json")
+PLAN_SCORE_BASELINE_FILE = os.path.join(PROJECT_ROOT, "tests", "plan_score_baseline.json")
+PLAN_SCORE_KEY_CASES = {
+    # 关键用例逐例棘轮：只防“单用例明显变差”被全量中位掩盖
+    "14-SKU-1845": 10.0,
+    "DOOR-DENSE-SKUS": 10.0,
+    "MIXED-HETEROGENEOUS": 10.0,
+    "MULTI-ZONE-CONSTRAINTS": 10.0,
+    "SINGLE-SKU-MASS": 10.0,
+}
+
+
+def _median(values: List[float]) -> float:
+    vals = sorted(values)
+    n = len(vals)
+    if n == 0:
+        return 0.0
+    mid = n // 2
+    return vals[mid] if n % 2 else (vals[mid - 1] + vals[mid]) / 2.0
 
 
 def load_baseline_data() -> Dict[str, Any]:
@@ -174,6 +192,67 @@ def test_no_regression():
     if isinstance(anchor_rejects, int) and gate_rejects > anchor_rejects:
         failures.append(f"交付门禁棘轮: REJECT 用例数 {gate_rejects} > 锚点 {anchor_rejects}")
     print(f"交付门禁: REJECT {gate_rejects} 例（锚点 {anchor_rejects if anchor_rejects is not None else '未记录'}）")
+
+    # 第三道防线：统一评分（PlanScore）分布棘轮。
+    # 不逐用例卡数值（时间敏感用例的正常波动会误判），只看全量中位、A/B 方案数
+    # 与 T0 作废数，防止"利用率没跌但方案质量整体变差"这类隐性回退。
+    if os.path.exists(PLAN_SCORE_BASELINE_FILE):
+        with open(PLAN_SCORE_BASELINE_FILE, "r", encoding="utf-8") as f:
+            ps_anchor = json.load(f)
+        cur_scores: List[float] = []
+        cur_grades = {g: 0 for g in ("A", "B", "C", "D", "F")}
+        missing_scores: List[str] = []
+        for case_id, cur in current.items():
+            # 跳过 suite_name/summary/results 等非用例键（用例结果必带 case_id）
+            if not isinstance(cur, dict) or "case_id" not in cur:
+                continue
+            ps = cur.get("plan_score") or {}
+            score = ps.get("score")
+            if isinstance(score, (int, float)):
+                cur_scores.append(float(score))
+                grade = ps.get("grade")
+                if grade in cur_grades:
+                    cur_grades[grade] += 1
+            else:
+                missing_scores.append(case_id)
+        if missing_scores:
+            failures.append(
+                f"PlanScore 缺失: {missing_scores[:5]}（共 {len(missing_scores)} 例）")
+        if cur_scores:
+            cur_med = _median(cur_scores)
+            anchor_med = float((ps_anchor.get("stats") or {}).get("median") or 0.0)
+            if anchor_med and cur_med < anchor_med - 8.0:
+                failures.append(
+                    f"PlanScore 中位 {cur_med:.1f} < 基准 {anchor_med:.1f} - 8")
+            anchor_grades = (ps_anchor.get("stats") or {}).get("grades") or {}
+            anchor_ab = int(anchor_grades.get("A", 0)) + int(anchor_grades.get("B", 0))
+            cur_ab = cur_grades["A"] + cur_grades["B"]
+            if anchor_ab and cur_ab < anchor_ab - 2:
+                failures.append(f"PlanScore A/B 方案 {cur_ab} < 基准 {anchor_ab} - 2")
+            anchor_f = int(anchor_grades.get("F", 0))
+            if cur_grades["F"] > anchor_f:
+                failures.append(
+                    f"PlanScore T0 作废 {cur_grades['F']} > 基准 {anchor_f}")
+            # 关键用例逐例棘轮：防止单用例被全量中位掩盖
+            anchor_cases = ps_anchor.get("cases") or {}
+            for key_case, tolerance in PLAN_SCORE_KEY_CASES.items():
+                base_case = anchor_cases.get(key_case) or {}
+                base_score = base_case.get("score")
+                if not isinstance(base_score, (int, float)):
+                    continue
+                cur_case = current.get(key_case)
+                cur_ps = (cur_case or {}).get("plan_score") if isinstance(cur_case, dict) else {}
+                cur_score = (cur_ps or {}).get("score")
+                if not isinstance(cur_score, (int, float)):
+                    failures.append(f"PlanScore 关键用例缺失: {key_case}")
+                elif cur_score < float(base_score) - tolerance:
+                    failures.append(
+                        f"PlanScore 关键用例 {key_case} {cur_score} < 基准 "
+                        f"{base_score} - {tolerance:g}")
+            print(
+                f"统一评分: 中位 {cur_med:.1f}（基准 {anchor_med:.1f}）| "
+                f"A {cur_grades['A']} / B {cur_grades['B']} / C {cur_grades['C']} / "
+                f"D {cur_grades['D']} / F {cur_grades['F']}")
 
     assert not failures, (
         f"回归守护阻断（{len(failures)} 项）:\n" + "\n".join(failures)

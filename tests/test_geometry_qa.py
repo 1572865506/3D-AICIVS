@@ -74,6 +74,36 @@ class TestGeometryQA:
         free = container.volume - 4 * (0.5 ** 3)
         assert total <= free * 1.02, f"空腔合计 {total:.2f} 超过物理自由 {free:.2f}（跨切片重复计数）"
 
+    def test_cavity_category_totals_include_aggregated_fragments(self):
+        """Top-N 之外的微碎片聚合体积必须计入总量与分类（否则总量系统性低估）。"""
+        container = InputAdapter.parse_container({"usable": {"L": 2.0, "W": 1.0, "H": 2.0}})
+        placements = [_dict(0.0, 0.0, 0.0, 0.5, 1.0, 1.0)]
+        cavs = [
+            {"box": [0.0, 0.0, 1.0, 0.5, 1.0, 2.0], "volume": 0.5,
+             "exclusion_category": "PHYSICALLY_UNAVAILABLE"},
+            {"box": None, "volume": 0.3,
+             "exclusion_category": "PHYSICALLY_UNAVAILABLE",
+             "excluded_by_constraint": "MICRO_FRAGMENT_AGGREGATED"},
+        ]
+        cav = compute_geometry_qa(container, placements, cavity_diagnostics=cavs)["cavities"]
+        assert cav["aggregated_volume_m3"] == pytest.approx(0.3)
+        assert cav["total_volume_m3"] == pytest.approx(0.8)
+        assert cav["category_volume_m3"]["PHYSICALLY_UNAVAILABLE"] == pytest.approx(0.8)
+
+    def test_transport_lateral_instability_audit(self):
+        """高瘦箱离墙孤立 → 运输侧向失稳；贴墙后视为受约束。"""
+        container = InputAdapter.parse_container({"usable": {"L": 2.0, "W": 1.0, "H": 2.0}})
+        loose = [{"sku_id": "A", "x": 0.5, "y": 0.45, "z": 0.0,
+                  "dx": 1.0, "dy": 0.1, "dz": 1.0}]
+        tr = compute_geometry_qa(container, loose, cavity_diagnostics=[])["transport"]
+        assert tr["unstable_boxes"] == 1
+        assert tr["unstable_volume_m3"] == pytest.approx(0.1, abs=1e-6)
+
+        against_wall = [{"sku_id": "A", "x": 0.5, "y": 0.0, "z": 0.0,
+                         "dx": 1.0, "dy": 0.1, "dz": 1.0}]
+        tr2 = compute_geometry_qa(container, against_wall, cavity_diagnostics=[])["transport"]
+        assert tr2["unstable_boxes"] == 0
+
     def test_solution_carries_geometry_qa(self):
         """求解结果必须携带 geometry_qa（供 API/前端消费），字段齐全。"""
         container = InputAdapter.parse_container({"usable": {"L": 6.0, "W": 2.352, "H": 2.5}})

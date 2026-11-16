@@ -31,8 +31,13 @@ def tipping_verdict(
     placements: List[Dict[str, Any]],
     container_length: float,
     eps: float = 1e-4,
+    door_open: bool = False,
 ) -> TippingVerdict:
-    """纵向倾覆判定（0.5g 制动工况）。"""
+    """纵向倾覆判定（0.5g 制动工况）。
+
+    door_open=True 时柜门不作为前向支承（用于"开门后倾覆"审计/安全模式）：
+    门面箱必须自身 SF≥1.5 或由前方货箱支承。
+    """
     dx, dz = cand["dx"], cand["dz"]
     if dz <= 1e-6:
         return TippingVerdict(True, float("inf"), "DEGENERATE_DZ")
@@ -41,7 +46,7 @@ def tipping_verdict(
     if sf >= 1.5 - eps:
         return TippingVerdict(True, sf, "INTRINSIC_SF")
 
-    if cand["x"] + dx >= container_length - 0.04 - eps:
+    if not door_open and cand["x"] + dx >= container_length - 0.04 - eps:
         return TippingVerdict(True, sf, "DOOR_FACE_SUPPORT")
 
     target_x = cand["x"] + dx
@@ -59,8 +64,9 @@ def tipping_verdict(
 
 
 def tipping_safe(cand: Dict[str, Any], placements: List[Dict[str, Any]],
-                 container_length: float, eps: float = 1e-4) -> bool:
-    return tipping_verdict(cand, placements, container_length, eps).safe
+                 container_length: float, eps: float = 1e-4,
+                 door_open: bool = False) -> bool:
+    return tipping_verdict(cand, placements, container_length, eps, door_open).safe
 
 
 def same_sku_chain_depth(
@@ -88,8 +94,94 @@ def same_sku_chain_depth(
     return depth
 
 
-def pressure_violation(
+def lateral_stable(
+    cand: Dict[str, Any],
     placements: List[Dict[str, Any]],
+    container_width: float,
+    container_length: Optional[float] = None,
+    eps: float = 1e-4,
+) -> bool:
+    """横向稳定（TIP-02 单一规则源）：高瘦箱必须有同层侧向接触或贴壁。
+
+    运输途中横向位移会使无侧向约束的高瘦箱倾覆；此处按"贴壁/邻箱接触"判断。
+    仅当箱体在某一水平轴上超过细长阈值（着地 2.5、离地 2.0；贴壁 3.5）时约束。
+    传入 container_length 时，门端（x+dx 到达 cL-0.04）视为 +X 侧刚性支承
+    （运输时柜门关闭）；开门状态的风险由 DG-020 单独审计。
+    """
+    dx, dy, dz = cand["dx"], cand["dy"], cand["dz"]
+    if dx <= 1e-4 or dy <= 1e-4:
+        return True
+
+    slenderness_y = dz / dy
+    slenderness_x = dz / dx
+    is_ground = cand["z"] < 1e-3
+    near_y_wall = cand["y"] <= 0.02 or (cand["y"] + dy) >= container_width - 0.02
+    near_x_wall = cand["x"] <= 0.02
+
+    thresh_base_y = 3.5 if (is_ground and near_y_wall) else (2.5 if is_ground else 2.0)
+    thresh_base_x = 3.5 if (is_ground and near_x_wall) else (2.5 if is_ground else 2.0)
+    needs_y = slenderness_y > thresh_base_y
+    needs_x = slenderness_x > thresh_base_x
+    if not needs_y and not needs_x:
+        return True
+
+    cx0, cx1 = cand["x"], cand["x"] + dx
+    cy0, cy1 = cand["y"], cand["y"] + dy
+    cz0, cz1 = cand["z"], cand["z"] + dz
+
+    has_y_neg = cy0 <= 0.02
+    has_y_pos = cy1 >= container_width - 0.02
+    has_x_neg = cx0 <= 0.02
+    # 门端（柜门关闭）提供 +X 侧支承；未给 length 时按无支承处理
+    has_x_pos = (container_length is not None
+                 and cx1 >= container_length - 0.04 - 0.02)
+
+    min_x_overlap = 0.05 * dx
+    min_y_overlap = 0.05 * dy
+    min_z_overlap = 0.20 * dz
+
+    for p in placements:
+        if p is cand:
+            continue
+        px0, px1 = p["x"], p["x"] + p["dx"]
+        py0, py1 = p["y"], p["y"] + p["dy"]
+        pz0, pz1 = p["z"], p["z"] + p["dz"]
+        z_ov = min(cz1, pz1) - max(cz0, pz0)
+        if z_ov < min_z_overlap - 1e-4:
+            continue
+        x_ov = min(cx1, px1) - max(cx0, px0)
+        y_ov = min(cy1, py1) - max(cy0, py0)
+        if not has_y_neg and abs(py1 - cy0) <= 0.03 and x_ov >= min_x_overlap - 1e-4:
+            has_y_neg = True
+        if not has_y_pos and abs(py0 - cy1) <= 0.03 and x_ov >= min_x_overlap - 1e-4:
+            has_y_pos = True
+        if not has_x_neg and abs(px1 - cx0) <= 0.03 and y_ov >= min_y_overlap - 1e-4:
+            has_x_neg = True
+        if not has_x_pos and abs(px0 - cx1) <= 0.03 and y_ov >= min_y_overlap - 1e-4:
+            has_x_pos = True
+
+    if needs_y:
+        if not is_ground:
+            if slenderness_y > 3.0 and not (has_y_neg and has_y_pos):
+                return False
+            if not (has_y_neg or has_y_pos):
+                return False
+        elif not (has_y_neg or has_y_pos):
+            return False
+
+    if needs_x:
+        if not is_ground:
+            if slenderness_x > 3.0 and not (has_x_neg and has_x_pos):
+                return False
+            if not (has_x_neg or has_x_pos):
+                return False
+        elif not (has_x_neg or has_x_pos):
+            return False
+
+    return True
+
+
+def pressure_violation(    placements: List[Dict[str, Any]],
     cand: Dict[str, Any],
     max_pressure_by_sku: Dict[str, Optional[float]],
     eps: float = 1e-4,

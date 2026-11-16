@@ -155,6 +155,48 @@ def compute_geometry_qa(
         "flat_cover_count": flat_cover_count,
     }
 
+    # ---- 运输位移/侧向失稳：高瘦箱无同层侧向接触且不贴壁 → 横向位移/倾覆风险 ----
+    # 规则与生产门禁共享 constraint_kernel.lateral_stable（TIP-02 单一规则源），
+    # 这里只做终态审计，不在放置期拦截（放置期拦截会让早期墙列误判、装载率崩到 71%）。
+    from backend.solver_v2.validation.constraint_kernel import lateral_stable
+    _pl_dicts = [
+        {"x": x, "y": y, "z": z, "dx": dx, "dy": dy, "dz": dz}
+        for (x, y, z, dx, dy, dz) in boxes
+    ]
+    transport = {"slender_boxes": 0, "unstable_boxes": 0, "unstable_volume_m3": 0.0}
+    for i, (_, _, _, dx, dy, dz) in enumerate(boxes):
+        if dz / max(1e-6, min(dx, dy)) > 2.0:
+            transport["slender_boxes"] += 1
+        if lateral_stable(_pl_dicts[i], _pl_dicts, container.Ly, container.Lx):
+            continue
+        transport["unstable_boxes"] += 1
+        transport["unstable_volume_m3"] += dx * dy * dz
+    transport["unstable_volume_m3"] = round(transport["unstable_volume_m3"], 3)
+
+    # ---- 开门倾覆：门面整列在失去柜门支承后的抗前倾安全系数 ----
+    # SF = 2·dx / H（H 为同 (x0,y0) 列的堆叠总高）。<1.5 表示开门后可能整列前倾。
+    door_open = {"column_count": 0, "unsafe_columns": 0, "min_sf": None,
+                 "at_risk_volume_m3": 0.0}
+    if max_x >= container.Lx - 0.65:
+        _cols: Dict[tuple, Dict[str, float]] = {}
+        for (x, y, z, dx, dy, dz) in boxes:
+            if max_x - (x + dx) > 1e-3:
+                continue
+            key = (round(x, 3), round(y, 3))
+            e = _cols.setdefault(key, {"H": 0.0, "D": 0.0, "vol": 0.0})
+            e["H"] += dz
+            e["D"] = max(e["D"], dx)
+            e["vol"] += dx * dy * dz
+        if _cols:
+            sfs = [(2.0 * e["D"]) / max(e["H"], 1e-6) for e in _cols.values()]
+            door_open = {
+                "column_count": len(_cols),
+                "unsafe_columns": sum(1 for s in sfs if s < 1.5 - 1e-6),
+                "min_sf": round(min(sfs), 3),
+                "at_risk_volume_m3": round(sum(
+                    e["vol"] for e, s in zip(_cols.values(), sfs) if s < 1.5 - 1e-6), 3),
+            }
+
     # ---- 体素级"隐蔽空洞"：肉眼看到的洞 = 低于本地柱顶的自由空间 ----
     # 人看 3D 图时，柱顶以上是"顶面不齐"，柱顶以下被四周货挡住的是"洞"。
     # 用 0.1m 体素：每 XY 列取最高占有 z（本地天窗线），其下的自由格即隐蔽空洞。
@@ -210,6 +252,13 @@ def compute_geometry_qa(
 
     # ---- 空洞：内部封闭（肉眼可见"洞"）vs 开口可达 ----
     cavs = [c for c in (cavity_diagnostics or []) if c.get("box")]
+    # 诊断只输出 Top-N 明细，其余微碎片聚合为一条无 box 的条目；其体积不可丢，
+    # 否则 total_volume_m3 会系统性低估柜内空腔（实测 6.13 vs 7.84 m³）。
+    aggregated_vol = sum(
+        float(c.get("volume", 0.0))
+        for c in (cavity_diagnostics or [])
+        if not c.get("box")
+    )
     enclosed_vol = 0.0
     open_vol = 0.0
     top_list = []
@@ -231,12 +280,21 @@ def compute_geometry_qa(
             "open": bool(touches_door or touches_roof),
         })
     top_list.sort(key=lambda c: -c["volume_m3"])
+    category_volume: Dict[str, float] = {}
+    for c in top_list:
+        cat = c.get("category") or "UNCLASSIFIED"
+        category_volume[cat] = round(category_volume.get(cat, 0.0) + c["volume_m3"], 3)
+    if aggregated_vol > 0:
+        category_volume["PHYSICALLY_UNAVAILABLE"] = round(
+            category_volume.get("PHYSICALLY_UNAVAILABLE", 0.0) + aggregated_vol, 3)
     cavities = {
         "count": len(cavs),
-        "total_volume_m3": round(enclosed_vol + open_vol, 3),
+        "total_volume_m3": round(enclosed_vol + open_vol + aggregated_vol, 3),
         "enclosed_volume_m3": round(enclosed_vol, 3),
         "enclosed_volume_pct_of_bbox": round(100.0 * enclosed_vol / bbox_vol, 2),
         "open_volume_m3": round(open_vol, 3),
+        "aggregated_volume_m3": round(aggregated_vol, 3),
+        "category_volume_m3": category_volume,
         "largest_volume_m3": round(top_list[0]["volume_m3"], 3) if top_list else 0.0,
         "hidden_void_volume_m3": round(hidden_vol, 3),
         "hidden_void_pct_of_bbox": round(100.0 * hidden_vol / bbox_vol, 2),
@@ -271,6 +329,8 @@ def compute_geometry_qa(
         "top_surface": top_surface,
         "support": support_stats,
         "islands": islands,
+        "door_open": door_open,
+        "transport": transport,
         "cavities": cavities,
         "penalty_score": round(score_penalty, 2),
         "verdict": verdict,

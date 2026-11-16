@@ -1,0 +1,67 @@
+{
+  "case_id": "VIRTUAL-ECOMMERCE-MIX-40HQ",
+  "case_name": "虚拟-电商杂货（多 SKU 小件）",
+  "description": "40HQ：标准箱/小配件/立方箱/微箱混装，验证碎片化与同 SKU 聚集",
+  "meta": {
+    "synthetic": true,
+    "archetype": "ecommerce",
+    "seed": 301,
+    "container": "40HQ",
+    "target_volume_ratio": 0.7,
+    "time_budget_s": 45,
+    "floor_limited": false,
+    "known_issue": null,
+    "expected_reject": [],
+    "expected_error": []
+  },
+  "container": {
+    "usable": {
+      "L": 12.032,
+      "W": 2.352,
+      "H": 2.698
+    },
+    "maxPayloadTons": 26.5
+  },
+  "cargo": [
+    {
+      "sku": "V01-STANDARD_BOX",
+      "name": "标准纸箱",
+      "w": 0.5,
+      "d": 0.46,
+      "h": 0.349,
+      "weight": 12.59,
+      "quantity": 338,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V02-SMALL_ACCESSORY",
+      "name": "小配件箱",
+      "w": 0.285,
+      "d": 0.25,
+      "h": 0.153,
+      "weight": 4.9,
+      "quantity": 675,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V03-CUBE_BOX",
+      "name": "立方箱体",
+      "w": 0.399,
+      "d": 0.542,
+      "h": 0.369,
+      "weight": 12.46,
+      "quantity": 203,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V04-MICRO_CUBE",
+      "name": "微型方块",
+      "w": 0.155,
+      "d": 0.195,
+      "h": 0.184,
+      "weight": 0.97,
+      "quantity": 506,
+      "requirement": "放中间"
+    }
+  ]
+}

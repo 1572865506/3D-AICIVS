@@ -1,0 +1,51 @@
+{
+  "case_id": "VIRTUAL-OVERWEIGHT-40HQ",
+  "case_name": "虚拟-超重货单（载重受限）",
+  "description": "40HQ：重底座数量超过柜体载重，验收应给出载重受限而非静默弃装",
+  "meta": {
+    "synthetic": true,
+    "archetype": "overweight",
+    "seed": 801,
+    "container": "40HQ",
+    "target_volume_ratio": null,
+    "time_budget_s": 20,
+    "floor_limited": false,
+    "known_issue": null,
+    "expected_reject": [
+      "DG-003",
+      "DG-005"
+    ],
+    "expected_error": []
+  },
+  "container": {
+    "usable": {
+      "L": 12.032,
+      "W": 2.352,
+      "H": 2.698
+    },
+    "maxPayloadTons": 26.5
+  },
+  "cargo": [
+    {
+      "sku": "V01-HEAVY_BASE",
+      "name": "重型底座/底盘",
+      "w": 0.742,
+      "d": 0.607,
+      "h": 0.44,
+      "weight": 54.68,
+      "quantity": 50,
+      "requirement": "重货,必须落地",
+      "mustBeOnFloor": true
+    },
+    {
+      "sku": "V02-STANDARD_BOX",
+      "name": "标准纸箱",
+      "w": 0.524,
+      "d": 0.461,
+      "h": 0.277,
+      "weight": 11.32,
+      "quantity": 100,
+      "requirement": "放中间"
+    }
+  ]
+}

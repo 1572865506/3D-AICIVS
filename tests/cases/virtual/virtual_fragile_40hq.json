@@ -1,0 +1,59 @@
+{
+  "case_id": "VIRTUAL-FRAGILE-40HQ",
+  "case_name": "虚拟-易碎仪器（禁止顶压）",
+  "description": "40HQ：易碎仪器不做承压面 + 标准箱 + 弹性填充",
+  "meta": {
+    "synthetic": true,
+    "archetype": "fragile",
+    "seed": 401,
+    "container": "40HQ",
+    "target_volume_ratio": 0.7,
+    "time_budget_s": 45,
+    "floor_limited": false,
+    "known_issue": null,
+    "expected_reject": [],
+    "expected_error": []
+  },
+  "container": {
+    "usable": {
+      "L": 12.032,
+      "W": 2.352,
+      "H": 2.698
+    },
+    "maxPayloadTons": 26.5
+  },
+  "cargo": [
+    {
+      "sku": "V01-FRAGILE_INSTRUMENT",
+      "name": "精密仪器箱",
+      "w": 0.6,
+      "d": 0.486,
+      "h": 0.474,
+      "weight": 26.92,
+      "quantity": 130,
+      "requirement": "易碎,不可压",
+      "allowStackingOnTop": false
+    },
+    {
+      "sku": "V02-STANDARD_BOX",
+      "name": "标准纸箱",
+      "w": 0.598,
+      "d": 0.378,
+      "h": 0.441,
+      "weight": 9.87,
+      "quantity": 326,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V03-ELASTIC_FILLER",
+      "name": "弹性填充件",
+      "w": 0.358,
+      "d": 0.25,
+      "h": 0.128,
+      "weight": 3.83,
+      "quantity": 260,
+      "requirement": "顶部填平,按需调节",
+      "isElastic": true
+    }
+  ]
+}

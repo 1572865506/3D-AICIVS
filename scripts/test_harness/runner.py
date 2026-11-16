@@ -58,6 +58,7 @@ CASE_DIRS = [
     "tests/cases/generated",
     "tests/cases/random",
     "tests/cases/production",
+    "tests/cases/virtual",
 ]
 
 

@@ -63,6 +63,7 @@ class ZoneType(str, Enum):
     REAR = "REAR"          # Near inner wall (x -> 0)
     MIDDLE = "MIDDLE"      # Mid body
     DOOR = "DOOR"          # Near doors (x -> Lx)
+    ANY = "ANY"            # 用户无特别要求：不限纵向区间（求解器映射为 FLEXIBLE）
     FLOOR_ONLY = "FLOOR_ONLY"
     ROOF_ONLY = "ROOF_ONLY"
 

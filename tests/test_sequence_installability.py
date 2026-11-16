@@ -72,6 +72,48 @@ class TestSequencePlanner:
         report = compute_loading_order([])
         assert report["order"] == [] and report["feasible"] is True
 
+    def test_bucketed_edges_match_naive_scan(self):
+        """分桶优化必须与 O(n²) 全对扫描产生完全相同的依赖边。"""
+        import random
+        rng = random.Random(20261115)
+        placements = []
+        for i in range(120):
+            placements.append(_box(
+                f"P{i}", round(rng.uniform(0, 8), 3), round(rng.uniform(0, 2.0), 3),
+                round(rng.uniform(0, 2.0), 3), round(rng.uniform(0.1, 1.0), 3),
+                round(rng.uniform(0.1, 0.6), 3), round(rng.uniform(0.1, 0.6), 3)))
+        adj, _ = build_dependency_graph(placements)
+        boxes = [(p["x"], p["y"], p["z"], p["dx"], p["dy"], p["dz"]) for p in placements]
+        for i, (bx, by, bz, bdx, bdy, bdz) in enumerate(boxes):
+            expected = set()
+            for j, (ax, ay, az, adx, ady, adz) in enumerate(boxes):
+                if i == j or ax < bx + bdx - 1e-3:
+                    continue
+                if min(by + bdy, ay + ady) - max(by, ay) <= 1e-4:
+                    continue
+                if min(bz + bdz, az + adz) - max(bz, az) <= 1e-4:
+                    continue
+                expected.add(j)
+            assert adj[i] == expected, i
+
+    def test_large_plan_performance(self):
+        """5000 箱分桶拓扑排序应保持秒级（旧实现是 O(n²) 全对扫描）。"""
+        import time
+        placements = []
+        idx = 0
+        for ix in range(25):
+            for iy in range(10):
+                for iz in range(20):
+                    placements.append(_box(
+                        f"B{idx}", ix * 0.2, iy * 0.2, iz * 0.2, 0.18, 0.18, 0.18))
+                    idx += 1
+        started = time.perf_counter()
+        report = compute_loading_order(placements)
+        elapsed = time.perf_counter() - started
+        assert report["feasible"] is True
+        assert len(report["order"]) == len(placements)
+        assert elapsed < 3.0, f"sequence planner too slow: {elapsed:.2f}s"
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

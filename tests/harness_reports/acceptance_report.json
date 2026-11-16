@@ -1,0 +1,1190 @@
+{
+  "schema": 1,
+  "suite": "virtual_acceptance",
+  "time_budget_s": 0.0,
+  "policy_override": "auto",
+  "summary": {
+    "case_count": 19,
+    "pass": 14,
+    "warn": 1,
+    "known": 1,
+    "expected_reject": 3,
+    "fail": 0,
+    "median_score": 76.8,
+    "policy_counts": {
+      "BALANCED": 8,
+      "SAFETY_FIRST": 6,
+      "VOLUME_FIRST": 5
+    }
+  },
+  "cases": [
+    {
+      "case_id": "VIRTUAL-20GP-DENSE",
+      "case_name": "虚拟-20GP 高密度小件",
+      "synthetic": true,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": false,
+        "door_step_depth": 0.0,
+        "deferred_tipping_audit": true
+      },
+      "status": "PASS",
+      "score": 76.9,
+      "grade": "B",
+      "utilization_pct": 69.14,
+      "placed_count": 921,
+      "rigid_ratio": 0.9946,
+      "door_min_sf": null,
+      "unstable_volume_m3": 0.0,
+      "plan_quality_score": 66.0,
+      "gate": {
+        "verdict": "WARN",
+        "blocked_by": []
+      },
+      "time_budget_s": 45.0,
+      "floor_limited": false,
+      "known_issue": null,
+      "runtime_s": 46.11,
+      "checks": {
+        "no_violations": {
+          "passed": true,
+          "detail": "0 violations"
+        },
+        "no_collision": {
+          "passed": true,
+          "detail": ""
+        },
+        "no_starvation": {
+          "passed": true,
+          "detail": "starved=[]"
+        },
+        "gate_not_rejected": {
+          "passed": true,
+          "detail": "blocked=[]"
+        },
+        "door_open_safe": {
+          "passed": true,
+          "detail": "无刚性封门件（不适用）"
+        },
+        "rigid_fulfillment": {
+          "passed": true,
+          "detail": "99.46%"
+        },
+        "utilization": {
+          "passed": true,
+          "detail": "69.14% (参考下限 59.4%, 请求体积比 69.9%)"
+        }
+      },
+      "deductions": [
+        "重心偏移 15.3%（纵 15.31% / 横 0.93%）",
+        "刚性履行 99.5%（缺口 5 箱）"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-3C-MIX-40HQ",
+      "case_name": "虚拟-3C 显示器混装（薄板封门+大箱）",
+      "synthetic": true,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": true,
+        "door_step_depth": 0.25,
+        "deferred_tipping_audit": false
+      },
+      "status": "PASS",
+      "score": 87.4,
+      "grade": "A",
+      "utilization_pct": 64.93,
+      "placed_count": 1493,
+      "rigid_ratio": 1.0,
+      "door_min_sf": 2.99,
+      "unstable_volume_m3": 1.269,
+      "plan_quality_score": 65.6,
+      "gate": {
+        "verdict": "WARN",
+        "blocked_by": []
+      },
+      "time_budget_s": 45.0,
+      "floor_limited": false,
+      "known_issue": null,
+      "runtime_s": 13.73,
+      "checks": {
+        "no_violations": {
+          "passed": true,
+          "detail": "0 violations"
+        },
+        "no_collision": {
+          "passed": true,
+          "detail": ""
+        },
+        "no_starvation": {
+          "passed": true,
+          "detail": "starved=[]"
+        },
+        "gate_not_rejected": {
+          "passed": true,
+          "detail": "blocked=[]"
+        },
+        "door_open_safe": {
+          "passed": true,
+          "detail": "min_sf=2.99"
+        },
+        "rigid_fulfillment": {
+          "passed": true,
+          "detail": "100.00%"
+        },
+        "utilization": {
+          "passed": true,
+          "detail": "64.93% (参考下限 55.2%, 请求体积比 64.9%)"
+        }
+      },
+      "deductions": [
+        "运输侧向失稳 1.27 m³（占货量 2.6%，22 箱）"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-3C-THIN-DOOR-40HQ",
+      "case_name": "虚拟-3C 薄板门墙（高薄板封门）",
+      "synthetic": true,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": true,
+        "door_step_depth": 0.25,
+        "deferred_tipping_audit": false
+      },
+      "status": "PASS",
+      "score": 87.4,
+      "grade": "A",
+      "utilization_pct": 79.97,
+      "placed_count": 1989,
+      "rigid_ratio": 1.0,
+      "door_min_sf": 2.346,
+      "unstable_volume_m3": 1.046,
+      "plan_quality_score": 63.9,
+      "gate": {
+        "verdict": "WARN",
+        "blocked_by": []
+      },
+      "time_budget_s": 60.0,
+      "floor_limited": false,
+      "known_issue": null,
+      "runtime_s": 24.08,
+      "checks": {
+        "no_violations": {
+          "passed": true,
+          "detail": "0 violations"
+        },
+        "no_collision": {
+          "passed": true,
+          "detail": ""
+        },
+        "no_starvation": {
+          "passed": true,
+          "detail": "starved=[]"
+        },
+        "gate_not_rejected": {
+          "passed": true,
+          "detail": "blocked=[]"
+        },
+        "door_open_safe": {
+          "passed": true,
+          "detail": "min_sf=2.346"
+        },
+        "rigid_fulfillment": {
+          "passed": true,
+          "detail": "100.00%"
+        },
+        "utilization": {
+          "passed": true,
+          "detail": "79.97% (参考下限 68.0%, 请求体积比 80.0%)"
+        }
+      },
+      "deductions": [
+        "运输侧向失稳 1.05 m³（占货量 1.7%，69 箱）",
+        "重心偏移 7.5%（纵 1.11% / 横 7.51%）",
+        "方案质量评分 64（C 级）"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-45HQ-LONG",
+      "case_name": "虚拟-45HQ 长柜混装",
+      "synthetic": true,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": false,
+        "door_step_depth": 0.0,
+        "deferred_tipping_audit": true
+      },
+      "status": "PASS",
+      "score": 83.6,
+      "grade": "A",
+      "utilization_pct": 69.9,
+      "placed_count": 710,
+      "rigid_ratio": 1.0,
+      "door_min_sf": null,
+      "unstable_volume_m3": 0.0,
+      "plan_quality_score": 55.4,
+      "gate": {
+        "verdict": "WARN",
+        "blocked_by": []
+      },
+      "time_budget_s": 45.0,
+      "floor_limited": false,
+      "known_issue": null,
+      "runtime_s": 1.55,
+      "checks": {
+        "no_violations": {
+          "passed": true,
+          "detail": "0 violations"
+        },
+        "no_collision": {
+          "passed": true,
+          "detail": ""
+        },
+        "no_starvation": {
+          "passed": true,
+          "detail": "starved=[]"
+        },
+        "gate_not_rejected": {
+          "passed": true,
+          "detail": "blocked=[]"
+        },
+        "door_open_safe": {
+          "passed": true,
+          "detail": "无刚性封门件（不适用）"
+        },
+        "rigid_fulfillment": {
+          "passed": true,
+          "detail": "100.00%"
+        },
+        "utilization": {
+          "passed": true,
+          "detail": "69.9% (参考下限 59.4%, 请求体积比 69.9%)"
+        }
+      },
+      "deductions": [
+        "重心偏移 4.7%（纵 1.18% / 横 4.68%）",
+        "方案质量评分 55（C 级）"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-APPLIANCE-HEAVY-40GP",
+      "case_name": "虚拟-家电重货（重底座落地）",
+      "synthetic": true,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": false,
+        "door_step_depth": 0.0,
+        "deferred_tipping_audit": true
+      },
+      "status": "PASS",
+      "score": 71.5,
+      "grade": "B",
+      "utilization_pct": 54.65,
+      "placed_count": 391,
+      "rigid_ratio": 0.9949,
+      "door_min_sf": null,
+      "unstable_volume_m3": 0.0,
+      "plan_quality_score": 71.3,
+      "gate": {
+        "verdict": "WARN",
+        "blocked_by": []
+      },
+      "time_budget_s": 45.0,
+      "floor_limited": false,
+      "known_issue": null,
+      "runtime_s": 10.35,
+      "checks": {
+        "no_violations": {
+          "passed": true,
+          "detail": "0 violations"
+        },
+        "no_collision": {
+          "passed": true,
+          "detail": ""
+        },
+        "no_starvation": {
+          "passed": true,
+          "detail": "starved=[]"
+        },
+        "gate_not_rejected": {
+          "passed": true,
+          "detail": "blocked=[]"
+        },
+        "door_open_safe": {
+          "passed": true,
+          "detail": "无刚性封门件（不适用）"
+        },
+        "rigid_fulfillment": {
+          "passed": true,
+          "detail": "99.49%"
+        },
+        "utilization": {
+          "passed": true,
+          "detail": "54.65% (参考下限 46.7%, 请求体积比 54.9%)"
+        }
+      },
+      "deductions": [
+        "重心偏移 3.9%（纵 3.12% / 横 3.86%）",
+        "刚性履行 99.5%（缺口 2 箱）"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-AUTO-LONG-40HQ",
+      "case_name": "虚拟-汽配长条箱（长宽比大）",
+      "synthetic": true,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": false,
+        "door_step_depth": 0.0,
+        "deferred_tipping_audit": true
+      },
+      "status": "KNOWN",
+      "score": 0.0,
+      "grade": "F",
+      "utilization_pct": 50.44,
+      "placed_count": 547,
+      "rigid_ratio": 0.9945,
+      "door_min_sf": null,
+      "unstable_volume_m3": 0.0,
+      "plan_quality_score": 59.0,
+      "gate": {
+        "verdict": "REJECT",
+        "blocked_by": [
+          "DG-011"
+        ]
+      },
+      "time_budget_s": 45.0,
+      "floor_limited": false,
+      "known_issue": {
+        "id": "AUTO-LONG-001",
+        "owner": "solver",
+        "review_by": "2026-12-15",
+        "note": "长条箱+重底座：刚性件约 95% 未装完（长件摆放与支撑受限，待修）"
+      },
+      "runtime_s": 19.52,
+      "checks": {
+        "no_violations": {
+          "passed": true,
+          "detail": "0 violations"
+        },
+        "no_collision": {
+          "passed": true,
+          "detail": ""
+        },
+        "no_starvation": {
+          "passed": true,
+          "detail": "starved=[]"
+        },
+        "gate_not_rejected": {
+          "passed": false,
+          "detail": "blocked=['DG-011']"
+        },
+        "door_open_safe": {
+          "passed": true,
+          "detail": "无刚性封门件（不适用）"
+        },
+        "rigid_fulfillment": {
+          "passed": true,
+          "detail": "99.45%"
+        },
+        "utilization": {
+          "passed": true,
+          "detail": "50.44% (参考下限 43.7%, 请求体积比 51.4%)"
+        }
+      },
+      "deductions": [
+        "重心偏移 10.2%（纵 8.6% / 横 10.19%）",
+        "刚性履行 99.5%（缺口 3 箱）",
+        "方案质量评分 59（C 级）"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-ECOMMERCE-MIX-40HQ",
+      "case_name": "虚拟-电商杂货（多 SKU 小件）",
+      "synthetic": true,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": false,
+        "door_step_depth": 0.0,
+        "deferred_tipping_audit": true
+      },
+      "status": "PASS",
+      "score": 78.8,
+      "grade": "B",
+      "utilization_pct": 70.07,
+      "placed_count": 1722,
+      "rigid_ratio": 1.0,
+      "door_min_sf": null,
+      "unstable_volume_m3": 0.0,
+      "plan_quality_score": 60.8,
+      "gate": {
+        "verdict": "WARN",
+        "blocked_by": []
+      },
+      "time_budget_s": 45.0,
+      "floor_limited": false,
+      "known_issue": null,
+      "runtime_s": 7.47,
+      "checks": {
+        "no_violations": {
+          "passed": true,
+          "detail": "0 violations"
+        },
+        "no_collision": {
+          "passed": true,
+          "detail": ""
+        },
+        "no_starvation": {
+          "passed": true,
+          "detail": "starved=[]"
+        },
+        "gate_not_rejected": {
+          "passed": true,
+          "detail": "blocked=[]"
+        },
+        "door_open_safe": {
+          "passed": true,
+          "detail": "无刚性封门件（不适用）"
+        },
+        "rigid_fulfillment": {
+          "passed": true,
+          "detail": "100.00%"
+        },
+        "utilization": {
+          "passed": true,
+          "detail": "70.07% (参考下限 59.6%, 请求体积比 70.1%)"
+        }
+      },
+      "deductions": [
+        "重心偏移 10.1%（纵 10.09% / 横 0.98%）",
+        "方案质量评分 61（C 级）"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-ECOMMERCE-MULTISTOP-40HQ",
+      "case_name": "虚拟-电商多站（3 站无封门件）",
+      "synthetic": true,
+      "policy": "BALANCED",
+      "scenario": "MULTI_STOP",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": false,
+        "door_step_depth": 0.0,
+        "deferred_tipping_audit": true
+      },
+      "status": "PASS",
+      "score": 77.6,
+      "grade": "B",
+      "utilization_pct": 69.01,
+      "placed_count": 1173,
+      "rigid_ratio": 0.9932,
+      "door_min_sf": null,
+      "unstable_volume_m3": 0.0,
+      "plan_quality_score": 68.1,
+      "gate": {
+        "verdict": "WARN",
+        "blocked_by": []
+      },
+      "time_budget_s": 45.0,
+      "floor_limited": false,
+      "known_issue": null,
+      "runtime_s": 46.9,
+      "checks": {
+        "no_violations": {
+          "passed": true,
+          "detail": "0 violations"
+        },
+        "no_collision": {
+          "passed": true,
+          "detail": ""
+        },
+        "no_starvation": {
+          "passed": true,
+          "detail": "starved=[]"
+        },
+        "gate_not_rejected": {
+          "passed": true,
+          "detail": "blocked=[]"
+        },
+        "door_open_safe": {
+          "passed": true,
+          "detail": "无刚性封门件（不适用）"
+        },
+        "rigid_fulfillment": {
+          "passed": true,
+          "detail": "99.32%"
+        },
+        "utilization": {
+          "passed": true,
+          "detail": "69.01% (参考下限 59.5%, 请求体积比 70.0%)"
+        }
+      },
+      "deductions": [
+        "重心偏移 9.1%（纵 9.08% / 横 2.88%）",
+        "刚性履行 99.3%（缺口 8 箱）"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-FRAGILE-40HQ",
+      "case_name": "虚拟-易碎仪器（禁止顶压）",
+      "synthetic": true,
+      "policy": "SAFETY_FIRST",
+      "scenario": "FRAGILE",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": false,
+        "door_step_depth": 0.0,
+        "deferred_tipping_audit": true
+      },
+      "status": "WARN",
+      "score": 69.8,
+      "grade": "B",
+      "utilization_pct": 70.0,
+      "placed_count": 716,
+      "rigid_ratio": 1.0,
+      "door_min_sf": 0.699,
+      "unstable_volume_m3": 0.0,
+      "plan_quality_score": 74.3,
+      "gate": {
+        "verdict": "WARN",
+        "blocked_by": []
+      },
+      "time_budget_s": 45.0,
+      "floor_limited": false,
+      "known_issue": null,
+      "runtime_s": 1.13,
+      "checks": {
+        "no_violations": {
+          "passed": true,
+          "detail": "0 violations"
+        },
+        "no_collision": {
+          "passed": true,
+          "detail": ""
+        },
+        "no_starvation": {
+          "passed": true,
+          "detail": "starved=[]"
+        },
+        "gate_not_rejected": {
+          "passed": true,
+          "detail": "blocked=[]"
+        },
+        "door_open_safe": {
+          "passed": true,
+          "detail": "无刚性封门件（不适用）"
+        },
+        "door_face_risk": {
+          "passed": false,
+          "detail": "门面无刚性封门件但 SF=0.699（开门风险，建议加固/调整）"
+        },
+        "rigid_fulfillment": {
+          "passed": true,
+          "detail": "100.00%"
+        },
+        "utilization": {
+          "passed": true,
+          "detail": "70.0% (参考下限 59.5%, 请求体积比 70.0%)"
+        }
+      },
+      "deductions": [
+        "开门工况门面 SF 0.70 < 1.5（8 列，风险体积 0.73 m³）",
+        "重心偏移 7.6%（纵 0.28% / 横 7.64%）"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-LIMITED-STACK-40HQ",
+      "case_name": "虚拟-限层堆叠（最多 2 层）",
+      "synthetic": true,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": false,
+        "door_step_depth": 0.0,
+        "deferred_tipping_audit": true
+      },
+      "status": "PASS",
+      "score": 71.5,
+      "grade": "B",
+      "utilization_pct": 34.69,
+      "placed_count": 274,
+      "rigid_ratio": 0.9928,
+      "door_min_sf": null,
+      "unstable_volume_m3": 0.0,
+      "plan_quality_score": 86.0,
+      "gate": {
+        "verdict": "WARN",
+        "blocked_by": []
+      },
+      "time_budget_s": 30.0,
+      "floor_limited": false,
+      "known_issue": null,
+      "runtime_s": 10.14,
+      "checks": {
+        "no_violations": {
+          "passed": true,
+          "detail": "0 violations"
+        },
+        "no_collision": {
+          "passed": true,
+          "detail": ""
+        },
+        "no_starvation": {
+          "passed": true,
+          "detail": "starved=[]"
+        },
+        "gate_not_rejected": {
+          "passed": true,
+          "detail": "blocked=[]"
+        },
+        "door_open_safe": {
+          "passed": true,
+          "detail": "无刚性封门件（不适用）"
+        },
+        "rigid_fulfillment": {
+          "passed": true,
+          "detail": "99.28%"
+        },
+        "utilization": {
+          "passed": true,
+          "detail": "34.69% (参考下限 29.7%, 请求体积比 34.9%)"
+        }
+      },
+      "deductions": [
+        "重心偏移 11.2%（纵 11.16% / 横 1.2%）",
+        "刚性履行 99.3%（缺口 2 箱）",
+        "几何总评 POOR（惩罚分 37.64）"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-MULTISTOP-40HQ",
+      "case_name": "虚拟-多点卸货（3 站）",
+      "synthetic": true,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": true,
+        "door_step_depth": 0.25,
+        "deferred_tipping_audit": false
+      },
+      "status": "EXPECTED_REJECT",
+      "score": null,
+      "grade": null,
+      "utilization_pct": null,
+      "placed_count": null,
+      "rigid_ratio": null,
+      "door_min_sf": null,
+      "unstable_volume_m3": null,
+      "plan_quality_score": null,
+      "gate": {
+        "verdict": "PRECHECK_REJECT",
+        "blocked_by": [
+          "DOOR_SEAL_CAPACITY_UNSATISFIABLE"
+        ]
+      },
+      "time_budget_s": 60.0,
+      "floor_limited": false,
+      "known_issue": null,
+      "runtime_s": 0.0,
+      "checks": {
+        "precheck": {
+          "passed": true,
+          "detail": "封门件在门面 SF≥1.5 下需要 2.440m 门区纵深，当前仅 1.943m"
+        }
+      },
+      "deductions": [
+        "封门件在门面 SF≥1.5 下需要 2.440m 门区纵深，当前仅 1.943m"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-MULTISTOP-4STOP-40HQ",
+      "case_name": "虚拟-四点卸货（4 站 + 封门件）",
+      "synthetic": true,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": true,
+        "door_step_depth": 0.25,
+        "deferred_tipping_audit": false
+      },
+      "status": "EXPECTED_REJECT",
+      "score": null,
+      "grade": null,
+      "utilization_pct": null,
+      "placed_count": null,
+      "rigid_ratio": null,
+      "door_min_sf": null,
+      "unstable_volume_m3": null,
+      "plan_quality_score": null,
+      "gate": {
+        "verdict": "PRECHECK_REJECT",
+        "blocked_by": [
+          "DOOR_SEAL_CAPACITY_UNSATISFIABLE"
+        ]
+      },
+      "time_budget_s": 60.0,
+      "floor_limited": false,
+      "known_issue": {
+        "id": "DOOR-STEP-CAPACITY-001",
+        "owner": "solver",
+        "review_by": "2026-12-15",
+        "note": "封门薄板在门端台阶下有效容量不足：171 件仅 44 件可放，需门面政策/容量预检"
+      },
+      "runtime_s": 0.0,
+      "checks": {
+        "precheck": {
+          "passed": true,
+          "detail": "封门件在门面 SF≥1.5 下需要 1.116m 门区纵深，当前仅 0.698m"
+        }
+      },
+      "deductions": [
+        "封门件在门面 SF≥1.5 下需要 1.116m 门区纵深，当前仅 0.698m"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-NODOOR-40GP",
+      "case_name": "虚拟-无封门件（通用货）",
+      "synthetic": true,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": false,
+        "door_step_depth": 0.0,
+        "deferred_tipping_audit": true
+      },
+      "status": "PASS",
+      "score": 85.8,
+      "grade": "A",
+      "utilization_pct": 70.07,
+      "placed_count": 999,
+      "rigid_ratio": 1.0,
+      "door_min_sf": null,
+      "unstable_volume_m3": 0.0,
+      "plan_quality_score": 59.0,
+      "gate": {
+        "verdict": "WARN",
+        "blocked_by": []
+      },
+      "time_budget_s": 45.0,
+      "floor_limited": false,
+      "known_issue": null,
+      "runtime_s": 3.26,
+      "checks": {
+        "no_violations": {
+          "passed": true,
+          "detail": "0 violations"
+        },
+        "no_collision": {
+          "passed": true,
+          "detail": ""
+        },
+        "no_starvation": {
+          "passed": true,
+          "detail": "starved=[]"
+        },
+        "gate_not_rejected": {
+          "passed": true,
+          "detail": "blocked=[]"
+        },
+        "door_open_safe": {
+          "passed": true,
+          "detail": "无刚性封门件（不适用）"
+        },
+        "rigid_fulfillment": {
+          "passed": true,
+          "detail": "100.00%"
+        },
+        "utilization": {
+          "passed": true,
+          "detail": "70.07% (参考下限 59.6%, 请求体积比 70.1%)"
+        }
+      },
+      "deductions": [
+        "重心偏移 2.9%（纵 2.8% / 横 2.88%）",
+        "方案质量评分 59（C 级）"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-NODOOR-HIGHFILL-40HQ",
+      "case_name": "虚拟-无门高密度（多 SKU）",
+      "synthetic": true,
+      "policy": "BALANCED",
+      "scenario": "GENERAL",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": false,
+        "door_step_depth": 0.0,
+        "deferred_tipping_audit": true
+      },
+      "status": "PASS",
+      "score": 84.7,
+      "grade": "A",
+      "utilization_pct": 74.95,
+      "placed_count": 1518,
+      "rigid_ratio": 1.0,
+      "door_min_sf": null,
+      "unstable_volume_m3": 0.0,
+      "plan_quality_score": 54.3,
+      "gate": {
+        "verdict": "WARN",
+        "blocked_by": []
+      },
+      "time_budget_s": 45.0,
+      "floor_limited": false,
+      "known_issue": null,
+      "runtime_s": 5.32,
+      "checks": {
+        "no_violations": {
+          "passed": true,
+          "detail": "0 violations"
+        },
+        "no_collision": {
+          "passed": true,
+          "detail": ""
+        },
+        "no_starvation": {
+          "passed": true,
+          "detail": "starved=[]"
+        },
+        "gate_not_rejected": {
+          "passed": true,
+          "detail": "blocked=[]"
+        },
+        "door_open_safe": {
+          "passed": true,
+          "detail": "无刚性封门件（不适用）"
+        },
+        "rigid_fulfillment": {
+          "passed": true,
+          "detail": "100.00%"
+        },
+        "utilization": {
+          "passed": true,
+          "detail": "74.95% (参考下限 63.7%, 请求体积比 74.9%)"
+        }
+      },
+      "deductions": [
+        "重心偏移 5.7%（纵 5.65% / 横 2.7%）",
+        "方案质量评分 54（C 级）"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-OVERWEIGHT-40HQ",
+      "case_name": "虚拟-超重货单（载重受限）",
+      "synthetic": true,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": false,
+        "door_step_depth": 0.0,
+        "deferred_tipping_audit": true
+      },
+      "status": "PASS",
+      "score": 66.1,
+      "grade": "B",
+      "utilization_pct": 21.74,
+      "placed_count": 150,
+      "rigid_ratio": 1.0,
+      "door_min_sf": null,
+      "unstable_volume_m3": 0.0,
+      "plan_quality_score": 88.6,
+      "gate": {
+        "verdict": "WARN",
+        "blocked_by": []
+      },
+      "time_budget_s": 20.0,
+      "floor_limited": false,
+      "known_issue": null,
+      "runtime_s": 0.09,
+      "checks": {
+        "no_violations": {
+          "passed": true,
+          "detail": "0 violations"
+        },
+        "no_collision": {
+          "passed": true,
+          "detail": ""
+        },
+        "no_starvation": {
+          "passed": true,
+          "detail": "starved=[]"
+        },
+        "gate_not_rejected": {
+          "passed": true,
+          "detail": "blocked=[]（预期 ['DG-003', 'DG-005']）"
+        },
+        "door_open_safe": {
+          "passed": true,
+          "detail": "无刚性封门件（不适用）"
+        },
+        "rigid_fulfillment": {
+          "passed": true,
+          "detail": "载重受限/预期拒绝，不设硬门槛；100.00%"
+        },
+        "utilization": {
+          "passed": true,
+          "detail": "载重受限/预期拒绝/仅落地件，不设利用率门槛；21.74% (参考下限 18.5%, 请求体积比 21.7%)"
+        }
+      },
+      "deductions": [
+        "重心偏移 17.8%（纵 17.77% / 横 5.5%）",
+        "几何总评 POOR（惩罚分 42.32）"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-PALLET-MIXED-40HQ",
+      "case_name": "虚拟-托盘混装（落地+纸箱）",
+      "synthetic": true,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": false,
+        "door_step_depth": 0.0,
+        "deferred_tipping_audit": true
+      },
+      "status": "PASS",
+      "score": 67.8,
+      "grade": "B",
+      "utilization_pct": 50.22,
+      "placed_count": 404,
+      "rigid_ratio": 0.9975,
+      "door_min_sf": null,
+      "unstable_volume_m3": 0.0,
+      "plan_quality_score": 71.4,
+      "gate": {
+        "verdict": "WARN",
+        "blocked_by": []
+      },
+      "time_budget_s": 45.0,
+      "floor_limited": false,
+      "known_issue": null,
+      "runtime_s": 9.97,
+      "checks": {
+        "no_violations": {
+          "passed": true,
+          "detail": "0 violations"
+        },
+        "no_collision": {
+          "passed": true,
+          "detail": ""
+        },
+        "no_starvation": {
+          "passed": true,
+          "detail": "starved=[]"
+        },
+        "gate_not_rejected": {
+          "passed": true,
+          "detail": "blocked=[]"
+        },
+        "door_open_safe": {
+          "passed": true,
+          "detail": "无刚性封门件（不适用）"
+        },
+        "rigid_fulfillment": {
+          "passed": true,
+          "detail": "99.75%"
+        },
+        "utilization": {
+          "passed": true,
+          "detail": "50.22% (参考下限 43.5%, 请求体积比 51.2%)"
+        }
+      },
+      "deductions": [
+        "重心偏移 10.2%（纵 10.17% / 横 8.12%）",
+        "刚性履行 99.8%（缺口 1 箱）"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-PALLET-SINGLE-40HQ",
+      "case_name": "虚拟-托盘单 SKU 大货",
+      "synthetic": true,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": false,
+        "door_step_depth": 0.0,
+        "deferred_tipping_audit": true
+      },
+      "status": "PASS",
+      "score": 76.8,
+      "grade": "B",
+      "utilization_pct": 23.46,
+      "placed_count": 18,
+      "rigid_ratio": 1.0,
+      "door_min_sf": null,
+      "unstable_volume_m3": 0.0,
+      "plan_quality_score": 99.8,
+      "gate": {
+        "verdict": "WARN",
+        "blocked_by": []
+      },
+      "time_budget_s": 20.0,
+      "floor_limited": true,
+      "known_issue": null,
+      "runtime_s": 0.03,
+      "checks": {
+        "no_violations": {
+          "passed": true,
+          "detail": "0 violations"
+        },
+        "no_collision": {
+          "passed": true,
+          "detail": ""
+        },
+        "no_starvation": {
+          "passed": true,
+          "detail": "starved=[]"
+        },
+        "gate_not_rejected": {
+          "passed": true,
+          "detail": "blocked=[]"
+        },
+        "door_open_safe": {
+          "passed": true,
+          "detail": "无刚性封门件（不适用）"
+        },
+        "rigid_fulfillment": {
+          "passed": true,
+          "detail": "100.00%"
+        },
+        "utilization": {
+          "passed": true,
+          "detail": "载重受限/预期拒绝/仅落地件，不设利用率门槛；23.46% (参考下限 19.9%, 请求体积比 23.5%)"
+        }
+      },
+      "deductions": [
+        "重心偏移 6.8%（纵 5.38% / 横 6.8%）"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-THIN-DOOR-HIGHFILL-40HQ",
+      "case_name": "虚拟-薄板高填充门区",
+      "synthetic": true,
+      "policy": "SAFETY_FIRST",
+      "scenario": "DOOR_THIN_PANEL",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": true,
+        "door_step_depth": 0.25,
+        "deferred_tipping_audit": false
+      },
+      "status": "EXPECTED_REJECT",
+      "score": null,
+      "grade": null,
+      "utilization_pct": null,
+      "placed_count": null,
+      "rigid_ratio": null,
+      "door_min_sf": null,
+      "unstable_volume_m3": null,
+      "plan_quality_score": null,
+      "gate": {
+        "verdict": "PRECHECK_REJECT",
+        "blocked_by": [
+          "DOOR_SEAL_CAPACITY_UNSATISFIABLE"
+        ]
+      },
+      "time_budget_s": 60.0,
+      "floor_limited": false,
+      "known_issue": {
+        "id": "DOOR-STEP-BAND-001",
+        "owner": "solver",
+        "review_by": "2026-12-15",
+        "note": "高填充时门面薄板 SF<1.5：0.25m 门端台阶覆盖不到 0.56m 厚封门墙，待门面政策决策"
+      },
+      "runtime_s": 0.0,
+      "checks": {
+        "precheck": {
+          "passed": true,
+          "detail": "封门件在门面 SF≥1.5 下需要 1.716m 门区纵深，当前仅 1.200m"
+        }
+      },
+      "deductions": [
+        "封门件在门面 SF≥1.5 下需要 1.716m 门区纵深，当前仅 1.200m"
+      ]
+    },
+    {
+      "case_id": "VIRTUAL-UPRIGHT-40HQ",
+      "case_name": "虚拟-仅立放屏幕（朝向锁定）",
+      "synthetic": true,
+      "policy": "VOLUME_FIRST",
+      "scenario": "SINGLE_SKU_MASS",
+      "options": {
+        "door_open_stability": false,
+        "door_seal_confine": false,
+        "door_step_depth": 0.0,
+        "deferred_tipping_audit": true
+      },
+      "status": "PASS",
+      "score": 72.9,
+      "grade": "B",
+      "utilization_pct": 65.02,
+      "placed_count": 1082,
+      "rigid_ratio": 1.0,
+      "door_min_sf": null,
+      "unstable_volume_m3": 0.459,
+      "plan_quality_score": 70.8,
+      "gate": {
+        "verdict": "WARN",
+        "blocked_by": []
+      },
+      "time_budget_s": 45.0,
+      "floor_limited": false,
+      "known_issue": null,
+      "runtime_s": 2.53,
+      "checks": {
+        "no_violations": {
+          "passed": true,
+          "detail": "0 violations"
+        },
+        "no_collision": {
+          "passed": true,
+          "detail": ""
+        },
+        "no_starvation": {
+          "passed": true,
+          "detail": "starved=[]"
+        },
+        "gate_not_rejected": {
+          "passed": true,
+          "detail": "blocked=[]"
+        },
+        "door_open_safe": {
+          "passed": true,
+          "detail": "无刚性封门件（不适用）"
+        },
+        "rigid_fulfillment": {
+          "passed": true,
+          "detail": "100.00%"
+        },
+        "utilization": {
+          "passed": true,
+          "detail": "65.02% (参考下限 55.3%, 请求体积比 65.0%)"
+        }
+      },
+      "deductions": [
+        "重心偏移 11.3%（纵 11.35% / 横 3.48%）"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "case_id": "VIRTUAL-3C-THIN-DOOR-40HQ",
+  "case_name": "虚拟-3C 薄板门墙（高薄板封门）",
+  "description": "40HQ：大量薄板封门，验证门面 SF 与门端台阶",
+  "meta": {
+    "synthetic": true,
+    "archetype": "3c",
+    "seed": 102,
+    "container": "40HQ",
+    "target_volume_ratio": 0.8,
+    "time_budget_s": 60,
+    "floor_limited": false,
+    "known_issue": null,
+    "expected_reject": [],
+    "expected_error": []
+  },
+  "container": {
+    "usable": {
+      "L": 12.032,
+      "W": 2.352,
+      "H": 2.698
+    },
+    "maxPayloadTons": 26.5
+  },
+  "cargo": [
+    {
+      "sku": "V01-DISPLAY_SMALL",
+      "name": "小显示器",
+      "w": 0.472,
+      "d": 0.085,
+      "h": 0.325,
+      "weight": 7.56,
+      "quantity": 585,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V02-FLAT_PANEL",
+      "name": "扁平板材",
+      "w": 0.843,
+      "d": 0.735,
+      "h": 0.143,
+      "weight": 17.63,
+      "quantity": 429,
+      "requirement": "放中间"
+    },
+    {
+      "sku": "V03-DOOR_SEAL_PANEL",
+      "name": "封门面板",
+      "w": 0.461,
+      "d": 0.092,
+      "h": 0.393,
+      "weight": 5.6,
+      "quantity": 585,
+      "requirement": "封柜门",
+      "allowDoorZone": true
+    },
+    {
+      "sku": "V04-ELASTIC_DOOR_FILLER",
+      "name": "弹性封门件",
+      "w": 0.532,
+      "d": 0.089,
+      "h": 0.307,
+      "weight": 1.95,
+      "quantity": 390,
+      "requirement": "顶部填平,按需调节",
+      "isElastic": true
+    }
+  ]
+}

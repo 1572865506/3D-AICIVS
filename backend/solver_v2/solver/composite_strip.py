@@ -923,6 +923,8 @@ class PatternColumnSpec:
     col_height: float       # num_layers_z * variant.dz
     total_cartons: int      # num_cols_y * num_rows_x * num_layers_z
     total_weight_kg: float
+    # 复合图案中的前向支撑列：相对 pat_start_x 的 X 偏移；普通墙列为 0。
+    x_offset: float = 0.0
 
 
 @dataclass
@@ -938,6 +940,9 @@ class SectionWallPattern:
     score: float            # composite fitness score
     has_slender_columns: bool
     sku_counts: Dict[str, int] = field(default_factory=dict)
+    # >0 表示该图案核心墙前方带一列稳定支撑墙；值为主墙前表面相对 pat_start_x 的偏移。
+    support_depth: float = 0.0
+    support_sku_id: str = ""
 
 
 class WidthPatternEngine:
@@ -1060,8 +1065,16 @@ class WidthPatternEngine:
         available_x: float,
         target_width: Optional[float] = None,
         excluded_pattern_ids: Optional[Set[str]] = None,
+        support_variants: Optional[Sequence[OrientationVariant]] = None,
     ) -> List[SectionWallPattern]:
-        """Generates candidate SectionWallPatterns filling target_width with depth synchronization."""
+        """Generates candidate SectionWallPatterns filling target_width with depth synchronization.
+
+        support_variants:
+          - None: 历史路径，不生成前向支撑列（基准/默认路径完全不变）。
+          - 列表（可为空）: 开启“同图案延迟审计”。含前排倾覆风险列的图案会
+            在主墙前方追加一列稳定支撑墙；无法提供支撑的风险图案会被丢弃，
+            绝不让无支撑的 SUSPECT 进入交付。
+        """
         if target_width is None:
             target_width = self.cW
         if excluded_pattern_ids is None:
@@ -1069,6 +1082,12 @@ class WidthPatternEngine:
 
         if not variants or target_width < 0.20:
             return []
+
+        support_enabled = support_variants is not None
+        support_pool = [
+            v for v in (support_variants or [])
+            if remaining_qty.get(v.sku_id, 0) > 0
+        ]
 
         unique_variants: List[OrientationVariant] = []
         seen_geo: Set[Tuple[str, float, float, float]] = set()
@@ -1087,10 +1106,14 @@ class WidthPatternEngine:
                 continue
 
             max_cols = int(target_width // v.dy)
+            # 只有“风险核心 + 可提供支撑”的组合才允许低覆盖尾数墙；
+            # 普通图案仍保持 0.70 覆盖率下限。
+            _risk_core = self._is_tipping_risky_variant(v)
+            _cov_floor = 0.15 if (support_enabled and support_pool and _risk_core) else 0.70
             for cols in range(max_cols, 0, -1):
                 col_w = round(cols * v.dy, 4)
                 cov = col_w / target_width
-                if cov < 0.70:
+                if cov < _cov_floor:
                     break
 
                 max_layers = min(v.max_stack, int((self.cH - 0.04) // v.dz))
@@ -1249,8 +1272,184 @@ class WidthPatternEngine:
                             )
                             patterns.append(pat)
 
+        if support_enabled:
+            patterns = self._attach_support_patterns(
+                patterns=patterns,
+                support_variants=support_pool,
+                remaining_qty=remaining_qty,
+                target_width=target_width,
+                available_x=available_x,
+                excluded_pattern_ids=excluded_pattern_ids,
+            )
+
         patterns.sort(key=lambda p: p.score, reverse=True)
         return patterns[:40]
+
+    @staticmethod
+    def _is_tipping_risky_variant(v: OrientationVariant) -> bool:
+        """单箱纵向抗倾覆 SF=2·dx/dz<1.5：需要前向实体支撑。"""
+        if v.dz <= 1e-6:
+            return False
+        return (2.0 * v.dx) / v.dz < 1.5 - 1e-4
+
+    def _attach_support_patterns(
+        self,
+        patterns: List[SectionWallPattern],
+        support_variants: Sequence[OrientationVariant],
+        remaining_qty: Dict[str, int],
+        target_width: float,
+        available_x: float,
+        excluded_pattern_ids: Set[str],
+    ) -> List[SectionWallPattern]:
+        """把风险核心图案替换为“核心墙 + 前向支撑墙”的复合图案。
+
+        没有支撑的风险核心一律丢弃；即使调用方传入空支撑池，也不保留裸风险墙。
+        """
+        out: List[SectionWallPattern] = []
+        seen: Set[str] = set()
+        for pat in patterns:
+            risky_cols = [
+                col for col in pat.columns
+                if self._is_tipping_risky_variant(col.variant)
+            ]
+            if not risky_cols:
+                out.append(pat)
+                continue
+            # 风险列必须位于墙的最前表面（3cm 容差内），否则支撑墙贴不到它。
+            if any(pat.flush_depth - col.col_depth > 0.03 + 1e-6 for col in risky_cols):
+                continue
+
+            cap = self._make_support_column(
+                pat=pat,
+                support_variants=support_variants,
+                remaining_qty=remaining_qty,
+                target_width=target_width,
+                available_x=available_x,
+            )
+            if cap is None:
+                continue
+            supported = self._with_support_column(
+                pat=pat,
+                cap=cap,
+                target_width=target_width,
+                excluded_pattern_ids=excluded_pattern_ids,
+            )
+            if supported is None or supported.pattern_id in seen:
+                continue
+            seen.add(supported.pattern_id)
+            out.append(supported)
+        return out
+
+    def _make_support_column(
+        self,
+        pat: SectionWallPattern,
+        support_variants: Sequence[OrientationVariant],
+        remaining_qty: Dict[str, int],
+        target_width: float,
+        available_x: float,
+    ) -> Optional[PatternColumnSpec]:
+        """挑选一列稳定支撑墙，覆盖核心墙的前表面。
+
+        选择顺序：深度更小（少占 X）→ 高度覆盖更充分 → 用量更小。
+        """
+        risky_cols = [
+            col for col in pat.columns
+            if self._is_tipping_risky_variant(col.variant)
+        ]
+        if not risky_cols:
+            return None
+        core_width = max(
+            (col.y_start + col.col_width for col in pat.columns), default=0.0)
+        core_height = max(col.col_height for col in pat.columns)
+        core_top_dz = max(col.variant.dz for col in risky_cols)
+        core_usage = dict(pat.sku_counts)
+
+        best: Optional[PatternColumnSpec] = None
+        best_key: Optional[Tuple[float, float, int, str]] = None
+        for v in support_variants:
+            if not v.is_upright or v.dy <= 1e-6 or v.dz <= 1e-6:
+                continue
+            if (2.0 * v.dx) / v.dz < 1.5 - 1e-4:
+                continue
+            avail_qty = remaining_qty.get(v.sku_id, 0) - core_usage.get(v.sku_id, 0)
+            if avail_qty <= 0:
+                continue
+            cols = int((target_width - 0.02) // v.dy)
+            if cols < 1:
+                continue
+            cap_width = round(cols * v.dy, 4)
+            # 最外侧支撑箱仍需与核心有 >=20% 的 Y 重叠。
+            if cap_width + 0.8 * v.dy < core_width - 1e-6:
+                continue
+            max_layers = min(v.max_stack, int((self.cH - 0.04) // v.dz))
+            if max_layers < 1:
+                continue
+            layers = min(max_layers, avail_qty // cols)
+            if layers < 1:
+                continue
+            cap_count = cols * layers
+            cap_height = round(layers * v.dz, 4)
+            # 顶层核心箱仍需与支撑墙有 >=20% 的 Z 重叠。
+            if cap_height + 0.8 * core_top_dz < core_height - 1e-6:
+                continue
+            if pat.flush_depth + v.dx > available_x + 1e-4:
+                continue
+
+            candidate = PatternColumnSpec(
+                variant=v,
+                num_cols_y=cols,
+                num_rows_x=1,
+                num_layers_z=layers,
+                y_start=0.0,
+                col_width=cap_width,
+                col_depth=round(v.dx, 4),
+                col_height=cap_height,
+                total_cartons=cap_count,
+                total_weight_kg=round(cap_count * v.weight_kg, 2),
+                x_offset=round(pat.flush_depth, 4),
+            )
+            key = (round(v.dx, 4), -cap_height, cap_count, v.sku_id)
+            if best_key is None or key < best_key:
+                best_key = key
+                best = candidate
+        return best
+
+    def _with_support_column(
+        self,
+        pat: SectionWallPattern,
+        cap: PatternColumnSpec,
+        target_width: float,
+        excluded_pattern_ids: Set[str],
+    ) -> Optional[SectionWallPattern]:
+        """核心列在前、支撑列在后：构建时先标记 SUSPECT，再落支撑并发起审计。"""
+        pid = (
+            f"{pat.pattern_id}__SUP_{cap.variant.sku_id}_{cap.variant.ori_name}"
+            f"_C{cap.num_cols_y}_L{cap.num_layers_z}"
+        )
+        if pid in excluded_pattern_ids:
+            return None
+        total_width = max(pat.total_width, cap.col_width)
+        coverage = total_width / target_width
+        sku_counts = dict(pat.sku_counts)
+        sku_counts[cap.variant.sku_id] = (
+            sku_counts.get(cap.variant.sku_id, 0) + cap.total_cartons
+        )
+        cap_vol = cap.col_width * cap.col_depth * cap.col_height
+        score = pat.score + cap_vol * 15.0 + 20.0
+        return SectionWallPattern(
+            pattern_id=pid,
+            columns=list(pat.columns) + [cap],
+            total_width=round(total_width, 4),
+            flush_depth=round(pat.flush_depth + cap.col_depth, 4),
+            min_col_depth=min(pat.min_col_depth, cap.col_depth),
+            depth_alignment_ratio=1.0,
+            coverage_ratio=round(coverage, 4),
+            score=round(score, 4),
+            has_slender_columns=pat.has_slender_columns,
+            sku_counts=sku_counts,
+            support_depth=round(pat.flush_depth, 4),
+            support_sku_id=cap.variant.sku_id,
+        )
 
     def _find_depth_synchronization(
         self,

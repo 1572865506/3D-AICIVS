@@ -1,12 +1,22 @@
 """
 Tests for Cavity Prevention, Anti-Floating Box Guarantee, and Ground Support.
 """
+import json
+import os
 import unittest
 
 from backend.solver_v2.api.adapter import InputAdapter
 from backend.solver_v2.domain.models import BoxDim, ContainerSpec
 from backend.solver_v2.solver.unified_solver import UnifiedSolver
-from scripts.diagnose_frontend_manifest import load_manifest
+
+FIXTURE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                       "fixtures", "production_15sku.json")
+
+
+def load_manifest():
+    """15-SKU 产线单（与旧 index.html 内联清单同源，已固化为测试夹具）。"""
+    with open(FIXTURE, encoding="utf-8") as f:
+        return json.load(f)["cargo"]
 
 
 class TestCavityAndAntiFloating(unittest.TestCase):

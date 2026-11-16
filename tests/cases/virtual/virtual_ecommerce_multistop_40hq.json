@@ -1,0 +1,71 @@
+{
+  "case_id": "VIRTUAL-ECOMMERCE-MULTISTOP-40HQ",
+  "case_name": "虚拟-电商多站（3 站无封门件）",
+  "description": "40HQ：多 SKU 小件 3 站配送，无封门件，验证区段与碎片化",
+  "meta": {
+    "synthetic": true,
+    "archetype": "ecommerce",
+    "seed": 902,
+    "container": "40HQ",
+    "target_volume_ratio": 0.7,
+    "time_budget_s": 45,
+    "floor_limited": false,
+    "known_issue": null,
+    "expected_reject": [],
+    "expected_error": []
+  },
+  "container": {
+    "usable": {
+      "L": 12.032,
+      "W": 2.352,
+      "H": 2.698
+    },
+    "maxPayloadTons": 26.5
+  },
+  "cargo": [
+    {
+      "sku": "V01-STANDARD_BOX",
+      "name": "标准纸箱",
+      "w": 0.646,
+      "d": 0.429,
+      "h": 0.33,
+      "weight": 8.66,
+      "quantity": 288,
+      "requirement": "放中间",
+      "unloadStop": 1
+    },
+    {
+      "sku": "V02-SMALL_ACCESSORY",
+      "name": "小配件箱",
+      "w": 0.388,
+      "d": 0.252,
+      "h": 0.189,
+      "weight": 2.19,
+      "quantity": 432,
+      "requirement": "放中间",
+      "unloadStop": 2
+    },
+    {
+      "sku": "V03-CUBE_BOX",
+      "name": "立方箱体",
+      "w": 0.454,
+      "d": 0.452,
+      "h": 0.502,
+      "weight": 13.98,
+      "quantity": 173,
+      "requirement": "放中间",
+      "unloadStop": 3
+    },
+    {
+      "sku": "V04-MICRO_CUBE",
+      "name": "微型方块",
+      "w": 0.168,
+      "d": 0.147,
+      "h": 0.18,
+      "weight": 1.49,
+      "quantity": 288,
+      "requirement": "放中间",
+      "unloadStop": 3
+    }
+  ]
+}
