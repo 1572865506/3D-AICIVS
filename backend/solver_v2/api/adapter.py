@@ -492,12 +492,10 @@ class InputAdapter:
                 raw_density = raw_weight / vol_m3
                 per_box_weight = raw_weight / req_qty
                 per_box_density = per_box_weight / vol_m3
-                # Normal packaged freight density is usually 30 ~ 800 kg/m3.
-                # If raw density > 1000 kg/m3 (denser than water/solid metal) while per_box_density is in reasonable range,
-                # or raw_weight > 100kg for small packages (<0.1m3), normalize to per_box_weight.
-                if raw_density > 1000.0 and per_box_density <= 1200.0:
-                    weight_kg = round(per_box_weight, 3)
-                elif vol_m3 < 0.15 and raw_weight > 150.0 and per_box_weight <= 100.0:
+                # Normal packaged freight density is usually 30 ~ 800 kg/m3. Solid steel is ~7850 kg/m3.
+                # Only if raw density > 8000 kg/m3 (impossible even for pure solid steel) while
+                # per_box_density is within normal freight range (20 ~ 1200 kg/m3), normalize to per_box_weight.
+                if raw_density > 8000.0 and 20.0 <= per_box_density <= 1200.0:
                     weight_kg = round(per_box_weight, 3)
                 else:
                     weight_kg = raw_weight

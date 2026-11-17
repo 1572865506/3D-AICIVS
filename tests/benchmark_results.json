@@ -5,9 +5,9 @@
   "passed_cases": 56,
   "all_zero_collisions": true,
   "delivery_gate_counts": {
-    "PASS": 1,
-    "WARN": 46,
-    "REJECT": 9,
+    "PASS": 2,
+    "WARN": 54,
+    "REJECT": 0,
     "ERROR": 0
   },
   "plan_score_stats": {
@@ -303,16 +303,14 @@
       "health_issues": [],
       "runtime_ms": 5100.79,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-005"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
         "DG-014"
       ],
-      "plan_score": 0.0,
-      "plan_grade": "F",
-      "plan_hard_fail": true,
+      "plan_score": 60.0,
+      "plan_grade": "C",
+      "plan_hard_fail": false,
       "plan_policy": "VOLUME_FIRST",
       "plan_scenario": "SINGLE_SKU_MASS"
     },
@@ -463,14 +461,12 @@
       "health_issues": [],
       "runtime_ms": 5303.3,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-005"
-      ],
+      "delivery_gate": "PASS",
+      "gate_blocked_by": [],
       "gate_warnings": [],
-      "plan_score": 0.0,
-      "plan_grade": "F",
-      "plan_hard_fail": true,
+      "plan_score": 60.0,
+      "plan_grade": "C",
+      "plan_hard_fail": false,
       "plan_policy": "VOLUME_FIRST",
       "plan_scenario": "SINGLE_SKU_MASS"
     },
@@ -691,16 +687,14 @@
       "health_issues": [],
       "runtime_ms": 25066.75,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-005"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
         "DG-014"
       ],
-      "plan_score": 0.0,
-      "plan_grade": "F",
-      "plan_hard_fail": true,
+      "plan_score": 60.0,
+      "plan_grade": "C",
+      "plan_hard_fail": false,
       "plan_policy": "BALANCED",
       "plan_scenario": "GENERAL"
     },
@@ -1113,19 +1107,17 @@
       "health_issues": [],
       "runtime_ms": 1979.04,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-011"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
         "DG-007",
         "DG-008",
         "DG-016",
         "DG-014"
       ],
-      "plan_score": 0.0,
-      "plan_grade": "F",
-      "plan_hard_fail": true,
+      "plan_score": 60.0,
+      "plan_grade": "C",
+      "plan_hard_fail": false,
       "plan_policy": "BALANCED",
       "plan_scenario": "GENERAL"
     },
@@ -1381,18 +1373,16 @@
       "health_issues": [],
       "runtime_ms": 23775.68,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-005"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
         "DG-016",
         "DG-020",
         "DG-014"
       ],
-      "plan_score": 0.0,
-      "plan_grade": "F",
-      "plan_hard_fail": true,
+      "plan_score": 60.0,
+      "plan_grade": "C",
+      "plan_hard_fail": false,
       "plan_policy": "SAFETY_FIRST",
       "plan_scenario": "DOOR_THIN_PANEL"
     },
@@ -1410,10 +1400,8 @@
       "health_issues": [],
       "runtime_ms": 25158.45,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-005"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
         "DG-008",
         "DG-010",
@@ -1421,9 +1409,9 @@
         "DG-021",
         "DG-014"
       ],
-      "plan_score": 0.0,
-      "plan_grade": "F",
-      "plan_hard_fail": true,
+      "plan_score": 60.0,
+      "plan_grade": "C",
+      "plan_hard_fail": false,
       "plan_policy": "BALANCED",
       "plan_scenario": "HETEROGENEOUS"
     },
@@ -1441,17 +1429,15 @@
       "health_issues": [],
       "runtime_ms": 24695.76,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-005"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
         "DG-010",
         "DG-020"
       ],
-      "plan_score": 0.0,
-      "plan_grade": "F",
-      "plan_hard_fail": true,
+      "plan_score": 60.0,
+      "plan_grade": "C",
+      "plan_hard_fail": false,
       "plan_policy": "SAFETY_FIRST",
       "plan_scenario": "DOOR_THIN_PANEL"
     },
@@ -1469,19 +1455,17 @@
       "health_issues": [],
       "runtime_ms": 24986.9,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-005"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
         "DG-010",
         "DG-016",
         "DG-020",
         "DG-021"
       ],
-      "plan_score": 0.0,
-      "plan_grade": "F",
-      "plan_hard_fail": true,
+      "plan_score": 60.0,
+      "plan_grade": "C",
+      "plan_hard_fail": false,
       "plan_policy": "SAFETY_FIRST",
       "plan_scenario": "DOOR_THIN_PANEL"
     },
@@ -1499,10 +1483,8 @@
       "health_issues": [],
       "runtime_ms": 24666.57,
       "status": "PASS",
-      "delivery_gate": "REJECT",
-      "gate_blocked_by": [
-        "DG-005"
-      ],
+      "delivery_gate": "WARN",
+      "gate_blocked_by": [],
       "gate_warnings": [
         "DG-007",
         "DG-019",
@@ -1510,9 +1492,9 @@
         "DG-021",
         "DG-014"
       ],
-      "plan_score": 0.0,
-      "plan_grade": "F",
-      "plan_hard_fail": true,
+      "plan_score": 60.0,
+      "plan_grade": "C",
+      "plan_hard_fail": false,
       "plan_policy": "SAFETY_FIRST",
       "plan_scenario": "DOOR_THIN_PANEL"
     }

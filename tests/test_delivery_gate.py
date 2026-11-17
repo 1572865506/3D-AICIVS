@@ -236,6 +236,30 @@ class TestDeliveryGate:
         rep = evaluate_delivery(sol, [_sku(req=1)], c)
         assert rep["verdict"] == "REJECT" and "DG-012" in rep["blocked_by"], rep
 
+    def test_floor_limited_manifest_exempt_from_dg005(self):
+        """要求落地的货物底面积超过柜底时，物理不可满足全装，DG-005 免予硬拦截。"""
+        import dataclasses
+        c = _container(l=2.0, w=1.0)  # 底面积 2.0 m2
+        sku = _sku(req=10, w=0.5, d=0.5, h=0.2)  # 10 箱，每箱 0.25 m2，合计 2.5 m2 > 2.0 m2
+        sku.stacking_policy = dataclasses.replace(sku.stacking_policy, must_be_on_floor=True)
+        # 仅装下 8 箱（2.0 m2 填满）
+        plcs = [_plc(f"p{i}", "A", (i % 4) * 0.5, (i // 4) * 0.5, 0.0, 0.5, 0.5, 0.2) for i in range(8)]
+        sol = _StubSolution(container=c, placements=plcs)
+        sol.telemetry.geometry_qa = _clean_qa()
+        rep = evaluate_delivery(sol, [sku], c)
+        assert "DG-005" not in rep["blocked_by"], rep
+
+    def test_light_load_lateral_offset_tolerance(self):
+        """轻载工况（总重远低于额定载重 25%）下，横向偏载容差适度放宽至 15%，DG-011 不拦截。"""
+        c = _container(l=12.0, w=2.4)
+        c.max_payload_kg = 26500.0
+        # 总重 2000kg（< 25% 额定载重），偏向一侧（y=0.4, dy=1.0 -> y_center=0.9, 偏离 0.3/2.4 = 12.5%）
+        plcs = [_plc("p1", "A", 5.5, 0.4, 0.0, 1.0, 1.0, 1.0, weight=2000.0)]
+        sol = _StubSolution(container=c, placements=plcs)
+        sol.telemetry.geometry_qa = _clean_qa()
+        rep = evaluate_delivery(sol, [_sku(req=1, weight=2000.0)], c)
+        assert "DG-011" not in rep["blocked_by"], rep
+
     def test_policy_file_loads(self):
         """配置文件可加载且覆盖默认策略。"""
         pol = load_policy()

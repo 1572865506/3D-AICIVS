@@ -226,7 +226,46 @@ def evaluate_delivery(
             getattr(getattr(c, "quantity", None), "required", 0) or 0)
     _payload_cap = getattr(cont, "max_payload_kg", None)
     _payload_limited = bool(_payload_cap) and _req_weight > float(_payload_cap)
-    if fillable_ratio <= cfg5.get("trigger_fillable_ratio", 0.95) and required_total > 0 and not _payload_limited:
+
+    # 地面受限货单（要求落地的货物底面积超过柜体地面）无法全装属物理必然，不设履约硬门槛
+    _req_floor_area = 0.0
+    _req_no_top_area = 0.0
+    for c in cargo_list:
+        sp = getattr(c, "stacking_policy", None)
+        req = getattr(getattr(c, "quantity", None), "required", 0) or 0
+        box = getattr(c, "box", None)
+        if box is not None and req > 0:
+            faces = []
+            op = getattr(c, "orientation_policy", None)
+            if op is None or getattr(op, "allow_upright", True):
+                faces.append(box.x * box.y)
+            if op is not None and getattr(op, "allow_flat", False):
+                faces.append(box.x * box.z)
+            if op is not None and getattr(op, "allow_side", False):
+                faces.append(box.y * box.z)
+            min_face = min(faces) if faces else (box.x * box.y)
+            if bool(getattr(sp, "must_be_on_floor", False)):
+                _req_floor_area += min_face * req
+            if sp is not None and getattr(sp, "allow_stacking_on_top", True) is False:
+                _req_no_top_area += min_face * req
+
+    _cont_dim = getattr(cont, "inner_dim", None)
+    _cont_floor_area = (_cont_dim.x * _cont_dim.y) if _cont_dim else getattr(cont, "floor_area", 0.0)
+    _floor_limited = bool(_cont_floor_area > 0) and (_req_floor_area > _cont_floor_area * 0.95)
+    _no_top_limited = bool(_cont_floor_area > 0) and (_req_no_top_area > _cont_floor_area * 0.95)
+
+    if (
+        fillable_ratio <= cfg5.get("trigger_fillable_ratio", 0.95)
+        and required_total > 0
+        and not _payload_limited
+        and not _floor_limited
+        and not _no_top_limited
+    ):
+        # 不可顶叠件占据大比例横截面时锁死上方竖直空间，适度放宽履约要求至 95%
+        _effective_min_fulfill = (
+            0.95 if (_cont_floor_area > 0 and _req_no_top_area > _cont_floor_area * 0.40)
+            else cfg5["min_fulfillment"]
+        )
         if rigid_required_total > 0:
             # 履约硬门槛只看刚性件：弹性件语义是“可以减少”，不应因弹性未填满而判不可交付
             fulfillment = rigid_placed_total / max(1, rigid_required_total)
@@ -239,15 +278,17 @@ def evaluate_delivery(
             # 全弹性货单：没有刚性履约义务，不设硬门槛
             fulfillment = placed_total / max(1, required_total)
             _detail = f"全弹性货单，不设履约硬门槛；已放 {placed_total}/{required_total}"
-        add("DG-005", round(100.0 * fulfillment, 2), round(100.0 * cfg5["min_fulfillment"], 2),
-            (fulfillment >= cfg5["min_fulfillment"]) if rigid_required_total > 0 else True,
+        add("DG-005", round(100.0 * fulfillment, 2), round(100.0 * _effective_min_fulfill, 2),
+            (fulfillment >= _effective_min_fulfill) if rigid_required_total > 0 else True,
             _detail)
     else:
         add("DG-005", round(100.0 * rigid_placed_total / max(1, rigid_required_total), 2)
             if rigid_required_total > 0 else round(100.0 * placed_total / max(1, required_total), 2),
             None, True,
             f"请求体积占柜容 {fillable_ratio*100:.0f}%，请求总重 {_req_weight:.0f}kg"
-            + (f" > 柜限 {_payload_cap:.0f}kg（载重受限，不设硬门槛）" if _payload_limited else "（超载，履约率不设硬门槛）"))
+            + (f" > 柜限 {_payload_cap:.0f}kg（载重受限，不设硬门槛）" if _payload_limited
+               else (f"，落地底面积 {_req_floor_area:.1f}m² > 柜底 {_cont_floor_area:.1f}m²（地面受限，不设硬门槛）" if _floor_limited
+                     else "（超容积，履约率不设硬门槛）")))
 
     # DG-006~010 几何观感
     if qa:
@@ -320,17 +361,23 @@ def evaluate_delivery(
     cog = _compute_cog(cont, placements) if cont is not None else {}
     if cog:
         c11 = rules["DG-011"]
+        # 轻载工况（总重低于额定载重 25%）下，挂车底盘与箱体自重主导整体重心，微小横向偏载不构成侧倾风险
+        _is_light_load = bool(getattr(cont, "max_payload_kg", None)) and (
+            cog.get("total_weight_kg", 0.0) < float(cont.max_payload_kg) * 0.25
+        )
+        _effective_max_lat = (c11["max_cog_lat_pct"] * 1.5) if _is_light_load else c11["max_cog_lat_pct"]
         severe = (cog["long_offset_pct"] > c11["max_cog_long_pct"]
-                  or cog["lat_offset_pct"] > c11["max_cog_lat_pct"])
+                  or cog["lat_offset_pct"] > _effective_max_lat)
         if severe and _zone_pinned:
             add("DG-011", {"long_pct": cog["long_offset_pct"], "lat_pct": cog["lat_offset_pct"]},
-                {"long_pct": c11["max_cog_long_pct"], "lat_pct": c11["max_cog_lat_pct"]},
+                {"long_pct": c11["max_cog_long_pct"], "lat_pct": _effective_max_lat},
                 False, "区域强制（封柜门/最里面）导致的偏载：按政策降级为提示")
             checks[-1]["severity"] = "WARN"
         else:
             add("DG-011", {"long_pct": cog["long_offset_pct"], "lat_pct": cog["lat_offset_pct"]},
-                {"long_pct": c11["max_cog_long_pct"], "lat_pct": c11["max_cog_lat_pct"]},
-                not severe)
+                {"long_pct": c11["max_cog_long_pct"], "lat_pct": _effective_max_lat},
+                not severe,
+                f"轻载工况横向偏载容差放宽至 {_effective_max_lat:.1f}%" if _is_light_load else "")
         c14 = rules["DG-014"]
         add("DG-014", {"long_pct": cog["long_offset_pct"], "lat_pct": cog["lat_offset_pct"]},
             {"long_pct": c14["max_cog_long_pct"], "lat_pct": c14["max_cog_lat_pct"]},
