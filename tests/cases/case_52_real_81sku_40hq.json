@@ -1,0 +1,830 @@
+{
+    "case_id": "REAL-81SKU-40HQ",
+    "case_name": "真实81-SKU混装40HQ (基线)",
+    "description": "Real 81-SKU manifest (1940 cartons) on 40HQ (12.024x2.350x2.690m, 76.0m3; 74m3 ref / 71m3 target). SKUs 7,8,70,72,73 mapped to door zone (封柜门/allowDoorZone). Unspecified constraints use InputAdapter defaults (rigid, upright-only, unlimited stack/bearing).",
+    "container": {
+        "usable": {
+            "L": 12.024,
+            "W": 2.35,
+            "H": 2.69
+        },
+        "maxPayloadTons": 26.5
+    },
+    "cargo": [
+        {
+            "sku": "SKU-01",
+            "name": "无线键鼠/白色",
+            "w": 0.523,
+            "d": 0.105,
+            "h": 0.043,
+            "weight": 0.67,
+            "quantity": 500,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-02",
+            "name": "21.5寸K5-F-屏+屏线+地线+灯管线",
+            "w": 0.56,
+            "d": 0.28,
+            "h": 0.36,
+            "weight": 15.0,
+            "quantity": 20,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-03",
+            "name": "中性/23.8寸K5-F 屏+屏线+地线+灯管线",
+            "w": 0.6,
+            "d": 0.28,
+            "h": 0.385,
+            "weight": 18.64,
+            "quantity": 80,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-04",
+            "name": "21.5寸Z2-屏+屏线+灯管线",
+            "w": 0.56,
+            "d": 0.28,
+            "h": 0.36,
+            "weight": 15.0,
+            "quantity": 40,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-05",
+            "name": "23.8寸Z2-屏+屏线+灯管线",
+            "w": 0.6,
+            "d": 0.28,
+            "h": 0.385,
+            "weight": 20.7,
+            "quantity": 40,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-06",
+            "name": "19寸液晶屏",
+            "w": 0.49,
+            "d": 0.28,
+            "h": 0.35,
+            "weight": 11.8,
+            "quantity": 20,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-07",
+            "name": "21.5寸液晶屏",
+            "w": 0.56,
+            "d": 0.28,
+            "h": 0.36,
+            "weight": 15.0,
+            "quantity": 15,
+            "requirement": "封柜门",
+            "allowDoorZone": true
+        },
+        {
+            "sku": "SKU-08",
+            "name": "23.8寸液晶屏",
+            "w": 0.6,
+            "d": 0.28,
+            "h": 0.385,
+            "weight": 20.7,
+            "quantity": 10,
+            "requirement": "封柜门",
+            "allowDoorZone": true
+        },
+        {
+            "sku": "SKU-09",
+            "name": "21.5寸K5-F 中壳/白色+防尘袋",
+            "w": 0.59,
+            "d": 0.38,
+            "h": 0.37,
+            "weight": 8.51,
+            "quantity": 15,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-10",
+            "name": "23.8寸K5-F 中壳/白色+防尘袋",
+            "w": 0.59,
+            "d": 0.38,
+            "h": 0.37,
+            "weight": 8.5,
+            "quantity": 59,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-11",
+            "name": "21.5寸K5-F 白色/主板挡板-带摄像头",
+            "w": 0.33,
+            "d": 0.48,
+            "h": 0.18,
+            "weight": 12.7,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-12",
+            "name": "23.8寸K5-F 白色/主板挡板-带摄像头",
+            "w": 0.33,
+            "d": 0.48,
+            "h": 0.18,
+            "weight": 12.7,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-13",
+            "name": "21.5寸K5-f 白色/摄像头支架",
+            "w": 0.43,
+            "d": 0.48,
+            "h": 0.33,
+            "weight": 21.3,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-14",
+            "name": "23.8寸K5-f 白色/摄像头支架",
+            "w": 0.43,
+            "d": 0.48,
+            "h": 0.33,
+            "weight": 21.3,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-15",
+            "name": "21.5寸K5-F摄像头壳料/白色+镜片（镜片装好）",
+            "w": 0.43,
+            "d": 0.48,
+            "h": 0.33,
+            "weight": 21.3,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-16",
+            "name": "23.8寸K5-F摄像头壳料/白色+镜片（镜片装好）",
+            "w": 0.43,
+            "d": 0.48,
+            "h": 0.33,
+            "weight": 21.3,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-17",
+            "name": "21.5寸Z2摄像头壳料/白色+镜片（镜片装好）",
+            "w": 0.55,
+            "d": 0.42,
+            "h": 0.22,
+            "weight": 7.5,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-18",
+            "name": "23.8寸Z2摄像头壳料/白色+镜片（镜片装好）",
+            "w": 0.55,
+            "d": 0.42,
+            "h": 0.22,
+            "weight": 7.5,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-19",
+            "name": "30w摄像头(21.5寸Z2 白)",
+            "w": 0.45,
+            "d": 0.34,
+            "h": 0.24,
+            "weight": 5.2,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-20",
+            "name": "30w摄像头 (23.6寸Z2白)",
+            "w": 0.45,
+            "d": 0.34,
+            "h": 0.24,
+            "weight": 5.2,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-21",
+            "name": "300w摄像头 (21.5寸K5-F白)",
+            "w": 0.45,
+            "d": 0.34,
+            "h": 0.24,
+            "weight": 10.35,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-22",
+            "name": "300w摄像头 (23.8寸K5-F白)",
+            "w": 0.45,
+            "d": 0.34,
+            "h": 0.24,
+            "weight": 10.35,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-23",
+            "name": "摄像头线-白",
+            "w": 0.45,
+            "d": 0.34,
+            "h": 0.24,
+            "weight": 5.2,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-24",
+            "name": "21.5寸K5-F后盖/白色 23.8寸",
+            "w": 0.59,
+            "d": 0.38,
+            "h": 0.25,
+            "weight": 6.37,
+            "quantity": 10,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-25",
+            "name": "23.8寸K5-F后盖/白色 23.8寸",
+            "w": 0.59,
+            "d": 0.38,
+            "h": 0.25,
+            "weight": 6.37,
+            "quantity": 37,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-26",
+            "name": "21.5寸Z2-后壳 （不含喇叭）+装饰条+无纺布袋",
+            "w": 0.65,
+            "d": 0.53,
+            "h": 0.4,
+            "weight": 10.97,
+            "quantity": 29,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-27",
+            "name": "23.8寸Z2-后壳 （不含喇叭）+装饰条+无纺布袋",
+            "w": 0.65,
+            "d": 0.53,
+            "h": 0.4,
+            "weight": 10.97,
+            "quantity": 29,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-28",
+            "name": "21.5寸K5-F高压板",
+            "w": 0.63,
+            "d": 0.59,
+            "h": 0.27,
+            "weight": 14.75,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-29",
+            "name": "23.8寸K5-F高压板",
+            "w": 0.63,
+            "d": 0.59,
+            "h": 0.27,
+            "weight": 14.75,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-30",
+            "name": "21.5寸K5-F高压线",
+            "w": 0.63,
+            "d": 0.59,
+            "h": 0.27,
+            "weight": 14.75,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-31",
+            "name": "23.8寸K5-F高压线",
+            "w": 0.63,
+            "d": 0.59,
+            "h": 0.27,
+            "weight": 14.75,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-32",
+            "name": "21.5 寸Z2高压板",
+            "w": 0.47,
+            "d": 0.8,
+            "h": 0.43,
+            "weight": 22.16,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-33",
+            "name": "23.6 寸Z2高压板",
+            "w": 0.47,
+            "d": 0.8,
+            "h": 0.43,
+            "weight": 22.16,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-34",
+            "name": "21.5 寸Z2高压线",
+            "w": 0.47,
+            "d": 0.8,
+            "h": 0.43,
+            "weight": 22.16,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-35",
+            "name": "23.6 寸Z2高压线",
+            "w": 0.47,
+            "d": 0.8,
+            "h": 0.43,
+            "weight": 22.16,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-36",
+            "name": "21.5寸K5-F USB板+开关板",
+            "w": 0.43,
+            "d": 0.5,
+            "h": 0.25,
+            "weight": 14.02,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-37",
+            "name": "23.8寸K5-F USB板+开关板",
+            "w": 0.43,
+            "d": 0.5,
+            "h": 0.25,
+            "weight": 14.02,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-38",
+            "name": "21.5寸K5-F USB板+开关板 线",
+            "w": 0.43,
+            "d": 0.5,
+            "h": 0.25,
+            "weight": 14.02,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-39",
+            "name": "23.8寸K5-F USB板+开关板 线",
+            "w": 0.43,
+            "d": 0.5,
+            "h": 0.25,
+            "weight": 14.02,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-40",
+            "name": "21.5寸Z2 USB板",
+            "w": 0.43,
+            "d": 0.5,
+            "h": 0.25,
+            "weight": 14.02,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-41",
+            "name": "23.8寸Z2 USB板",
+            "w": 0.43,
+            "d": 0.5,
+            "h": 0.25,
+            "weight": 14.02,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-42",
+            "name": "21.5寸Z2 USB板线",
+            "w": 0.43,
+            "d": 0.5,
+            "h": 0.25,
+            "weight": 14.02,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-43",
+            "name": "23.8寸Z2 USB板线",
+            "w": 0.43,
+            "d": 0.5,
+            "h": 0.25,
+            "weight": 14.02,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-44",
+            "name": "21.5寸Z2 开关板",
+            "w": 0.43,
+            "d": 0.5,
+            "h": 0.25,
+            "weight": 14.02,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-45",
+            "name": "23.8寸Z2 开关板",
+            "w": 0.43,
+            "d": 0.5,
+            "h": 0.25,
+            "weight": 14.02,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-46",
+            "name": "21.5寸Z2 开关板线",
+            "w": 0.43,
+            "d": 0.5,
+            "h": 0.25,
+            "weight": 14.02,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-47",
+            "name": "23.8寸Z2 开关板线",
+            "w": 0.43,
+            "d": 0.5,
+            "h": 0.25,
+            "weight": 14.02,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-48",
+            "name": "21.5寸Z2-支撑",
+            "w": 0.39,
+            "d": 0.58,
+            "h": 0.2,
+            "weight": 9.1,
+            "quantity": 4,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-49",
+            "name": "21.5寸Z2底座",
+            "w": 0.39,
+            "d": 0.6,
+            "h": 0.2,
+            "weight": 10.67,
+            "quantity": 5,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-50",
+            "name": "23.8 寸Z2-支撑",
+            "w": 0.39,
+            "d": 0.58,
+            "h": 0.2,
+            "weight": 9.1,
+            "quantity": 4,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-51",
+            "name": "23.8寸Z2底座",
+            "w": 0.39,
+            "d": 0.6,
+            "h": 0.2,
+            "weight": 10.67,
+            "quantity": 5,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-52",
+            "name": "底座 21.5寸K5-F",
+            "w": 0.5,
+            "d": 0.31,
+            "h": 0.23,
+            "weight": 16.27,
+            "quantity": 4,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-53",
+            "name": "支撑 21.5寸K5-F+底座垫片",
+            "w": 0.37,
+            "d": 0.42,
+            "h": 0.47,
+            "weight": 13.5,
+            "quantity": 5,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-54",
+            "name": "底座 23.8寸K5-F",
+            "w": 0.5,
+            "d": 0.31,
+            "h": 0.23,
+            "weight": 18.01,
+            "quantity": 14,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-55",
+            "name": "支撑 23.8寸K5-F+底座垫片",
+            "w": 0.37,
+            "d": 0.42,
+            "h": 0.47,
+            "weight": 13.5,
+            "quantity": 20,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-56",
+            "name": "散热器-21.5K5-F",
+            "w": 0.59,
+            "d": 0.26,
+            "h": 0.36,
+            "weight": 10.55,
+            "quantity": 3,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-57",
+            "name": "散热器-23.8K5-F",
+            "w": 0.59,
+            "d": 0.26,
+            "h": 0.36,
+            "weight": 11.42,
+            "quantity": 10,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-58",
+            "name": "散热器-21.5Z2",
+            "w": 0.59,
+            "d": 0.26,
+            "h": 0.36,
+            "weight": 11.05,
+            "quantity": 5,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-59",
+            "name": "散热器-23.6Z2",
+            "w": 0.59,
+            "d": 0.26,
+            "h": 0.36,
+            "weight": 8.04,
+            "quantity": 5,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-60",
+            "name": "供电线",
+            "w": 0.48,
+            "d": 0.48,
+            "h": 0.21,
+            "weight": 20.0,
+            "quantity": 2,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-61",
+            "name": "硬盘线",
+            "w": 0.48,
+            "d": 0.48,
+            "h": 0.21,
+            "weight": 20.0,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-62",
+            "name": "一体机主板（DJ-I7-7700HQ）+背板",
+            "w": 0.48,
+            "d": 0.48,
+            "h": 0.21,
+            "weight": 6.15,
+            "quantity": 10,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-63",
+            "name": "一体机主板（DJ-I7-6700HQ）+背板",
+            "w": 0.48,
+            "d": 0.48,
+            "h": 0.21,
+            "weight": 6.15,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-64",
+            "name": "一体机主板（JH-I5-12450H）+背板",
+            "w": 0.48,
+            "d": 0.48,
+            "h": 0.21,
+            "weight": 6.15,
+            "quantity": 5,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-65",
+            "name": "一体机主板（DJ-H110）+背板",
+            "w": 0.48,
+            "d": 0.48,
+            "h": 0.21,
+            "weight": 6.15,
+            "quantity": 15,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-66",
+            "name": "台式主板（DJ-H81）",
+            "w": 0.48,
+            "d": 0.48,
+            "h": 0.21,
+            "weight": 6.15,
+            "quantity": 10,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-67",
+            "name": "台式主板（DJ-H61）",
+            "w": 0.48,
+            "d": 0.48,
+            "h": 0.21,
+            "weight": 6.15,
+            "quantity": 10,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-68",
+            "name": "电源线（白色）",
+            "w": 0.36,
+            "d": 0.54,
+            "h": 0.32,
+            "weight": 23.44,
+            "quantity": 8,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-69",
+            "name": "电源线（黑色）",
+            "w": 0.36,
+            "d": 0.54,
+            "h": 0.32,
+            "weight": 22.33,
+            "quantity": 3,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-70",
+            "name": "电源（19V 5A）白色",
+            "w": 0.43,
+            "d": 0.41,
+            "h": 0.19,
+            "weight": 22.0,
+            "quantity": 30,
+            "requirement": "封柜门",
+            "allowDoorZone": true
+        },
+        {
+            "sku": "SKU-71",
+            "name": "31.5寸 显示器",
+            "w": 0.78,
+            "d": 0.115,
+            "h": 0.495,
+            "weight": 5.4,
+            "quantity": 550,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-72",
+            "name": "19寸 显示器 BG（DA)",
+            "w": 0.488,
+            "d": 0.08,
+            "h": 0.336,
+            "weight": 1.5,
+            "quantity": 69,
+            "requirement": "封柜门",
+            "allowDoorZone": true
+        },
+        {
+            "sku": "SKU-73",
+            "name": "23.8寸 显示器",
+            "w": 0.595,
+            "d": 0.38,
+            "h": 0.15,
+            "weight": 5.5,
+            "quantity": 94,
+            "requirement": "封柜门",
+            "allowDoorZone": true
+        },
+        {
+            "sku": "SKU-74",
+            "name": "19寸液晶玻璃",
+            "w": 0.49,
+            "d": 0.28,
+            "h": 0.35,
+            "weight": 11.81,
+            "quantity": 17,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-75",
+            "name": "21.5寸液晶玻璃",
+            "w": 0.56,
+            "d": 0.28,
+            "h": 0.36,
+            "weight": 15.0,
+            "quantity": 24,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-76",
+            "name": "23.8寸液晶玻璃",
+            "w": 0.6,
+            "d": 0.28,
+            "h": 0.385,
+            "weight": 20.7,
+            "quantity": 50,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-77",
+            "name": "27寸 显示器 显示器",
+            "w": 0.68,
+            "d": 0.122,
+            "h": 0.44,
+            "weight": 6.5,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-78",
+            "name": "纸箱",
+            "w": 0.6,
+            "d": 0.38,
+            "h": 0.02,
+            "weight": 0.3,
+            "quantity": 16,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-79",
+            "name": "内存：4G/D3",
+            "w": 0.48,
+            "d": 0.26,
+            "h": 0.34,
+            "weight": 4.0,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-80",
+            "name": "台式机内存：8G/D3",
+            "w": 0.48,
+            "d": 0.26,
+            "h": 0.34,
+            "weight": 4.0,
+            "quantity": 1,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-81",
+            "name": "512G 固态硬盘",
+            "w": 0.48,
+            "d": 0.26,
+            "h": 0.34,
+            "weight": 7.9,
+            "quantity": 1,
+            "requirement": ""
+        }
+    ]
+}

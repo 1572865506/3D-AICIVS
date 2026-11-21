@@ -2404,10 +2404,14 @@
 
       <!-- Header Action Buttons -->
       <div class="header-actions interactive">
-        <!-- Algorithm Model Generation Badge -->
-        <div class="model-gen-badge" id="hud-model-badge" title="当前算法引擎内核代数：Gen 5.2 (第一性原理5阶段分级通用内核)">
-          <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#6366f1;"></span>
-          <span>Gen 5.2</span>
+        <!-- Algorithm Model Generation Badge & Selector -->
+        <div class="model-gen-badge" id="hud-model-badge" title="切换求解算法内核版本（可在 3D 视图中直接对比效果）" style="gap:6px;">
+          <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#6366f1; flex-shrink:0;"></span>
+          <select id="hud-algo-select" style="background:transparent; border:none; color:inherit; font:inherit; font-weight:700; cursor:pointer; outline:none; padding-right:2px;">
+            <option value="unified" style="color:#0f172a;">Gen 5.2 · 生产版 (UnifiedSolver)</option>
+            <option value="proto_ems" style="color:#0f172a;">原型 · 双向EMS+混高块 (默认朝向)</option>
+            <option value="proto_ems_flex6" style="color:#0f172a;">原型 · 双向EMS+混高块 (6向放开)</option>
+          </select>
         </div>
 
         <!-- Clean Cache Quick Action Icon Button -->
@@ -2903,6 +2907,10 @@
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                   <span>新增 SKU</span>
                 </button>
+                <button class="tool-action-btn" onclick="openEditActiveManifestModal()" title="在表格中批量编辑当前货单全部 SKU">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  <span>编辑货单</span>
+                </button>
                 <button class="tool-action-btn" onclick="selectAllSKUs(true)">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                   <span>全选</span>
@@ -2978,11 +2986,11 @@
         <div class="section-card">
           <div class="section-label"><span>纸箱真实感与相机投影</span></div>
           <div class="param-row">
-            <div class="param-meta"><span>纸箱配色模式</span><span class="param-val" id="val-packagePalette">真实牛皮纸</span></div>
+            <div class="param-meta"><span>纸箱配色模式</span><span class="param-val" id="val-packagePalette">彩色识别</span></div>
           </div>
           <div class="chip-grid-2">
-            <button class="btn-chip active" id="btn-palette-kraft" onclick="setPackagePalette('kraft')">真实牛皮纸</button>
-            <button class="btn-chip" id="btn-palette-color" onclick="setPackagePalette('color')">彩色识别</button>
+            <button class="btn-chip" id="btn-palette-kraft" onclick="setPackagePalette('kraft')">真实牛皮纸</button>
+            <button class="btn-chip active" id="btn-palette-color" onclick="setPackagePalette('color')">彩色识别</button>
           </div>
           <div class="param-row" style="margin-top:10px;">
             <div class="param-meta"><span>相机投影</span><span class="param-val" id="val-cameraMode">正交工程</span></div>
@@ -3291,29 +3299,48 @@
 
   <!-- 5. EXCEL IMPORT PREVIEW MODAL -->
   <div class="modal-overlay" id="import-modal">
-    <div class="modal-card">
+    <div class="modal-card" style="max-width: 1020px; width: 94vw;">
       <div class="modal-header">
         <div class="modal-title">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.4"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          <span>产线清洗表格已精准识别</span>
+          <span>智能货单解析与体检确认</span>
         </div>
         <button class="close-btn" onclick="closeImportModal()">✕</button>
       </div>
 
-      <div class="modal-body">
-        <p style="color: var(--slate-600);">
-          系统已自动解析表头与摆放要求（含最里面/中间/封柜门分层），共识别出 <strong style="color:var(--primary);" id="modal-parsed-count">0</strong> 种货物 SKU：
-        </p>
+      <div class="modal-body" style="max-height: 74vh; overflow-y: auto;">
+        <div id="import-summary-bar" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; padding:10px 14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; margin-bottom:10px; font-size:12px;">
+          <div>
+            共识别 <strong style="color:var(--primary);" id="modal-parsed-count">0</strong> 种 SKU
+            <span id="import-summary-metrics" style="margin-left:8px; color:#334155;"></span>
+          </div>
+          <div id="import-status-badges" style="display:flex; gap:6px; align-items:center;"></div>
+        </div>
+
+        <div id="import-mapping-panel" style="display:none; padding:10px 12px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:11px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <strong style="color:#0f172a;">字段映射与单位微调（如系统识别有偏差，可直接改列重算）</strong>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <label style="color:#475569;">工作表:
+                <select id="import-sheet-select" onchange="reparseImportWithOverrides()" style="padding:2px 6px; border-radius:6px; border:1px solid #cbd5e1;"></select>
+              </label>
+            </div>
+          </div>
+          <div id="import-mapping-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap:6px;"></div>
+        </div>
+
+        <div id="import-folded-notes" style="display:none; padding:6px 10px; background:#fffbeb; border:1px solid #fde68a; border-radius:8px; margin-bottom:10px; font-size:11px; color:#92400e;"></div>
 
         <table class="preview-table">
           <thead>
             <tr>
-              <th>序号</th>
+              <th>#</th>
+              <th>状态</th>
               <th>产品名</th>
-              <th>规格 (长×宽×高 m)</th>
-              <th>单件毛重(kg)</th>
-              <th>数量(箱)</th>
-              <th>摆放要求</th>
+              <th>规格 长×宽×高 (m)</th>
+              <th>单箱重 (kg)</th>
+              <th>数量 (箱)</th>
+              <th>摆放要求 / 规则</th>
               <th>详细参数</th>
             </tr>
           </thead>
@@ -3322,9 +3349,13 @@
       </div>
 
       <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
-        <button class="btn-island-action" onclick="closeImportModal()">取消</button>
-        <div style="display:flex; gap:8px;">
-          <button class="btn-island-action primary" onclick="applyImportedManifest(false)" style="color:white; font-weight:700;">
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button class="btn-island-action" onclick="closeImportModal()">取消</button>
+          <button class="btn-island-action" onclick="addBlankImportRow()" style="color:#2563eb; border-color:#bfdbfe;">+ 新增一行 SKU</button>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <span id="import-block-hint" style="font-size:11px; color:#dc2626; display:none;">请先修正表格中标红的阻断行</span>
+          <button id="btn-apply-import-manifest" class="btn-island-action primary" onclick="applyImportedManifest(false)" style="color:white; font-weight:700;">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" style="margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             <span>保存为货单草稿（等待手动算柜）</span>
           </button>
@@ -5005,38 +5036,326 @@
       }
     }
 
-    function handleExcelFileUpload(file) {
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        parseExcelData(e.target.result);
-      };
-      reader.readAsBinaryString(file);
+    let _importParseSession = null;
+
+    function _getActiveContainerType() {
+      const sel = document.getElementById('container-type') || document.getElementById('container-select');
+      return (sel && sel.value) ? sel.value : '40HQ';
     }
 
-    function showImportPreviewModal(items) {
-      pendingImportManifest = items;
+    function _arrayBufferToBase64(buffer) {
+      let binary = '';
+      const bytes = new Uint8Array(buffer);
+      const chunk = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunk) {
+        binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+      }
+      return btoa(binary);
+    }
+
+    async function _requestBackendManifestParse(payload) {
+      const resp = await fetch('/api/v1/manifest/parse', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.message || ('HTTP ' + resp.status));
+      }
+      return resp.json();
+    }
+
+    async function handleExcelFileUpload(file) {
+      if (!file) return;
+      try {
+        const buf = await file.arrayBuffer();
+        const b64 = _arrayBufferToBase64(buf);
+        _importParseSession = {
+          filename: file.name,
+          content_base64: b64,
+          container_type: _getActiveContainerType(),
+          sheet_name: null,
+          override_mapping: {},
+          override_units: {},
+        };
+        const result = await _requestBackendManifestParse(_importParseSession);
+        showSmartImportModal(result);
+      } catch (err) {
+        console.warn('[SmartImport] 后端解析不可用，降级本地解析:', err);
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          parseExcelData(e.target.result);
+        };
+        reader.readAsBinaryString(file);
+      }
+    }
+
+    async function reparseImportWithOverrides() {
+      if (!_importParseSession) return;
+      const sheetSel = document.getElementById('import-sheet-select');
+      if (sheetSel && sheetSel.value) _importParseSession.sheet_name = sheetSel.value;
+      const overrides = {};
+      const units = {};
+      document.querySelectorAll('[data-map-field]').forEach(el => {
+        const f = el.getAttribute('data-map-field');
+        overrides[f] = el.value || null;
+      });
+      document.querySelectorAll('[data-unit-field]').forEach(el => {
+        const f = el.getAttribute('data-unit-field');
+        if (el.value) units[f] = el.value;
+      });
+      _importParseSession.override_mapping = overrides;
+      _importParseSession.override_units = units;
+      try {
+        const result = await _requestBackendManifestParse(_importParseSession);
+        showSmartImportModal(result);
+      } catch (err) {
+        showToast('重算映射失败: ' + err.message, 'error');
+      }
+    }
+
+    function _syncImportSummaryFromItems(items) {
+      const okCnt = items.filter(x => x.status === 'OK').length;
+      const warnCnt = items.filter(x => x.status === 'AUTO_FIXED' || x.status === 'NEED_CONFIRM').length;
+      const blkCnt = items.filter(x => x.status === 'BLOCKED').length;
+      const totalCartons = items.reduce((s, x) => s + (parseInt(x.quantity, 10) || 0), 0);
+      const totalCbm = items.reduce((s, x) => s + ((x.d || x.l || 0) * (x.w || 0) * (x.h || 0) * (x.quantity || 0)), 0);
+      const totalWt = items.reduce((s, x) => s + ((x.weight || 0) * (x.quantity || 0)), 0);
+
       document.getElementById('modal-parsed-count').textContent = items.length;
+      const mEl = document.getElementById('import-summary-metrics');
+      if (mEl) {
+        mEl.innerHTML = `| 总箱数 <strong>${totalCartons}</strong> | 总体积 <strong>${totalCbm.toFixed(2)} m³</strong> | 总毛重 <strong>${totalWt.toFixed(1)} kg</strong>`;
+      }
+      const bEl = document.getElementById('import-status-badges');
+      if (bEl) {
+        bEl.innerHTML = `
+          <span style="padding:2px 8px;border-radius:99px;background:#dcfce7;color:#166534;font-weight:600;">🟢 正常 ${okCnt}</span>
+          ${warnCnt ? `<span style="padding:2px 8px;border-radius:99px;background:#fef3c7;color:#92400e;font-weight:600;">🟡 自愈/估算 ${warnCnt}</span>` : ''}
+          ${blkCnt ? `<span style="padding:2px 8px;border-radius:99px;background:#fee2e2;color:#991b1b;font-weight:600;">🔴 阻断 ${blkCnt}</span>` : ''}
+        `;
+      }
+      const btn = document.getElementById('btn-apply-import-manifest');
+      const hint = document.getElementById('import-block-hint');
+      if (btn) btn.disabled = (blkCnt > 0 || items.length === 0);
+      if (hint) hint.style.display = blkCnt > 0 ? 'inline' : 'none';
+    }
+
+    function updateImportRowField(idx, field, val) {
+      if (!pendingImportManifest || !pendingImportManifest[idx]) return;
+      const item = pendingImportManifest[idx];
+      if (field === 'name') {
+        const cleanName = String(val || '').trim();
+        if (cleanName) item.name = cleanName;
+      } else if (field === 'quantity') {
+        item.quantity = Math.max(1, parseInt(val, 10) || 0);
+      } else {
+        const num = parseFloat(val);
+        if (!isNaN(num) && num > 0) {
+          item[field] = num;
+          if (field === 'd') item.l = num;
+        }
+      }
+      const validDims = item.d > 0 && item.w > 0 && item.h > 0 && Math.max(item.d, item.w, item.h) <= 13.6 && Math.min(item.d, item.w, item.h) <= 2.7;
+      if (validDims && item.quantity > 0 && item.weight > 0) {
+        item.status = 'OK';
+        item.issues = [{ code: 'MANUAL_EDITED', level: 'OK', message: '已手工确认/修正' }];
+      }
+      _syncImportSummaryFromItems(pendingImportManifest);
+      renderImportTableRows(pendingImportManifest);
+    }
+
+    function deleteImportRow(idx) {
+      if (!pendingImportManifest || idx < 0 || idx >= pendingImportManifest.length) return;
+      pendingImportManifest.splice(idx, 1);
+      _syncImportSummaryFromItems(pendingImportManifest);
+      renderImportTableRows(pendingImportManifest);
+    }
+
+    function addBlankImportRow() {
+      if (!pendingImportManifest) pendingImportManifest = [];
+      const nextNum = pendingImportManifest.length + 1;
+      const used = new Set(pendingImportManifest.map(x => x.sku));
+      let sku = `SKU-${String(nextNum).padStart(2, '0')}`;
+      let k = nextNum;
+      while (used.has(sku)) {
+        k += 1;
+        sku = `SKU-${String(k).padStart(2, '0')}`;
+      }
+      pendingImportManifest.push({
+        sku,
+        name: `新增货物-${k}`,
+        w: 0.4,
+        d: 0.5,
+        l: 0.5,
+        h: 0.3,
+        weight: 10,
+        quantity: 10,
+        requirement: '放中间',
+        color: PALETTE[(nextNum - 1) % PALETTE.length],
+        status: 'OK',
+        issues: [{ code: 'MANUAL_ADDED', level: 'OK', message: '手工新增行' }],
+      });
+      _syncImportSummaryFromItems(pendingImportManifest);
+      renderImportTableRows(pendingImportManifest);
+    }
+
+    function openEditActiveManifestModal() {
+      if (!Array.isArray(activeManifest) || activeManifest.length === 0) {
+        showToast('当前货单为空，请先导入或新增 SKU', 'info');
+        return;
+      }
+      const cloned = activeManifest.map((it, idx) => ({
+        ...JSON.parse(JSON.stringify(it)),
+        l: it.l || it.d,
+        color: it.color || PALETTE[idx % PALETTE.length],
+        status: 'OK',
+        issues: [],
+      }));
+      showImportPreviewModal(cloned);
+    }
+
+    function renderImportTableRows(items) {
       const tbody = document.getElementById('modal-preview-tbody');
       tbody.innerHTML = '';
-
       items.forEach((item, idx) => {
+        const st = item.status || 'OK';
+        const stBadge = st === 'BLOCKED'
+          ? '<span style="color:#dc2626;font-weight:700;">🔴 阻断</span>'
+          : (st === 'NEED_CONFIRM' || st === 'AUTO_FIXED'
+            ? '<span style="color:#d97706;font-weight:700;">🟡 自愈</span>'
+            : '<span style="color:#16a34a;font-weight:700;">🟢 正常</span>');
+        const issueTip = (item.issues || []).map(x => x.message).join('；');
+        const tagsHtml = (item.rule_tags && item.rule_tags.length)
+          ? item.rule_tags.map(t => `<span class="req-tag req-door" style="margin-right:3px;">${t}</span>`).join('')
+          : `<span class="req-tag ${getReqClass(item.requirement || '')}">${item.requirement || '放中间'}</span>`;
+        const dotColor = item.color || PALETTE[idx % PALETTE.length];
+
         const tr = document.createElement('tr');
+        if (st === 'BLOCKED') tr.style.background = '#fef2f2';
+        else if (st !== 'OK') tr.style.background = '#fffbeb';
+
         tr.innerHTML = `
           <td><strong>${idx + 1}</strong></td>
-          <td><strong>${item.name}</strong></td>
-          <td>${item.w} × ${item.d} × ${item.h} m</td>
-          <td>${item.weight} kg</td>
-          <td><span style="color:var(--primary); font-weight:700;">${item.quantity} 箱</span></td>
-          <td><span class="req-tag ${getReqClass(item.requirement)}">${item.requirement}</span></td>
+          <td title="${issueTip}">${stBadge}${issueTip ? `<div style="font-size:10px;color:#64748b;max-width:150px;white-space:normal;">${issueTip}</div>` : ''}</td>
           <td>
-            <button class="tool-action-btn" onclick="openPendingImportSKUSettings(${idx})" style="color:#2563eb;">设置规则</button>
-            <span style="display:block;font-size:9px;margin-top:3px;color:${item.cargoProfile ? '#2563eb' : '#64748b'};">${item.cargoProfile ? 'USER_DEFINED' : 'DEFAULT'}</span>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="width:10px;height:10px;border-radius:3px;background:${dotColor};flex-shrink:0;"></span>
+              <input type="text" value="${String(item.name || '').replace(/"/g, '&quot;')}" onchange="updateImportRowField(${idx},'name',this.value)" style="width:140px;padding:2px 5px;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-weight:600;">
+            </div>
+          </td>
+          <td>
+            <div style="display:flex;gap:3px;align-items:center;">
+              <input type="number" step="0.01" value="${item.d || item.l || 0}" onchange="updateImportRowField(${idx},'d',this.value)" style="width:52px;padding:2px 4px;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;">×
+              <input type="number" step="0.01" value="${item.w || 0}" onchange="updateImportRowField(${idx},'w',this.value)" style="width:52px;padding:2px 4px;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;">×
+              <input type="number" step="0.01" value="${item.h || 0}" onchange="updateImportRowField(${idx},'h',this.value)" style="width:52px;padding:2px 4px;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;">
+            </div>
+          </td>
+          <td><input type="number" step="0.1" value="${item.weight || 0}" onchange="updateImportRowField(${idx},'weight',this.value)" style="width:60px;padding:2px 4px;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;"></td>
+          <td><input type="number" step="1" value="${item.quantity || 0}" onchange="updateImportRowField(${idx},'quantity',this.value)" style="width:56px;padding:2px 4px;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-weight:700;color:var(--primary);"></td>
+          <td>${tagsHtml}</td>
+          <td>
+            <div style="display:flex;gap:4px;align-items:center;">
+              <button class="tool-action-btn" onclick="openPendingImportSKUSettings(${idx})" style="color:#2563eb;">设置规则</button>
+              <button class="tool-action-btn" onclick="deleteImportRow(${idx})" style="color:#dc2626;" title="删除此行">✕</button>
+            </div>
+            <span style="display:block;font-size:9px;margin-top:2px;color:${item.cargoProfile ? '#2563eb' : '#64748b'};">${item.cargoProfile ? 'USER_DEFINED' : 'DEFAULT'}</span>
           </td>
         `;
         tbody.appendChild(tr);
       });
+    }
 
+    function showSmartImportModal(res) {
+      const items = (res.items || []).map((it, idx) => {
+        it.color = it.color || PALETTE[idx % PALETTE.length];
+        const pr = it.placement_rules || {};
+        const hasRules = pr.is_door_stopper || pr.zone_preference === 'DOOR' || pr.zone_preference === 'REAR'
+          || pr.allow_stacking_on_top === false || pr.upright_only || pr.must_be_on_floor || pr.max_stack_layers;
+        if (hasRules && !it.cargoProfile && window.ManifestWorkflow && typeof window.ManifestWorkflow.buildCargoProfile === 'function') {
+          const isDoor = !!(pr.is_door_stopper || pr.zone_preference === 'DOOR');
+          const isRear = pr.zone_preference === 'REAR';
+          it.cargoProfile = window.ManifestWorkflow.buildCargoProfile(it, {
+            packingRoles: isDoor ? ['DOOR_SEAL', 'MAIN_WALL'] : ['MAIN_WALL'],
+            preferredZones: isDoor ? ['DOOR'] : (isRear ? ['REAR'] : []),
+            allowStackingOnTop: pr.allow_stacking_on_top !== false,
+            fragile: pr.allow_stacking_on_top === false,
+            mustBeOnFloor: !!pr.must_be_on_floor,
+            maxStackLayers: pr.max_stack_layers || null,
+            allowedOrientation: pr.upright_only ? 'upright' : 'allow_flat',
+            keepUpright: !!pr.upright_only,
+          });
+        }
+        return it;
+      });
+      pendingImportManifest = items;
+
+      const panel = document.getElementById('import-mapping-panel');
+      const sheetSel = document.getElementById('import-sheet-select');
+      const grid = document.getElementById('import-mapping-grid');
+      if (panel && sheetSel && grid) {
+        panel.style.display = 'block';
+        sheetSel.innerHTML = (res.sheets || []).map(s => `<option value="${s}" ${s === res.selected_sheet ? 'selected' : ''}>${s}</option>`).join('');
+        const mapFields = [
+          ['name', '品名', false],
+          ['length', '长', 'length'],
+          ['width', '宽', 'length'],
+          ['height', '高', 'length'],
+          ['cartons', '箱数', false],
+          ['unit_weight', '单箱重', 'weight'],
+          ['requirement', '摆放要求', false],
+        ];
+        const cols = res.columns || [];
+        const mapping = res.mapping || {};
+        grid.innerHTML = mapFields.map(([f, label, unitKind]) => {
+          const cur = mapping[f] || {};
+          const colOpts = ['<option value="">(未映射)</option>'].concat(
+            cols.map(c => `<option value="${c}" ${c === cur.source_col ? 'selected' : ''}>${c}</option>`)
+          ).join('');
+          let unitHtml = '';
+          if (unitKind === 'length') {
+            unitHtml = `<select data-unit-field="${f}" onchange="reparseImportWithOverrides()" style="padding:1px 3px;border-radius:4px;border:1px solid #cbd5e1;">
+              ${['m','cm','mm'].map(u => `<option value="${u}" ${(cur.unit||'m')===u?'selected':''}>${u}</option>`).join('')}
+            </select>`;
+          } else if (unitKind === 'weight') {
+            unitHtml = `<select data-unit-field="${f}" onchange="reparseImportWithOverrides()" style="padding:1px 3px;border-radius:4px;border:1px solid #cbd5e1;">
+              ${['kg','g','lbs'].map(u => `<option value="${u}" ${(cur.unit||'kg')===u?'selected':''}>${u}</option>`).join('')}
+            </select>`;
+          }
+          return `<div style="display:flex;align-items:center;gap:4px;background:#fff;padding:4px 6px;border-radius:6px;border:1px solid #e2e8f0;">
+            <span style="min-width:48px;font-weight:600;color:#334155;">${label}:</span>
+            <select data-map-field="${f}" onchange="reparseImportWithOverrides()" style="flex:1;min-width:0;padding:1px 4px;border-radius:4px;border:1px solid #cbd5e1;">${colOpts}</select>
+            ${unitHtml}
+          </div>`;
+        }).join('');
+      }
+
+      const foldedEl = document.getElementById('import-folded-notes');
+      if (foldedEl) {
+        const ign = res.ignored_summary_rows || [];
+        const acc = res.accessory_rows || [];
+        if (ign.length || acc.length) {
+          foldedEl.style.display = 'block';
+          foldedEl.textContent = `已自动过滤 ${ign.length} 行合计/汇总行，折叠 ${acc.length} 行 0箱/随主箱配件行。`;
+        } else {
+          foldedEl.style.display = 'none';
+        }
+      }
+
+      _syncImportSummaryFromItems(items);
+      renderImportTableRows(items);
+      document.getElementById('import-modal').style.display = 'flex';
+    }
+
+    function showImportPreviewModal(items) {
+      pendingImportManifest = (items || []).map(it => ({ ...it, status: it.status || 'OK', l: it.l || it.d }));
+      const panel = document.getElementById('import-mapping-panel');
+      if (panel) panel.style.display = 'none';
+      const foldedEl = document.getElementById('import-folded-notes');
+      if (foldedEl) foldedEl.style.display = 'none';
+      _syncImportSummaryFromItems(pendingImportManifest);
+      renderImportTableRows(pendingImportManifest);
       document.getElementById('import-modal').style.display = 'flex';
     }
 
@@ -5153,7 +5472,7 @@
     let shadowInvalidations = 0;
 
     // 纸箱配色：kraft = 真实牛皮纸 + SKU 强调色；color = 整箱 SKU 色（识别模式）
-    let packagePaletteMode = 'kraft';
+    let packagePaletteMode = 'color';
 
     // Performance state flags (dirty checking to eliminate per-frame overhead)
     let isCameraDirty = true;
@@ -5217,7 +5536,7 @@
 
     const renderConfig = {
       // kraft: 中性瓦楞纸 + SKU 色标；color: 整箱 SKU 色识别模式
-      packagePalette: 'kraft',
+      packagePalette: 'color',
       cameraMode: 'ortho',
       foregroundOpacity: 0.06,
       glassColor: '#cfe3f7',
@@ -5688,7 +6007,7 @@
     const textureCanvasCache = new window.BLK007F78.PackageTextureRegistry();
 
     function getOrCreateFaceTextures(baseColorHex, labelText, skuCode, paletteMode) {
-      const mode = paletteMode || packagePaletteMode || 'kraft';
+      const mode = paletteMode || packagePaletteMode || 'color';
       const cacheId = `${mode}_${baseColorHex}_${skuCode}`;
       if (textureCanvasCache.has(cacheId)) {
         return textureCanvasCache.get(cacheId);
@@ -7733,6 +8052,7 @@
         }
         loadingResult = await window.BLK007D.calculate({
           solverVersion: 'v2',
+          algorithmMode: (document.getElementById('hud-algo-select') && document.getElementById('hud-algo-select').value) || 'unified',
           mode: currentStrategy === 'mec' ? 'MAX_COMPACT' : 'BALANCED',
           timeBudgetSec: 30,
           randomSeed: 42,

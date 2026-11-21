@@ -82,7 +82,7 @@ class InputNormalizer:
             zone = ZoneType.REAR
 
         # 2. Door seal detection
-        elif re.search(r'封柜门|封门|门端|门区|door|front', req, re.IGNORECASE):
+        elif re.search(r'封柜门|封门|门端|门区|最后放|最后装|door|front', req, re.IGNORECASE):
             roles.append(PackingRole.DOOR_SEAL)
             zone = ZoneType.DOOR
 
@@ -112,11 +112,52 @@ class InputNormalizer:
         Constructs canonical OrientationPolicy with semantic interlock & mutual exclusion:
         - keep_upright=True strictly forbids allow_flat and allow_side.
         - allowedOrientation='flat_only' or allowUpright=False explicitly disables allow_upright.
+        - When orientation is unspecified (missing/empty/placeholder) and cargo is neither fragile,
+          floor-only, nor tall-slender upright equipment, default to allowing flat orientation
+          to prevent unnecessary 0.2m+ top headroom dead-space.
         """
+        _placeholders = {"", "—", "-", "--", "none", "null", "n/a", "na", "无"}
+        raw_allowed = raw_item.get('allowedOrientation')
+        allowed_clean = str(raw_allowed).strip().lower() if raw_allowed is not None else ""
+        has_explicit_allowed = allowed_clean not in _placeholders
+
+        has_explicit_flags = (
+            any(raw_item.get(k) is not None for k in ('allowFlat', 'allowSide', 'allowUpright', 'keepUpright'))
+            or bool(raw_item.get('orientationRules'))
+        )
+        req_str = str(raw_item.get('requirement', '') or '')
+        name_str = str(raw_item.get('name', '') or '')
+        has_upright_text = bool(re.search(
+            r'仅竖放|不可倒置|正立|竖放|向上|箭头朝上|不可侧放|不可躺|upright|this\s*side\s*up',
+            req_str, re.IGNORECASE
+        ))
+        has_flat_text = bool(re.search(r'必须平放|允许旋转', req_str, re.IGNORECASE))
+        has_explicit_ori = has_explicit_allowed or has_explicit_flags or has_upright_text or has_flat_text
+
         allow_flat = bool(raw_item.get('allowFlat', False))
         allow_side = bool(raw_item.get('allowSide', False))
-        allowed_ori = str(raw_item.get('allowedOrientation', 'upright')).lower()
+        allowed_ori = allowed_clean if has_explicit_allowed else 'upright'
         keep_upright = bool(raw_item.get('keepUpright', False)) or (allowed_ori == 'upright' and not allow_flat and not allow_side)
+
+        if not has_explicit_ori:
+            is_fragile_name = bool(re.search(r'(易碎|fragile|玻璃)', name_str, re.IGNORECASE))
+            must_floor = bool(raw_item.get('mustBeOnFloor', False))
+            is_tall_slender = False
+            is_already_flat = False
+            if any(k in raw_item for k in ('dimensions', 'w', 'x', 'h', 'z')):
+                try:
+                    b = InputNormalizer.normalize_box_dim(raw_item)
+                    if b.z > max(b.x, b.y) * 1.15 and b.z >= 0.75:
+                        is_tall_slender = True
+                    # 平放（FLAT）在几何上以 b.y = min(w, d) 作为高度；
+                    # 若 b.z <= b.y，箱体已处于最矮平放态，开启 allow_flat 反而等同侧立增高。
+                    if b.z <= b.y + 1e-4:
+                        is_already_flat = True
+                except (KeyError, TypeError, ValueError):
+                    pass
+            if not (is_fragile_name or must_floor or is_tall_slender or is_already_flat):
+                allow_flat = True
+                keep_upright = False
 
         # Explicit single-mode flags
         if allowed_ori == 'allow_flat':
@@ -161,9 +202,9 @@ class InputNormalizer:
 
         contexts_flat = [PlacementContext.TOP_FILL, PlacementContext.GAP_FILL, PlacementContext.DOOR_SEAL]
         contexts_side = [PlacementContext.GAP_FILL, PlacementContext.DOOR_SEAL]
-        if allow_flat or allowed_ori in ('any', 'allow_flat', 'flat_only') or '允许旋转' in raw_item.get('requirement', ''):
+        if allow_flat or allowed_ori in ('any', 'allow_flat', 'flat_only') or '允许旋转' in req_str:
             contexts_flat.extend([PlacementContext.MAIN_WALL, PlacementContext.GENERAL, PlacementContext.FOUNDATION])
-        if allow_side or allowed_ori in ('any', 'allow_side') or '允许旋转' in raw_item.get('requirement', ''):
+        if allow_side or allowed_ori in ('any', 'allow_side') or '允许旋转' in req_str:
             contexts_side.extend([PlacementContext.MAIN_WALL, PlacementContext.GENERAL, PlacementContext.FOUNDATION])
 
         return OrientationPolicy(
@@ -230,7 +271,12 @@ class InputNormalizer:
             else:
                 stack_on_self = True if (max_layers is None or max_layers > 1) else False
         else:
-            allow_stacking_on_top = bool(raw_allow_top) if raw_allow_top is not None else True
+            if raw_allow_top is not None:
+                allow_stacking_on_top = bool(raw_allow_top)
+            else:
+                name_str = str(raw_item.get('name', '') or '')
+                is_fragile_name = bool(re.search(r'(易碎|fragile|玻璃)', name_str, re.IGNORECASE))
+                allow_stacking_on_top = not is_fragile_name
             stack_on_self = bool(raw_stack_self) if raw_stack_self is not None else True
 
         return StackingPolicy(
@@ -485,22 +531,28 @@ class InputAdapter:
             req_text = str(src.get('requirement', ''))
 
             # Weight (in kg) with smart normalization:
-            # Detect whether the input weight is total batch weight mistakenly entered as per-box weight
-            raw_weight = float(src.get('weight', src.get('weightKg', 1.0)))
+            # 1) Missing/non-positive weight falls back to density estimation (180 kg/m³, min 0.2 kg)
+            #    instead of a flat 1.0 kg that distorts bearing/CoG checks on large boxes.
+            # 2) Detect whether the input weight is total batch weight mistakenly entered as per-box weight.
             vol_m3 = max(1e-5, box.x * box.y * box.z)
-            if req_qty > 1 and raw_weight > 0:
-                raw_density = raw_weight / vol_m3
-                per_box_weight = raw_weight / req_qty
-                per_box_density = per_box_weight / vol_m3
-                # Normal packaged freight density is usually 30 ~ 800 kg/m3. Solid steel is ~7850 kg/m3.
-                # Only if raw density > 8000 kg/m3 (impossible even for pure solid steel) while
-                # per_box_density is within normal freight range (20 ~ 1200 kg/m3), normalize to per_box_weight.
-                if raw_density > 8000.0 and 20.0 <= per_box_density <= 1200.0:
-                    weight_kg = round(per_box_weight, 3)
+            raw_weight_val = src.get('weight', src.get('weightKg', item.get('weight', item.get('weightKg'))))
+            if raw_weight_val is None or float(raw_weight_val) <= 0:
+                weight_kg = round(max(0.2, vol_m3 * 180.0), 3)
+            else:
+                raw_weight = float(raw_weight_val)
+                if req_qty > 1 and raw_weight > 0:
+                    raw_density = raw_weight / vol_m3
+                    per_box_weight = raw_weight / req_qty
+                    per_box_density = per_box_weight / vol_m3
+                    # Normal packaged freight density is usually 30 ~ 800 kg/m3. Solid steel is ~7850 kg/m3.
+                    # Only if raw density > 8000 kg/m3 (impossible even for pure solid steel) while
+                    # per_box_density is within normal freight range (20 ~ 1200 kg/m3), normalize to per_box_weight.
+                    if raw_density > 8000.0 and 20.0 <= per_box_density <= 1200.0:
+                        weight_kg = round(per_box_weight, 3)
+                    else:
+                        weight_kg = raw_weight
                 else:
                     weight_kg = raw_weight
-            else:
-                weight_kg = raw_weight
 
             profile_ref = item.get('cargoProfileRef', src.get('cargoProfileRef'))
             if profile_ref is not None:
@@ -529,6 +581,8 @@ class InputAdapter:
                 is_elastic=is_elastic
             )
 
+            placement_rules = item.get('placement_rules') or src.get('placement_rules')
+
             # Parse Requirement Text (Adapter-only!)
             if profile is not None:
                 zones = profile.zone_policy.required or profile.zone_policy.preferred
@@ -536,6 +590,18 @@ class InputAdapter:
                 roles = profile.placement_policy.packing_roles
             else:
                 zone, roles = InputNormalizer.parse_zone_and_roles(req_text)
+                if isinstance(placement_rules, dict):
+                    zp = str(placement_rules.get('zone_preference', '')).upper()
+                    if zp == 'DOOR' or placement_rules.get('is_door_stopper'):
+                        if zone is None or zone == ZoneType.ANY:
+                            zone = ZoneType.DOOR
+                        if PackingRole.DOOR_SEAL not in roles:
+                            roles = roles + (PackingRole.DOOR_SEAL,)
+                    elif zp == 'REAR':
+                        if zone is None or zone == ZoneType.ANY:
+                            zone = ZoneType.REAR
+                        if PackingRole.FOUNDATION not in roles:
+                            roles = roles + (PackingRole.FOUNDATION,)
             
             # If explicit door zone allowance was given in legacy flag
             if item.get('allowDoorZone') or src.get('allowDoorZone'):
@@ -544,6 +610,8 @@ class InputAdapter:
 
             # Policies: merge item and src so top-level properties like allowedOrientation and maxStackLayers are preserved
             policy_src = dict(src)
+            policy_src.setdefault('name', name)
+            policy_src.setdefault('requirement', req_text)
             for k in (
                 'allowedOrientation', 'allowFlat', 'allowSide', 'allowUpright', 'keepUpright',
                 'orientationRules', 'maxFlatLayers', 'maxStackLayers', 'max_stack_layers', 'max_stack',
@@ -554,6 +622,16 @@ class InputAdapter:
                     policy_src[k] = item[k]
                 elif k in item and policy_src.get(k) is None:
                     policy_src[k] = item[k]
+
+            if profile is None and isinstance(placement_rules, dict):
+                if placement_rules.get('upright_only') is True:
+                    policy_src.setdefault('keepUpright', True)
+                if placement_rules.get('allow_stacking_on_top') is False:
+                    policy_src.setdefault('allowStackingOnTop', False)
+                if placement_rules.get('must_be_on_floor') is True:
+                    policy_src.setdefault('mustBeOnFloor', True)
+                if placement_rules.get('max_stack_layers') is not None:
+                    policy_src.setdefault('maxStackLayers', placement_rules['max_stack_layers'])
 
             ori_policy = profile.orientation_policy if profile is not None else InputNormalizer.parse_orientation_policy(policy_src)
             stack_policy = profile.stack_policy if profile is not None else InputNormalizer.parse_stacking_policy(policy_src)

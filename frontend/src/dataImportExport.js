@@ -37,7 +37,30 @@ function parseExcelData(data) {
   return items;
 }
 
-function handleExcelFileUpload(file) {
+async function handleExcelFileUpload(file) {
+  if (!file) return;
+  if (typeof window.showSmartImportModal === 'function') {
+    try {
+      const buf = await file.arrayBuffer();
+      let binary = '';
+      const bytes = new Uint8Array(buf);
+      for (let i = 0; i < bytes.length; i += 0x8000) {
+        binary += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+      }
+      const resp = await fetch('/api/v1/manifest/parse', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: file.name, content_base64: btoa(binary), container_type: '40HQ' }),
+      });
+      if (resp.ok) {
+        const res = await resp.json();
+        window.showSmartImportModal(res);
+        return;
+      }
+    } catch (e) {
+      console.warn('[dataImportExport] 后端智能解析不可用，降级本地:', e);
+    }
+  }
   const reader = new FileReader();
   reader.onload = function(e) {
     try {

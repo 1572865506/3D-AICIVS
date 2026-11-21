@@ -1,0 +1,158 @@
+{
+    "case_id": "REAL-SINGPC-20GP",
+    "case_name": "真实SINGPC 13-SKU混装20GP (无尺寸体积反推基线)",
+    "description": "Real unprocessed factory manifest (Vietnam SINGPC 11.26, 13 valid SKUs, 266 cartons, 29.355m3, 4001.55kg) on 20GP (5.898x2.352x2.393m, 33.20m3). Parsed from raw dirty CSV with multi-table footer truncation, merged continuation row inheritance, sample row skipping, and category-aware volume-to-dimension inference (inferred_dimensions=true).",
+    "container": {
+        "usable": {
+            "L": 5.898,
+            "W": 2.352,
+            "H": 2.393
+        },
+        "maxPayloadTons": 21.8
+    },
+    "cargo": [
+        {
+            "sku": "SKU-01",
+            "name": "SINGPC,23.8寸, K4款白色, 屏+壳套件",
+            "w": 0.499,
+            "d": 0.71,
+            "h": 0.4403,
+            "weight": 17.9,
+            "quantity": 17,
+            "inferred_dimensions": true,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-02",
+            "name": "SINGPC, 21.5寸,K6-V款白色套件 (JW-H610/D4)",
+            "w": 0.484,
+            "d": 0.688,
+            "h": 0.4264,
+            "weight": 15.65,
+            "quantity": 17,
+            "inferred_dimensions": true,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-03",
+            "name": "SINGPC, 21.5寸,K6-V款白色 , 屏+壳套件",
+            "w": 0.484,
+            "d": 0.688,
+            "h": 0.4264,
+            "weight": 14.5,
+            "quantity": 34,
+            "inferred_dimensions": true,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-04",
+            "name": "SINGPC, 23.8寸,F6款银灰色套件(配私模底座)",
+            "w": 0.444,
+            "d": 0.632,
+            "h": 0.392,
+            "weight": 17.9,
+            "quantity": 85,
+            "inferred_dimensions": true,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-05",
+            "name": "SINGPC, 21.5寸,K6-V款白色套件 (DJ-B250/D4)",
+            "w": 0.503,
+            "d": 0.716,
+            "h": 0.4443,
+            "weight": 15.65,
+            "quantity": 34,
+            "inferred_dimensions": true,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-06",
+            "name": "SINGPC, 23.8寸,F1款白色套件(圆底座)",
+            "w": 0.378,
+            "d": 0.571,
+            "h": 0.278,
+            "weight": 23.0,
+            "quantity": 7,
+            "inferred_dimensions": true,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-07",
+            "name": "SINGPC, 14寸/YZ-140AC-R枪灰色笔记本套件(不带内存硬盘)",
+            "w": 0.383,
+            "d": 0.537,
+            "h": 0.2917,
+            "weight": 10.0,
+            "quantity": 66,
+            "inferred_dimensions": true,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-08",
+            "name": "SINGPC, 15.6寸/AEB156笔记本/银色套件",
+            "w": 0.383,
+            "d": 0.537,
+            "h": 0.2917,
+            "weight": 12.45,
+            "quantity": 1,
+            "inferred_dimensions": true,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-09",
+            "name": "WIFI 6 蓝牙5.2( M.2/NFA852)配双天线",
+            "w": 0.315,
+            "d": 0.425,
+            "h": 0.251,
+            "weight": 7.3,
+            "quantity": 1,
+            "inferred_dimensions": true,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-10",
+            "name": "WIFI 6 蓝牙5.2( M.2/NFA852)配双天线 (续)",
+            "w": 0.253,
+            "d": 0.341,
+            "h": 0.2016,
+            "weight": 2.25,
+            "quantity": 1,
+            "inferred_dimensions": true,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-11",
+            "name": "台式机WIFI转接卡",
+            "w": 0.369,
+            "d": 0.498,
+            "h": 0.2942,
+            "weight": 19.96,
+            "quantity": 1,
+            "inferred_dimensions": true,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-12",
+            "name": "台式机WIFI转接卡+1000天线",
+            "w": 0.379,
+            "d": 0.511,
+            "h": 0.3026,
+            "weight": 17.7,
+            "quantity": 1,
+            "inferred_dimensions": true,
+            "requirement": ""
+        },
+        {
+            "sku": "SKU-13",
+            "name": "售后 - 19寸K2款液晶屏 (明天补开单)",
+            "w": 0.393,
+            "d": 0.594,
+            "h": 0.2896,
+            "weight": 3.94,
+            "quantity": 1,
+            "inferred_dimensions": true,
+            "requirement": ""
+        }
+    ]
+}

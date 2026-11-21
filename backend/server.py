@@ -361,6 +361,42 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({'stopped': res}, ensure_ascii=False).encode('utf-8'))
                 return
 
+        if self.path == '/api/v1/manifest/parse':
+            import base64
+            try:
+                content_length = int(self.headers.get('Content-Length', 0) or 0)
+                if content_length <= 0 or content_length > 20 * 1024 * 1024:
+                    self.send_response(400)
+                    self.send_header('Content-Type', 'application/json; charset=utf-8')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'status': 'error', 'message': '无效的请求体大小'}, ensure_ascii=False).encode('utf-8'))
+                    return
+                body = self.rfile.read(content_length)
+                data = json.loads(body.decode('utf-8')) if body else {}
+                b64 = data.get('content_base64', '')
+                if ',' in b64 and b64.startswith('data:'):
+                    b64 = b64.split(',', 1)[1]
+                raw_bytes = base64.b64decode(b64)
+                from backend.importer import parse_manifest_bytes
+                res = parse_manifest_bytes(
+                    raw_bytes=raw_bytes,
+                    filename=data.get('filename', 'manifest.xlsx'),
+                    container_type=data.get('container_type', '40HQ'),
+                    sheet_name=data.get('sheet_name'),
+                    override_mapping=data.get('override_mapping'),
+                    override_units=data.get('override_units'),
+                )
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                self.wfile.write(json.dumps(res, ensure_ascii=False).encode('utf-8'))
+            except Exception as e:
+                self.send_response(400)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                self.wfile.write(json.dumps({'status': 'error', 'message': f'货单解析失败: {e}'}, ensure_ascii=False).encode('utf-8'))
+            return
+
         if self.path in ('/api/v1/pack', '/api/v2/pack', '/api/v1/loading/jobs'):
             try:
                 content_length = int(self.headers.get('Content-Length', 0) or 0)
@@ -443,6 +479,9 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                     # 请求里的显式字段优先；与验收脚本共用同一实现。
                     _solve_options = build_product_options(
                         cargo_skus, policy=_policy, payload=payload)
+                    _algo_mode = str(payload.get("algorithmMode") or payload.get("algorithm_mode") or "unified").strip().lower()
+                    if _algo_mode in ("unified", "proto_ems", "proto_ems_flex6"):
+                        _solve_options["algorithm_mode"] = _algo_mode
 
                     # 货单约束可满足性预检（含门区安全容量）：把"约束组合无解"
                     # 从求解后的静默饥饿提前暴露为 422；显式 doorStepDepth=0 会绕过容量检查。

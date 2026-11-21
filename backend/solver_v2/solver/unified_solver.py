@@ -402,6 +402,16 @@ class UnifiedSolver:
             )
 
         tensor_cargo_list = self._convert_cargo_skus_to_tensors(cargo_list)
+        # 原型算法对比路由（仅当前端/脚本显式指定 algorithm_mode 时分流，默认走生产 UnifiedSolver）
+        _algo_mode = str((options or {}).get("algorithm_mode") or "unified").strip().lower()
+        if _algo_mode in ("proto_ems", "proto_ems_flex6"):
+            from backend.solver_v2.solver.bidirectional_ems_prototype import solve_bidirectional_ems
+            return solve_bidirectional_ems(
+                self.container,
+                cargo_list,
+                flexible_unspecified=(_algo_mode == "proto_ems_flex6"),
+            )
+
         # 开门倾覆安全模式：默认关闭（与既有"柜门提供前向支承"语义一致）。
         # 开启后门面箱不再享受柜门豁免，必须 SF=2·dx/dz≥1.5 或由前方货箱支承，
         # 从而把门端自动排成"低前脸、高后墙"的稳定台阶，避免开门后整面薄墙前倾。

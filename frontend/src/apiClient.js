@@ -55,6 +55,7 @@
       
       const payload = {
         solverVersion: 'v2',
+        algorithmMode: (options && options.algorithmMode) || 'unified',
         mode: constraints && constraints.strategy === 'mec' ? 'MAX_COMPACT' : 'BALANCED',
         timeBudgetSec: 20,
         randomSeed: 42,
