@@ -11,9 +11,10 @@ import os
 import json
 import time
 import traceback
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from socketserver import ThreadingMixIn
+from urllib.parse import parse_qs, urlparse
 
 # Add backend directory to sys.path
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -31,12 +32,31 @@ from backend.api.request_limits import (
     validate_alternative_profiles, validate_alternatives,
     validate_manifest_size, validate_seed, validate_time_budget)
 from backend.solver_v2.loading.sequence_planner import compute_loading_order
+from backend.saas import (
+    SaaSStore, authenticate_request, create_jwt, get_plan,
+    hash_password, list_catalog, normalize_locale, t, verify_password)
 
 ANNOTATIONS_DIR = os.path.join(BASE_DIR, 'data', 'annotations')
 ANNOTATIONS_FILE = os.path.join(ANNOTATIONS_DIR, 'annotations.jsonl')
 
 # 全局 solve 闸门：默认 1，避免多个 CPU-bound 求解请求互相拖死
 SOLVE_GATE = SolveGate()
+SAAS_STORE = SaaSStore()
+
+
+def _saas_mode_enabled() -> bool:
+    return os.environ.get('AICIVS_SAAS_MODE', '0').strip() == '1'
+
+
+def _has_saas_auth_header(headers) -> bool:
+    if headers.get('X-API-Key'):
+        return True
+    auth = (headers.get('Authorization') or '').strip()
+    return auth.lower().startswith('bearer ') and not (os.environ.get('AICIVS_API_TOKEN') or '').strip()
+
+
+def _safe_user(user: Dict[str, Any]) -> Dict[str, Any]:
+    return {k: v for k, v in user.items() if k != 'password_hash'}
 
 def get_annotations(filter_solution_id=None, filter_rating=None):
     if not os.path.exists(ANNOTATIONS_FILE):
@@ -82,8 +102,8 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
         if origin:
             self.send_header('Access-Control-Allow-Origin', origin)
             self.send_header('Vary', 'Origin')
-        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, PATCH, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-API-Key, X-Locale')
 
     def _send_no_cache_headers(self):
         """Prevent browser from caching HTML files so edits are always picked up."""
@@ -107,8 +127,70 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                 'category': 'AUTH', 'retryable': False}
         self.wfile.write(json.dumps(body, ensure_ascii=False).encode('utf-8'))
 
+    def _send_json(self, status: int, data: Dict[str, Any], extra_headers: Optional[Dict[str, str]] = None):
+        self.send_response(status)
+        self.send_header('Content-Type', 'application/json; charset=utf-8')
+        if extra_headers:
+            for k, v in extra_headers.items():
+                self.send_header(k, v)
+        self.end_headers()
+        self.wfile.write(json.dumps(data, ensure_ascii=False).encode('utf-8'))
+
+    def _read_json_body(self, max_bytes: int = 2 * 1024 * 1024) -> Dict[str, Any]:
+        length = int(self.headers.get('Content-Length', 0) or 0)
+        if length <= 0:
+            return {}
+        if length > max_bytes:
+            raise ValueError("PAYLOAD_TOO_LARGE")
+        raw = self.rfile.read(length)
+        return json.loads(raw.decode('utf-8')) if raw else {}
+
+    def _req_locale(self, user: Optional[Dict[str, Any]] = None) -> str:
+        raw = self.headers.get('X-Locale') or (user or {}).get('locale') or self.headers.get('Accept-Language')
+        return normalize_locale(raw)
+
+    def _saas_error(self, status: int, code: str, locale: str = "zh-CN", **kwargs):
+        self._send_json(status, {
+            'success': False,
+            'code': code,
+            'error': t(code, locale, **kwargs),
+            'i18n': {
+                'zh-CN': t(code, 'zh-CN', **kwargs),
+                'en-US': t(code, 'en-US', **kwargs),
+            },
+        })
+
     def do_OPTIONS(self):
         self.send_response(200)
+        self.end_headers()
+
+    def do_PATCH(self):
+        if not self._request_authorized():
+            self._reject_unauthorized()
+            return
+        path_only = urlparse(self.path).path
+        if path_only == '/api/v1/auth/me':
+            user, err = authenticate_request(self.headers, SAAS_STORE)
+            if err or not user:
+                self._saas_error(401, err or 'AUTH_REQUIRED', self._req_locale())
+                return
+            try:
+                body = self._read_json_body()
+                updated = SAAS_STORE.update_user_prefs(
+                    user['id'],
+                    region=body.get('region'),
+                    locale=normalize_locale(body['locale']) if body.get('locale') else None,
+                    unit_system=body.get('unit_system'),
+                )
+                self._send_json(200, {
+                    'success': True,
+                    'user': _safe_user(updated or user),
+                    'quota': SAAS_STORE.get_quota_summary(user['id']),
+                })
+            except Exception as exc:
+                self._saas_error(400, 'INVALID_INPUT', self._req_locale(user), detail=str(exc))
+            return
+        self.send_response(404)
         self.end_headers()
 
     def end_headers(self):
@@ -161,6 +243,37 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
             self._reject_unauthorized()
             return
 
+        parsed_url = urlparse(self.path)
+        path_only = parsed_url.path
+
+        # SaaS 鉴权、计费目录与分享只读路由
+        if path_only == '/api/v1/auth/me':
+            user, err = authenticate_request(self.headers, SAAS_STORE)
+            if err or not user:
+                self._saas_error(401, err or 'AUTH_REQUIRED', self._req_locale())
+                return
+            self._send_json(200, {
+                'success': True,
+                'user': _safe_user(user),
+                'quota': SAAS_STORE.get_quota_summary(user['id']),
+            })
+            return
+
+        if path_only == '/api/v1/billing/plans':
+            query = parse_qs(parsed_url.query)
+            currency = query.get('currency', [None])[0]
+            self._send_json(200, {'success': True, **list_catalog(currency)})
+            return
+
+        if path_only.startswith('/api/v1/share/'):
+            token = path_only[len('/api/v1/share/'):].strip('/')
+            share = SAAS_STORE.get_share_link(token) if token else None
+            if not share:
+                self._saas_error(404, 'SHARE_NOT_FOUND', self._req_locale())
+                return
+            self._send_json(200, {'success': True, 'share': share})
+            return
+
         # 测试平台专用 API 路由
         if self.path.startswith('/api/v1/harness/'):
             from backend.harness_service import HarnessTaskManager, generate_agent_summary
@@ -182,7 +295,6 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                 return
 
             if self.path.startswith('/api/v1/harness/case-summary'):
-                from urllib.parse import urlparse, parse_qs
                 from backend.harness_service import generate_single_case_summary
                 query = parse_qs(urlparse(self.path).query)
                 case_id = query.get('id', [''])[0]
@@ -283,7 +395,6 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
 
         # 专家打标与方案评审 API: GET /api/v1/annotations
         if self.path.startswith('/api/v1/annotations'):
-            from urllib.parse import urlparse, parse_qs
             parsed_query = parse_qs(urlparse(self.path).query)
             sol_id = parsed_query.get('solutionId', [None])[0]
             rating = parsed_query.get('rating', [None])[0]
@@ -312,6 +423,132 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
     def do_POST(self):
         if not self._request_authorized():
             self._reject_unauthorized()
+            return
+
+        parsed_url = urlparse(self.path)
+        path_only = parsed_url.path
+        locale = self._req_locale()
+
+        # SaaS 商业网关 POST 路由：注册、登录、下单、支付回调、只读分享
+        if path_only == '/api/v1/auth/register':
+            try:
+                body = self._read_json_body()
+                email = str(body.get('email') or '').strip()
+                password = str(body.get('password') or '')
+                if not email or '@' not in email or len(password) < 6:
+                    self._saas_error(400, 'INVALID_INPUT', locale)
+                    return
+                region = str(body.get('region') or 'cn').strip().upper()
+                loc = normalize_locale(body.get('locale') or ('zh-CN' if region == 'CN' else 'en-US'))
+                unit = str(body.get('unit_system') or 'metric').strip().lower()
+                if unit not in ('metric', 'imperial'):
+                    unit = 'metric'
+                user = SAAS_STORE.create_user(
+                    email=email, password_hash=hash_password(password),
+                    region=region, locale=loc, unit_system=unit,
+                )
+                token = create_jwt({'sub': user['id'], 'email': user['email']})
+                self._send_json(201, {
+                    'success': True, 'token': token,
+                    'user': _safe_user(user),
+                    'quota': SAAS_STORE.get_quota_summary(user['id']),
+                })
+            except ValueError as exc:
+                code = str(exc) if str(exc) == 'EMAIL_EXISTS' else 'INVALID_INPUT'
+                self._saas_error(409 if code == 'EMAIL_EXISTS' else 400, code, locale)
+            except Exception as exc:
+                self._saas_error(400, 'INVALID_INPUT', locale, detail=str(exc))
+            return
+
+        if path_only == '/api/v1/auth/login':
+            try:
+                body = self._read_json_body()
+                email = str(body.get('email') or '').strip()
+                password = str(body.get('password') or '')
+                user = SAAS_STORE.get_user_by_email(email) if email else None
+                if not user or not verify_password(password, user.get('password_hash', '')):
+                    self._saas_error(401, 'INVALID_CREDENTIALS', locale)
+                    return
+                token = create_jwt({'sub': user['id'], 'email': user['email']})
+                self._send_json(200, {
+                    'success': True, 'token': token,
+                    'user': _safe_user(user),
+                    'quota': SAAS_STORE.get_quota_summary(user['id']),
+                })
+            except Exception as exc:
+                self._saas_error(400, 'INVALID_INPUT', locale, detail=str(exc))
+            return
+
+        if path_only == '/api/v1/billing/checkout':
+            user, err = authenticate_request(self.headers, SAAS_STORE)
+            if err or not user:
+                self._saas_error(401, err or 'AUTH_REQUIRED', locale)
+                return
+            locale = self._req_locale(user)
+            try:
+                body = self._read_json_body()
+                provider = str(body.get('provider') or '').strip().lower()
+                if provider not in ('wechat', 'alipay', 'stripe', 'paddle'):
+                    self._saas_error(400, 'INVALID_PROVIDER', locale)
+                    return
+                item_type = str(body.get('item_type') or 'plan').strip().lower()
+                item_id = str(body.get('item_id') or '').strip()
+                currency = str(body.get('currency') or ('CNY' if provider in ('wechat', 'alipay') else 'USD')).upper()
+                order = SAAS_STORE.create_order(user['id'], item_type, item_id, currency, provider)
+                self._send_json(200, {
+                    'success': True,
+                    'order': order,
+                    'checkout_url': f"/api/v1/billing/webhook/{provider}?order_id={order['order_id']}&sandbox=1",
+                    'sandbox_confirm_url': f"/api/v1/billing/webhook/{provider}",
+                })
+            except ValueError as exc:
+                self._saas_error(400, str(exc), locale)
+            except Exception as exc:
+                self._saas_error(400, 'INVALID_INPUT', locale, detail=str(exc))
+            return
+
+        if path_only.startswith('/api/v1/billing/webhook/'):
+            provider = path_only[len('/api/v1/billing/webhook/'):].strip('/').lower()
+            try:
+                body = self._read_json_body()
+                query = parse_qs(parsed_url.query)
+                order_id = str(body.get('order_id') or query.get('order_id', [''])[0]).strip()
+                provider_ref = str(body.get('provider_ref') or f"sandbox_{provider}_{int(time.time())}")
+                order = SAAS_STORE.mark_order_paid(order_id, provider_ref=provider_ref) if order_id else None
+                if not order:
+                    self._saas_error(404, 'ORDER_NOT_FOUND', locale)
+                    return
+                self._send_json(200, {
+                    'success': True,
+                    'provider': provider,
+                    'order': order,
+                    'quota': SAAS_STORE.get_quota_summary(order['user_id']),
+                })
+            except Exception as exc:
+                self._saas_error(400, 'INVALID_INPUT', locale, detail=str(exc))
+            return
+
+        if path_only == '/api/v1/share':
+            user, err = authenticate_request(self.headers, SAAS_STORE)
+            if err or not user:
+                self._saas_error(401, err or 'AUTH_REQUIRED', locale)
+                return
+            locale = self._req_locale(user)
+            plan = get_plan(user['plan_id']) or {}
+            if not plan.get('allow_share_link', False):
+                self._saas_error(403, 'PRO_FEATURE_REQUIRED', locale)
+                return
+            try:
+                body = self._read_json_body(max_bytes=10 * 1024 * 1024)
+                job_id = str(body.get('job_id') or body.get('solutionId') or f"sol_{int(time.time())}")
+                payload_data = body.get('payload') if 'payload' in body else body
+                link = SAAS_STORE.create_share_link(user['id'], job_id, payload_data)
+                self._send_json(200, {
+                    'success': True, **link,
+                    'share_url': f"/api/v1/share/{link['token']}",
+                })
+            except Exception as exc:
+                self._saas_error(400, 'INVALID_INPUT', locale, detail=str(exc))
             return
         # 专家打标与方案评审 API: POST /api/v1/annotations
         if self.path == '/api/v1/annotations':
@@ -363,6 +600,15 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
 
         if self.path == '/api/v1/manifest/parse':
             import base64
+            if _saas_mode_enabled() or _has_saas_auth_header(self.headers):
+                _u, _err = authenticate_request(self.headers, SAAS_STORE)
+                if _err or not _u:
+                    self._saas_error(401, _err or 'AUTH_REQUIRED', self._req_locale())
+                    return
+                _plan = get_plan(_u['plan_id']) or {}
+                if not _plan.get('allow_dirty_import', False):
+                    self._saas_error(403, 'PRO_FEATURE_REQUIRED', self._req_locale(_u))
+                    return
             try:
                 content_length = int(self.headers.get('Content-Length', 0) or 0)
                 if content_length <= 0 or content_length > 20 * 1024 * 1024:
@@ -499,6 +745,34 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                     # 自学习建议（影子模式）：只展示，不自动改 options/交付方案
                     from backend.solver_v2.learning import suggest_policy
                     _learning = suggest_policy(cargo_skus, container_spec)
+
+                    # SaaS 鉴权与配额扣减门禁（AICIVS_SAAS_MODE=1 或携带 Bearer JWT / X-API-Key 时启用）
+                    _entitlements = {
+                        'plan_id': 'local_dev',
+                        'watermark': False,
+                        'allow_export_report': True,
+                        'remaining_quota': None,
+                    }
+                    if _saas_mode_enabled() or _has_saas_auth_header(self.headers):
+                        _saas_user, _auth_err = authenticate_request(self.headers, SAAS_STORE)
+                        if _auth_err or not _saas_user:
+                            self._saas_error(401, _auth_err or 'AUTH_REQUIRED', self._req_locale())
+                            return
+                        _ok, _q_err, _q_info = SAAS_STORE.check_and_consume_solve(
+                            _saas_user['id'],
+                            sku_count=len(cargo_skus),
+                            algorithm_mode=_algo_mode,
+                        )
+                        if not _ok:
+                            _err_status = 402 if _q_err == 'QUOTA_EXCEEDED' else 403
+                            self._saas_error(_err_status, _q_err or 'QUOTA_EXCEEDED', self._req_locale(_saas_user))
+                            return
+                        _entitlements = {
+                            'plan_id': _q_info.get('plan_id', 'free'),
+                            'watermark': bool(_q_info.get('watermark', True)),
+                            'allow_export_report': bool(_q_info.get('allow_export', False)),
+                            'remaining_quota': _q_info.get('total_remaining'),
+                        }
 
                     if not SOLVE_GATE.try_acquire():
                         self.send_response(429)
@@ -693,6 +967,7 @@ class AICIVSRequestHandler(SimpleHTTPRequestHandler):
                             'result_url': f"/api/v1/loading/{solution_id}",
                             'version': 'BLK007C',
                         }
+                    result.setdefault('metrics', {})['entitlements'] = _entitlements
 
                     print(f"[PACK-V2] Result: placed={result.get('totalCount',0)}, util={result.get('utilization',0)}%, elapsed={result.get('elapsedMs',0)}ms")
 

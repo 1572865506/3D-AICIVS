@@ -2339,6 +2339,8 @@
   <script src="/frontend/src/errorLogReporter.js"></script>
   <script src="/frontend/src/orientationRendering.js"></script>
   <script src="/frontend/src/manifestWorkflow.js"></script>
+  <script src="/frontend/src/i18n.js"></script>
+  <script src="/frontend/src/saasClient.js"></script>
   <script src="/frontend/src/backendSwitch.js"></script>
   <script src="/frontend/src/packingAnimation.js"></script>
   <script src="/frontend/src/visualizationCore.js"></script>
@@ -2404,6 +2406,11 @@
 
       <!-- Header Action Buttons -->
       <div class="header-actions interactive">
+        <!-- I18N / Unit System / SaaS Account Controls -->
+        <button class="btn-action-pill secondary" id="btn-i18n-locale" onclick="window.I18N && window.I18N.toggleLocale()" title="切换中英文界面 / Switch Language">🌐 中/EN</button>
+        <button class="btn-action-pill secondary" id="btn-i18n-unit" onclick="window.I18N && window.I18N.toggleUnitSystem()" title="切换公英制单位 / Toggle Metric & Imperial">📏 m·kg</button>
+        <button class="btn-action-pill secondary" id="btn-saas-account" onclick="window.SaasClient && window.SaasClient.openSmartModal()" style="border-color:#2563eb; color:#1d4ed8; font-weight:700;" title="登录账号 / 查看套餐与配额">👤 登录 / 套餐配额</button>
+
         <!-- Algorithm Model Generation Badge & Selector -->
         <div class="model-gen-badge" id="hud-model-badge" title="切换求解算法内核版本（可在 3D 视图中直接对比效果）" style="gap:6px;">
           <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#6366f1; flex-shrink:0;"></span>
@@ -6997,6 +7004,7 @@
       if (deepLabel) deepLabel.textContent = `📦 最远端 (${currentSpec.usable.L.toFixed(2)}m)`;
       document.getElementById('spec-vol').textContent = `${currentSpec.nominalVol.toFixed(1)} m³`;
       document.getElementById('spec-payload').textContent = `${(currentSpec.maxPayloadTons * 1000).toLocaleString()} kg (${currentSpec.maxPayloadTons} 吨)`;
+      if (window.I18N && window.I18N.syncContainerSpecs) window.I18N.syncContainerSpecs(currentSpec);
 
       document.querySelectorAll('#left-drawer .chip-grid-4 .btn-chip').forEach(b => b.classList.remove('active'));
       const activeBtn = document.getElementById('btn-type-' + currentContainerType.toLowerCase());

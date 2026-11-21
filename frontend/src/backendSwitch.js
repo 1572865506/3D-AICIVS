@@ -80,13 +80,16 @@
       const fetchInit = Object.assign({ cache: 'no-store' }, init || {}, { signal: controller.signal });
       delete fetchInit.signal; // ensure single signal attached
       fetchInit.signal = controller.signal;
-      // 部署层如配置了 API token，可通过 window.__AICIVS_API_TOKEN__ 注入；
-      // 默认不注入，保持本机同源无认证。
-      const apiToken = root.__AICIVS_API_TOKEN__;
+      // 部署层或 SaaS 登录态注入 Bearer Token：优先读取 window.__AICIVS_JWT__，
+      // 其次回退 window.__AICIVS_API_TOKEN__；默认不注入，保持本机同源无认证。
+      const apiToken = root.__AICIVS_JWT__ || root.__AICIVS_API_TOKEN__;
       if (apiToken) {
-        fetchInit.headers = Object.assign({}, fetchInit.headers || {}, {
-          Authorization: `Bearer ${apiToken}`
-        });
+        const existingHeaders = fetchInit.headers || {};
+        if (!existingHeaders.Authorization && !existingHeaders.authorization) {
+          fetchInit.headers = Object.assign({}, existingHeaders, {
+            Authorization: `Bearer ${apiToken}`
+          });
+        }
       }
       try { response = await root.fetch(`${configuredBase()}${path}`, fetchInit); }
       catch (error) {
@@ -102,11 +105,21 @@
         const message = details && (details.error || details.message)
           ? `HTTP ${response.status}: ${details.error || details.message}`
           : `HTTP ${response.status}`;
+        if ((response.status === 402 || response.status === 403) && root.SaasClient && typeof root.SaasClient.handleQuotaExceeded === 'function') {
+          root.SaasClient.handleQuotaExceeded(response.status, details);
+        }
         const type = response.status === 422 || (details && details.category === 'INPUT_CONSTRAINT')
           ? ErrorType.INPUT_CONSTRAINT : ErrorType.SERVER_ERROR;
         throw new BackendError(type, message, response.status, details);
       }
-      try { return await response.json(); }
+      try {
+        const json = await response.json();
+        if (json && json.metrics && json.metrics.entitlements && root.SaasClient && typeof root.SaasClient.updateEntitlements === 'function') {
+          root.SaasClient.updateEntitlements(json.metrics.entitlements);
+          root.SaasClient.refreshUi();
+        }
+        return json;
+      }
       catch (_) { throw new BackendError(ErrorType.INVALID_RESULT, 'Backend returned non-JSON content'); }
     } finally { clearTimeout(timer); }
   }
